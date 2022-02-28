@@ -31,4 +31,6 @@ Imports:
     rintrojs,
     utils,
     ideal,
-    DT
+    DT,
+    BiocFileCache,
+    taxize

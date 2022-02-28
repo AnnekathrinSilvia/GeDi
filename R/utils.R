@@ -14,7 +14,7 @@ getGenes <- function(genesets){
     return(list())
   }
   genesets <- lapply(1:nrow(genesets), function(i) {
-    toupper(strsplit(genesets[i, 2], " ")[[1]])
+    toupper(strsplit(genesets[i, 1], " ")[[1]])
   })
 
   return(genesets)

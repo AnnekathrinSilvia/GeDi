@@ -97,7 +97,7 @@ pMMlocal <- function(a, ai, b, bi, alpha, ppi, maxInteract) {
 #' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
 #' ppi <- Matrix::matrix(0.5, 4, 4)
 #' s <- pMM(genesets, ppi)
-pMM <- function(genesets, ppi, alpha = 1){
+getpMMMatrix <- function(genesets, ppi, alpha = 1){
   genes <- getGenes(genesets)
   genes_indexed <- getGenesIndexed(genes, ppi)
 

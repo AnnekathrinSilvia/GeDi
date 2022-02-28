@@ -6,6 +6,8 @@
 #'
 #' @return
 #' @export
+#' @import shiny
+#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems
 #'
 #' @examples
 GeDi <- function(genesets = NULL,
@@ -94,15 +96,21 @@ GeDi <- function(genesets = NULL,
         bs4SidebarMenuItem("Welcome!",
                            tabName = "tab_welcome",
                            icon = icon("home")),
-        bs4SidebarMenuItem("Data Upload",
-                           tabName = "tab_data_upload",
-                           icon = icon("share-alt-square")),
-        bs4SidebarMenuItem("Graph",
-                           tabName = "tab_graph",
-                           icon = icon("share-alt-square")),
-        bs4SidebarMenuItem("Distance Scores",
-                           tabName = "tab_scores",
-                           icon = icon("project-diagram"))
+        bs4SidebarMenuItem(
+          "Data Upload",
+          tabName = "tab_data_upload",
+          icon = icon("share-alt-square")
+        ),
+        bs4SidebarMenuItem(
+          "Distance Scores",
+          tabName = "tab_scores",
+          icon = icon("project-diagram")
+        ),
+        bs4SidebarMenuItem(
+          "Graph",
+          tabName = "tab_graph",
+          icon = icon("share-alt-square")
+        )
       )
     ),
 
@@ -116,7 +124,6 @@ GeDi <- function(genesets = NULL,
             color: forestgreen;
             text-align: center;
             }
-
             #myScrollBox{
               overflow-y: scroll;
               .dataTables_wrapper{
@@ -150,17 +157,20 @@ GeDi <- function(genesets = NULL,
                    uiOutput("ui_panel_welcome")),
 
         # ui panel data upload -----------------------------------------------
-        bs4TabItem(tabName = "tab_data_upload",
-                   uiOutput("ui_panel_data_upload"),
-                   uiOutput("ui_download_ppi")),
-
-        # ui panel graph ---------------------------------------------------
-        bs4TabItem(tabName = "tab_graph",
-                   uiOutput("ui_panel_graph")),
+        bs4TabItem(
+          tabName = "tab_data_upload",
+          uiOutput("ui_panel_data_upload"),
+          uiOutput("ui_download_ppi")
+        ),
 
         # ui panel scores -------------------------------------------------
         bs4TabItem(tabName = "tab_scores",
-                   uiOutput("ui_panel_scores"))
+                   uiOutput("ui_panel_scores")),
+
+        # ui panel graph ---------------------------------------------------
+        bs4TabItem(tabName = "tab_graph",
+                   uiOutput("ui_panel_graph"))
+
       )
     )
     # ),
@@ -184,9 +194,14 @@ GeDi <- function(genesets = NULL,
     reactive_values <- reactiveValues()
 
     # input data
+    # original input data
     reactive_values$genesets <- NULL
-    reactive_values$species <- NULL
+    #only the names of the genesets -> TODO: evaluate later if needed
+    reactive_values$gs_names <- NULL
+    #splitted genes
+    reactive_values$genes <- NULL
     reactive_values$ppi <- NULL
+    reactive_values$scores <- NULL
 
 
     # panel Welcome ----------------------------------------------------------
@@ -207,88 +222,99 @@ GeDi <- function(genesets = NULL,
             shinyBS::bsCollapsePanel("Help")
           )
         )),
-        bs4Dash::box(
+        box(
           width = 12,
           title = "Step 1",
           status = "danger",
           solidHeader = TRUE,
-          h2(
-            "Upload your Genesets input data"
-          ),
+          h2("Upload your Genesets input data"),
 
           fluidRow(
-            column(width = 4,
-                   uiOutput("upload_genesets"),
-                   br(),
-                   "... or you can also ",
-                   # actionButton("btn_loaddemo", "Load the demo airway data",
-                   #              icon = icon("play-circle"),
-                   #              class = "btn btn-info"
-                   # ), br(), p()),
-                   column(
-                     width = 4,
-                     br(),
-                     actionButton(
-                       "help_format",
-                       label = "",
-                       icon = icon("question-circle"),
-                       style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
-                     ),
-                     shinyBS::bsTooltip(
-                       "help_format",
-                       "How to provide your input data to ideal",
-                       "bottom",
-                       options = list(container = "body")
-                     )
-                   )
-            ),
-
-            fluidRow(
+            column(
+              width = 4,
+              uiOutput("upload_genesets"),
+              br(),
+              "... or you can also ",
+              # actionButton("btn_loaddemo", "Load the demo airway data",
+              #              icon = icon("play-circle"),
+              #              class = "btn btn-info"
+              # ), br(), p()),
               column(
-                width = 12,
-                bs4Dash::box(
-                  width = NULL,
-                  title = "Genesets preview",
-                  status = "primary",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  collapsed = TRUE,
-                  fluidRow(column(
-                    width = 12,
-                    offset = 0.5,
-                    DT::dataTableOutput("dt_genesets")
-                  ))
+                width = 4,
+                br(),
+                actionButton(
+                  "help_format",
+                  label = "",
+                  icon = icon("question-circle"),
+                  style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                ),
+                shinyBS::bsTooltip(
+                  "help_format",
+                  "How to provide your input data to ideal",
+                  "bottom",
+                  options = list(container = "body")
                 )
               )
-            )
+            ),
+
+            fluidRow(column(
+              width = 12,
+              box(
+                width = NULL,
+                title = "Genesets preview",
+                status = "primary",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                collapsed = TRUE,
+                fluidRow(column(
+                  width = 12,
+                  offset = 0.5,
+                  DT::dataTableOutput("dt_genesets")
+                ))
+              )
+            ))
           )
         )
       )
     })
 
     output$upload_genesets <- renderUI({
-        return(fileInput(
+      return(
+        fileInput(
           inputId = "uploadgenesetfile",
           label = "Upload a geneset file",
           accept = c(
-            "text/csv", "text/comma-separated-values",
-            "text/tab-separated-values", "text/plain",
-            ".csv", ".tsv"
-          ), multiple = FALSE
-        ))
+            "text/csv",
+            "text/comma-separated-values",
+            "text/tab-separated-values",
+            "text/plain",
+            ".csv",
+            ".tsv"
+          ),
+          multiple = FALSE
+        )
+      )
     })
 
     readGenesets <- reactive({
       if (is.null(input$uploadgenesetfile)) {
         return(NULL)
       }
-      guessed_sep <- ideal::sepguesser(input$uploadgenesetfile$datapath)
-      genesets <- utils::read.delim(input$uploadgenesetfile$datapath,
-                              header = TRUE,
-                              as.is = TRUE, sep = guessed_sep, quote = "",
-                              row.names = 1,
-                              check.names = FALSE
-      )
+      # TODO: Build own sepguesser so ideal dependency can be removed
+      guessed_sep <-
+        ideal::sepguesser(input$uploadgenesetfile$datapath)
+      genesets <-
+        utils::read.delim(
+          input$uploadgenesetfile$datapath,
+          header = TRUE,
+          as.is = TRUE,
+          sep = guessed_sep,
+          quote = "",
+          row.names = 1,
+          check.names = FALSE
+        )
+
+
 
       return(genesets)
     })
@@ -297,7 +323,8 @@ GeDi <- function(genesets = NULL,
       if (is.null(reactive_values$genesets)) {
         return(NULL)
       }
-      DT::datatable(reactive_values$genesets, options = list(scrollX = TRUE, scrollY = "400px"))
+      DT::datatable(reactive_values$genesets,
+                    options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
 
@@ -305,18 +332,39 @@ GeDi <- function(genesets = NULL,
       if (is.null(reactive_values$genesets)) {
         return(NULL)
       }
-      bs4Dash::box(
-        width = 12, title = "Step 2", status = "warning", solidHeader = TRUE,
+      box(
+        width = 12,
+        title = "Step 2",
+        status = "warning",
+        solidHeader = TRUE,
         tagList(
-          h2("Select the species of you data and download the corresponding
-             Protein-Protein Interaction (PPI) Matrix"),
+          h2(
+            "Select the species of you data and download the corresponding
+             Protein-Protein Interaction (PPI) Matrix"
+          ),
+          fluidRow(
+            column(width = 6,
+                   uiOutput("ui_species")),
+            column(
+              width = 6,
+              strong("Download the PPI matrix from STRING:"),
+              br(),
+              "Attention: This operation can take some time",
+              br(),
+              actionButton(
+                "download_ppi",
+                label = "Download PPI matrix",
+                icon = icon("download"),
+                style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
+
+              )
+            )
+
+          ),
           fluidRow(
             column(
               width = 6,
-              uiOutput("ui_species"),
-              #uiOutput("ui_diydds"),
-              hr(),
-              verbatimTextOutput("debugdiy")
+              uiOutput("ui_opt_param_ppi")
             )
           )
         )
@@ -324,78 +372,161 @@ GeDi <- function(genesets = NULL,
     })
 
     output$ui_species <- renderUI({
-        if (is.null(reactive_values$genesets)) {
-          return(NULL)
-        }
-        poss_species <- read.delim("data/species.txt", sep = "\n", header = F)
-        selectInput("species",
-                    label = "Select the species of your data: ",
-                    choices = poss_species,
-                    selected = NULL,
-                    multiple = FALSE
+      if (is.null(reactive_values$genesets)) {
+        return(NULL)
+      }
+      poss_species <-
+        read.delim("data/species.txt", sep = "\n", header = F)
+      selectInput(
+        "species",
+        label = "Select the species of your data: ",
+        choices = poss_species,
+        selected = poss_species[1],
+        multiple = FALSE
+      )
+    })
+
+    output$ui_opt_param_ppi <- renderUI({
+      if (is.null(reactive_values$genesets)) {
+        return(NULL)
+      }
+      box(
+        width = 12,
+        title = "Optional Parameters",
+        status = "info",
+        solidHeader = TRUE,
+        collapsible = TRUE,
+        collapsed = TRUE,
+        tagList(
+          fluidRow(
+            column(
+              width = 6,
+              uiOutput("ui_cachePath")
+            )
+          )
         )
+      )
+    })
+
+    output$ui_cachePath <- renderUI({
+      textInput("cachePath",
+                label = "Change the path for the PPI Cache",
+                value = "~GSD",
+                width = '400px')
+
     })
 
 
-      # panel Graph ------------------------------------------------------
+    # panel Graph ------------------------------------------------------
 
-      output$ui_panel_graph <- renderUI({
-        tagList(fluidRow(column(width = 11),
-                         column(width = 1)),
-                fluidRow(column(width = 8,
-                                fluidRow(
-                                  column(width = 1)
-                                )),
-                         column(width = 4)))
-      })
+    output$ui_panel_graph <- renderUI({
+      tagList(fluidRow(column(width = 11),
+                       column(width = 1)),
+              fluidRow(column(width = 8,
+                              fluidRow(
+                                column(width = 1)
+                              )),
+                       column(width = 4)))
+    })
 
-      # panel Scores -----------------------------------------------------
+    # panel Scores -----------------------------------------------------
 
-      output$ui_panel_scores <- renderUI({
-        tagList(fluidRow(column(width = 11),
-                         column(width = 1,)),
-                fluidRow(column(width = 8),
-                         column(width = 4)))
-      })
+    output$ui_panel_scores <- renderUI({
+      tagList(fluidRow(column(width = 11,
+                       selectInput(
+                         "scoringmethod",
+                         label = "Select the scoring method for your data: ",
+                         choices = c("", "Meet-Min", "Kappa", "PMM"),
+                         multiple = FALSE
+                       ),
+                       uiOutput("ui_score_data")
+                       ),
+                       column(width = 1)),
+              fluidRow(column(width = 8),
+                       column(width = 4)))
+    })
 
-      # controlbar --------------------------------------------------------------
+    # TODO: Workaround with empty string check to fiy that later in another way
+    output$ui_score_data <- renderUI({
+      if (is.null(input$scoringmethod) || input$scoringmethod == "") {
+        return(NULL)
+      }
+      fluidRow(column(
+        width = 5,
+        strong("Now you can score your data"),
+        br(),
+        "Attention: If you have many genesets to score, this operation may take some time",
+        br(),
+        actionButton(
+          "score_data",
+          label = "Score the Genesets",
+          style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
+        )
+      ))
+    })
 
-      # output$ui_controlbar <- renderUI({
-      #   validate(
-      #     need(!is.null(reactive_values$gtl) ,
-      #          message = "\n\n\nPlease provide a GeneTonicList or its components to display the content of the control bar.")
-      #   )
-      #
-      #   # message(nrow(reactive_values$res_enrich))
-      #
-      #   tagList(
-      #     numericInput(
-      #       inputId = "de_fdr",
-      #       label = "False Discovery Rate (FDR) for DE",
-      #       value = 0.05, min = 0.0001, max = 1, step = 0.01
-      #     ),
-      #     numericInput(
-      #       inputId = "n_genesets",
-      #       label = "Number of genesets",
-      #       value = 15, min = 1, max = nrow(reactive_values$res_enrich)
-      #     ),
-      #     selectInput("exp_condition",
-      #                 label = "Group/color by: ",
-      #                 choices = c(NULL, names(colData(reactive_values$dds))), selected = NULL, multiple = TRUE
-      #     ),
-      #     colourInput("col", "Select colour for volcano plot", "#1a81c2",
-      #                 returnName = TRUE,
-      #                 allowTransparent = TRUE
-      #     ),
-      #     checkboxInput("labels", label = "Display all labels", value = FALSE)
-      #   )
-      # })
+    # controlbar --------------------------------------------------------------
 
-      # outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
+    # output$ui_controlbar <- renderUI({
+    #   validate(
+    #     need(!is.null(reactive_values$gtl) ,
+    #          message = "\n\n\nPlease provide a GeneTonicList or its components to display the content of the control bar.")
+    #   )
+    #
+    #   # message(nrow(reactive_values$res_enrich))
+    #
+    #   tagList(
+    #     numericInput(
+    #       inputId = "de_fdr",
+    #       label = "False Discovery Rate (FDR) for DE",
+    #       value = 0.05, min = 0.0001, max = 1, step = 0.01
+    #     ),
+    #     numericInput(
+    #       inputId = "n_genesets",
+    #       label = "Number of genesets",
+    #       value = 15, min = 1, max = nrow(reactive_values$res_enrich)
+    #     ),
+    #     selectInput("exp_condition",
+    #                 label = "Group/color by: ",
+    #                 choices = c(NULL, names(colData(reactive_values$dds))), selected = NULL, multiple = TRUE
+    #     ),
+    #     colourInput("col", "Select colour for volcano plot", "#1a81c2",
+    #                 returnName = TRUE,
+    #                 allowTransparent = TRUE
+    #     ),
+    #     checkboxInput("labels", label = "Display all labels", value = FALSE)
+    #   )
+    # })
+
+    # outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
 
 
     observeEvent(input$uploadgenesetfile, {
       reactive_values$genesets <- readGenesets()
+      reactive_values$gs_names <- rownames(reactive_values$genesets)
+      reactive_values$genes <- getGenes(reactive_values$genesets)
+    })
+
+    observeEvent(input$download_ppi, {
+      if(is.null(input$cachePath)){
+        reactive_values$ppi <- downloadPPI(input$species)
+      }else{
+        reactive_values$ppi <- downloadPPI(input$species, cachepath = input$cachePath)
+      }
+    })
+
+    observeEvent(input$score_data, {
+      validate(
+        need(input$scoringmethod != "" & !(is.null(input$scoringmethod)), "Please select a scoring method")
+      )
+      if(input$scoringmethod == "Meet-Min"){
+        reactive_values$scores <- getMeetMinMatrix(reactive_values$genes)
+      }else if(input$scoringmethod == "Kappa") {
+        reactive_values$scores <- getKappaMatrix(reactive_values$genes)
+      }else if (input$scoringmethod == "PMM"){
+        reactive_values$scores <- getpMMMatrix(reactive_values$genes, reactive_values$ppi)
+      }
+
     })
 
   }
