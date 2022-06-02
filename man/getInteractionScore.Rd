@@ -22,11 +22,12 @@ the interaction score for two genesets
 Calculates the interaction score for two genesets
 }
 \examples{
+\dontrun{
 a <- c("PDHB", "VARS2", "IARS2")
 ai <- c(1, 2, 3)
 b <- c("IARS2", "PDHA2")
 bi <- c(4, 3)
 ppi <- Matrix::Matrix(0.5, 4, 4)
 maxInteract <- 0.5
-s <- getInteractionScore(a, ai, b, bi, ppi, maxInteract)
+s <- getInteractionScore(a, ai, b, bi, ppi, maxInteract)}
 }

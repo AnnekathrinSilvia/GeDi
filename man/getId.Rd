@@ -2,16 +2,20 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getId}
 \alias{getId}
-\title{Title}
+\title{Translates the species name into the NCBI ID}
 \usage{
 getId(species)
 }
 \arguments{
-\item{species}{}
+\item{species}{the species of the data to download}
 }
 \value{
-
+the NCBI id of the species
 }
 \description{
-Title
+Translates the species name into the NCBI ID
+}
+\examples{
+species <- "Homo sapiens"
+getId(species)
 }

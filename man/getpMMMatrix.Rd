@@ -4,12 +4,14 @@
 \alias{getpMMMatrix}
 \title{Calculate the pMM distance of all geneset combinations}
 \usage{
-getpMMMatrix(genesets, ppi, alpha = 1)
+getpMMMatrix(genes, ppi, geneset_names, alpha = 1)
 }
 \arguments{
-\item{genesets}{a list of the genesets to score}
+\item{genes}{a list of  vectors of genes (the genesets)}
 
 \item{ppi}{a Protein-Protein interaction matrix}
+
+\item{geneset_names}{a list of names/ids of the genesets}
 
 \item{alpha}{scaling factor in (0, 1); indicates how much the Protein-Protein interactions are weighted into the distance}
 }
@@ -20,7 +22,8 @@ a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise pMM distance o
 Calculate the pMM distance of all geneset combinations
 }
 \examples{
-genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-ppi <- Matrix::matrix(0.5, 4, 4)
-s <- pMM(genesets, ppi)
+genes <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
+geneset_names <- list("A", "B")
+ppi <- Matrix::Matrix(0.5, 4, 4)
+s <- getpMMMatrix(genes, ppi, geneset_names)
 }

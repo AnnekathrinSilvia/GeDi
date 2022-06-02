@@ -15,7 +15,3 @@ a list of vectors of genes, on for each geneset
 \description{
 Split the genesets into a list of vectors of genes, one for each geneset
 }
-\examples{
-genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-genes <- getGenes(genesets)
-}

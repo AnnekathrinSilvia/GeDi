@@ -2,16 +2,19 @@
 % Please edit documentation in R/downloadPPI.R
 \name{listPPI}
 \alias{listPPI}
-\title{Title}
+\title{List all PPIs saved in a Cache}
 \usage{
 listPPI(cachepath)
 }
 \arguments{
-\item{cachepath}{}
+\item{cachepath}{the path of the cache}
 }
 \value{
-
+a list of PPIs
 }
 \description{
-Title
+List all PPIs saved in a Cache
+}
+\examples{
+\dontrun{}
 }

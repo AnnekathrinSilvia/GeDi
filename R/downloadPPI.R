@@ -1,26 +1,30 @@
-#' Title
+#' Translates the species name into the NCBI ID
 #'
-#' @param species
+#' @param species the species of the data to download
 #'
-#' @return
+#' @return the NCBI id of the species
 #' @export
+#' @importFrom taxize get_ids
 #'
 #' @examples
+#' species <- "Homo sapiens"
+#' getId(species)
 getId <- function(species){
   id <- taxize::get_ids(species, db = "ncbi")
   return(id$ncbi[species])
 }
 
-#' Title
+#' Check if the downloaded PPI Matrix for a certain species needs to be updated
 #'
-#' @param bfc
-#' @param species
+#' @param bfc the location of the BioCFileCache
+#' @param species the species of the data
 #'
-#' @return
+#' @return logical value if the PPI needs to be updated
 #' @export
 #' @importFrom BiocFileCache bfcquery bfcneedsupdate
 #'
 #' @examples
+#' \dontrun{}
 needsUpdate <- function(bfc, species){
   rid <- bfcquery(bfc, species)$rid
   return(bfcneedsupdate(bfc, rid))
@@ -29,15 +33,16 @@ needsUpdate <- function(bfc, species){
 
 #' Title
 #'
-#' @param species
-#' @param cachepath
-#' @param version
+#' @param species the species of the data
+#' @param cachepath the path to save the cache
+#' @param version the version of the StringDB database to download from
 #'
-#' @return
+#' @return the normalized PPI matrix
 #' @export
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcadd bfcrpath
 #'
 #' @examples
+#' \dontrun{}
 downloadPPI <- function(species, cachepath = "~/GSD", version = "11.5"){
   bfc <- BiocFileCache(cachepath, ask = FALSE)
   name_ppi <- paste("PPI_",
@@ -92,14 +97,16 @@ downloadPPI <- function(species, cachepath = "~/GSD", version = "11.5"){
 
 
 
-#' Title
+#' List all PPIs saved in a Cache
 #'
-#' @param cachepath
+#' @param cachepath the path of the cache
 #'
-#' @return
+#' @return a list of PPIs
 #' @export
+#' @importFrom BiocFileCache BiocFileCache bfcinfo
 #'
 #' @examples
+#' \dontrun{}
 listPPI <- function(cachepath){
   bfc <- BiocFileCache(cachepath, ask = FALSE)
   bfc_df <- bfcinfo(bfc)
@@ -111,13 +118,14 @@ listPPI <- function(cachepath){
 #return as sparse matrix
 #' Title
 #'
-#' @param ppi
-#' @param info
+#' @param ppi the path to a PPI matrix
+#' @param info the path to the corresponding info file
 #'
-#' @return
+#' @return a normalized PPI dataframe
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 normalizePPI <- function(ppi, info){
   ppi <- as.data.frame(read.delim(ppi, sep = " ", header = TRUE))
   info <- as.data.frame(read.delim(info, sep = "\t", fill = FALSE, quote = ""))
@@ -133,7 +141,7 @@ normalizePPI <- function(ppi, info){
 
   ppi <- as.data.frame(new_scores)
   rownames(ppi) <- rownames
-  columnnames(ppi) <- columnnames
+  colnames(ppi) <- columnnames
 
   return(ppi)
 }

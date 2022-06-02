@@ -2,16 +2,25 @@
 % Please edit documentation in R/app.R
 \name{GeDi}
 \alias{GeDi}
-\title{Title}
+\title{GeDi main function}
 \usage{
 GeDi(genesets = NULL, ppi = NULL, alpha = 1)
 }
 \arguments{
-\item{alpha}{}
+\item{genesets}{a dataframe of genesets containing the columns: genesets (the names / ids of the sets) and genes (the genes included in the genesets)}
+
+\item{ppi}{a Protein-Protein interaction matrix}
+
+\item{alpha}{a scaling factor in between 0 and 1}
 }
 \value{
 
 }
 \description{
-Title
+GeDi main function
+}
+\examples{
+\dontrun{
+GeDi()
+}
 }

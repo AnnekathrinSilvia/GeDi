@@ -1,15 +1,23 @@
-#' Title
+#' GeDi main function
 #'
-#' @param genesets
-#' @param ppi
-#' @param alpha
+#' @param genesets a dataframe of genesets containing the columns: genesets (the names / ids of the sets) and genes (the genes included in the genesets)
+#' @param ppi a Protein-Protein interaction matrix
+#' @param alpha a scaling factor in between 0 and 1
 #'
 #' @return
 #' @export
+#' @import DT
+#' @import igraph
+#' @import visNetwork
 #' @import shiny
+#' @import shinyBS
+#' @importFrom utils read.delim
 #' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems
 #'
 #' @examples
+#' \dontrun{
+#' GeDi()
+#' }
 GeDi <- function(genesets = NULL,
                  ppi = NULL,
                  alpha = 1) {
@@ -200,6 +208,7 @@ GeDi <- function(genesets = NULL,
     reactive_values$gs_names <- NULL
     #splitted genes
     reactive_values$genes <- NULL
+    reactive_values$genes_ind <- NULL
     reactive_values$ppi <- NULL
     reactive_values$scores <- NULL
 
@@ -216,10 +225,10 @@ GeDi <- function(genesets = NULL,
       tagList(
         fluidRow(column(
           width = 8,
-          shinyBS::bsCollapse(
+          bsCollapse(
             id = "help_datasetup",
             open = NULL,
-            shinyBS::bsCollapsePanel("Help")
+            bsCollapsePanel("Help")
           )
         )),
         box(
@@ -248,7 +257,7 @@ GeDi <- function(genesets = NULL,
                   icon = icon("question-circle"),
                   style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
                 ),
-                shinyBS::bsTooltip(
+                bsTooltip(
                   "help_format",
                   "How to provide your input data to ideal",
                   "bottom",
@@ -313,9 +322,6 @@ GeDi <- function(genesets = NULL,
           row.names = 1,
           check.names = FALSE
         )
-
-
-
       return(genesets)
     })
 
@@ -361,12 +367,10 @@ GeDi <- function(genesets = NULL,
             )
 
           ),
-          fluidRow(
-            column(
-              width = 6,
-              uiOutput("ui_opt_param_ppi")
-            )
-          )
+          fluidRow(column(
+            width = 6,
+            uiOutput("ui_opt_param_ppi")
+          ))
         )
       )
     })
@@ -397,14 +401,10 @@ GeDi <- function(genesets = NULL,
         solidHeader = TRUE,
         collapsible = TRUE,
         collapsed = TRUE,
-        tagList(
-          fluidRow(
-            column(
-              width = 6,
-              uiOutput("ui_cachePath")
-            )
-          )
-        )
+        tagList(fluidRow(column(
+          width = 6,
+          uiOutput("ui_cachePath")
+        )))
       )
     })
 
@@ -414,6 +414,71 @@ GeDi <- function(genesets = NULL,
                 value = "~GSD",
                 width = '400px')
 
+    })
+
+    # panel Scores -----------------------------------------------------
+
+    output$ui_panel_scores <- renderUI({
+      tagList(fluidRow(
+        column(
+          width = 11,
+          selectInput(
+            "scoringmethod",
+            label = "Select the scoring method for your data: ",
+            choices = c("", "Meet-Min", "Kappa", "PMM"),
+            multiple = FALSE
+          ),
+          uiOutput("ui_score_data")
+        ),
+        column(width = 1)
+      ),
+      fluidRow(column(
+        width = 11,
+        visNetworkOutput("ui_plot_scores")
+      )))
+    })
+
+    # TODO: Workaround with empty string check to fiy that later in another way
+    output$ui_score_data <- renderUI({
+      if (is.null(input$scoringmethod) || input$scoringmethod == "") {
+        return(NULL)
+      }
+      fluidRow(
+        column(
+          width = 5,
+          strong("Now you can score your data"),
+          br(),
+          "Attention: If you have many genesets to score, this operation may take some time",
+          br(),
+          actionButton("score_data",
+                       label = "Score the Genesets",
+                       style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC")
+        )
+      )
+    })
+
+    output$ui_plot_scores <- renderVisNetwork({
+      if (is.null(reactive_values$scores)) {
+        return(NULL)
+      }
+      #pheatmap::pheatmap(reactive_values$scores)
+      adj <- getAdjacencyMatrix(reactive_values$scores, 0.3)
+      g <- buildGraph(adj)
+
+      visNetwork::visIgraph(g) %>%
+        visOptions(
+          highlightNearest = list(
+            enabled = TRUE,
+            degree = 1,
+            hover = TRUE
+          ),
+          nodesIdSelection = TRUE
+        ) %>%
+        visExport(
+          name = "backbone_network",
+          type = "png",
+          label = "Save backbone graph"
+        )
     })
 
 
@@ -427,42 +492,6 @@ GeDi <- function(genesets = NULL,
                                 column(width = 1)
                               )),
                        column(width = 4)))
-    })
-
-    # panel Scores -----------------------------------------------------
-
-    output$ui_panel_scores <- renderUI({
-      tagList(fluidRow(column(width = 11,
-                       selectInput(
-                         "scoringmethod",
-                         label = "Select the scoring method for your data: ",
-                         choices = c("", "Meet-Min", "Kappa", "PMM"),
-                         multiple = FALSE
-                       ),
-                       uiOutput("ui_score_data")
-                       ),
-                       column(width = 1)),
-              fluidRow(column(width = 8),
-                       column(width = 4)))
-    })
-
-    # TODO: Workaround with empty string check to fiy that later in another way
-    output$ui_score_data <- renderUI({
-      if (is.null(input$scoringmethod) || input$scoringmethod == "") {
-        return(NULL)
-      }
-      fluidRow(column(
-        width = 5,
-        strong("Now you can score your data"),
-        br(),
-        "Attention: If you have many genesets to score, this operation may take some time",
-        br(),
-        actionButton(
-          "score_data",
-          label = "Score the Genesets",
-          style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
-        )
-      ))
     })
 
     # controlbar --------------------------------------------------------------
@@ -505,28 +534,37 @@ GeDi <- function(genesets = NULL,
       reactive_values$genesets <- readGenesets()
       reactive_values$gs_names <- rownames(reactive_values$genesets)
       reactive_values$genes <- getGenes(reactive_values$genesets)
+      #reactive_values$genes_ind <- getGenesIndexed(reactive_values$genes)
     })
 
     observeEvent(input$download_ppi, {
-      if(is.null(input$cachePath)){
+      if (is.null(input$cachePath)) {
         reactive_values$ppi <- downloadPPI(input$species)
-      }else{
-        reactive_values$ppi <- downloadPPI(input$species, cachepath = input$cachePath)
+      } else{
+        reactive_values$ppi <-
+          downloadPPI(input$species, cachepath = input$cachePath)
       }
     })
 
     observeEvent(input$score_data, {
-      validate(
-        need(input$scoringmethod != "" & !(is.null(input$scoringmethod)), "Please select a scoring method")
-      )
-      if(input$scoringmethod == "Meet-Min"){
-        reactive_values$scores <- getMeetMinMatrix(reactive_values$genes)
-      }else if(input$scoringmethod == "Kappa") {
-        reactive_values$scores <- getKappaMatrix(reactive_values$genes)
-      }else if (input$scoringmethod == "PMM"){
-        reactive_values$scores <- getpMMMatrix(reactive_values$genes, reactive_values$ppi)
+      validate(need(
+        input$scoringmethod != "" &
+          !(is.null(input$scoringmethod)),
+        "Please select a scoring method"
+      ))
+      if (input$scoringmethod == "Meet-Min") {
+        reactive_values$scores <- getMeetMinMatrix(reactive_values$genes, reactive_values$gs_names)
+      } else if (input$scoringmethod == "Kappa") {
+        reactive_values$scores <- getKappaMatrix(reactive_values$genes, reactive_values$gs_names)
+      } else if (input$scoringmethod == "PMM") {
+        reactive_values$scores <-
+          getpMMMatrix(reactive_values$genes, reactive_values$ppi, reactive_values$gs_names)
       }
 
+      validate(
+        need((reactive_values$scores != -1) ,
+             message = "\n\n\nIt seems like the file you've provided does not contain any genesets. Please check you input and retry.")
+       )
     })
 
   }

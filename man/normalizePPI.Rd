@@ -7,11 +7,16 @@
 normalizePPI(ppi, info)
 }
 \arguments{
-\item{info}{}
+\item{ppi}{the path to a PPI matrix}
+
+\item{info}{the path to the corresponding info file}
 }
 \value{
-
+a normalized PPI dataframe
 }
 \description{
 Title
+}
+\examples{
+\dontrun{}
 }

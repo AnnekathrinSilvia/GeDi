@@ -4,10 +4,12 @@
 \alias{getMeetMinMatrix}
 \title{Calculate the Meet-Min distance of all geneset combinations}
 \usage{
-getMeetMinMatrix(genesets)
+getMeetMinMatrix(genesets, geneset_names)
 }
 \arguments{
 \item{genesets}{a list of the genesets to score}
+
+\item{geneset_names}{a list of the names/ ids of the genesets}
 }
 \value{
 a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Meet-Min distance of each geneset pair
@@ -17,5 +19,6 @@ Calculate the Meet-Min distance of all geneset combinations
 }
 \examples{
 genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-m <- getMeetMinMatrix(genesets)
+geneset_names <- list("A", "B")
+m <- getMeetMinMatrix(genesets, geneset_names)
 }

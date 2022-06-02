@@ -4,10 +4,12 @@
 \alias{getKappaMatrix}
 \title{Calculate the Kappa distance of all geneset combinations}
 \usage{
-getKappaMatrix(genesets)
+getKappaMatrix(genesets, geneset_names)
 }
 \arguments{
-\item{genesets}{a list of the genesets to score}
+\item{genesets}{a list of the genesets to score (where the genesets are vectors of genes)}
+
+\item{geneset_names}{a list of the names/ids of the genesets}
 }
 \value{
 a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Kappa distance of each geneset pair
@@ -17,5 +19,6 @@ Calculate the Kappa distance of all geneset combinations
 }
 \examples{
 genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-m <- getKappaMatrix(genesets)
+geneset_names <- list("A", "B")
+m <- getKappaMatrix(genesets, geneset_names)
 }

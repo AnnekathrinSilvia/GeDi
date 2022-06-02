@@ -2,16 +2,21 @@
 % Please edit documentation in R/downloadPPI.R
 \name{needsUpdate}
 \alias{needsUpdate}
-\title{Title}
+\title{Check if the downloaded PPI Matrix for a certain species needs to be updated}
 \usage{
 needsUpdate(bfc, species)
 }
 \arguments{
-\item{species}{}
+\item{bfc}{the location of the BioCFileCache}
+
+\item{species}{the species of the data}
 }
 \value{
-
+logical value if the PPI needs to be updated
 }
 \description{
-Title
+Check if the downloaded PPI Matrix for a certain species needs to be updated
+}
+\examples{
+\dontrun{}
 }

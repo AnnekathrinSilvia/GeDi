@@ -28,13 +28,14 @@ sumInteraction <- function(x, y, ppi) {
 #' @return the interaction score for two genesets
 #'
 #' @examples
+#' \dontrun{
 #' a <- c("PDHB", "VARS2", "IARS2")
 #' ai <- c(1, 2, 3)
 #' b <- c("IARS2", "PDHA2")
 #' bi <- c(4, 3)
 #' ppi <- Matrix::Matrix(0.5, 4, 4)
 #' maxInteract <- 0.5
-#' s <- getInteractionScore(a, ai, b, bi, ppi, maxInteract)
+#' s <- getInteractionScore(a, ai, b, bi, ppi, maxInteract)}
 getInteractionScore <- function(a, ai, b, bi, ppi, maxInteract) {
   if(length(a) == 0 || length(b) == 0 || length(ai) == 0 || length(bi) == 0){
     return(-1)
@@ -65,6 +66,7 @@ getInteractionScore <- function(a, ai, b, bi, ppi, maxInteract) {
 #' @param maxInteract the maximum value of the Protein-Protein interaction matrix
 #'
 #' @return pMM distance for two genesets
+#' @export
 #'
 #' @examples
 #' a <- c("PDHB", "VARS2", "IARS2")
@@ -86,19 +88,20 @@ pMMlocal <- function(a, ai, b, bi, alpha, ppi, maxInteract) {
 
 #' Calculate the pMM distance of all geneset combinations
 #'
-#' @param genesets a list of the genesets to score
+#' @param genes a list of  vectors of genes (the genesets)
 #' @param ppi a Protein-Protein interaction matrix
+#' @param geneset_names a list of names/ids of the genesets
 #' @param alpha scaling factor in (0, 1); indicates how much the Protein-Protein interactions are weighted into the distance
 #'
 #' @return a [Matrix::Matrix()] with the pairwise pMM distance of each geneset pair
 #' @export
 #'
 #' @examples
-#' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' ppi <- Matrix::matrix(0.5, 4, 4)
-#' s <- pMM(genesets, ppi)
-getpMMMatrix <- function(genesets, ppi, alpha = 1){
-  genes <- getGenes(genesets)
+#' genes <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
+#' geneset_names <- list("A", "B")
+#' ppi <- Matrix::Matrix(0.5, 4, 4)
+#' s <- getpMMMatrix(genes, ppi, geneset_names)
+getpMMMatrix <- function(genes, ppi, geneset_names, alpha = 1){
   genes_indexed <- getGenesIndexed(genes, ppi)
 
   l <- length(genes)
@@ -121,7 +124,7 @@ getpMMMatrix <- function(genesets, ppi, alpha = 1){
     }
   }
 
-  rownames(scores) <- genesets$Geneset
-  colnames(scores) <- genesets$Geneset
+  rownames(scores) <- geneset_names
+  colnames(scores) <- geneset_names
   return(scores)
 }

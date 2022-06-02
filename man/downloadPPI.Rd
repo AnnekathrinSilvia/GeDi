@@ -7,11 +7,18 @@
 downloadPPI(species, cachepath = "~/GSD", version = "11.5")
 }
 \arguments{
-\item{version}{}
+\item{species}{the species of the data}
+
+\item{cachepath}{the path to save the cache}
+
+\item{version}{the version of the StringDB database to download from}
 }
 \value{
-
+the normalized PPI matrix
 }
 \description{
 Title
+}
+\examples{
+\dontrun{}
 }

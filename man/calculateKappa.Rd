@@ -4,12 +4,12 @@
 \alias{calculateKappa}
 \title{Calculate the Kappa distance for two genesets}
 \usage{
-calculateKappa(a, b, l)
+calculateKappa(a, b, all_genes)
 }
 \arguments{
-\item{a, b}{individual genesets}
+\item{a, b}{individual genesets as two vectors of genes}
 
-\item{l}{the number of unique genes in all input genesets}
+\item{all_genes}{the list of all unique genes in all input genesets}
 }
 \value{
 the Kappa distance of geneset a and b
@@ -18,8 +18,8 @@ the Kappa distance of geneset a and b
 Calculate the Kappa distance for two genesets
 }
 \examples{
-a <- c("LARS", "LARS2", "BCAT1")
+a <- c("LARS", "BCAT1")
 b <- c("BCAT1", "IARS")
-l <- 4
-c <- calculateKappa(a, b, l)
+all_genes <- c("BCAT1", "IARS",  "LARS2")
+c <- calculateKappa(a, b, all_genes)
 }

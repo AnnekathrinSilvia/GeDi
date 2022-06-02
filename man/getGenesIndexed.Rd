@@ -17,8 +17,3 @@ a list of vectors of indices
 \description{
 Assign each gene in the list to its index in the PPI
 }
-\examples{
-genes <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-ppi <- Matrix::matrix(0.5, 4, 4)
-genes_indexed <- getGenesIndexed(genes, ppi)
-}

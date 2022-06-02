@@ -33,4 +33,7 @@ Imports:
     ideal,
     DT,
     BiocFileCache,
-    taxize
+    taxize,
+    pheatmap,
+    dplyr,
+    shinyBS

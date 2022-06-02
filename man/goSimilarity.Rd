@@ -27,6 +27,8 @@ a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity 
 Calculate the GO Similarity of all geneset combinations
 }
 \examples{
+\dontrun{
 genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
 go <- goSimilarity(genesets)
+}
 }

@@ -7,8 +7,6 @@
 #' @export
 #'
 #' @examples
-#' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' genes <- getGenes(genesets)
 getGenes <- function(genesets){
   if(length(genesets) == 0){
     return(list())
@@ -30,9 +28,6 @@ getGenes <- function(genesets){
 #' @export
 #'
 #' @examples
-#' genes <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' ppi <- Matrix::matrix(0.5, 4, 4)
-#' genes_indexed <- getGenesIndexed(genes, ppi)
 getGenesIndexed <- function(genes, ppi){
   if(length(genes) == 0){
     return(list())

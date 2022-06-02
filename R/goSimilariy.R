@@ -9,8 +9,10 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
 #' go <- goSimilarity(genesets)
+#' }
 goSimilarity <- function(genesets, method = 'Wang', ontology = 'BP', species = 'org.Hs.eg.db'){
   l <- length(genesets)
   if(l == 0){
