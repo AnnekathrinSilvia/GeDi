@@ -379,15 +379,9 @@ GeDi <- function(genesets = NULL,
       if (is.null(reactive_values$genesets)) {
         return(NULL)
       }
-      poss_species <-
-        read.delim("data/species.txt", sep = "\n", header = F)
-      selectInput(
-        "species",
-        label = "Select the species of your data: ",
-        choices = poss_species,
-        selected = poss_species[1],
-        multiple = FALSE
-      )
+      textInput("species",
+                label = "Please specify the species of your data (e.g. Homo Sapiens, Mus musculus, Rattus Norvegigus)",
+                width = '400px')
     })
 
     output$ui_opt_param_ppi <- renderUI({
@@ -403,18 +397,35 @@ GeDi <- function(genesets = NULL,
         collapsed = TRUE,
         tagList(fluidRow(column(
           width = 6,
-          uiOutput("ui_cachePath")
+          uiOutput("ui_optional_param")
         )))
       )
     })
 
-    output$ui_cachePath <- renderUI({
-      textInput("cachePath",
-                label = "Change the path for the PPI Cache",
-                value = "~GSD",
-                width = '400px')
-
+    output$ui_optional_param <- renderUI({
+      fluidRow(column(
+        width = 12,
+        textInput(
+          "stringVersion",
+          label = "Specify the StringDb version to use",
+          value = "11.5",
+          width = '400px'
+        ),
+        textInput(
+          "scoreThresholdString",
+          label = "Specify the score threshold",
+          value = "0.00",
+          width = '400px'
+        ),
+        textInput(
+          "inputDirectoryString",
+          label = "Specify the input directory",
+          value = "",
+          width = '400px'
+        )
+      ))
     })
+
 
     # panel Scores -----------------------------------------------------
 
@@ -474,11 +485,9 @@ GeDi <- function(genesets = NULL,
           ),
           nodesIdSelection = TRUE
         ) %>%
-        visExport(
-          name = "backbone_network",
-          type = "png",
-          label = "Save backbone graph"
-        )
+        visExport(name = "backbone_network",
+                  type = "png",
+                  label = "Save backbone graph")
     })
 
 
@@ -553,18 +562,22 @@ GeDi <- function(genesets = NULL,
         "Please select a scoring method"
       ))
       if (input$scoringmethod == "Meet-Min") {
-        reactive_values$scores <- getMeetMinMatrix(reactive_values$genes, reactive_values$gs_names)
+        reactive_values$scores <-
+          getMeetMinMatrix(reactive_values$genes, reactive_values$gs_names)
       } else if (input$scoringmethod == "Kappa") {
-        reactive_values$scores <- getKappaMatrix(reactive_values$genes, reactive_values$gs_names)
+        reactive_values$scores <-
+          getKappaMatrix(reactive_values$genes, reactive_values$gs_names)
       } else if (input$scoringmethod == "PMM") {
         reactive_values$scores <-
-          getpMMMatrix(reactive_values$genes, reactive_values$ppi, reactive_values$gs_names)
+          getpMMMatrix(reactive_values$genes,
+                       reactive_values$ppi,
+                       reactive_values$gs_names)
       }
 
       validate(
         need((reactive_values$scores != -1) ,
              message = "\n\n\nIt seems like the file you've provided does not contain any genesets. Please check you input and retry.")
-       )
+      )
     })
 
   }

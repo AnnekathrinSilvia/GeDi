@@ -1,149 +1,90 @@
-#' Translates the species name into the NCBI ID
+#' Title
 #'
-#' @param species the species of the data to download
+#' @param species
 #'
-#' @return the NCBI id of the species
+#' @return
 #' @export
-#' @importFrom taxize get_ids
 #'
 #' @examples
-#' species <- "Homo sapiens"
-#' getId(species)
-getId <- function(species){
+getId <- function(species) {
   id <- taxize::get_ids(species, db = "ncbi")
   return(id$ncbi[species])
 }
 
-#' Check if the downloaded PPI Matrix for a certain species needs to be updated
+#' Title
 #'
-#' @param bfc the location of the BioCFileCache
-#' @param species the species of the data
+#' @param species
+#' @param version
+#' @param score_threshold
 #'
-#' @return logical value if the PPI needs to be updated
+#' @return
 #' @export
-#' @importFrom BiocFileCache bfcquery bfcneedsupdate
 #'
 #' @examples
-#' \dontrun{}
-needsUpdate <- function(bfc, species){
-  rid <- bfcquery(bfc, species)$rid
-  return(bfcneedsupdate(bfc, rid))
+getStringDB <- function(species, version, score_threshold) {
+  return(
+    STRINGdb$new(
+      version = version,
+      species = species,
+      score_threshold = score_threshold,
+      input_directory = ""
+    )
+  )
 }
-
 
 #' Title
 #'
-#' @param species the species of the data
-#' @param cachepath the path to save the cache
-#' @param version the version of the StringDB database to download from
+#' @param stringdb
 #'
-#' @return the normalized PPI matrix
+#' @return
 #' @export
-#' @importFrom BiocFileCache BiocFileCache bfcquery bfcadd bfcrpath
 #'
 #' @examples
-#' \dontrun{}
-downloadPPI <- function(species, cachepath = "~/GSD", version = "11.5"){
-  bfc <- BiocFileCache(cachepath, ask = FALSE)
-  name_ppi <- paste("PPI_",
-                    species,
-                    sep = "")
-
-  name_info <- paste("PPI_Info_",
-                     species,
-                     sep = "")
-
-  if(nrow(bfcquery(bfc, name_ppi)) == 0 || needsUpdate(bfc, name_ppi)){
-    species_id <- getId(species)
-    url_ppi <- paste("https://stringdb-static.org/download/protein.links.v",
-                     version,
-                     "/",
-                     species_id,
-                     ".protein.links.v",
-                     version,
-                     ".txt.gz",
-                     sep = "")
-
-    url_info <- paste("https://stringdb-static.org/download/protein.info.v",
-                      version,
-                      "/",
-                      species_id,
-                      ".protein.info.v",
-                      version,
-                      ".txt.gz",
-                      sep = "")
-
-    ppi <- bfcadd(bfc, rname = name_ppi, fpath = url_ppi)
-    info <- bfcadd(bfc, rname = name_info, fpath = url_info)
-
-    ppi <- normalizePPI(ppi, info)
-    return(ppi)
-  }else{
-  ppi <- bfcrpath(bfc, name_ppi)
-  info <- bfcrpath(bfc, name_info)
-
-  ppi <- normalizePPI(ppi, info)
-
-  return(ppi)
-  }
+getAnnotation <- function(stringdb) {
+  return(stringdb$get_aliases())
 }
 
-
-
-# libPaths to get to where libraries are installed, then put them in the gsd folder under PPIs
-#-> not good maybe users have a strange way of installing every package somewhere else
-# -> rather use "C:\\Users\\anneludt\\AppData\\Local/R/cache/R/AnnotationHub
-#    (with GSD/package name instead of AnnotationHub)
-
-
-
-#' List all PPIs saved in a Cache
-#'
-#' @param cachepath the path of the cache
-#'
-#' @return a list of PPIs
-#' @export
-#' @importFrom BiocFileCache BiocFileCache bfcinfo
-#'
-#' @examples
-#' \dontrun{}
-listPPI <- function(cachepath){
-  bfc <- BiocFileCache(cachepath, ask = FALSE)
-  bfc_df <- bfcinfo(bfc)
-
-  return(bfc_df$rname)
-}
-
-
-#return as sparse matrix
 #' Title
 #'
-#' @param ppi the path to a PPI matrix
-#' @param info the path to the corresponding info file
+#' @param genes
+#' @param string_db
+#' @param anno_df
 #'
-#' @return a normalized PPI dataframe
+#' @return
 #' @export
 #'
 #' @examples
-#' \dontrun{}
-normalizePPI <- function(ppi, info){
-  ppi <- as.data.frame(read.delim(ppi, sep = " ", header = TRUE))
-  info <- as.data.frame(read.delim(info, sep = "\t", fill = FALSE, quote = ""))
+getPPI <- function(genes, string_db, anno_df) {
+  l <- length(genes)
+  string_ids <- anno_df$STRING_id[match(genes, anno_df$alias)]
+  scores <- string_db$get_interactions(string_ids)
+  max <- max(scores$combined_score)
+  min <- min(scores$combined_score)
 
-  max <- max(ppi$combined_score)
-  min <- min(ppi$combined_score)
-  rownames <- info$preferred_name[match(ppi$protein1, info$X.string_protein_id)]
-  columnnames <- info$preferred_name[match(ppi$protein2, info$X.string_protein_id)]
+  scores$combined_score <-
+    (scores$combined_score - min) / (max - min)
 
-  scores <- list()
-  new_scores <- lapply(ppi$combined_score, function(x) ((x - min) / (max - min)))
+  gene_names_to <-
+    anno_df$alias[match(scores$to, anno_df$STRING_id)]
+  gene_names_from <-
+    anno_df$alias[match(scores$from, anno_df$STRING_id)]
 
+  scores$to <- gene_names_to
+  scores$from <- gene_names_from
 
-  ppi <- as.data.frame(new_scores)
-  rownames(ppi) <- rownames
-  colnames(ppi) <- columnnames
+  reverse_to <- scores$from
+  reverse_from <- scores$to
 
-  return(ppi)
+  df <-
+    data.frame(
+      from = reverse_from,
+      to = reverse_to,
+      combined_score = scores$combined_score
+    )
+  scores <- dplyr::distinct(scores)
+  df <- dplyr::distinct(df)
+
+  scores <- rbind(scores, df)
+
+  return(scores)
 }
-
-
