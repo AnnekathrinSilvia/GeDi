@@ -11,9 +11,6 @@ getAdjacencyMatrix(distanceMatrix, cutOff)
 
 \item{cutOff}{a cutOff value classifying a threshold for similarity}
 }
-\value{
-
-}
 \description{
 Title
 }

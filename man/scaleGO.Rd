@@ -23,9 +23,6 @@ scaleGO(
 
 \item{species}{the species of your data, indicated as org.XX.eg.db package from Bioconductor}
 }
-\value{
-
-}
 \description{
 Scaling computed distances with GO similarity scores
 }

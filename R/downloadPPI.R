@@ -6,8 +6,9 @@
 #' @export
 #'
 #' @examples
+#' @importFrom taxize get_ids
 getId <- function(species) {
-  id <- taxize::get_ids(species, db = "ncbi")
+  id <- get_ids(species, db = "ncbi")
   return(id$ncbi[species])
 }
 
@@ -20,14 +21,15 @@ getId <- function(species) {
 #' @return
 #' @export
 #'
+#' @import STRINGdb
 #' @examples
-getStringDB <- function(species, version, score_threshold) {
+getStringDB <- function(species, version = "11.5", score_threshold = 0.00 , input_directory = "") {
   return(
     STRINGdb$new(
       version = version,
       species = species,
       score_threshold = score_threshold,
-      input_directory = ""
+      input_directory = input_directory
     )
   )
 }
@@ -39,6 +41,7 @@ getStringDB <- function(species, version, score_threshold) {
 #' @return
 #' @export
 #'
+#' @import STRINGdb
 #' @examples
 getAnnotation <- function(stringdb) {
   return(stringdb$get_aliases())
@@ -54,12 +57,15 @@ getAnnotation <- function(stringdb) {
 #' @export
 #'
 #' @examples
+#' @importFrom dplyr distinct
+#' @import STRINGdb
 getPPI <- function(genes, string_db, anno_df) {
-  l <- length(genes)
+  genes <- unlist(genes)
   string_ids <- anno_df$STRING_id[match(genes, anno_df$alias)]
   scores <- string_db$get_interactions(string_ids)
-  max <- max(scores$combined_score)
-  min <- min(scores$combined_score)
+
+  max <- max(scores$combined_score, -Inf)
+  min <- min(scores$combined_score, Inf)
 
   scores$combined_score <-
     (scores$combined_score - min) / (max - min)
@@ -81,10 +87,11 @@ getPPI <- function(genes, string_db, anno_df) {
       to = reverse_to,
       combined_score = scores$combined_score
     )
-  scores <- dplyr::distinct(scores)
-  df <- dplyr::distinct(df)
+  scores <- distinct(scores)
+  df <- distinct(df)
 
   scores <- rbind(scores, df)
+  message(head(scores))
 
   return(scores)
 }

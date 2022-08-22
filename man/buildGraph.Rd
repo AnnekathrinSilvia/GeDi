@@ -9,9 +9,6 @@ buildGraph(adjMatrix)
 \arguments{
 \item{adjMatrix}{}
 }
-\value{
-
-}
 \description{
 Title
 }

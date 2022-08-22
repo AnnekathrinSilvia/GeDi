@@ -168,7 +168,8 @@ GeDi <- function(genesets = NULL,
         bs4TabItem(
           tabName = "tab_data_upload",
           uiOutput("ui_panel_data_upload"),
-          uiOutput("ui_download_ppi")
+          uiOutput("ui_panel_specify_species"),
+          uiOutput("ui_panel_download_ppi")
         ),
 
         # ui panel scores -------------------------------------------------
@@ -202,13 +203,12 @@ GeDi <- function(genesets = NULL,
     reactive_values <- reactiveValues()
 
     # input data
-    # original input data
     reactive_values$genesets <- NULL
     #only the names of the genesets -> TODO: evaluate later if needed
     reactive_values$gs_names <- NULL
     #splitted genes
     reactive_values$genes <- NULL
-    reactive_values$genes_ind <- NULL
+    reactive_values$species <- NULL
     reactive_values$ppi <- NULL
     reactive_values$scores <- NULL
 
@@ -248,8 +248,9 @@ GeDi <- function(genesets = NULL,
               #              icon = icon("play-circle"),
               #              class = "btn btn-info"
               # ), br(), p()),
+            ),
               column(
-                width = 4,
+                width = 2,
                 br(),
                 actionButton(
                   "help_format",
@@ -263,28 +264,26 @@ GeDi <- function(genesets = NULL,
                   "bottom",
                   options = list(container = "body")
                 )
+              ),
+              column(
+                width = 6,
+                box(
+                  width = NULL,
+                  title = "Genesets preview",
+                  status = "primary",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  collapsed = TRUE,
+                  fluidRow(column(
+                    width = 12,
+                    offset = 0.5,
+                    DT::dataTableOutput("dt_genesets")
+                  ))
+                )
               )
-            ),
-
-            fluidRow(column(
-              width = 12,
-              box(
-                width = NULL,
-                title = "Genesets preview",
-                status = "primary",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                collapsed = TRUE,
-                fluidRow(column(
-                  width = 12,
-                  offset = 0.5,
-                  DT::dataTableOutput("dt_genesets")
-                ))
-              )
-            ))
+            )
           )
         )
-      )
     })
 
     output$upload_genesets <- renderUI({
@@ -334,7 +333,7 @@ GeDi <- function(genesets = NULL,
     })
 
 
-    output$ui_download_ppi <- renderUI({
+    output$ui_panel_specify_species <- renderUI({
       if (is.null(reactive_values$genesets)) {
         return(NULL)
       }
@@ -344,47 +343,32 @@ GeDi <- function(genesets = NULL,
         status = "warning",
         solidHeader = TRUE,
         tagList(
-          h2(
-            "Select the species of you data and download the corresponding
-             Protein-Protein Interaction (PPI) Matrix"
-          ),
-          fluidRow(
-            column(width = 6,
-                   uiOutput("ui_species")),
-            column(
-              width = 6,
-              strong("Download the PPI matrix from STRING:"),
-              br(),
-              "Attention: This operation can take some time",
-              br(),
-              actionButton(
-                "download_ppi",
-                label = "Download PPI matrix",
-                icon = icon("download"),
-                style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
-
-              )
-            )
-
-          ),
+          h2("Select the species of your data"),
           fluidRow(column(
             width = 6,
-            uiOutput("ui_opt_param_ppi")
+            uiOutput("ui_specify_species")
+          ),
+          column(
+            width = 6,
+            uiOutput("ui_specify_opt_params_ppi_download")
           ))
         )
       )
     })
 
-    output$ui_species <- renderUI({
+    output$ui_specify_species <- renderUI({
       if (is.null(reactive_values$genesets)) {
         return(NULL)
       }
-      textInput("species",
-                label = "Please specify the species of your data (e.g. Homo Sapiens, Mus musculus, Rattus Norvegigus)",
-                width = '400px')
+      fluidRow(column(
+        width = 12,
+        textInput("species",
+                  label = "Please specify the species of your data (e.g. Homo Sapiens, Mus musculus, Rattus Norvegigus)",
+                  width = '400px')
+      ))
     })
 
-    output$ui_opt_param_ppi <- renderUI({
+    output$ui_specify_opt_params_ppi_download <- renderUI({
       if (is.null(reactive_values$genesets)) {
         return(NULL)
       }
@@ -405,27 +389,71 @@ GeDi <- function(genesets = NULL,
     output$ui_optional_param <- renderUI({
       fluidRow(column(
         width = 12,
-        textInput(
-          "stringVersion",
-          label = "Specify the StringDb version to use",
-          value = "11.5",
-          width = '400px'
-        ),
+        textInput("stringVersion",
+                  label = "Specify the StringDb version to use",
+                  value = "11.5"),
         textInput(
           "scoreThresholdString",
           label = "Specify the score threshold",
-          value = "0.00",
-          width = '400px'
+          value = "0.00"
         ),
         textInput(
           "inputDirectoryString",
           label = "Specify the input directory",
-          value = "",
-          width = '400px'
+          value = ""
         )
       ))
     })
 
+    output$ui_panel_download_ppi <- renderUI({
+      if (input$species == "") {
+        return(NULL)
+      }
+      reactive_values$species <- input$species
+      box(
+        width = 12,
+        title = "Step 3",
+        status = "warning",
+        solidHeader = TRUE,
+        tagList(
+          h2("Download the PPI matrix from STRING"),
+          fluidRow(column(
+            width = 6,
+            actionButton(
+              "download_ppi",
+              label = "Download PPI matrix",
+              icon = icon("download"),
+              style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
+            )
+          ),
+          column(
+            width = 6,
+            box(
+              width = NULL,
+              title = "PPI preview",
+              status = "primary",
+              solidHeader = TRUE,
+              collapsible = TRUE,
+              collapsed = TRUE,
+              fluidRow(column(
+                width = 12,
+                offset = 0.5,
+                DT::dataTableOutput("dt_ppi")
+              ))
+            )
+          ))
+        )
+      )
+    })
+
+    output$dt_ppi <- DT::renderDataTable({
+      if (is.null(reactive_values$ppi)) {
+        return(NULL)
+      }
+      message(head(reactive_values$ppi))
+      DT::datatable(reactive_values$ppi,
+                    options = list(scrollX = TRUE, scrollY = "400px"))
+    })
 
     # panel Scores -----------------------------------------------------
 
@@ -469,7 +497,7 @@ GeDi <- function(genesets = NULL,
     })
 
     output$ui_plot_scores <- renderVisNetwork({
-      if (is.null(reactive_values$scores)) {
+      if (is.na(reactive_values$scores)) {
         return(NULL)
       }
       #pheatmap::pheatmap(reactive_values$scores)
@@ -543,16 +571,29 @@ GeDi <- function(genesets = NULL,
       reactive_values$genesets <- readGenesets()
       reactive_values$gs_names <- rownames(reactive_values$genesets)
       reactive_values$genes <- getGenes(reactive_values$genesets)
-      #reactive_values$genes_ind <- getGenesIndexed(reactive_values$genes)
     })
 
     observeEvent(input$download_ppi, {
-      if (is.null(input$cachePath)) {
-        reactive_values$ppi <- downloadPPI(input$species)
-      } else{
-        reactive_values$ppi <-
-          downloadPPI(input$species, cachepath = input$cachePath)
-      }
+      validate(need(
+        !(input$species == ""),
+        "Please specify the species of your data"
+      ))
+      reactive_values$species <- input$species
+      id <- getId(reactive_values$species)
+      validate(need(
+        !is.na(id),
+        "We could not find your specified species. Please check the spelling and try again."
+      ))
+      stringdb <-
+        getStringDB(as.numeric(id))
+      stringdb
+
+      anno_df <- getAnnotation(stringdb)
+
+      reactive_values$ppi <-
+        getPPI(reactive_values$genes,
+               string_db = stringdb,
+               anno_df = anno_df)
     })
 
     observeEvent(input$score_data, {

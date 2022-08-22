@@ -13,9 +13,6 @@ GeDi(genesets = NULL, ppi = NULL, alpha = 1)
 
 \item{alpha}{a scaling factor in between 0 and 1}
 }
-\value{
-
-}
 \description{
 GeDi main function
 }
