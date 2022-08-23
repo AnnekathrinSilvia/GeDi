@@ -1,3 +1,34 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("no id", {
+  species <- ""
+  expect_true(is.na(getId(species)))
+})
+
+test_that("Homo Sapiens ID", {
+  species <- "Homo Sapiens"
+  expect_true(getId(species) == "9606")
+})
+
+test_that("Homo Sapiens Misspelled", {
+  species <- "Homo Spasiens"
+  expect_true(is.na(getId(species)))
+})
+
+
+test_that("StringDB of no species", {
+  expect_error(getStringDB(NA))
+  expect_error(getStringDB("NA"))
+})
+
+
+test_that("PPI retrieval works", {
+  stringdb <- getStringDB(9606)
+  stringdb
+
+  anno_df <- getAnnotation(stringdb)
+
+  expect_type(anno_df, "list")
+  genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
+  ppi <- getPPI(genes, stringdb, anno_df)
+
+  expect_type(ppi, "list")
 })

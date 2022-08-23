@@ -2,24 +2,36 @@
 % Please edit documentation in R/pMM_Scoring.R
 \name{sumInteraction}
 \alias{sumInteraction}
-\title{Sums up the protein-protein interacions between genes in two genesets}
+\title{Sum up Protein-Protein interactions between two genesets}
 \usage{
-sumInteraction(x, y, ppi)
+sumInteraction(a, b, ppi)
 }
 \arguments{
-\item{x, y}{genesets}
+\item{a, b}{A vector of gene names whose interactions should
+be scored.}
 
-\item{ppi}{a Protein-Protein interaction matrix}
+\item{ppi}{A \code{data.frame} object which contains the Protein-Protein
+interactions.
+The object has three columns, \code{from} and \code{to} which
+specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 }
 \value{
-sum of the Protein-Protein interactions in the two genesets
+The sum of the Protein-Protein interactions.
 }
 \description{
-Sums up the protein-protein interacions between genes in two genesets
+The function sums up the strength of the Protein-Protein interactions of
+all genes in the given genesets.
 }
 \examples{
-x <- c(1, 2, 3)
-y <- c(3, 1)
-ppi <- Matrix::Matrix(0.5, 3, 3)
-s <- sumInteraction(x, y, ppi)
+a <- c("PDHB", "VARS2")
+b <- c("IARS2", "PDHA1")
+
+ppi <- data.frame(from = c("PDHB", "VARS2"),
+                  to = c("IARS2", "PDHA1"),
+                  combined_score = c(0.5, 0.2))
+
+score <- sumInteraction(a, b, ppi)
 }

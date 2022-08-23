@@ -2,13 +2,21 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getAnnotation}
 \alias{getAnnotation}
-\title{Title}
+\title{Get the annotation of a \code{STRINGdb} object}
 \usage{
 getAnnotation(stringdb)
 }
 \arguments{
-\item{stringdb}{}
+\item{stringdb}{the \code{STRINGdb} object to get the annotation from}
+}
+\value{
+a \code{data.frame} which maps \code{STRING_ids} to \code{alias}, which are gene names
 }
 \description{
-Title
+Get the annotation of a \code{STRINGdb} object
+}
+\examples{
+string_db <- getStringDB(9606)
+string_db
+anno_df <- getAnnotation(string_db)
 }

@@ -2,24 +2,26 @@
 % Please edit documentation in R/kappa_Scoring.R
 \name{calculateKappa}
 \alias{calculateKappa}
-\title{Calculate the Kappa distance for two genesets}
+\title{Calculate the Kappa distance}
 \usage{
 calculateKappa(a, b, all_genes)
 }
 \arguments{
-\item{a, b}{individual genesets as two vectors of genes}
+\item{a, b}{A vector of gene names whose interactions should
+be scored.}
 
-\item{all_genes}{the list of all unique genes in all input genesets}
+\item{all_genes}{A vector of all unique genes in the data set from which \code{a}
+and \code{b} are derived.}
 }
 \value{
-the Kappa distance of geneset a and b
+The Kappa distance of the two genesets
 }
 \description{
-Calculate the Kappa distance for two genesets
+Calculate the Kappa distance for two given genesets.
 }
 \examples{
-a <- c("LARS", "BCAT1")
-b <- c("BCAT1", "IARS")
-all_genes <- c("BCAT1", "IARS",  "LARS2")
+a <- c("PDHB", "VARS2")
+b <- c("IARS2", "PDHA1")
+all_genes <- c("PDHB", "VARS2", "IARS2", "PDHA1")
 c <- calculateKappa(a, b, all_genes)
 }

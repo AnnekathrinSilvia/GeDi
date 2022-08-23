@@ -1,16 +1,19 @@
-#' Calculate the Meet-Min distance of all geneset combinations
+#' Get Matrix of Meet-Min distances
 #'
-#' @param genesets a list of the genesets to score
-#' @param geneset_names a list of the names/ ids of the genesets
+#' Calculate the Meet-Min distance of all combinations of genesets in a given
+#' data set of genesets.
 #'
-#' @return a [Matrix::Matrix()] with the pairwise Meet-Min distance of each geneset pair
+#' @param genesets A `list` of genesets (each geneset is represented by a `list`
+#'                 of the corresponding genes).
+#'
+#' @return A [Matrix::Matrix()] with the pairwise Meet-Min distance of each
+#'         geneset pair.
 #' @export
 #'
 #' @examples
-#' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' geneset_names <- list("A", "B")
-#' m <- getMeetMinMatrix(genesets, geneset_names)
-getMeetMinMatrix <- function(genesets, geneset_names){
+#' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+#' m <- getMeetMinMatrix(genesets)
+getMeetMinMatrix <- function(genesets){
   l <- length(genesets)
   if(l == 0){
     return(-1)
@@ -21,13 +24,14 @@ getMeetMinMatrix <- function(genesets, geneset_names){
     a <- genesets[i]
     for(j in (i+1):l){
       b <- genesets[j]
-      int <- length(intersect(a, b))
 
-      m[i, j] <- m[j, i] <- 1 - (int / min(length(a), length(b)))
+      if(length(a) == 0 || length(b) == 0){
+        m[i, j] <- m[j, i] <- 1
+      }else{
+        int <- length(intersect(a, b))
+        m[i, j] <- m[j, i] <- 1 - (int / min(length(a), length(b)))
+      }
     }
   }
-
-  rownames(m) <- geneset_names
-  colnames(m) <- geneset_names
   return(m)
 }

@@ -2,13 +2,28 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getPPI}
 \alias{getPPI}
-\title{Title}
+\title{Download the Protein-Protein Interaction information form you \code{STRINGdb} object}
 \usage{
 getPPI(genes, string_db, anno_df)
 }
 \arguments{
-\item{anno_df}{}
+\item{genes}{the genes which are interested in}
+
+\item{string_db}{a \code{STRINGdb} onject of the species you genes belong to}
+
+\item{anno_df}{a annotation \code{data.frame} which maps \code{STRING_ids} to gene names}
+}
+\value{
+a \code{data.frame} of Protein-Protein interactions
 }
 \description{
-Title
+Download the Protein-Protein Interaction information form you \code{STRINGdb} object
+}
+\examples{
+
+genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
+string_db <- getStringDB(9606)
+string_db
+anno_df <- getAnnotation(string_db)
+ppi <- getPPI(genes, string_db, anno_df)
 }

@@ -4,10 +4,9 @@
 #' @param ppi a Protein-Protein interaction matrix
 #' @param alpha a scaling factor in between 0 and 1
 #'
-#' @return
+#' @return A Shiny app object is returned
 #' @export
 #' @import DT
-#' @import igraph
 #' @import visNetwork
 #' @import shiny
 #' @import shinyBS
@@ -249,41 +248,41 @@ GeDi <- function(genesets = NULL,
               #              class = "btn btn-info"
               # ), br(), p()),
             ),
-              column(
-                width = 2,
-                br(),
-                actionButton(
-                  "help_format",
-                  label = "",
-                  icon = icon("question-circle"),
-                  style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
-                ),
-                bsTooltip(
-                  "help_format",
-                  "How to provide your input data to ideal",
-                  "bottom",
-                  options = list(container = "body")
-                )
+            column(
+              width = 2,
+              br(),
+              actionButton(
+                "help_format",
+                label = "",
+                icon = icon("question-circle"),
+                style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
               ),
-              column(
-                width = 6,
-                box(
-                  width = NULL,
-                  title = "Genesets preview",
-                  status = "primary",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  collapsed = TRUE,
-                  fluidRow(column(
-                    width = 12,
-                    offset = 0.5,
-                    DT::dataTableOutput("dt_genesets")
-                  ))
-                )
+              bsTooltip(
+                "help_format",
+                "How to provide your input data to ideal",
+                "bottom",
+                options = list(container = "body")
+              )
+            ),
+            column(
+              width = 6,
+              box(
+                width = NULL,
+                title = "Genesets preview",
+                status = "primary",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                collapsed = TRUE,
+                fluidRow(column(
+                  width = 12,
+                  offset = 0.5,
+                  DT::dataTableOutput("dt_genesets")
+                ))
               )
             )
           )
         )
+      )
     })
 
     output$upload_genesets <- renderUI({
@@ -308,9 +307,9 @@ GeDi <- function(genesets = NULL,
       if (is.null(input$uploadgenesetfile)) {
         return(NULL)
       }
-      # TODO: Build own sepguesser so ideal dependency can be removed
+
       guessed_sep <-
-        ideal::sepguesser(input$uploadgenesetfile$datapath)
+        sepguesser(input$uploadgenesetfile$datapath)
       genesets <-
         utils::read.delim(
           input$uploadgenesetfile$datapath,
@@ -318,7 +317,6 @@ GeDi <- function(genesets = NULL,
           as.is = TRUE,
           sep = guessed_sep,
           quote = "",
-          row.names = 1,
           check.names = FALSE
         )
       return(genesets)
@@ -362,9 +360,12 @@ GeDi <- function(genesets = NULL,
       }
       fluidRow(column(
         width = 12,
-        textInput("species",
-                  label = "Please specify the species of your data (e.g. Homo Sapiens, Mus musculus, Rattus Norvegigus)",
-                  width = '400px')
+        textInput(
+          "species",
+          label = "Please specify the species of your data
+                          (e.g. Homo Sapiens, Mus musculus, etc.)",
+          width = '400px'
+        )
       ))
     })
 
@@ -450,7 +451,6 @@ GeDi <- function(genesets = NULL,
       if (is.null(reactive_values$ppi)) {
         return(NULL)
       }
-      message(head(reactive_values$ppi))
       DT::datatable(reactive_values$ppi,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
@@ -477,7 +477,7 @@ GeDi <- function(genesets = NULL,
       )))
     })
 
-    # TODO: Workaround with empty string check to fiy that later in another way
+    # TODO: Workaround with empty string, check to fix that later in another way
     output$ui_score_data <- renderUI({
       if (is.null(input$scoringmethod) || input$scoringmethod == "") {
         return(NULL)
@@ -487,7 +487,8 @@ GeDi <- function(genesets = NULL,
           width = 5,
           strong("Now you can score your data"),
           br(),
-          "Attention: If you have many genesets to score, this operation may take some time",
+          "Attention: If you have many genesets to score,
+           this operation may take some time",
           br(),
           actionButton("score_data",
                        label = "Score the Genesets",
@@ -569,21 +570,35 @@ GeDi <- function(genesets = NULL,
 
     observeEvent(input$uploadgenesetfile, {
       reactive_values$genesets <- readGenesets()
-      reactive_values$gs_names <- rownames(reactive_values$genesets)
-      reactive_values$genes <- getGenes(reactive_values$genesets)
+      reactive_values$gs_names <- reactive_values$genesets$Geneset
+      tryCatch(
+        expr = {
+          reactive_values$genes <- getGenes(reactive_values$genesets)
+        },
+        error = function(cond) {
+          message("It seems like your data does not have a column named 'Genes'.")
+          message("Here's the original error message:")
+          message(cond)
+          message("Please check your data and try to upload it again.")
+          reactive_values$genesets <- NULL
+          reactive_values$gs_names <- NULL
+          reactive_values$genes <- NULL
+        }
+      )
     })
 
     observeEvent(input$download_ppi, {
-      validate(need(
-        !(input$species == ""),
-        "Please specify the species of your data"
-      ))
+      validate(need(!(input$species == ""),
+                    message = "Please specify the species of your data"))
       reactive_values$species <- input$species
       id <- getId(reactive_values$species)
-      validate(need(
-        !is.na(id),
-        "We could not find your specified species. Please check the spelling and try again."
-      ))
+      validate(
+        need(
+          !is.na(id),
+          message = "We could not find your specified species.
+                   Please check the spelling and try again."
+        )
+      )
       stringdb <-
         getStringDB(as.numeric(id))
       stringdb
@@ -602,23 +617,38 @@ GeDi <- function(genesets = NULL,
           !(is.null(input$scoringmethod)),
         "Please select a scoring method"
       ))
+      validate(
+        need((length(reactive_values$genes) > 0  &&
+                !(is.null(
+                  reactive_values$genes
+                ))) ,
+             message = "\n\n\nIt seems like the file you've provided does not
+             contain any genesets. Please check you input and retry."
+        )
+      )
       if (input$scoringmethod == "Meet-Min") {
-        reactive_values$scores <-
-          getMeetMinMatrix(reactive_values$genes, reactive_values$gs_names)
+        scores <-
+          getMeetMinMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "Kappa") {
-        reactive_values$scores <-
-          getKappaMatrix(reactive_values$genes, reactive_values$gs_names)
+        scores <-
+          getKappaMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "PMM") {
-        reactive_values$scores <-
+        # TODO: Handle alpha as possible input
+        scores <-
           getpMMMatrix(reactive_values$genes,
-                       reactive_values$ppi,
-                       reactive_values$gs_names)
+                       reactive_values$ppi)
       }
 
       validate(
-        need((reactive_values$scores != -1) ,
-             message = "\n\n\nIt seems like the file you've provided does not contain any genesets. Please check you input and retry.")
+        need((scores != -1) ,
+             message = "\n\n\nIt seems like the file you've provided does not
+             contain any genesets. Please check you input and retry."
+        )
       )
+
+      rownames(scores) <-
+        colnames(scores) <- reactive_values$gs_names
+      reactive_values$scores <- scores
     })
 
   }

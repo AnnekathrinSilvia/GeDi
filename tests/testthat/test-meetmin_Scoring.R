@@ -1,19 +1,22 @@
-test_that("no genesets", {
+test_that("No genesets - getMeetMinMatrix", {
   genes <- list()
-  genes_names <- list()
-  expect_equal(getMeetMinMatrix(genes, genes_names), -1)
+  expect_equal(getMeetMinMatrix(genes), -1)
 })
 
-test_that("Scoring identical sets", {
-  genes <- list(c("IARS2"), c("IARS2"))
-  genes_names <- c("A", "B")
-  m <- getMeetMinMatrix(genes, genes_names)
-  expect_equal(m[1, 1], 0)
-  })
-
-test_that("Scoring two sets", {
-  genes <- list(c("PDHB", "SOS2"), c("IARS2", "LIPG"))
-  genes_names <- c("A", "B")
-  m <- getMeetMinMatrix(genes, genes_names)
+test_that("One empty geneset - getMeetMinMatrix", {
+  genes <- list(list("PDHB", "VARS2"), list())
+  m <- getMeetMinMatrix(genes)
   expect_equal(m[1, 2], 1)
+})
+
+test_that("Scoring identical sets - getMeetMinMatrix", {
+  genes <- list(list("PDHB", "VARS2"), list("PDHB", "VARS2"))
+  m <- getMeetMinMatrix(genes)
+  expect_equal(m[1, 2], 0)
+})
+
+test_that("getMeetMinMatrix runs correctly", {
+  genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+  m <- getMeetMinMatrix(genes)
+  expect_gte(m[1, 2], 0)
 })

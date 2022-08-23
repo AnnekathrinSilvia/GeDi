@@ -13,6 +13,9 @@ GeDi(genesets = NULL, ppi = NULL, alpha = 1)
 
 \item{alpha}{a scaling factor in between 0 and 1}
 }
+\value{
+A Shiny app object is returned
+}
 \description{
 GeDi main function
 }

@@ -2,23 +2,23 @@
 % Please edit documentation in R/meetmin_Scoring.R
 \name{getMeetMinMatrix}
 \alias{getMeetMinMatrix}
-\title{Calculate the Meet-Min distance of all geneset combinations}
+\title{Get Matrix of Meet-Min distances}
 \usage{
-getMeetMinMatrix(genesets, geneset_names)
+getMeetMinMatrix(genesets)
 }
 \arguments{
-\item{genesets}{a list of the genesets to score}
-
-\item{geneset_names}{a list of the names/ ids of the genesets}
+\item{genesets}{A \code{list} of genesets (each geneset is represented by a \code{list}
+of the corresponding genes).}
 }
 \value{
-a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Meet-Min distance of each geneset pair
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Meet-Min distance of each
+geneset pair.
 }
 \description{
-Calculate the Meet-Min distance of all geneset combinations
+Calculate the Meet-Min distance of all combinations of genesets in a given
+data set of genesets.
 }
 \examples{
-genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-geneset_names <- list("A", "B")
-m <- getMeetMinMatrix(genesets, geneset_names)
+genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+m <- getMeetMinMatrix(genesets)
 }

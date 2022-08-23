@@ -2,33 +2,43 @@
 % Please edit documentation in R/pMM_Scoring.R
 \name{pMMlocal}
 \alias{pMMlocal}
-\title{Calculates the pMM distance for two genesets}
+\title{Calculate local pMM distance}
 \usage{
-pMMlocal(a, ai, b, bi, alpha, ppi, maxInteract)
+pMMlocal(a, b, ppi, maxInteract, alpha = 1)
 }
 \arguments{
-\item{a, b}{genesets}
+\item{a, b}{A vector of gene names whose interactions should
+be scored.}
 
-\item{ai, bi}{indexed genesets}
+\item{ppi}{A \code{data.frame} object which contains the Protein-Protein
+interactions.
+The object has three columns, \code{from} and \code{to} which
+specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 
-\item{alpha}{scaling factor in (0, 1); indicates how much the Protein-Protein interactions are weighted into the distance}
+\item{maxInteract}{The maximum value of the \code{combined_score} column of
+the \code{ppi}.}
 
-\item{ppi}{a Protein-Protein interaction matrix}
-
-\item{maxInteract}{the maximum value of the Protein-Protein interaction matrix}
+\item{alpha}{A scaling factor (between 0 and 1) which indicates how much the
+Protein-Protein interactions are weighted into the final score.
+Defaults to 1.}
 }
 \value{
-pMM distance for two genesets
+The pMM distance for two genesets.
 }
 \description{
-Calculates the pMM distance for two genesets
+Calculate the local pMM distance of two genesets.
 }
 \examples{
-a <- c("PDHB", "VARS2", "IARS2")
-ai <- c(1, 2, 3)
-b <- c("IARS2", "PDHA2")
-bi <- c(4, 3)
-ppi <- Matrix::Matrix(0.5, 4, 4)
-maxInteract <- 0.5
-s <- pMMlocal(a, ai, b, bi, ppi, maxInteract)
+a <- c("PDHB", "VARS2")
+b <- c("IARS2", "PDHA1")
+
+ppi <- data.frame(from = c("PDHB", "VARS2"),
+                  to = c("IARS2", "PDHA1"),
+                  combined_score = c(0.5, 0.2))
+maxInteract <- max(ppi$combined_score)
+
+pMM_score <- pMMlocal(a, b, ppi, maxInteract)
 }

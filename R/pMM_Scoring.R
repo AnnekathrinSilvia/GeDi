@@ -1,52 +1,80 @@
-#' Sums up the protein-protein interacions between genes in two genesets
+#' Sum up Protein-Protein interactions between two genesets
 #'
-#' @param x,y genesets
-#' @param ppi a Protein-Protein interaction matrix
+#' The function sums up the strength of the Protein-Protein interactions of
+#' all genes in the given genesets.
 #'
-#' @return sum of the Protein-Protein interactions in the two genesets
+#' @param a,b A vector of gene names whose interactions should
+#'            be scored.
+#' @param ppi A `data.frame` object which contains the Protein-Protein
+#'            interactions.
+#'            The object has three columns, `from` and `to` which
+#'            specify the gene names of the interacting proteins in no
+#'            particular order (symmetric interaction) and a column
+#'            `combined_score` which is a numerical value of the strength of
+#'            the interaction.
 #'
+#'
+#' @return The sum of the Protein-Protein interactions.
+#' @export
+#' @import dplyr
 #' @examples
-#' x <- c(1, 2, 3)
-#' y <- c(3, 1)
-#' ppi <- Matrix::Matrix(0.5, 3, 3)
-#' s <- sumInteraction(x, y, ppi)
-sumInteraction <- function(x, y, ppi) {
-  if (length(x) ==  0 | length(y) == 0) {
+#' a <- c("PDHB", "VARS2")
+#' b <- c("IARS2", "PDHA1")
+#'
+#' ppi <- data.frame(from = c("PDHB", "VARS2"),
+#'                   to = c("IARS2", "PDHA1"),
+#'                   combined_score = c(0.5, 0.2))
+#'
+#' score <- sumInteraction(a, b, ppi)
+sumInteraction <- function(a, b, ppi) {
+  if (length(a) ==  0 | length(b) == 0) {
     return(0)
   } else{
-    return(sum(ppi[x, y]))
+    interactions <- which(ppi$from %in% a & ppi$to %in% b)
+    return(sum(ppi[interactions,]$combined_score))
   }
 }
 
-#' Calculates the interaction score for two genesets
+#' Calculate interaction score for two genesets
 #'
-#' @param a,b genesets
-#' @param ai,bi indexed genesets
-#' @param ppi a Protein-Protein interaction matrix
-#' @param maxInteract the maximum value in the Protein-Protein interaction matrix
+#' The function calculates the interaction score for two given genesets.
 #'
-#' @return the interaction score for two genesets
+#' @param a,b A vector of gene names whose interactions should
+#'            be used.
+#' @param ppi A `data.frame` object which contains the Protein-Protein
+#'            interactions.
+#'            The object has three columns, `from` and `to` which
+#'            specify the gene names of the interacting proteins in no
+#'            particular order (symmetric interaction) and a column
+#'            `combined_score` which is a numerical value of the strength of
+#'            the interaction.
+#' @param maxInteract The maximum value of the `combined_score` column of
+#'                    the `ppi`.
+#'
+#' @return The interaction score of the two given genesets.
+#' @export
 #'
 #' @examples
-#' \dontrun{
-#' a <- c("PDHB", "VARS2", "IARS2")
-#' ai <- c(1, 2, 3)
-#' b <- c("IARS2", "PDHA2")
-#' bi <- c(4, 3)
-#' ppi <- Matrix::Matrix(0.5, 4, 4)
-#' maxInteract <- 0.5
-#' s <- getInteractionScore(a, ai, b, bi, ppi, maxInteract)}
-getInteractionScore <- function(a, ai, b, bi, ppi, maxInteract) {
-  if(length(a) == 0 || length(b) == 0 || length(ai) == 0 || length(bi) == 0){
-    return(-1)
+#' a <- c("PDHB", "VARS2")
+#' b <- c("IARS2", "PDHA1")
+#'
+#' ppi <- data.frame(from = c("PDHB", "VARS2"),
+#'                   to = c("IARS2", "PDHA1"),
+#'                   combined_score = c(0.5, 0.2))
+#' maxInteract <- max(ppi$combined_score)
+#'
+#' interaction <- getInteractionScore(a, b, ppi, maxInteract)
+getInteractionScore <- function(a, b, ppi, maxInteract) {
+  if(length(a) == 0 || length(b) == 0){
+    return(0)
   }
-  onlya <- setdiff(ai, bi)
-  onlyb <- setdiff(bi, ai)
-  int <- intersect(ai, bi)
+  onlya <- setdiff(a, b)
+  onlyb <- setdiff(b, a)
+  int <- intersect(a, b)
 
   w <- min(length(a), length(b)) / (length(a) + length(b))
-  intlength <- length(intersect(a, b))
-  onlyblength <- length(setdiff(b, a))
+  intlength <- length(int)
+  onlyblength <- length(onlyb)
 
   sumInt <- sumInteraction(onlya, int, ppi)
   sumOnlyb <- sumInteraction(onlya, onlyb, ppi)
@@ -57,74 +85,98 @@ getInteractionScore <- function(a, ai, b, bi, ppi, maxInteract) {
   return(nom / denom)
 }
 
-#' Calculates the pMM distance for two genesets
+#' Calculate local pMM distance
 #'
-#' @param a,b genesets
-#' @param ai,bi indexed genesets
-#' @param alpha scaling factor in (0, 1); indicates how much the Protein-Protein interactions are weighted into the distance
-#' @param ppi a Protein-Protein interaction matrix
-#' @param maxInteract the maximum value of the Protein-Protein interaction matrix
+#' Calculate the local pMM distance of two genesets.
 #'
-#' @return pMM distance for two genesets
+#' @param a,b A vector of gene names whose interactions should
+#'            be scored.
+#' @param ppi A `data.frame` object which contains the Protein-Protein
+#'            interactions.
+#'            The object has three columns, `from` and `to` which
+#'            specify the gene names of the interacting proteins in no
+#'            particular order (symmetric interaction) and a column
+#'            `combined_score` which is a numerical value of the strength of
+#'            the interaction.
+#' @param maxInteract The maximum value of the `combined_score` column of
+#'                    the `ppi`.
+#' @param alpha A scaling factor (between 0 and 1) which indicates how much the
+#'              Protein-Protein interactions are weighted into the final score.
+#'              Defaults to 1.
+#'
+#' @return The pMM distance for two genesets.
 #' @export
 #'
 #' @examples
-#' a <- c("PDHB", "VARS2", "IARS2")
-#' ai <- c(1, 2, 3)
-#' b <- c("IARS2", "PDHA2")
-#' bi <- c(4, 3)
-#' ppi <- Matrix::Matrix(0.5, 4, 4)
-#' maxInteract <- 0.5
-#' s <- pMMlocal(a, ai, b, bi, ppi, maxInteract)
-pMMlocal <- function(a, ai, b, bi, alpha, ppi, maxInteract) {
+#' a <- c("PDHB", "VARS2")
+#' b <- c("IARS2", "PDHA1")
+#'
+#' ppi <- data.frame(from = c("PDHB", "VARS2"),
+#'                   to = c("IARS2", "PDHA1"),
+#'                   combined_score = c(0.5, 0.2))
+#' maxInteract <- max(ppi$combined_score)
+#'
+#' pMM_score <- pMMlocal(a, b, ppi, maxInteract)
+pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
   z <- min(length(a), length(b))
+  if(z == 0){
+    return(1)
+  }
 
   factor1 <- (length(intersect(a, b))) / z
-  factor2 <- (alpha / z) * getInteractionScore(a, ai, b, bi, ppi, maxInteract)
+  factor2 <- (alpha / z) * getInteractionScore(a, b, ppi, maxInteract)
 
   return(min(factor1 + factor2, 1))
 }
 
 
-#' Calculate the pMM distance of all geneset combinations
+#' Calculate the pMM distance
 #'
-#' @param genes a list of  vectors of genes (the genesets)
-#' @param ppi a Protein-Protein interaction matrix
-#' @param geneset_names a list of names/ids of the genesets
-#' @param alpha scaling factor in (0, 1); indicates how much the Protein-Protein interactions are weighted into the distance
+#' Calculate the pMM distance of all combinations of genesets in a given data
+#' set of genesets.
 #'
-#' @return a [Matrix::Matrix()] with the pairwise pMM distance of each geneset pair
+#' @param genes A `list` of genesets (each geneset is represented by a vector
+#'              of the corresponding genes).
+#' @param ppi A `data.frame` object which contains the Protein-Protein
+#'            interactions.
+#'            The object has three columns, `from` and `to` which
+#'            specify the gene names of the interacting proteins in no
+#'            particular order (symmetric interaction) and a column
+#'            `combined_score` which is a numerical value of the strength of
+#'            the interaction.
+#' @param alpha A scaling factor (between 0 and 1) which indicates how much the
+#'              Protein-Protein interactions are weighted into the final score.
+#'              Defaults to 1.
+#'
+#' @return A [Matrix::Matrix()] with the pairwise pMM distance of each
+#'         geneset pair.
 #' @export
 #'
 #' @examples
-#' genes <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' geneset_names <- list("A", "B")
-#' ppi <- Matrix::Matrix(0.5, 4, 4)
-#' s <- getpMMMatrix(genes, ppi, geneset_names)
-getpMMMatrix <- function(genes, ppi, geneset_names, alpha = 1){
-  genes_indexed <- getGenesIndexed(genes, ppi)
-
+#' genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+#'
+#' ppi <- data.frame(from = c("PDHB", "VARS2"),
+#'                   to = c("IARS2", "PDHA1"),
+#'                   combined_score = c(0.5, 0.2))
+#'
+#' pMM <- getpMMMatrix(genes, ppi)
+getpMMMatrix <- function(genes, ppi, alpha = 1){
   l <- length(genes)
   if(l == 0){
     return(-1)
   }
   scores <- Matrix::Matrix(0, l, l)
-  maxInteract <- max(ppi)
+  maxInteract <- max(ppi$combined_score)
   for (i in 1:(l - 1)) {
     a <- genes[[i]]
-    ai <- genes_indexed[[i]]
     for (j in (i + 1):l) {
       b <- genes[[j]]
-      bi <- genes_indexed[[j]]
       pmm <- min(
-        pMMlocal(a, ai, b, bi, alpha, ppi, maxInteract),
-        pMMlocal(b, bi, a, ai, alpha, ppi, maxInteract)
+        pMMlocal(a, b, ppi, maxInteract),
+        pMMlocal(b, a, ppi, maxInteract)
       )
       scores[i, j] <- scores[j, i] <- pmm
     }
   }
-
-  rownames(scores) <- geneset_names
-  colnames(scores) <- geneset_names
   return(scores)
 }

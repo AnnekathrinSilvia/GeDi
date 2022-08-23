@@ -2,16 +2,31 @@
 % Please edit documentation in R/utils.R
 \name{getGenes}
 \alias{getGenes}
-\title{Split the genesets into a list of vectors of genes, one for each geneset}
+\title{Split string of genes}
 \usage{
 getGenes(genesets)
 }
 \arguments{
-\item{genesets}{a list of the genesets}
+\item{genesets}{A \code{data.frame} with at least two columns. One should be
+called \code{Geneset}, which contains the names of the genesets
+in the data (or any other interpretative identifier for the
+genesets). The second column should be called \code{Genes} and
+contains one string of the genes contained in each geneset.}
 }
 \value{
-a list of vectors of genes, on for each geneset
+A \code{list} which contains for each geneset in the \code{Geneset} column a
+\code{list} of the included genes.
 }
 \description{
-Split the genesets into a list of vectors of genes, one for each geneset
+Split a long string of space separated genes into a \code{list} of individual
+genes.
+}
+\examples{
+df <- data.frame(Geneset = c("Cell Cycle",
+                           "Biological Process",
+                            "Mitosis"),
+                 Genes =  c(c("PDHB VARS2 IARS2"),
+                          c("LARS LARS2"),
+                          c("IARS SUV3")))
+genes <- getGenes(df)
 }

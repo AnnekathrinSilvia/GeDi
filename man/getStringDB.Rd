@@ -2,7 +2,7 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getStringDB}
 \alias{getStringDB}
-\title{Title}
+\title{Get the STRINGdb entry of your searched species}
 \usage{
 getStringDB(
   species,
@@ -12,8 +12,21 @@ getStringDB(
 )
 }
 \arguments{
-\item{score_threshold}{}
+\item{species}{the NCBI ID of the species you want to search (numeric)}
+
+\item{version}{the STRINGdb version you want to use (defaults to the current version) (string)}
+
+\item{score_threshold}{a score threshold to cut out interactions with a lower score (defaults to 0/all interactions) (numeric)}
+
+\item{input_directory}{the directory to save the \code{STRINGdb} object}
+}
+\value{
+a \code{STRINGdb} object of your searched species
 }
 \description{
-Title
+Get the STRINGdb entry of your searched species
+}
+\examples{
+species <- getId(species = "Homo Sapiens")
+string_db <- getStringDB(as.numeric(species))
 }

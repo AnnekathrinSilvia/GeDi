@@ -1,4 +1,4 @@
-test_that("no genes", {
+test_that("No genesets - goSimilarity", {
   genes <- list()
   expect_equal(goSimilarity(genesets = genes), -1)
 })

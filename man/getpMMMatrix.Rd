@@ -2,28 +2,40 @@
 % Please edit documentation in R/pMM_Scoring.R
 \name{getpMMMatrix}
 \alias{getpMMMatrix}
-\title{Calculate the pMM distance of all geneset combinations}
+\title{Calculate the pMM distance}
 \usage{
-getpMMMatrix(genes, ppi, geneset_names, alpha = 1)
+getpMMMatrix(genes, ppi, alpha = 1)
 }
 \arguments{
-\item{genes}{a list of  vectors of genes (the genesets)}
+\item{genes}{A \code{list} of genesets (each geneset is represented by a vector
+of the corresponding genes).}
 
-\item{ppi}{a Protein-Protein interaction matrix}
+\item{ppi}{A \code{data.frame} object which contains the Protein-Protein
+interactions.
+The object has three columns, \code{from} and \code{to} which
+specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 
-\item{geneset_names}{a list of names/ids of the genesets}
-
-\item{alpha}{scaling factor in (0, 1); indicates how much the Protein-Protein interactions are weighted into the distance}
+\item{alpha}{A scaling factor (between 0 and 1) which indicates how much the
+Protein-Protein interactions are weighted into the final score.
+Defaults to 1.}
 }
 \value{
-a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise pMM distance of each geneset pair
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise pMM distance of each
+geneset pair.
 }
 \description{
-Calculate the pMM distance of all geneset combinations
+Calculate the pMM distance of all combinations of genesets in a given data
+set of genesets.
 }
 \examples{
-genes <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-geneset_names <- list("A", "B")
-ppi <- Matrix::Matrix(0.5, 4, 4)
-s <- getpMMMatrix(genes, ppi, geneset_names)
+genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+
+ppi <- data.frame(from = c("PDHB", "VARS2"),
+                  to = c("IARS2", "PDHA1"),
+                  combined_score = c(0.5, 0.2))
+
+pMM <- getpMMMatrix(genes, ppi)
 }

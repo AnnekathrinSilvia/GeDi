@@ -1,29 +1,38 @@
-#' Calculate the Kappa distance for two genesets
+#' Calculate the Kappa distance
 #'
-#' @param a,b individual genesets as two vectors of genes
-#' @param all_genes the list of all unique genes in all input genesets
+#' Calculate the Kappa distance for two given genesets.
 #'
-#' @return the Kappa distance of geneset a and b
+#' @param a,b A vector of gene names whose interactions should
+#'            be scored.
+#' @param all_genes A vector of all unique genes in the data set from which `a`
+#'                  and `b` are derived.
+#'
+#' @return The Kappa distance of the two genesets
 #' @import dplyr
 #' @export
 #'
 #' @examples
-#' a <- c("LARS", "BCAT1")
-#' b <- c("BCAT1", "IARS")
-#' all_genes <- c("BCAT1", "IARS",  "LARS2")
+#' a <- c("PDHB", "VARS2")
+#' b <- c("IARS2", "PDHA1")
+#' all_genes <- c("PDHB", "VARS2", "IARS2", "PDHA1")
 #' c <- calculateKappa(a, b, all_genes)
 calculateKappa <- function(a, b, all_genes){
+  n_genes <- length(all_genes)
+  stopifnot(n_genes > 0)
+  if(length(a) == 0 || length(b) == 0){
+    return(1)
+  }
+
   set_int <- length(intersect(a, b))
-  l <- length(all_genes)
 
   only_a <- sum(all_genes %in% a & !all_genes %in% b)
   only_b <- sum(!all_genes %in% a & all_genes %in% b)
 
-  background <- l - sum(only_a, only_b, set_int)
+  background <- n_genes - sum(only_a, only_b, set_int)
 
-  O <- (set_int + background) / l
+  O <- (set_int + background) / n_genes
   E <- (set_int + only_a) * (set_int + only_b) + (only_b + background) * (only_a + background)
-  E <- E / l^2
+  E <- E / n_genes^2
 
   kappa <- ((O-E) / (1-E))
 
@@ -33,19 +42,22 @@ calculateKappa <- function(a, b, all_genes){
   return(abs(kappa))
 }
 
-#' Calculate the Kappa distance of all geneset combinations
+#' Get Matrix of Kappa distances
 #'
-#' @param genesets a list of the genesets to score (where the genesets are vectors of genes)
-#' @param geneset_names a list of the names/ids of the genesets
+#' Calculate the Kappa distance of all combinations of genesets in a given data
+#' set of genesets.
 #'
-#' @return a [Matrix::Matrix()] with the pairwise Kappa distance of each geneset pair
+#' @param genesets A `list` of genesets (each geneset is represented by a `list`
+#'                 of the corresponding genes).
+#'
+#' @return A [Matrix::Matrix()] with the pairwise Kappa distance of each
+#'         geneset pair.
 #' @export
 #'
 #' @examples
-#' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' geneset_names <- list("A", "B")
-#' m <- getKappaMatrix(genesets, geneset_names)
-getKappaMatrix <- function(genesets, geneset_names){
+#' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+#' m <- getKappaMatrix(genesets)
+getKappaMatrix <- function(genesets){
   l <- length(genesets)
   if(l == 0){
     return(-1)
@@ -54,13 +66,12 @@ getKappaMatrix <- function(genesets, geneset_names){
   unique_genes <- unique(unlist(genesets))
 
   for(i in 1:(l - 1)){
-    a <- unlist(genesets[i])
+    a <- genesets[[i]]
     for(j in (i+1):l){
-      b <- unlist(genesets[j])
+      b <- genesets[[j]]
       k[i, j] <- k[j, i] <- calculateKappa(a, b, unique_genes)
     }
   }
-  rownames(k) <- geneset_names
-  colnames(k) <- geneset_names
+
   return(k)
 }

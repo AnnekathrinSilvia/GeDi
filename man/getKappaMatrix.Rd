@@ -2,23 +2,23 @@
 % Please edit documentation in R/kappa_Scoring.R
 \name{getKappaMatrix}
 \alias{getKappaMatrix}
-\title{Calculate the Kappa distance of all geneset combinations}
+\title{Get Matrix of Kappa distances}
 \usage{
-getKappaMatrix(genesets, geneset_names)
+getKappaMatrix(genesets)
 }
 \arguments{
-\item{genesets}{a list of the genesets to score (where the genesets are vectors of genes)}
-
-\item{geneset_names}{a list of the names/ids of the genesets}
+\item{genesets}{A \code{list} of genesets (each geneset is represented by a \code{list}
+of the corresponding genes).}
 }
 \value{
-a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Kappa distance of each geneset pair
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Kappa distance of each
+geneset pair.
 }
 \description{
-Calculate the Kappa distance of all geneset combinations
+Calculate the Kappa distance of all combinations of genesets in a given data
+set of genesets.
 }
 \examples{
-genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-geneset_names <- list("A", "B")
-m <- getKappaMatrix(genesets, geneset_names)
+genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+m <- getKappaMatrix(genesets)
 }

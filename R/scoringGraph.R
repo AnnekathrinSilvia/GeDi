@@ -29,7 +29,7 @@ getAdjacencyMatrix <- function(distanceMatrix, cutOff){
 #' @param adjMatrix
 #'
 #' @return
-#' @import igraph
+#' @importFrom igraph graph_from_adjacency_matrix
 #' @export
 #'
 #' @examples

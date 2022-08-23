@@ -2,13 +2,19 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getId}
 \alias{getId}
-\title{Title}
+\title{Get NCBI ID of a species}
 \usage{
 getId(species)
 }
 \arguments{
-\item{species}{}
+\item{species}{the species you want to get the NCBI ID of}
+}
+\value{
+the NCBI ID of your searched species
 }
 \description{
-Title
+Get NCBI ID of a species
+}
+\examples{
+id <- getId(species = "Homo Sapiens")
 }

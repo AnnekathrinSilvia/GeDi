@@ -1,19 +1,44 @@
-test_that("no genesets", {
-  genesets <- list()
-  gene_names <- list()
-  expect_equal(getKappaMatrix(genesets, gene_names), -1)
+test_that("Empty genesets - calculateKappa", {
+  all_genes <- c("PDHB", "VARS2", "IARS2", "PDHA1")
+  expect_equal(calculateKappa(a = c(), b = c(), all_genes = all_genes), 1)
 })
 
-test_that("Scoring two sets", {
-  genesets <- list(c("PHDB", "SOS2"), c("IARS2", "PDHA2"))
-  gene_names <- list("A", "B")
-  k <- getKappaMatrix(genesets, gene_names)
-  expect_equal(k[1, 2], 1)
+test_that("One empty geneset - calculateKappa", {
+  a <- c("PDHB", "VARS2")
+  b <- c("IARS2", "PDHA1")
+  all_genes <- c("PDHB", "VARS2", "IARS2", "PDHA1")
+  expect_equal(calculateKappa(a = a, b = c(), all_genes = all_genes), 1)
+  expect_equal(calculateKappa(a = c(), b = b, all_genes = all_genes), 1)
 })
 
-test_that("Scoring identical sets", {
-  genesets <- list(c("PHDB"), c("PHDB"))
-  gene_names <- list("A", "B")
-  k <- getKappaMatrix(genesets, gene_names)
+test_that("No unique genes - calculateKappa", {
+  a <- c("PDHB", "VARS2")
+  b <- c("IARS2", "PDHA1")
+  expect_error(calculateKappa(a = c(), b = c(), all_genes = c()))
+  expect_error(calculateKappa(a = a, b = c(), all_genes = c()))
+  expect_error(calculateKappa(a = c(), b = b, all_genes = c()))
+  expect_error(calculateKappa(a = a, b = b, all_genes = c()))
+})
+
+test_that("calculateKappa runs correctly", {
+  a <- c("PDHB", "VARS2")
+  b <- c("IARS2", "PDHA1")
+  all_genes <- c("PDHB", "VARS2", "IARS2", "PDHA1")
+  expect_gte(calculateKappa(a = a, b = c(), all_genes = all_genes), 0)
+})
+
+test_that("Empty genesets - getKappaMatrix", {
+  expect_equal(getKappaMatrix(genes = list()), -1)
+})
+
+test_that("Scoring identical sets - getKappaMatrix", {
+  genesets <- list(list("PHDB"), list("PHDB"))
+  k <- getKappaMatrix(genesets)
   expect_equal(k[1, 2], 0)
+})
+
+test_that("getKappaMatrix runs correctly", {
+  genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+  k <- getKappaMatrix(genesets)
+  expect_equal(k[1, 2], 1)
 })
