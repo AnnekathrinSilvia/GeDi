@@ -10,6 +10,8 @@
 #' @import visNetwork
 #' @import shiny
 #' @import shinyBS
+#' @import fontawesome
+#' @importFrom rintrojs introjs
 #' @importFrom utils read.delim
 #' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems
 #'
@@ -48,7 +50,7 @@ GeDi <- function(genesets = NULL,
           tags$h5("Documentation"),
           actionButton(
             inputId = "btn_first_help",
-            icon = icon("question-circle"),
+            icon = icon("circle-question"),
             label = "First Help"
           )
         ),
@@ -64,7 +66,7 @@ GeDi <- function(genesets = NULL,
           tags$h5("Additional information"),
           actionButton(
             inputId = "btn_info_session",
-            icon = icon("info-circle"),
+            icon = icon("circle-info"),
             label = "About this session"
           ),
           actionButton(
@@ -90,6 +92,7 @@ GeDi <- function(genesets = NULL,
 
     # sidebar definition ------------------------------------------------------
     sidebar = bs4DashSidebar(
+      id = "sidebar",
       title = HTML("<small>GeDi</small>"),
       #src = "GeneTonic/GeneTonic.png",
       skin = "dark",
@@ -100,23 +103,24 @@ GeDi <- function(genesets = NULL,
       elevation = 1,
       opacity = 0.8,
       bs4SidebarMenu(
-        bs4SidebarMenuItem("Welcome!",
-                           tabName = "tab_welcome",
-                           icon = icon("home")),
+        bs4SidebarMenuItem(
+          "Welcome!",
+          tabName = "tab_welcome",
+          icon = icon("house")),
         bs4SidebarMenuItem(
           "Data Upload",
           tabName = "tab_data_upload",
-          icon = icon("share-alt-square")
+          icon = icon("square-share-nodes")
         ),
         bs4SidebarMenuItem(
           "Distance Scores",
           tabName = "tab_scores",
-          icon = icon("project-diagram")
+          icon = icon("diagram-project")
         ),
         bs4SidebarMenuItem(
           "Graph",
           tabName = "tab_graph",
-          icon = icon("share-alt-square")
+          icon = icon("square-share-nodes")
         )
       )
     ),
@@ -137,7 +141,11 @@ GeDi <- function(genesets = NULL,
                 overflow-x: scroll;
               }
             }
-            "
+          .tooltip > .tooltip-inner {
+                 width: 1000px;
+                 color: white;
+                 background-color: black;
+                 }"
         )
       )),
       tags$head(
@@ -161,23 +169,104 @@ GeDi <- function(genesets = NULL,
       bs4TabItems(
         # ui panel welcome ---------------------------------------------------
         bs4TabItem(tabName = "tab_welcome",
-                   uiOutput("ui_panel_welcome")),
+                   tagList(
+                     fluidRow(column(width = 11),
+                              column(
+                                width = 1,
+                                actionButton(
+                                  "tour_welcome",
+                                  label = "",
+                                  icon = icon("circle-question"),
+                                  style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                                )
+                              )),
+                     uiOutput("ui_panel_welcome")
+                   )),
 
         # ui panel data upload -----------------------------------------------
         bs4TabItem(
           tabName = "tab_data_upload",
-          uiOutput("ui_panel_data_upload"),
-          uiOutput("ui_panel_specify_species"),
-          uiOutput("ui_panel_download_ppi")
+          tagList(
+            fluidRow(
+              column(width = 11),
+              column(
+                width = 1,
+                br(),
+                actionButton(
+                  "tour_data_upload",
+                  label = "",
+                  icon = icon("circle-question"),
+                  style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                ),
+                shinyBS::bsTooltip(
+                  id = "tour_data_upload",
+                  title = "Click me to start a tour of this section!",
+                  placement = "top",
+                  trigger = "hover",
+                  options = list(container = "body")
+                ),
+                style = "float:right"
+              )
+            ),
+            uiOutput("ui_panel_data_upload"),
+            uiOutput("ui_panel_specify_species"),
+            uiOutput("ui_panel_download_ppi")
+          )
         ),
 
         # ui panel scores -------------------------------------------------
         bs4TabItem(tabName = "tab_scores",
-                   uiOutput("ui_panel_scores")),
+                   tagList(
+                     fluidRow(
+                       column(width = 11),
+                       column(
+                         width = 1,
+                         br(),
+                         actionButton(
+                           "tour_scoring",
+                           label = "",
+                           icon = icon("circle-question"),
+                           style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                         ),
+                         shinyBS::bsTooltip(
+                           id = "tour_scoring",
+                           title = "Click me to start a tour of this section!",
+                           placement = "top",
+                           trigger = "hover",
+                           options = list(container = "body")
+                         ),
+                         style = "float:right"
+                       )
+                     ),
+                     uiOutput("ui_panel_scores")
+                   )),
 
         # ui panel graph ---------------------------------------------------
         bs4TabItem(tabName = "tab_graph",
-                   uiOutput("ui_panel_graph"))
+                   tagList(
+                     fluidRow(
+                       column(width = 11),
+                       column(
+                         width = 1,
+                         br(),
+                         actionButton(
+                           "tour_graph",
+                           label = "",
+                           icon = icon("circle-question"),
+                           style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                         ),
+                         shinyBS::bsTooltip(
+                           id = "tour_graph",
+                           title = "Click me to start a tour of this section!",
+                           placement = "top",
+                           trigger = "hover",
+                           options = list(container = "body")
+                         ),
+                         style = "float:right"
+                       )
+                     ),
+                     uiOutput("ui_panel_graph")
+                   ))
 
       )
     )
@@ -222,14 +311,6 @@ GeDi <- function(genesets = NULL,
 
     output$ui_panel_data_upload <- renderUI({
       tagList(
-        fluidRow(column(
-          width = 8,
-          bsCollapse(
-            id = "help_datasetup",
-            open = NULL,
-            bsCollapsePanel("Help")
-          )
-        )),
         box(
           width = 12,
           title = "Step 1",
@@ -239,7 +320,7 @@ GeDi <- function(genesets = NULL,
 
           fluidRow(
             column(
-              width = 4,
+              width = 6,
               uiOutput("upload_genesets"),
               br(),
               "... or you can also ",
@@ -249,24 +330,9 @@ GeDi <- function(genesets = NULL,
               # ), br(), p()),
             ),
             column(
-              width = 2,
-              br(),
-              actionButton(
-                "help_format",
-                label = "",
-                icon = icon("question-circle"),
-                style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
-              ),
-              bsTooltip(
-                "help_format",
-                "How to provide your input data to ideal",
-                "bottom",
-                options = list(container = "body")
-              )
-            ),
-            column(
               width = 6,
               box(
+                id = "Genests_preview",
                 width = NULL,
                 title = "Genesets preview",
                 status = "primary",
@@ -374,9 +440,10 @@ GeDi <- function(genesets = NULL,
         return(NULL)
       }
       box(
+        id = "Optional_parameters",
         width = 12,
         title = "Optional Parameters",
-        status = "info",
+        status = "primary",
         solidHeader = TRUE,
         collapsible = TRUE,
         collapsed = TRUE,
@@ -407,14 +474,15 @@ GeDi <- function(genesets = NULL,
     })
 
     output$ui_panel_download_ppi <- renderUI({
-      if (input$species == "") {
+      if (input$species == "" ||
+          is.na(input$species) || is.null(input$species)) {
         return(NULL)
       }
       reactive_values$species <- input$species
       box(
         width = 12,
         title = "Step 3",
-        status = "warning",
+        status = "success",
         solidHeader = TRUE,
         tagList(
           h2("Download the PPI matrix from STRING"),
@@ -430,6 +498,7 @@ GeDi <- function(genesets = NULL,
           column(
             width = 6,
             box(
+              id = "PPI_preview",
               width = NULL,
               title = "PPI preview",
               status = "primary",
@@ -498,7 +567,7 @@ GeDi <- function(genesets = NULL,
     })
 
     output$ui_plot_scores <- renderVisNetwork({
-      if (is.na(reactive_values$scores)) {
+      if (is.null(reactive_values$scores)) {
         return(NULL)
       }
       #pheatmap::pheatmap(reactive_values$scores)
@@ -567,7 +636,7 @@ GeDi <- function(genesets = NULL,
 
     # outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
 
-
+    # Observers ------------------------------------------------------------------------------------
     observeEvent(input$uploadgenesetfile, {
       reactive_values$genesets <- readGenesets()
       reactive_values$gs_names <- reactive_values$genesets$Geneset
@@ -591,7 +660,14 @@ GeDi <- function(genesets = NULL,
       validate(need(!(input$species == ""),
                     message = "Please specify the species of your data"))
       reactive_values$species <- input$species
+      progress <- shiny::Progress$new()
+      # Make sure it closes when we exit this reactive, even if there's an error
+      on.exit(progress$close())
+
+      progress$set(message = "Downloading PPI from STRINGdb", value = 0)
+      progress$inc(1/12, detail = paste("Get species ID"))
       id <- getId(reactive_values$species)
+      progress$inc(1/12, detail = paste("Validate species ID"))
       validate(
         need(
           !is.na(id),
@@ -599,16 +675,21 @@ GeDi <- function(genesets = NULL,
                    Please check the spelling and try again."
         )
       )
+      progress$inc(1/12, detail = paste("Get species specific STRINGdb"))
       stringdb <-
         getStringDB(as.numeric(id))
       stringdb
 
+      progress$inc(4/12, detail = paste("Get Annotation information"))
       anno_df <- getAnnotation(stringdb)
 
+      progress$inc(1/12, detail = paste("Download PPI"))
       reactive_values$ppi <-
         getPPI(reactive_values$genes,
                string_db = stringdb,
                anno_df = anno_df)
+
+      progress$inc(4/12, detail = paste("Done"))
     })
 
     observeEvent(input$score_data, {
@@ -649,6 +730,52 @@ GeDi <- function(genesets = NULL,
       rownames(scores) <-
         colnames(scores) <- reactive_values$gs_names
       reactive_values$scores <- scores
+    })
+
+
+    # Tour Observers -------------------------------------------------------------------------
+    observeEvent(input$tour_welcome, {
+      tour <- utils::read.delim(
+        "tours/intro_welcome.txt",
+        sep = ";",
+        stringsAsFactors = FALSE,
+        row.names = NULL,
+        quote = ""
+      )
+      introjs(session, options = list(steps = tour))
+    })
+
+    observeEvent(input$tour_data_upload, {
+      tour <- utils::read.delim(
+        "tours/intro_data_upload.txt",
+        sep = ";",
+        stringsAsFactors = FALSE,
+        row.names = NULL,
+        quote = ""
+      )
+      introjs(session, options = list(steps = tour))
+    })
+
+    observeEvent(input$tour_scoring, {
+      tour <- utils::read.delim(
+        "tours/intro_scoring.txt",
+        sep = ";",
+        stringsAsFactors = FALSE,
+        row.names = NULL,
+        quote = ""
+      )
+      introjs(session, options = list(steps = tour))
+    })
+
+    observeEvent(input$tour_graph, {
+      tour <- utils::read.delim(
+        "tours/intro_graph.txt",
+        sep = ";",
+        stringsAsFactors = FALSE,
+        row.names = NULL,
+        quote = ""
+      )
+      introjs(session, options = list(steps = tour))
     })
 
   }
