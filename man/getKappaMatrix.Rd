@@ -4,11 +4,14 @@
 \alias{getKappaMatrix}
 \title{Get Matrix of Kappa distances}
 \usage{
-getKappaMatrix(genesets)
+getKappaMatrix(genesets, progress = NULL)
 }
 \arguments{
 \item{genesets}{A \code{list} of genesets (each geneset is represented by a \code{list}
 of the corresponding genes).}
+
+\item{progress}{An optional \code{\link[shiny:Progress]{shiny::Progress()}} object to track the progress
+progress of the function in the app.}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Kappa distance of each

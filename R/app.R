@@ -6,14 +6,14 @@
 #'
 #' @return A Shiny app object is returned
 #' @export
-#' @import DT
 #' @import visNetwork
 #' @import shiny
 #' @import shinyBS
 #' @import fontawesome
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.delim
-#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems
+#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4Card bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems tabBox
+#' @importFrom shinycssloaders withSpinner
 #'
 #' @examples
 #' \dontrun{
@@ -22,8 +22,8 @@
 GeDi <- function(genesets = NULL,
                  ppi = NULL,
                  alpha = 1) {
-  oopt <- options(spinner.type = 6)
-  on.exit(options(oopt))
+  options(spinner.type = 6, spinner.color = "#0092AC")
+  #on.exit(options(oopt))
 
   usage_mode <- "shiny_mode"
 
@@ -51,7 +51,8 @@ GeDi <- function(genesets = NULL,
           actionButton(
             inputId = "btn_first_help",
             icon = icon("circle-question"),
-            label = "First Help"
+            label = "First Help",
+            style = .actionButtonStyle
           )
         ),
         shinyWidgets::dropdownButton(
@@ -67,12 +68,14 @@ GeDi <- function(genesets = NULL,
           actionButton(
             inputId = "btn_info_session",
             icon = icon("circle-info"),
-            label = "About this session"
+            label = "About this session",
+            style = .actionButtonStyle
           ),
           actionButton(
             inputId = "btn_info_genetonic",
             icon = icon("heart"),
-            label = "About GeDi"
+            label = "About GeDi",
+            style = .actionButtonStyle
           )
         )
       )
@@ -96,17 +99,16 @@ GeDi <- function(genesets = NULL,
       title = HTML("<small>GeDi</small>"),
       #src = "GeneTonic/GeneTonic.png",
       skin = "dark",
-      status = "primary",
+      status = "info",
       brandColor = NULL,
       #url = "https://bioconductor.org/packages/GeneTonic",
       collapsed = TRUE,
       elevation = 1,
       opacity = 0.8,
       bs4SidebarMenu(
-        bs4SidebarMenuItem(
-          "Welcome!",
-          tabName = "tab_welcome",
-          icon = icon("house")),
+        bs4SidebarMenuItem("Welcome!",
+                           tabName = "tab_welcome",
+                           icon = icon("house")),
         bs4SidebarMenuItem(
           "Data Upload",
           tabName = "tab_data_upload",
@@ -177,7 +179,7 @@ GeDi <- function(genesets = NULL,
                                   "tour_welcome",
                                   label = "",
                                   icon = icon("circle-question"),
-                                  style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                                  style = .tourButtonStyle
                                 )
                               )),
                      uiOutput("ui_panel_welcome")
@@ -196,7 +198,7 @@ GeDi <- function(genesets = NULL,
                   "tour_data_upload",
                   label = "",
                   icon = icon("circle-question"),
-                  style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                  style = .tourButtonStyle
                 ),
                 shinyBS::bsTooltip(
                   id = "tour_data_upload",
@@ -226,7 +228,7 @@ GeDi <- function(genesets = NULL,
                            "tour_scoring",
                            label = "",
                            icon = icon("circle-question"),
-                           style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                           style = .tourButtonStyle
                          ),
                          shinyBS::bsTooltip(
                            id = "tour_scoring",
@@ -253,7 +255,7 @@ GeDi <- function(genesets = NULL,
                            "tour_graph",
                            label = "",
                            icon = icon("circle-question"),
-                           style = "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+                           style = .tourButtonStyle
                          ),
                          shinyBS::bsTooltip(
                            id = "tour_graph",
@@ -335,7 +337,7 @@ GeDi <- function(genesets = NULL,
                 id = "Genests_preview",
                 width = NULL,
                 title = "Genesets preview",
-                status = "primary",
+                status = "info",
                 solidHeader = TRUE,
                 collapsible = TRUE,
                 collapsed = TRUE,
@@ -389,9 +391,11 @@ GeDi <- function(genesets = NULL,
     })
 
     output$dt_genesets <- DT::renderDataTable({
-      if (is.null(reactive_values$genesets)) {
-        return(NULL)
-      }
+      validate(need(!(is.null(
+        reactive_values$ppi
+      )),
+      message = "Please upload a text file via the button on the left."))
+
       DT::datatable(reactive_values$genesets,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
@@ -443,34 +447,30 @@ GeDi <- function(genesets = NULL,
         id = "Optional_parameters",
         width = 12,
         title = "Optional Parameters",
-        status = "primary",
+        status = "info",
         solidHeader = TRUE,
         collapsible = TRUE,
         collapsed = TRUE,
         tagList(fluidRow(column(
           width = 6,
-          uiOutput("ui_optional_param")
+          fluidRow(column(
+            width = 12,
+            textInput("stringVersion",
+                      label = "Specify the StringDb version to use",
+                      value = "11.5"),
+            textInput(
+              "scoreThresholdString",
+              label = "Specify the score threshold",
+              value = "0.00"
+            ),
+            textInput(
+              "inputDirectoryString",
+              label = "Specify the input directory",
+              value = ""
+            )
+          ))
         )))
       )
-    })
-
-    output$ui_optional_param <- renderUI({
-      fluidRow(column(
-        width = 12,
-        textInput("stringVersion",
-                  label = "Specify the StringDb version to use",
-                  value = "11.5"),
-        textInput(
-          "scoreThresholdString",
-          label = "Specify the score threshold",
-          value = "0.00"
-        ),
-        textInput(
-          "inputDirectoryString",
-          label = "Specify the input directory",
-          value = ""
-        )
-      ))
     })
 
     output$ui_panel_download_ppi <- renderUI({
@@ -492,7 +492,7 @@ GeDi <- function(genesets = NULL,
               "download_ppi",
               label = "Download PPI matrix",
               icon = icon("download"),
-              style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
+              style = .actionButtonStyle
             )
           ),
           column(
@@ -501,7 +501,7 @@ GeDi <- function(genesets = NULL,
               id = "PPI_preview",
               width = NULL,
               title = "PPI preview",
-              status = "primary",
+              status = "info",
               solidHeader = TRUE,
               collapsible = TRUE,
               collapsed = TRUE,
@@ -517,9 +517,10 @@ GeDi <- function(genesets = NULL,
     })
 
     output$dt_ppi <- DT::renderDataTable({
-      if (is.null(reactive_values$ppi)) {
-        return(NULL)
-      }
+      validate(need(!(is.null(
+        reactive_values$ppi
+      )),
+      message = "Please download a Protein-Protein Interaction (PPI) matrix via the button on the left."))
       DT::datatable(reactive_values$ppi,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
@@ -527,23 +528,56 @@ GeDi <- function(genesets = NULL,
     # panel Scores -----------------------------------------------------
 
     output$ui_panel_scores <- renderUI({
-      tagList(fluidRow(
-        column(
-          width = 11,
-          selectInput(
-            "scoringmethod",
-            label = "Select the scoring method for your data: ",
-            choices = c("", "Meet-Min", "Kappa", "PMM"),
-            multiple = FALSE
+      tagList(
+        box(
+          id = "distance_calc_box",
+          width = 12,
+          title = "Calculate distance scores for you Genesets",
+          status = "info",
+          solidHeader = TRUE,
+          collapsible = TRUE,
+          collapsed = FALSE,
+          h2("Select the distance score"),
+          fluidRow(
+            column(
+              width = 6,
+              radioButtons(
+                inputId = "scoringmethod",
+                label = "Select the scoring method for your data",
+                choices = c("Meet-Min", "Kappa", "PMM"),
+                selected = character(0)
+              )
+            ),
+            column(width = 6,
+                   uiOutput("ui_score_data"))
           ),
-          uiOutput("ui_score_data")
+          fluidRow(column(width = 12,))
         ),
-        column(width = 1)
-      ),
-      fluidRow(column(
-        width = 11,
-        visNetworkOutput("ui_plot_scores")
-      )))
+        fluidRow(column(
+          width = 12,
+          bs4Dash::bs4Card(
+            id = "tabcard_scores",
+            title = "Geneset Distance Scores",
+            elevation = 1,
+            width = 12,
+            closable = FALSE,
+            bs4Dash::tabsetPanel(
+              id = "tabsetpanel_scores",
+              type = "tabs",
+              selected = "Distance Scores Heatmap",
+              side = "right",
+              tabPanel(title = "Distance Scores Heatmap",
+                       withSpinner(plotOutput(
+                         "ui_scores_heatmap"
+                       ))),
+              tabPanel(title = "Distance Scores Graph",
+                       withSpinner(plotOutput(
+                         "ui_scores_graph"
+                       )))
+            )
+          )
+        ))
+      )
     })
 
     # TODO: Workaround with empty string, check to fix that later in another way
@@ -553,7 +587,7 @@ GeDi <- function(genesets = NULL,
       }
       fluidRow(
         column(
-          width = 5,
+          width = 12,
           strong("Now you can score your data"),
           br(),
           "Attention: If you have many genesets to score,
@@ -561,31 +595,42 @@ GeDi <- function(genesets = NULL,
           br(),
           actionButton("score_data",
                        label = "Score the Genesets",
-                       style = "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC")
+                       style = .actionButtonStyle)
         )
       )
     })
 
-    output$ui_plot_scores <- renderVisNetwork({
-      if (is.null(reactive_values$scores)) {
-        return(NULL)
-      }
-      #pheatmap::pheatmap(reactive_values$scores)
+    output$ui_scores_heatmap <- renderPlot({
+      validate(need(!(is.null(
+        reactive_values$scores
+      )),
+      message = "Please score you genesets first in the above box"))
+      distance_heatmap(reactive_values$scores,
+                       chars_limit = 20)
+    })
+
+    output$ui_scores_graph <- renderPlot({
+      validate(need(!(is.null(
+        reactive_values$scores
+      )),
+      message = "Please score you genesets first in the above box"))
+
       adj <- getAdjacencyMatrix(reactive_values$scores, 0.3)
       g <- buildGraph(adj)
+      plot(g)
 
-      visNetwork::visIgraph(g) %>%
-        visOptions(
-          highlightNearest = list(
-            enabled = TRUE,
-            degree = 1,
-            hover = TRUE
-          ),
-          nodesIdSelection = TRUE
-        ) %>%
-        visExport(name = "backbone_network",
-                  type = "png",
-                  label = "Save backbone graph")
+      # visNetwork::visIgraph(g) %>%
+      #   visOptions(
+      #     highlightNearest = list(
+      #       enabled = TRUE,
+      #       degree = 1,
+      #       hover = TRUE
+      #     ),
+      #     nodesIdSelection = TRUE
+      #   ) %>%
+      #   visExport(name = "backbone_network",
+      #             type = "png",
+      #             label = "Save backbone graph")
     })
 
 
@@ -665,9 +710,9 @@ GeDi <- function(genesets = NULL,
       on.exit(progress$close())
 
       progress$set(message = "Downloading PPI from STRINGdb", value = 0)
-      progress$inc(1/12, detail = paste("Get species ID"))
+      progress$inc(1 / 12, detail = "Get species ID")
       id <- getId(reactive_values$species)
-      progress$inc(1/12, detail = paste("Validate species ID"))
+      progress$inc(1 / 12, detail = "Validate species ID")
       validate(
         need(
           !is.na(id),
@@ -675,21 +720,21 @@ GeDi <- function(genesets = NULL,
                    Please check the spelling and try again."
         )
       )
-      progress$inc(1/12, detail = paste("Get species specific STRINGdb"))
+      progress$inc(1 / 12, detail = "Get species specific STRINGdb")
       stringdb <-
         getStringDB(as.numeric(id))
       stringdb
 
-      progress$inc(4/12, detail = paste("Get Annotation information"))
+      progress$inc(4 / 12, detail = "Get Annotation information")
       anno_df <- getAnnotation(stringdb)
 
-      progress$inc(1/12, detail = paste("Download PPI"))
+      progress$inc(1 / 12, detail = "Download PPI")
       reactive_values$ppi <-
         getPPI(reactive_values$genes,
                string_db = stringdb,
                anno_df = anno_df)
 
-      progress$inc(4/12, detail = paste("Done"))
+      progress$inc(4 / 12, detail = "Done")
     })
 
     observeEvent(input$score_data, {
@@ -707,17 +752,26 @@ GeDi <- function(genesets = NULL,
              contain any genesets. Please check you input and retry."
         )
       )
+
+      progress <- shiny::Progress$new()
+      # Make sure it closes when we exit this reactive, even if there's an error
+      on.exit(progress$close())
+
+      progress$set(message = "Scoring your genesets", value = 0)
+
       if (input$scoringmethod == "Meet-Min") {
         scores <-
-          getMeetMinMatrix(reactive_values$genes)
+          getMeetMinMatrix(reactive_values$genes, progress)
       } else if (input$scoringmethod == "Kappa") {
         scores <-
-          getKappaMatrix(reactive_values$genes)
+          getKappaMatrix(reactive_values$genes, progress)
       } else if (input$scoringmethod == "PMM") {
         # TODO: Handle alpha as possible input
+        # TODO: Handle Null PPI (someone who forgot to download the PPI)
         scores <-
           getpMMMatrix(reactive_values$genes,
-                       reactive_values$ppi)
+                       reactive_values$ppi,
+                       progress = progress)
       }
 
       validate(
@@ -730,51 +784,53 @@ GeDi <- function(genesets = NULL,
       rownames(scores) <-
         colnames(scores) <- reactive_values$gs_names
       reactive_values$scores <- scores
+
+      bs4Dash::updateBox("distance_calc_box", action = "toggle")
     })
 
 
     # Tour Observers -------------------------------------------------------------------------
     observeEvent(input$tour_welcome, {
-      tour <- utils::read.delim(
-        "tours/intro_welcome.txt",
-        sep = ";",
-        stringsAsFactors = FALSE,
-        row.names = NULL,
-        quote = ""
-      )
+      tour <- utils::read.delim(system.file("extdata",
+                                            "intro_welcome.txt",
+                                            package = "GeDi"),
+                                sep = ";",
+                                stringsAsFactors = FALSE,
+                                row.names = NULL,
+                                quote = "")
       introjs(session, options = list(steps = tour))
     })
 
     observeEvent(input$tour_data_upload, {
-      tour <- utils::read.delim(
-        "tours/intro_data_upload.txt",
-        sep = ";",
-        stringsAsFactors = FALSE,
-        row.names = NULL,
-        quote = ""
-      )
+      tour <- utils::read.delim(system.file("extdata",
+                                            "intro_data_upload.txt",
+                                            package = "GeDi"),
+                                sep = ";",
+                                stringsAsFactors = FALSE,
+                                row.names = NULL,
+                                quote = "")
       introjs(session, options = list(steps = tour))
     })
 
     observeEvent(input$tour_scoring, {
-      tour <- utils::read.delim(
-        "tours/intro_scoring.txt",
-        sep = ";",
-        stringsAsFactors = FALSE,
-        row.names = NULL,
-        quote = ""
-      )
+      tour <- utils::read.delim(system.file("extdata",
+                                            "intro_scoring.txt",
+                                            package = "GeDi"),
+                                sep = ";",
+                                stringsAsFactors = FALSE,
+                                row.names = NULL,
+                                quote = "")
       introjs(session, options = list(steps = tour))
     })
 
     observeEvent(input$tour_graph, {
-      tour <- utils::read.delim(
-        "tours/intro_graph.txt",
-        sep = ";",
-        stringsAsFactors = FALSE,
-        row.names = NULL,
-        quote = ""
-      )
+      tour <- utils::read.delim(system.file("extdata",
+                                            "intro_graph.txt",
+                                            package = "GeDi"),
+                                sep = ";",
+                                stringsAsFactors = FALSE,
+                                row.names = NULL,
+                                quote = "")
       introjs(session, options = list(steps = tour))
     })
 

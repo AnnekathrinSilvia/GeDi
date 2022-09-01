@@ -26,8 +26,3 @@ scaleGO(
 \description{
 Scaling computed distances with GO similarity scores
 }
-\examples{
-scores <- Matrix::Matrix(1, 1, 1)
-genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-scaled <- scaleGO(scores, genesets)
-}

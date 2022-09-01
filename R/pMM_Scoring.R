@@ -147,6 +147,8 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' @param alpha A scaling factor (between 0 and 1) which indicates how much the
 #'              Protein-Protein interactions are weighted into the final score.
 #'              Defaults to 1.
+#' @param progress An optional [shiny::Progress()] object to track the progress
+#'                 progress of the function in the app.
 #'
 #' @return A [Matrix::Matrix()] with the pairwise pMM distance of each
 #'         geneset pair.
@@ -160,7 +162,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'                   combined_score = c(0.5, 0.2))
 #'
 #' pMM <- getpMMMatrix(genes, ppi)
-getpMMMatrix <- function(genes, ppi, alpha = 1){
+getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL){
   l <- length(genes)
   if(l == 0){
     return(-1)
@@ -176,6 +178,9 @@ getpMMMatrix <- function(genes, ppi, alpha = 1){
         pMMlocal(b, a, ppi, maxInteract)
       )
       scores[i, j] <- scores[j, i] <- pmm
+    }
+    if(!is.null(progress)){
+      progress$inc(1/l, detail = paste("Scoring geneset number", i))
     }
   }
   return(scores)

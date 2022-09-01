@@ -9,10 +9,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' go <- goSimilarity(genesets)
-#' }
 goSimilarity <- function(genesets, method = 'Wang', ontology = 'BP', species = 'org.Hs.eg.db'){
   l <- length(genesets)
   if(l == 0){
@@ -41,11 +37,9 @@ goSimilarity <- function(genesets, method = 'Wang', ontology = 'BP', species = '
 #' @param species the species of your data, indicated as org.XX.eg.db package from Bioconductor
 #'
 #' @return
+#' @export
 #'
 #' @examples
-#' scores <- Matrix::Matrix(1, 1, 1)
-#' genesets <- list(c("PDHB", "VARS2", "IARS2"), c("IARS2", "PDHA2"))
-#' scaled <- scaleGO(scores, genesets)
 scaleGO <- function(scores, genesets, method = 'Wang', ontology = 'BP', species = 'org.Hs.eg.db'){
   l <- nrow(scores)
   scaled <- Matrix::Matrix(0, l, l)

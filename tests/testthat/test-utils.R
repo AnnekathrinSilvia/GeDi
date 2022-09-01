@@ -8,9 +8,9 @@ test_that("No column named Genes - getGenes", {
     Geneset = c("Cell Cycle",
                 "Biological Process",
                 "Mitosis"),
-    Gen =  c(c("PDHB VARS2 IARS2"),
-             c("LARS LARS2"),
-             c("IARS SUV3"))
+    Gen =  c(c("PDHB,VARS2,IARS2"),
+             c("LARS,LARS2"),
+             c("IARS,SUV3"))
   )
   expect_error(getGenes(genesets = df))
 })
@@ -20,9 +20,9 @@ test_that("getGenes runs correctly", {
     Geneset = c("Cell Cycle",
                 "Biological Process",
                 "Mitosis"),
-    Genes =  c(c("PDHB VARS2 IARS2"),
-               c("LARS LARS2"),
-               c("IARS SUV3"))
+    Genes =  c(c("PDHB,VARS2,IARS2"),
+               c("LARS,LARS2"),
+               c("IARS,SUV3"))
   )
   genes <- getGenes(genesets = df)
   expect_equal(length(genes), 3)

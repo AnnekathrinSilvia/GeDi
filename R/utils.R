@@ -17,9 +17,9 @@
 #' df <- data.frame(Geneset = c("Cell Cycle",
 #'                            "Biological Process",
 #'                             "Mitosis"),
-#'                  Genes =  c(c("PDHB VARS2 IARS2"),
-#'                           c("LARS LARS2"),
-#'                           c("IARS SUV3")))
+#'                  Genes =  c(c("PDHB,VARS2,IARS2"),
+#'                           c("LARS,LARS2"),
+#'                           c("IARS,SUV3")))
 #' genes <- getGenes(df)
 getGenes <- function(genesets) {
   if (length(genesets) == 0) {
@@ -28,7 +28,7 @@ getGenes <- function(genesets) {
   stopifnot(any(names(genesets) == "Genes"))
 
   genes <- lapply(1:nrow(genesets), function(i) {
-    toupper(strsplit(genesets$Genes[i], " ")[[1]])
+    toupper(strsplit(genesets$Genes[i], ",")[[1]])
   })
 
   return(genes)
@@ -66,3 +66,7 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ")) {
   sep <- separators_list[which.max(sephits_min)]
   return(sep)
 }
+
+
+.actionButtonStyle <- "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
+.tourButtonStyle <- "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"

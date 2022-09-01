@@ -37,4 +37,8 @@ Imports:
     STRINGdb,
     igraph,
     visNetwork,
-    stringr
+    stringr,
+    pheatmap,
+    shinycssloaders,
+    fontawesome,
+    grDevices

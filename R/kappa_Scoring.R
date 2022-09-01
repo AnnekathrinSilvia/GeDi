@@ -49,6 +49,8 @@ calculateKappa <- function(a, b, all_genes){
 #'
 #' @param genesets A `list` of genesets (each geneset is represented by a `list`
 #'                 of the corresponding genes).
+#' @param progress An optional [shiny::Progress()] object to track the progress
+#'                 progress of the function in the app.
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Kappa distance of each
 #'         geneset pair.
@@ -57,12 +59,12 @@ calculateKappa <- function(a, b, all_genes){
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 #' m <- getKappaMatrix(genesets)
-getKappaMatrix <- function(genesets){
+getKappaMatrix <- function(genesets, progress = NULL){
   l <- length(genesets)
   if(l == 0){
     return(-1)
   }
-  k <- Matrix::Matrix(1, l, l)
+  k <- Matrix::Matrix(0, l, l)
   unique_genes <- unique(unlist(genesets))
 
   for(i in 1:(l - 1)){
@@ -70,6 +72,9 @@ getKappaMatrix <- function(genesets){
     for(j in (i+1):l){
       b <- genesets[[j]]
       k[i, j] <- k[j, i] <- calculateKappa(a, b, unique_genes)
+    }
+    if(!is.null(progress)){
+      progress$inc(1/l, detail = paste("Scoring geneset number", i))
     }
   }
 

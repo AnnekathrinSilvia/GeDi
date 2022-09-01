@@ -4,7 +4,7 @@
 \alias{getpMMMatrix}
 \title{Calculate the pMM distance}
 \usage{
-getpMMMatrix(genes, ppi, alpha = 1)
+getpMMMatrix(genes, ppi, alpha = 1, progress = NULL)
 }
 \arguments{
 \item{genes}{A \code{list} of genesets (each geneset is represented by a vector
@@ -21,6 +21,9 @@ the interaction.}
 \item{alpha}{A scaling factor (between 0 and 1) which indicates how much the
 Protein-Protein interactions are weighted into the final score.
 Defaults to 1.}
+
+\item{progress}{An optional \code{\link[shiny:Progress]{shiny::Progress()}} object to track the progress
+progress of the function in the app.}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise pMM distance of each
