@@ -71,7 +71,7 @@ test_that("pMMlocal runs correctly", {
 
 test_that("Empty genesets - getpMMMatrix", {
   ppi <- data.frame()
-  expect_equal(getpMMMatrix(genes = list(), ppi = ppi), -1)
+  expect_true(is.null(getpMMMatrix(genes = list(), ppi = ppi)))
 })
 
 test_that("getpMMMatrix runs correctly", {

@@ -18,7 +18,7 @@
 getMeetMinMatrix <- function(genesets, progress = NULL){
   l <- length(genesets)
   if(l == 0){
-    return(-1)
+    return(NULL)
   }
   m <- Matrix::Matrix(0, l, l)
 

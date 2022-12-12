@@ -24,22 +24,23 @@ calculateKappa <- function(a, b, all_genes){
   }
 
   set_int <- length(intersect(a, b))
+  set_none <- sum(!all_genes %in% a & !all_genes %in% b)
 
   only_a <- sum(all_genes %in% a & !all_genes %in% b)
   only_b <- sum(!all_genes %in% a & all_genes %in% b)
 
-  background <- n_genes - sum(only_a, only_b, set_int)
+  total <- sum(only_a, only_b, set_int, set_none)
 
-  O <- (set_int + background) / n_genes
-  E <- (set_int + only_a) * (set_int + only_b) + (only_b + background) * (only_a + background)
-  E <- E / n_genes^2
+  O <- (set_int + set_none) / total
+  E <- (set_int + only_a) * (set_int + only_b) + (only_b + set_none) * (only_a + set_none)
+  E <- E / total^2
 
   kappa <- ((O-E) / (1-E))
 
   if(is.nan(kappa)){
-    kappa <- 0
+    kappa <- 1
   }
-  return(abs(kappa))
+  return(kappa)
 }
 
 #' Get Matrix of Kappa distances
@@ -62,7 +63,7 @@ calculateKappa <- function(a, b, all_genes){
 getKappaMatrix <- function(genesets, progress = NULL){
   l <- length(genesets)
   if(l == 0){
-    return(-1)
+    return(NULL)
   }
   k <- Matrix::Matrix(0, l, l)
   unique_genes <- unique(unlist(genesets))
@@ -78,5 +79,12 @@ getKappaMatrix <- function(genesets, progress = NULL){
     }
   }
 
+  min <- min(k)
+  max <- max(k)
+  for(i in 1:(l-1)){
+    for(j in (i+1):l){
+      k[i, j] <- k[j, i] <- 1 - ((k[i, j] - min)/(max - min))
+    }
+  }
   return(k)
 }

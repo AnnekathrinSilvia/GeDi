@@ -28,7 +28,7 @@ test_that("calculateKappa runs correctly", {
 })
 
 test_that("Empty genesets - getKappaMatrix", {
-  expect_equal(getKappaMatrix(genes = list()), -1)
+  expect_true(is.null(getKappaMatrix(genes = list())))
 })
 
 test_that("Scoring identical sets - getKappaMatrix", {

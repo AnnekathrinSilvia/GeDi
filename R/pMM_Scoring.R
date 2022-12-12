@@ -165,8 +165,9 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL){
   l <- length(genes)
   if(l == 0){
-    return(-1)
+    return(NULL)
   }
+  stopifnot(!is.null(ppi))
   scores <- Matrix::Matrix(0, l, l)
   maxInteract <- max(ppi$combined_score)
   for (i in 1:(l - 1)) {

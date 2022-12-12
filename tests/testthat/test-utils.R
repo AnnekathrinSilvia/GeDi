@@ -1,6 +1,6 @@
 test_that("No genesets - getGenes", {
   genesets <- list()
-  expect_equal(length(getGenes(genesets = genesets)), 0)
+  expect_true(is.null(getGenes(genesets = genesets)))
 })
 
 test_that("No column named Genes - getGenes", {

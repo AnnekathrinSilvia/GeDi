@@ -23,7 +23,7 @@
 #' genes <- getGenes(df)
 getGenes <- function(genesets) {
   if (length(genesets) == 0) {
-    return(list())
+    return(NULL)
   }
   stopifnot(any(names(genesets) == "Genes"))
 

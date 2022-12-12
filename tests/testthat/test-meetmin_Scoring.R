@@ -1,6 +1,6 @@
 test_that("No genesets - getMeetMinMatrix", {
   genes <- list()
-  expect_equal(getMeetMinMatrix(genes), -1)
+  expect_true(is.null(getMeetMinMatrix(genes)))
 })
 
 test_that("One empty geneset - getMeetMinMatrix", {
