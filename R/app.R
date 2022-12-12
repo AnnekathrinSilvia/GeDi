@@ -842,7 +842,7 @@ GeDi <- function(genesets = NULL,
       validate(need(!(is.null(reactive_values$cluster)),
         message = "It seems like the data has not yet been clustered. Please cluster your data first with the box above.")
       )
-      dt_cluster <- getClusterDatatable(reactive_values$seeds,
+      dt_cluster <- getClusterDatatable(reactive_values$cluster,
                                         reactive_values$gs_names)
       DT::datatable(dt_cluster,
                     options = list(scrollX = TRUE, scrollY = "400px"))
