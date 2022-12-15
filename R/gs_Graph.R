@@ -72,17 +72,19 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
 #'
 #' @param cluster
 #' @param geneset_names
+#' @param genes
 #'
 #' @return
 #' @export
 #'
 #' @examples
-getBipartiteGraph <- function(cluster, geneset_names){
+getBipartiteGraph <- function(cluster, geneset_names, genes){
   edgelist <- c()
   type <- c()
   n_cluster <- length(cluster)
   node_number <- n_cluster + 1
   df_node_mapping <- data.frame(matrix(NA, nrow = length(geneset_names), ncol = 1))
+  colnames(df_node_mapping) <- "Node_number"
 
   node_labels <- c()
 
@@ -123,6 +125,25 @@ getBipartiteGraph <- function(cluster, geneset_names){
   V(graph)$color[cluster_id] <- "gold"
   V(graph)$color[geneset_id] <- "#0092AC"
   E(graph)$color <- "black"
+
+
+  V(graph)$title <- NA
+
+  for(i in cluster_id){
+    V(graph)$title[i] <- paste0(
+      "<h4>", V(graph)$name[i], "</h4><br>",
+      "Members = ", paste(geneset_names[(cluster[[i]])], collapse = ";")
+    )
+  }
+
+  for(j in geneset_id){
+    V(graph)$title[j] <- paste0(
+      "<h4>", V(graph)$name[j], "</h4><br>",
+      "Members = ", paste(genes[as.integer(na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))], collapse = " ")
+    )
+  }
+
+
 
   return(graph)
 }

@@ -56,6 +56,7 @@ calculateKappa <- function(a, b, all_genes){
 #' @return A [Matrix::Matrix()] with the pairwise Kappa distance of each
 #'         geneset pair.
 #' @export
+#' @import parallel
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -68,24 +69,36 @@ getKappaMatrix <- function(genesets, progress = NULL){
   k <- Matrix::Matrix(0, l, l)
   unique_genes <- unique(unlist(genesets))
 
-  for(i in 1:(l - 1)){
-    a <- genesets[[i]]
-    for(j in (i+1):l){
-      b <- genesets[[j]]
-      k[i, j] <- k[j, i] <- calculateKappa(a, b, unique_genes)
+  n_cores <- parallel::detectCores()
+  n_cores <- max(round(n_cores / 2), 1)
+
+  results <- list()
+
+  for (j in 1:(l-1)) {
+    a <- genesets[[j]]
+    if (!is.null(progress)) {
+      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
     }
-    if(!is.null(progress)){
-      progress$inc(1/(l+1), detail = paste("Scoring geneset number", i))
-    }
+    results[[j]] <- parallel::mclapply((j+1):l, function(i) {
+      b <- genesets[[i]]
+      calculateKappa(a, b, unique_genes)
+    }, mc.cores = n_cores)
+    k[j,(j+1):l] <- k[(j+1):l, j] <- unlist(results[[j]])
   }
 
   min <- min(k)
   max <- max(k)
-  progress$inc(1/(l+1), detail = "Normalizing Kappa Matrix")
-  for(i in 1:(l-1)){
-    for(j in (i+1):l){
-      k[i, j] <- k[j, i] <- 1 - ((k[i, j] - min)/(max - min))
-    }
+  if(!is.null(progress)){
+    progress$inc(1/(l+1), detail = "Normalizing Kappa Matrix")
   }
-  return(k)
+
+  results <- list()
+  for(j in 1:(l-1)){
+    results[[j]] <- parallel::mclapply((j+1):l, function(i){
+      return(1 - ((k[j, i] - min)/(max - min)))
+    }, mc.cores = n_cores)
+    k[j,(j+1):l] <- k[(j+1):l, j] <- unlist(results[[j]])
+  }
+
+  return(round(k, 2))
 }

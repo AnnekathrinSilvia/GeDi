@@ -41,4 +41,5 @@ Imports:
     pheatmap,
     shinycssloaders,
     fontawesome,
-    grDevices
+    grDevices,
+    parallel

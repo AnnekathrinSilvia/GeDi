@@ -575,7 +575,7 @@ GeDi <- function(genesets = NULL,
               tabPanel(title = "Distance Scores Graph",
                        fluidRow(
                          column(
-                           width = 3,
+                           width = 2,
                            sliderInput(
                              "similarityScores",
                              "Distance Threshold:",
@@ -832,7 +832,9 @@ GeDi <- function(genesets = NULL,
 
     reactive_values$bipartite_graph <- reactive({
       g <- getBipartiteGraph(reactive_values$cluster,
-                               reactive_values$gs_names)
+                             reactive_values$gs_names,
+                             reactive_values$genes
+                             )
       #g <- add_layout_(as_bipartite(g))
       return(g)
     })
