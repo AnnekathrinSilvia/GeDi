@@ -65,5 +65,5 @@ getJaccardMatrix <- function(genesets, progress = NULL){
     j[k,(k+1):l] <- j[(k+1):l, k] <- unlist(results[[k]])
   }
 
-  return(j)
+  return(round(j, 2))
 }

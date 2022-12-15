@@ -11,6 +11,7 @@
 #' @return A [Matrix::Matrix()] with the pairwise Meet-Min distance of each
 #'         geneset pair.
 #' @export
+#' @import parallel
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -21,22 +22,27 @@ getMeetMinMatrix <- function(genesets, progress = NULL){
     return(NULL)
   }
   m <- Matrix::Matrix(0, l, l)
+  results <- list()
 
-  for(i in 1:(l - 1)){
-    a <- genesets[i]
-    for(j in (i+1):l){
-      b <- genesets[j]
+  n_cores <- parallel::detectCores()
+  n_cores <- max(round(n_cores / 2), 1)
 
+
+  for(j in 1:(l - 1)){
+    a <- genesets[[j]]
+    if(!is.null(progress)){
+      progress$inc(1/l, detail = paste("Scoring geneset number", j))
+    }
+    results[[j]] <- parallel::mclapply((j+1):l, function(i){
+      b <- genesets[[i]]
       if(length(a) == 0 || length(b) == 0){
-        m[i, j] <- m[j, i] <- 1
+        return(1)
       }else{
         int <- length(intersect(a, b))
-        m[i, j] <- m[j, i] <- 1 - (int / min(length(a), length(b)))
+        return(1 - (int / min(length(a), length(b))))
       }
-    }
-    if(!is.null(progress)){
-      progress$inc(1/l, detail = paste("Scoring geneset number", i))
-    }
+    }, mc.cores = n_cores)
+    m[j,(j+1):l] <- m[(j+1):l, j] <- unlist(results[[j]])
   }
   return(m)
 }
