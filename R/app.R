@@ -298,6 +298,8 @@ GeDi <- function(genesets = NULL,
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
 
+    # TODO: Handle core number for the parallelization of the scores
+
 
     # panel Welcome ----------------------------------------------------------
     output$ui_welcome <- renderUI({

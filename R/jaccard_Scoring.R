@@ -37,6 +37,7 @@ calculateJaccard <- function(a, b){
 #' @return A [Matrix::Matrix()] with the pairwise Jaccard distance of each
 #'         geneset pair.
 #' @export
+#' @import parallel
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -47,16 +48,21 @@ getJaccardMatrix <- function(genesets, progress = NULL){
     return(NULL)
   }
   j <- Matrix::Matrix(0, l, l)
+  results <- list()
 
-  for(i in 1:(l-1)){
-    a <- genesets[[i]]
-    for(k in (i+1):l){
-      b <- genesets[[k]]
-      j[i, k] <- j[k, i] <- calculateJaccard(a, b)
+  n_cores <- parallel::detectCores()
+  n_cores <- max(round(n_cores / 2), 1)
+
+  for (k in 1:(l-1)) {
+    a <- genesets[[k]]
+    if (!is.null(progress)) {
+      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
     }
-    if(!is.null(progress)){
-      progress$inc(1/l, detail = paste("Scoring geneset number", i))
-    }
+    results[[k]] <- parallel::mclapply((k+1):l, function(i) {
+      b <- genesets[[i]]
+      calculateJaccard(a, b)
+    }, mc.cores = n_cores)
+    j[k,(k+1):l] <- j[(k+1):l, k] <- unlist(results[[k]])
   }
 
   return(j)
