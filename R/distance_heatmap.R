@@ -1,9 +1,13 @@
-#' Title
+#' Plot a heatmap on the distance scores of the genesets
 #'
-#' @param distance_scores
-#' @param chars_limit
+#' Plot a heatmap of a matrix of (distance) scores of the input genesets
 #'
-#' @return
+#' @param distance_scores A [Matrix::matrix()] of (distance) scores for each
+#'                        pairwise combination of genesets.
+#' @param chars_limit Numeric value, how many characters of the geneset names
+#'                    of `distance_scores`. Defaults to 50.
+#'
+#' @return A plot returned by the [pheatmap::pheatmap()] function
 #' @export
 #'
 #' @examples
@@ -18,5 +22,4 @@ distance_heatmap <- function(distance_scores, chars_limit = 50){
                           labels_col = labels)
 
   return(p)
-
 }

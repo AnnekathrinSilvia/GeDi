@@ -19,6 +19,8 @@
 #' \dontrun{
 #' GeDi()
 #' }
+#' TODO: In the end add to all the examples
+#' also some with the example data not only with some to see the data structure
 GeDi <- function(genesets = NULL,
                  ppi = NULL,
                  alpha = 1) {
@@ -629,6 +631,7 @@ GeDi <- function(genesets = NULL,
     })
 
     reactive_values$scores_graph <- reactive({
+      # TODO: Handle empty scores matrix (matrix of nrow() == 0)
       adj <- getAdjacencyMatrix(reactive_values$scores,
                                 input$similarityScores)
       g <- buildGraph(adj)
@@ -833,6 +836,7 @@ GeDi <- function(genesets = NULL,
     })
 
     reactive_values$bipartite_graph <- reactive({
+      #TODO: Handle no clusters
       g <- getBipartiteGraph(reactive_values$cluster,
                              reactive_values$gs_names,
                              reactive_values$genes

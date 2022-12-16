@@ -1,36 +1,59 @@
-#' Title
+#' Construct an adjacency matrix
 #'
-#' @param distanceMatrix a Distance Matrix containing for each pair the distance
-#' @param cutOff a cutOff value classifying a threshold for similarity
+#' Construct an adjacency matrix from the (distance) scores and a given
+#' threshold.
 #'
-#' @return
+#' @param distanceMatrix A [Matrix::Matrix()] containing (distance) scores
+#'                       between [0, 1]
+#' @param cutOff Numeric value, indicating for which pair of entries in the
+#'               distanceMatrix a 1 should be inserted in the adjacency matrix.
+#'               A 1 is inserted when distanceMatrix[i, j] <= cutOff.
+#'
+#' @return A [Matrix::Matrix()] of adjacency status
 #' @import Matrix
 #' @export
 #'
 #' @examples
+#' m <- Matrix::Matrix(runif(1000, 0, 1), 100, 100)
+#' threshold <- 0.3
+#' adj <- getAdjacencyMatrix(m, threshold)
 getAdjacencyMatrix <- function(distanceMatrix, cutOff){
+  if(is.null(distanceMatrix)){
+    return(NULL)
+  }
   l <- nrow(distanceMatrix)
   adjMat <- Matrix::Matrix(0, l, l)
 
   for(i in 1:l){
     edge <- which(distanceMatrix[i, ] <= cutOff)
-
-    adjMat[i, edge] <- 1
+    if(length(edge) > 0){
+      adjMat[i, edge] <- 1
+    }
   }
   rownames(adjMat) <- rownames(distanceMatrix)
   colnames(adjMat) <- colnames(distanceMatrix)
   return(adjMat)
 }
 
-#' Title
+#' Construct a graph
 #'
-#' @param adjMatrix
+#' Construct a graph from a given adjacency matrix
 #'
-#' @return
+#' @param adjMatrix A [Matrix::Matrix()] indicating for which pair of nodes an
+#'                  edge should be added; 1 indicating an edge, 0 indicating no
+#'                  edge.
+#'
+#' @return An `igraph` object to be further manipulated or processed/plotted
+#'         (e.g. via [igraph::plot.igraph()] or
+#'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
 #' @import igraph
 #' @export
 #'
 #' @examples
+#'
+#' adj <- Matrix::Matrix(0, 100, 100)
+#' adj[c(80:100), c(80:100)] <- 1
+#' graph <- buildGraph(adj)
 buildGraph <- function(adjMatrix){
   g <- igraph::graph_from_adjacency_matrix(
     adjMatrix,
@@ -45,40 +68,66 @@ buildGraph <- function(adjMatrix){
   return(g)
 }
 
-#' Title
+#' Construct an adjacency matrix
 #'
-#' @param cluster
-#' @param geneset_names
+#' Construct an adjacency matrix from a `list` of cluster..
 #'
-#' @return
+#' @param cluster A `list` of clusters, where each cluster member is indicated
+#'                by a numeric value
+#' @param geneset_names A vector of geneset names
+#'
+#' @return A [Matrix::Matrix()] of adjacency status
+#' @import Matrix
 #' @export
 #'
 #' @examples
+#' cluster <- list(c(1:5), c(6:9))
+#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' adj <- getClusterAdjacencyMatrix(cluster, geneset_names)
 getClusterAdjacencyMatrix <- function(cluster, geneset_names){
   l <- length(geneset_names)
   adj <- Matrix::Matrix(0, l, l)
+  if(length(cluster) == 0){
+    rownames(adj) <-  colnames(adj) <- geneset_names
+    diag(adj) <- 0
+    return(adj)
+  }
 
   for(i in 1:length(cluster)){
     subcluster <- cluster[[i]]
     adj[subcluster, subcluster] <- 1
   }
 
-  rownames(adj) <-  colnames(adj) <- geneset_names
+  rownames(adj) <- colnames(adj) <- geneset_names
   diag(adj) <- 0
   return(adj)
 }
 
-#' Title
+#' Construct a bipartite graph
 #'
-#' @param cluster
-#' @param geneset_names
-#' @param genes
+#' Construct a bipartite graph from cluster information, mapping the cluster
+#' to its members
 #'
-#' @return
+#' @param cluster A `list` clusters, where each cluster member is indicated
+#'                by a numeric value
+#' @param geneset_names A vector of geneset names
+#' @param genes A `list` of `list` of genes which belong to the genesets in geneset_names
+#'
+#' @return An `igraph` object to be further manipulated or processed/plotted
+#'         (e.g. via [igraph::plot.igraph()] or
+#'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
 #' @export
+#' @import igraph
 #'
 #' @examples
+#' cluster <- list(c(1:5), c(6:9))
+#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 getBipartiteGraph <- function(cluster, geneset_names, genes){
+  stopifnot(length(cluster) > 0)
+  stopifnot(length(geneset_names) > 0)
+  stopifnot(length(genes) > 0)
+
   edgelist <- c()
   type <- c()
   n_cluster <- length(cluster)
@@ -142,8 +191,6 @@ getBipartiteGraph <- function(cluster, geneset_names, genes){
       "Members = ", paste(genes[as.integer(na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))], collapse = " ")
     )
   }
-
-
 
   return(graph)
 }

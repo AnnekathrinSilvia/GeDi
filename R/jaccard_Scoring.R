@@ -32,10 +32,12 @@ calculateJaccard <- function(a, b){
 #' @param genesets A `list` of genesets (each geneset is represented by a `list`
 #'                 of the corresponding genes).
 #' @param progress An optional [shiny::Progress()] object to track the progress
-#'                 progress of the function in the app.
+#'                 of the function in the app.
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Jaccard distance of each
-#'         geneset pair.
+#'         geneset pair. The matrix is symmetrical with values between 0 and 1,
+#'         where 0 indicates the smallest distance (identical genesets) and
+#'         1 indicates two disjoint sets.
 #' @export
 #' @import parallel
 #'

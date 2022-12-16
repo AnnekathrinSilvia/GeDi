@@ -46,15 +46,17 @@ calculateKappa <- function(a, b, all_genes){
 #' Get Matrix of Kappa distances
 #'
 #' Calculate the Kappa distance of all combinations of genesets in a given data
-#' set of genesets.
+#' set of genesets. The Kappa distance is normalized to the [0, 1] interval.
 #'
 #' @param genesets A `list` of genesets (each geneset is represented by a `list`
 #'                 of the corresponding genes).
 #' @param progress An optional [shiny::Progress()] object to track the progress
-#'                 progress of the function in the app.
+#'                of the function in the app.
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Kappa distance of each
-#'         geneset pair.
+#'         geneset pair. The matrix is symmetrical with values between 0 and 1,
+#'         where 0 indicates the smallest distance (identical genesets) and
+#'         1 indicates two disjoint sets.
 #' @export
 #' @import parallel
 #'

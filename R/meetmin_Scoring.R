@@ -6,10 +6,12 @@
 #' @param genesets A `list` of genesets (each geneset is represented by a `list`
 #'                 of the corresponding genes).
 #' @param progress An optional [shiny::Progress()] object to track the progress
-#'                 progress of the function in the app.
+#'                 of the function in the app.
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Meet-Min distance of each
-#'         geneset pair.
+#'         geneset pair. The matrix is symmetrical with values between 0 and 1,
+#'         where 0 indicates the smallest distance (identical genesets) and
+#'         1 indicates two disjoint sets.
 #' @export
 #' @import parallel
 #'
@@ -26,7 +28,6 @@ getMeetMinMatrix <- function(genesets, progress = NULL){
 
   n_cores <- parallel::detectCores()
   n_cores <- max(round(n_cores / 2), 1)
-
 
   for(j in 1:(l - 1)){
     a <- genesets[[j]]
