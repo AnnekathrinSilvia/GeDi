@@ -42,4 +42,5 @@ Imports:
     shinycssloaders,
     fontawesome,
     grDevices,
-    parallel
+    parallel,
+    rje
