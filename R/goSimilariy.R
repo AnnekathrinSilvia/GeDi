@@ -7,6 +7,7 @@
 #'
 #' @return a [Matrix::Matrix()] with the pairwise GO similarity of each geneset pair
 #' @export
+#' @import GOSemSim
 #'
 #' @examples
 #' genesets <- list()
@@ -40,6 +41,7 @@ goSimilarity <- function(genesets, method = 'Wang', ontology = 'BP', species = '
 #'
 #' @return Scaled Values
 #' @export
+#' @import GOSemSim
 #'
 #' @examples
 #' genesets <- list()
