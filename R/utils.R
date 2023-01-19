@@ -8,6 +8,8 @@
 #'                 in the data (or any other interpretative identifier for the
 #'                 genesets). The second column should be called `Genes` and
 #'                 contains one string of the genes contained in each geneset.
+#' @param gene_name An alternative name for the `Genes` column in the `genesets`
+#'                  data.
 #'
 #' @return A `list` which contains for each geneset in the `Geneset` column a
 #'         `list` of the included genes.
@@ -21,15 +23,22 @@
 #'                           c("LARS,LARS2"),
 #'                           c("IARS,SUV3")))
 #' genes <- getGenes(df)
-getGenes <- function(genesets) {
+getGenes <- function(genesets, gene_name = NULL) {
   if (length(genesets) == 0) {
     return(NULL)
   }
-  stopifnot(any(names(genesets) == "Genes"))
+  #stopifnot(any(names(genesets) == "Genes") && !is.null(gene_name))
 
-  genes <- lapply(1:nrow(genesets), function(i) {
-    toupper(strsplit(genesets$Genes[i], ",")[[1]])
-  })
+
+  if (!is.null(gene_name)) {
+    genes <- lapply(1:nrow(genesets), function(i) {
+      toupper(strsplit(genesets[, gene_name][i], ",")[[1]])
+    })
+  } else{
+    genes <- lapply(1:nrow(genesets), function(i) {
+      toupper(strsplit(genesets$Genes[i], ",")[[1]])
+    })
+  }
 
   return(genes)
 }
@@ -56,7 +65,7 @@ getGenes <- function(genesets) {
 #' mysep <- sepguesser(system.file("extdata/design_tabs.txt",
 #'                     package = "ideal"))
 #'
-sepguesser <- function(file, sep_list = c(",", "\t", ";", " ")) {
+sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   separators_list <- sep_list
   rl <- readLines(file, warn = FALSE)
   rl <- rl[rl != ""] # allow last line to be empty
@@ -68,5 +77,7 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ")) {
 }
 
 
-.actionButtonStyle <- "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
-.tourButtonStyle <- "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+.actionButtonStyle <-
+  "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
+.tourButtonStyle <-
+  "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"

@@ -2,15 +2,28 @@
 % Please edit documentation in R/gs_Graph.R
 \name{getAdjacencyMatrix}
 \alias{getAdjacencyMatrix}
-\title{Title}
+\title{Construct an adjacency matrix}
 \usage{
 getAdjacencyMatrix(distanceMatrix, cutOff)
 }
 \arguments{
-\item{distanceMatrix}{a Distance Matrix containing for each pair the distance}
+\item{distanceMatrix}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} containing (distance) scores
+between 0 and 1.}
 
-\item{cutOff}{a cutOff value classifying a threshold for similarity}
+\item{cutOff}{Numeric value, indicating for which pair of entries in the
+\code{distanceMatrix} a 1 should be inserted in the adjacency matrix.
+A 1 is inserted when for each entry in the matrix that is
+smaller or equal to the \code{cutOff} value.}
+}
+\value{
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of adjacency status
 }
 \description{
-Title
+Construct an adjacency matrix from the (distance) scores and a given
+threshold.
+}
+\examples{
+m <- Matrix::Matrix(runif(1000, 0, 1), 100, 100)
+threshold <- 0.3
+adj <- getAdjacencyMatrix(m, threshold)
 }

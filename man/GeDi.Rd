@@ -17,10 +17,12 @@ GeDi(genesets = NULL, ppi = NULL, alpha = 1)
 A Shiny app object is returned
 }
 \description{
-GeDi main function
+TODO: In the end add to all the examples
+also some with the example data not only with some to see the data structure
 }
 \examples{
 \dontrun{
 GeDi()
 }
+
 }

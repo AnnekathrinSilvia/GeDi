@@ -4,7 +4,7 @@
 \alias{sepguesser}
 \title{Make an educated guess on the separator character}
 \usage{
-sepguesser(file, sep_list = c(",", "\\t", ";", " "))
+sepguesser(file, sep_list = c(",", "\\t", ";", " ", "/"))
 }
 \arguments{
 \item{file}{The name of the file which the data are to be read from.}

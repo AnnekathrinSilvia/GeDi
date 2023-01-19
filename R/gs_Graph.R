@@ -4,13 +4,14 @@
 #' threshold.
 #'
 #' @param distanceMatrix A [Matrix::Matrix()] containing (distance) scores
-#'                       between [0, 1]
+#'                       between 0 and 1.
 #' @param cutOff Numeric value, indicating for which pair of entries in the
-#'               distanceMatrix a 1 should be inserted in the adjacency matrix.
-#'               A 1 is inserted when distanceMatrix[i, j] <= cutOff.
+#'               `distanceMatrix` a 1 should be inserted in the adjacency matrix.
+#'               A 1 is inserted when for each entry in the matrix that is
+#'               smaller or equal to the `cutOff` value.
 #'
 #' @return A [Matrix::Matrix()] of adjacency status
-#' @import Matrix
+#' @importFrom Matrix Matrix
 #' @export
 #'
 #' @examples
@@ -46,7 +47,7 @@ getAdjacencyMatrix <- function(distanceMatrix, cutOff){
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
 #'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
-#' @import igraph
+#' @importFrom igraph graph_from_adjacency_matrix V
 #' @export
 #'
 #' @examples
@@ -63,7 +64,7 @@ buildGraph <- function(adjMatrix){
     diag = F
   )
 
-  V(g)$color <- "#0092AC"
+  igraph::V(g)$color <- "#0092AC"
 
   return(g)
 }
@@ -77,7 +78,7 @@ buildGraph <- function(adjMatrix){
 #' @param geneset_names A vector of geneset names
 #'
 #' @return A [Matrix::Matrix()] of adjacency status
-#' @import Matrix
+#' @importFrom Matrix Matrix
 #' @export
 #'
 #' @examples
@@ -117,7 +118,8 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
 #'         (e.g. via [igraph::plot.igraph()] or
 #'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
 #' @export
-#' @import igraph
+#' @importFrom igraph make_bipartite_graph set_vertex_attr V E
+#' @importFrom stats na.omit
 #'
 #' @examples
 #' cluster <- list(c(1:5), c(6:9))
@@ -165,30 +167,30 @@ getBipartiteGraph <- function(cluster, geneset_names, genes){
   cluster_id <- which(names(V(graph)) %in% node_labels[1:n_cluster])
   geneset_id <- which(!(names(V(graph)) %in% node_labels[1:n_cluster]))
 
-  V(graph)$nodeType <- NA
-  V(graph)$nodeType[cluster_id] <- "Cluster"
-  V(graph)$nodeType[geneset_id] <- "Geneset"
+  igraph::V(graph)$nodeType <- NA
+  igraph::V(graph)$nodeType[cluster_id] <- "Cluster"
+  igraph::V(graph)$nodeType[geneset_id] <- "Geneset"
 
-  V(graph)$shape <- c("box", "ellipse")[factor(V(graph)$nodeType, levels = c("Cluster", "Geneset"))]
+  igraph::V(graph)$shape <- c("box", "ellipse")[factor(V(graph)$nodeType, levels = c("Cluster", "Geneset"))]
 
-  V(graph)$color[cluster_id] <- "gold"
-  V(graph)$color[geneset_id] <- "#0092AC"
-  E(graph)$color <- "black"
+  igraph::V(graph)$color[cluster_id] <- "gold"
+  igraph::V(graph)$color[geneset_id] <- "#0092AC"
+  igraph::E(graph)$color <- "black"
 
 
-  V(graph)$title <- NA
+  igraph::V(graph)$title <- NA
 
   for(i in cluster_id){
-    V(graph)$title[i] <- paste0(
-      "<h4>", V(graph)$name[i], "</h4><br>",
+    igraph::V(graph)$title[i] <- paste0(
+      "<h4>", igraph::V(graph)$name[i], "</h4><br>",
       "Members = ", paste(geneset_names[(cluster[[i]])], collapse = ";")
     )
   }
 
   for(j in geneset_id){
-    V(graph)$title[j] <- paste0(
-      "<h4>", V(graph)$name[j], "</h4><br>",
-      "Members = ", paste(genes[as.integer(na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))], collapse = " ")
+    igraph::V(graph)$title[j] <- paste0(
+      "<h4>", igraph::V(graph)$name[j], "</h4><br>",
+      "Members = ", paste(genes[as.integer(stats::na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))], collapse = " ")
     )
   }
 

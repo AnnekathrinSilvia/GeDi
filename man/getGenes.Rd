@@ -4,7 +4,7 @@
 \alias{getGenes}
 \title{Split string of genes}
 \usage{
-getGenes(genesets)
+getGenes(genesets, gene_name = NULL)
 }
 \arguments{
 \item{genesets}{A \code{data.frame} with at least two columns. One should be
@@ -12,6 +12,9 @@ called \code{Geneset}, which contains the names of the genesets
 in the data (or any other interpretative identifier for the
 genesets). The second column should be called \code{Genes} and
 contains one string of the genes contained in each geneset.}
+
+\item{gene_name}{An alternative name for the \code{Genes} column in the \code{genesets}
+data.}
 }
 \value{
 A \code{list} which contains for each geneset in the \code{Geneset} column a

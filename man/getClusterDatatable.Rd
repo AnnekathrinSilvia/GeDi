@@ -2,13 +2,23 @@
 % Please edit documentation in R/clustering.R
 \name{getClusterDatatable}
 \alias{getClusterDatatable}
-\title{Title}
+\title{Get Dataframe of Cluster}
 \usage{
 getClusterDatatable(cluster, geneset_names)
 }
 \arguments{
-\item{n_gs}{}
+\item{cluster}{A \code{list} of clusters}
+
+\item{geneset_names}{A vector of geneset names}
+}
+\value{
+A \code{data.frame} mapping each geneset to the cluster(s) it belongs to
 }
 \description{
-Title
+Get Dataframe from a \code{list} of clusters
+}
+\examples{
+cluster <- list(c(1:5), c(4:8))
+geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+df <- getClusterDatatable(cluster, geneset_names)
 }

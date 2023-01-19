@@ -7,6 +7,9 @@
 #'                 of the corresponding genes).
 #' @param progress An optional [shiny::Progress()] object to track the progress
 #'                 of the function in the app.
+#' @param n_cores Numerical value indicating the number of cores to be used.
+#'                If no value is given, half of the available cores will be
+#'                used.
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Meet-Min distance of each
 #'         geneset pair. The matrix is symmetrical with values between 0 and 1,
@@ -17,8 +20,8 @@
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
-#' m <- getMeetMinMatrix(genesets)
-getMeetMinMatrix <- function(genesets, progress = NULL){
+#' m <- getMeetMinMatrix(genesets, n_cores = 1)
+getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL){
   l <- length(genesets)
   if(l == 0){
     return(NULL)
@@ -26,8 +29,10 @@ getMeetMinMatrix <- function(genesets, progress = NULL){
   m <- Matrix::Matrix(0, l, l)
   results <- list()
 
-  n_cores <- parallel::detectCores()
-  n_cores <- max(round(n_cores / 2), 1)
+  if(is.null(n_cores)){
+    n_cores <- parallel::detectCores()
+    n_cores <- max(round(n_cores / 2), 1)
+  }
 
   for(j in 1:(l - 1)){
     a <- genesets[[j]]

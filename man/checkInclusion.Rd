@@ -2,13 +2,20 @@
 % Please edit documentation in R/clustering.R
 \name{checkInclusion}
 \alias{checkInclusion}
-\title{Title}
+\title{Check for subset inclusion}
 \usage{
 checkInclusion(seeds)
 }
 \arguments{
-\item{seeds}{}
+\item{seeds}{A \code{list} of sets of numerical values}
+}
+\value{
+A \code{list} of unique sets
 }
 \description{
-Title
+Check if every set is unique and there are no subset included in larger sets
+}
+\examples{
+seeds <- list(c(1:5), c(2:5), c(6:10))
+s <- checkInclusion(seeds)
 }

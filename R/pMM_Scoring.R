@@ -31,7 +31,7 @@ sumInteraction <- function(a, b, ppi) {
     return(0)
   } else{
     interactions <- which(ppi$from %in% a & ppi$to %in% b)
-    return(sum(ppi[interactions,]$combined_score))
+    return(sum(ppi[which(ppi$from %in% a & ppi$to %in% b),]$combined_score))
   }
 }
 
@@ -75,14 +75,29 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
   w <- min(length(a), length(b)) / (length(a) + length(b))
   intlength <- length(int)
   onlyblength <- length(onlyb)
+  onlyalength <- length(onlya)
 
-  sumInt <- sumInteraction(onlya, int, ppi)
-  sumOnlyb <- sumInteraction(onlya, onlyb, ppi)
+  if(intlength == 0 || onlyblength == 0 || onlyalength == 0){
+    return(0)
+  }
 
-  nom <- (w * sumInt) + sumOnlyb
-  denom <- maxInteract * (w * intlength + onlyblength)
+  sumInta_to_b <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% int),]$combined_score)
+  sumOnlyb <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% onlyb),]$combined_score)
 
-  return(nom / denom)
+  nom_a_to_b <- (w * sumInta_to_b) + sumOnlyb
+  denom_a_to_b <- maxInteract * (w * intlength + onlyblength)
+
+  score_a_to_b <- nom_a_to_b / denom_a_to_b
+
+  sumIntb_to_a <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% int),]$combined_score)
+  sumOnlya <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% onlya),]$combined_score)
+
+  nom_b_to_a <- (w * sumIntb_to_a) + sumOnlya
+  denom_b_to_a <- maxInteract * (w * intlength + onlyalength)
+
+  score_b_to_a <- nom_b_to_a / denom_b_to_a
+
+  return(min(score_a_to_b, score_b_to_a))
 }
 
 #' Calculate local pMM distance
@@ -149,10 +164,15 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'              Defaults to 1.
 #' @param progress An optional [shiny::Progress()] object to track the progress
 #'                 progress of the function in the app.
+#' @param n_cores Numerical value indicating the number of cores to be used.
+#'                If no value is given, half of the available cores will be
+#'                used.
 #'
 #' @return A [Matrix::Matrix()] with the pairwise pMM distance of each
 #'         geneset pair.
 #' @export
+#' @import parallel
+#' @import Matrix
 #'
 #' @examples
 #' genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -161,8 +181,8 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'                   to = c("IARS2", "PDHA1"),
 #'                   combined_score = c(0.5, 0.2))
 #'
-#' pMM <- getpMMMatrix(genes, ppi)
-getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL){
+#' pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
+getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL){
   l <- length(genes)
   if(l == 0){
     return(NULL)
@@ -170,19 +190,23 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL){
   stopifnot(!is.null(ppi))
   scores <- Matrix::Matrix(0, l, l)
   maxInteract <- max(ppi$combined_score)
-  for (i in 1:(l - 1)) {
-    a <- genes[[i]]
-    for (j in (i + 1):l) {
-      b <- genes[[j]]
-      pmm <- min(
-        pMMlocal(a, b, ppi, maxInteract),
-        pMMlocal(b, a, ppi, maxInteract)
-      )
-      scores[i, j] <- scores[j, i] <- pmm
-    }
+
+  if(is.null(n_cores)){
+    n_cores <- parallel::detectCores()
+    n_cores <- max(round(n_cores / 2), 1)
+  }
+  results <- list()
+
+  for (j in 1:(l - 1)) {
+    a <- genes[[j]]
     if(!is.null(progress)){
-      progress$inc(1/l, detail = paste("Scoring geneset number", i))
+      progress$inc(1/l, detail = paste("Scoring geneset number", j))
     }
+      results[[j]] <- parallel::mclapply((j+1):l, function(i) {
+        b <- genes[[i]]
+        pMMlocal(a, b, ppi, maxInteract)
+      }, mc.cores = n_cores)
+      scores[j,(j+1):l] <- scores[(j+1):l, j] <- unlist(results[[j]])
   }
   return(scores)
 }

@@ -2,13 +2,26 @@
 % Please edit documentation in R/clustering.R
 \name{seedFinding}
 \alias{seedFinding}
-\title{Title}
+\title{Find clustering seeds}
 \usage{
 seedFinding(distances, simThreshold, memThreshold)
 }
 \arguments{
-\item{memThreshold}{}
+\item{distances}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
+
+\item{simThreshold}{Numerical value, a threshold of what is considered a
+close relationsship between two elements in distances}
+
+\item{memThreshold}{Numerical value, a threshold used to identify members of
+a seeds}
+}
+\value{
+A \code{list} of seeds which can be used for clustering
 }
 \description{
-Title
+Find initial seeds for the clustering. #TODO: Verlinken auf die David publication
+}
+\examples{
+m <- Matrix::Matrix(runif(100, min = 0, max = 1), 10, 10)
+seeds <- seedFinding(distances = m, simThreshold = 0.3, memThreshold = 0.5)
 }

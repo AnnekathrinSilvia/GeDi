@@ -4,18 +4,24 @@
 \alias{getJaccardMatrix}
 \title{Get Matrix of Jaccard distances}
 \usage{
-getJaccardMatrix(genesets, progress = NULL)
+getJaccardMatrix(genesets, progress = NULL, n_cores = NULL)
 }
 \arguments{
 \item{genesets}{A \code{list} of genesets (each geneset is represented by a \code{list}
 of the corresponding genes).}
 
 \item{progress}{An optional \code{\link[shiny:Progress]{shiny::Progress()}} object to track the progress
-progress of the function in the app.}
+of the function in the app.}
+
+\item{n_cores}{Numerical value indicating the number of cores to be used.
+If no value is given, half of the available cores will be
+used.}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Jaccard distance of each
-geneset pair.
+geneset pair. The matrix is symmetrical with values between 0 and 1,
+where 0 indicates the smallest distance (identical genesets) and
+1 indicates two disjoint sets.
 }
 \description{
 Calculate the Jaccard distance of all combinations of genesets in a given data
@@ -23,5 +29,5 @@ set of genesets.
 }
 \examples{
 genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
-m <- getJaccardMatrix(genesets)
+m <- getJaccardMatrix(genesets, n_cores = 1)
 }

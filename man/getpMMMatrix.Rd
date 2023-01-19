@@ -4,7 +4,7 @@
 \alias{getpMMMatrix}
 \title{Calculate the pMM distance}
 \usage{
-getpMMMatrix(genes, ppi, alpha = 1, progress = NULL)
+getpMMMatrix(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
 }
 \arguments{
 \item{genes}{A \code{list} of genesets (each geneset is represented by a vector
@@ -24,6 +24,10 @@ Defaults to 1.}
 
 \item{progress}{An optional \code{\link[shiny:Progress]{shiny::Progress()}} object to track the progress
 progress of the function in the app.}
+
+\item{n_cores}{Numerical value indicating the number of cores to be used.
+If no value is given, half of the available cores will be
+used.}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise pMM distance of each
@@ -40,5 +44,5 @@ ppi <- data.frame(from = c("PDHB", "VARS2"),
                   to = c("IARS2", "PDHA1"),
                   combined_score = c(0.5, 0.2))
 
-pMM <- getpMMMatrix(genes, ppi)
+pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
 }

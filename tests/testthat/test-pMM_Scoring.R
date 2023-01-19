@@ -71,7 +71,7 @@ test_that("pMMlocal runs correctly", {
 
 test_that("Empty genesets - getpMMMatrix", {
   ppi <- data.frame()
-  expect_true(is.null(getpMMMatrix(genes = list(), ppi = ppi)))
+  expect_true(is.null(getpMMMatrix(genes = list(), ppi = ppi, n_cores = 1)))
 })
 
 test_that("getpMMMatrix runs correctly", {
@@ -79,6 +79,6 @@ test_that("getpMMMatrix runs correctly", {
   ppi <- data.frame(from = c("PDHB", "VARS2"),
                     to = c("IARS2", "PDHA1"),
                     combined_score = c(0.5, 0.2))
-  m <- getpMMMatrix(genes = genes, ppi = ppi)
+  m <- getpMMMatrix(genes = genes, ppi = ppi, n_cores = 1)
   expect_gte(m[1, 2], 0)
 })

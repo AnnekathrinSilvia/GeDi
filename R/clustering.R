@@ -6,7 +6,7 @@
 #'
 #' @return A `list` of unique sets
 #' @export
-#' @import rje
+#' @importFrom rje is.subset
 #'
 #' @examples
 #' seeds <- list(c(1:5), c(2:5), c(6:10))

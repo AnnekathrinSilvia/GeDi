@@ -26,3 +26,7 @@ a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity 
 \description{
 Calculate the GO Similarity of all geneset combinations
 }
+\examples{
+genesets <- list()
+gS <- goSimilarity(genesets)
+}

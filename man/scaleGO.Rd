@@ -23,6 +23,14 @@ scaleGO(
 
 \item{species}{the species of your data, indicated as org.XX.eg.db package from Bioconductor}
 }
+\value{
+Scaled Values
+}
 \description{
 Scaling computed distances with GO similarity scores
+}
+\examples{
+genesets <- list()
+scores <- Matrix::Matrix(0.5, 4, 4)
+scaled <- scaleGO(scores, genesets)
 }

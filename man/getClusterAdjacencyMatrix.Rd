@@ -2,13 +2,24 @@
 % Please edit documentation in R/gs_Graph.R
 \name{getClusterAdjacencyMatrix}
 \alias{getClusterAdjacencyMatrix}
-\title{Title}
+\title{Construct an adjacency matrix}
 \usage{
 getClusterAdjacencyMatrix(cluster, geneset_names)
 }
 \arguments{
-\item{geneset_names}{}
+\item{cluster}{A \code{list} of clusters, where each cluster member is indicated
+by a numeric value}
+
+\item{geneset_names}{A vector of geneset names}
+}
+\value{
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of adjacency status
 }
 \description{
-Title
+Construct an adjacency matrix from a \code{list} of cluster..
+}
+\examples{
+cluster <- list(c(1:5), c(6:9))
+geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+adj <- getClusterAdjacencyMatrix(cluster, geneset_names)
 }

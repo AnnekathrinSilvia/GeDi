@@ -2,13 +2,22 @@
 % Please edit documentation in R/clustering.R
 \name{clustering}
 \alias{clustering}
-\title{Title}
+\title{Find cluster from initial seeds}
 \usage{
 clustering(seeds, threshold)
 }
 \arguments{
-\item{threshold}{}
+\item{seeds}{A \code{list} of seeds, e.g. determined by seedFinding}
+
+\item{threshold}{Numerical value, threshold for merging seeds}
+}
+\value{
+A \code{list} of clusters
 }
 \description{
-Title
+Find clusters from initial seeds according to (#TODO: David publication linken)
+}
+\examples{
+seeds <- list(c(1:5), c(6:10))
+cluster <- clustering(seeds, 0.5)
 }

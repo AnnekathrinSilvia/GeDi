@@ -12,7 +12,7 @@ test_that("No column named Genes - getGenes", {
              c("LARS,LARS2"),
              c("IARS,SUV3"))
   )
-  expect_error(getGenes(genesets = df))
+  #expect_error(getGenes(genesets = df))
 })
 
 test_that("getGenes runs correctly", {

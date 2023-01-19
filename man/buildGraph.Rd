@@ -2,13 +2,26 @@
 % Please edit documentation in R/gs_Graph.R
 \name{buildGraph}
 \alias{buildGraph}
-\title{Title}
+\title{Construct a graph}
 \usage{
 buildGraph(adjMatrix)
 }
 \arguments{
-\item{adjMatrix}{}
+\item{adjMatrix}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} indicating for which pair of nodes an
+edge should be added; 1 indicating an edge, 0 indicating no
+edge.}
+}
+\value{
+An \code{igraph} object to be further manipulated or processed/plotted
+(e.g. via \code{\link[igraph:plot.igraph]{igraph::plot.igraph()}} or
+\link[visNetwork:visNetwork-igraph]{visNetwork::visIgraph()})
 }
 \description{
-Title
+Construct a graph from a given adjacency matrix
+}
+\examples{
+
+adj <- Matrix::Matrix(0, 100, 100)
+adj[c(80:100), c(80:100)] <- 1
+graph <- buildGraph(adj)
 }

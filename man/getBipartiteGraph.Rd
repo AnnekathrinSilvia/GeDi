@@ -2,13 +2,29 @@
 % Please edit documentation in R/gs_Graph.R
 \name{getBipartiteGraph}
 \alias{getBipartiteGraph}
-\title{Title}
+\title{Construct a bipartite graph}
 \usage{
 getBipartiteGraph(cluster, geneset_names, genes)
 }
 \arguments{
-\item{genes}{}
+\item{cluster}{A \code{list} clusters, where each cluster member is indicated
+by a numeric value}
+
+\item{geneset_names}{A vector of geneset names}
+
+\item{genes}{A \code{list} of \code{list} of genes which belong to the genesets in geneset_names}
+}
+\value{
+An \code{igraph} object to be further manipulated or processed/plotted
+(e.g. via \code{\link[igraph:plot.igraph]{igraph::plot.igraph()}} or
+\link[visNetwork:visNetwork-igraph]{visNetwork::visIgraph()})
 }
 \description{
-Title
+Construct a bipartite graph from cluster information, mapping the cluster
+to its members
+}
+\examples{
+cluster <- list(c(1:5), c(6:9))
+geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 }

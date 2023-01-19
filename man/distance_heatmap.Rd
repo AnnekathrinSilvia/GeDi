@@ -2,13 +2,25 @@
 % Please edit documentation in R/distance_heatmap.R
 \name{distance_heatmap}
 \alias{distance_heatmap}
-\title{Title}
+\title{Plot a heatmap on the distance scores of the genesets}
 \usage{
 distance_heatmap(distance_scores, chars_limit = 50)
 }
 \arguments{
-\item{chars_limit}{}
+\item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores for each
+pairwise combination of genesets.}
+
+\item{chars_limit}{Numeric value, how many characters of the geneset names
+of \code{distance_scores}. Defaults to 50.}
+}
+\value{
+A plot returned by the \code{\link[pheatmap:pheatmap]{pheatmap::pheatmap()}} function
 }
 \description{
-Title
+Plot a heatmap of a matrix of (distance) scores of the input genesets
+}
+\examples{
+distance_score <- Matrix::Matrix(0.5, 20, 20)
+distance_score[c(11:15), c(2:6)] <- 0.2
+p <- distance_heatmap(distance_score)
 }
