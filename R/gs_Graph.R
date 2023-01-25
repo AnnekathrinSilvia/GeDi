@@ -130,7 +130,12 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
 #' @examples
 #' cluster <- list(c(1:5), c(6:9))
 #' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'  c("AHI1", "ALMS1"))
+#'
+#' g <- getBipartiteGraph(cluster, geneset_names, genes)
 getBipartiteGraph <- function(cluster, geneset_names, genes){
   stopifnot(length(cluster) > 0)
   stopifnot(length(geneset_names) > 0)
@@ -186,18 +191,31 @@ getBipartiteGraph <- function(cluster, geneset_names, genes){
 
   igraph::V(graph)$title <- NA
 
+  text <- list()
   for(i in cluster_id){
-    igraph::V(graph)$title[i] <- paste0(
+    mem <- paste(cluster[[i]], collapse = " ")
+    mem <- gsub("(.{21,}?)\\s", "\\1<br>", mem)
+    text[[i]] <- mem
+  }
+
+  for(j in geneset_id){
+    gs <- paste(unlist(genes[as.integer(na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))]
+                ),collapse = " ")
+    gs <- gsub("(.{71,}?)\\s", "\\1<br>", gs)
+    text[[j]] <- gs
+  }
+
+  for(i in cluster_id){
+    igraph::V(graph)$title[i] <- paste(
       "<h4>", igraph::V(graph)$name[i], "</h4><br>",
-      "Members = ", paste(geneset_names[(cluster[[i]])], collapse = ";")
+      "Members = ", text[[i]]
     )
   }
 
   for(j in geneset_id){
-    igraph::V(graph)$title[j] <- paste0(
+    igraph::V(graph)$title[[j]] <- paste(
       "<h4>", igraph::V(graph)$name[j], "</h4><br>",
-      "Members = ", paste(genes[as.integer(stats::na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))], collapse = " ")
-    )
+      "Genes :<br>", text[[j]])
   }
 
   return(graph)

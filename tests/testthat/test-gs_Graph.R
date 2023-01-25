@@ -43,7 +43,7 @@ test_that("getBipartiteGraph - no clusters", {
 
 test_that("getBipartiteGraph - no geneset names", {
   cluster <- list(c(1:20), c(4:6))
-  genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+  genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
   expect_error(getBipartiteGraph(cluster, list(), genes))
 })
 
@@ -56,7 +56,7 @@ test_that("getBipartiteGraph - no genes", {
 test_that("getBipartiteGraph runs correctly", {
   cluster <- list(c(1:2))
   geneset_names <- c("a", "b")
-  genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+  genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
   g <- getBipartiteGraph(cluster, geneset_names, genes)
   expect_type(g, "list")
 })

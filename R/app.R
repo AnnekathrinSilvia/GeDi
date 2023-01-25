@@ -16,7 +16,7 @@
 #' @import fontawesome
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.delim
-#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4Card bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems tabBox
+#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4Card bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems tabBox bs4DashFooter
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices
 #'
@@ -262,14 +262,16 @@ GeDi <- function(genesets = NULL,
       )
     ),
     # controlbar definition ------------------------------------------------
-    controlbar = bs4Dash::bs4DashControlbar(collapsed = TRUE,
-                                            uiOutput("ui_controlbar"))
+    controlbar = bs4Dash::bs4DashControlbar(
+      collapsed = TRUE,
+      uiOutput("ui_controlbar")
+      ),
 
     # footer definition -------------------------------------------------------
-    # footer = bs4DashFooter(
-    #   left = GeneTonic_footer,
-    #   right = NULL
-    # )
+    footer = bs4Dash::bs4DashFooter(
+      left = GeDi_footer,
+      right = NULL
+    )
   )
   # server deifnition ---------------------------------------------------------
   gedi_server <- function(input, output, session) {
