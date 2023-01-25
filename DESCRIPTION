@@ -46,4 +46,8 @@ Imports:
     grDevices,
     parallel,
     rje,
-    stats
+    stats,
+    ggplot2,
+    plotly,
+    hrbrthemes,
+    viridis

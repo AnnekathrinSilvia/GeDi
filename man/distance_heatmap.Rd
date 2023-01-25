@@ -14,7 +14,7 @@ pairwise combination of genesets.}
 of \code{distance_scores}. Defaults to 50.}
 }
 \value{
-A plot returned by the \code{\link[pheatmap:pheatmap]{pheatmap::pheatmap()}} function
+A plot returned by the \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} function
 }
 \description{
 Plot a heatmap of a matrix of (distance) scores of the input genesets
@@ -22,5 +22,6 @@ Plot a heatmap of a matrix of (distance) scores of the input genesets
 \examples{
 distance_score <- Matrix::Matrix(0.5, 20, 20)
 distance_score[c(11:15), c(2:6)] <- 0.2
+rownames(distance_score) <- colnames(distance_score) <- as.character(c(1:20))
 p <- distance_heatmap(distance_score)
 }

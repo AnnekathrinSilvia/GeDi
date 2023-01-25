@@ -4,13 +4,19 @@ test_that("No distance scores", {
 })
 
 test_that("Heatmap is correctly created", {
-  distance_scores <- Matrix::Matrix(runif(1000, min=0, max=1), 100, 100)
+  names <- c(1:10)
+  names <- as.character(names)
+  distance_scores <- Matrix::Matrix(runif(100, min=0, max=1), 10, 10)
+  rownames(distance_scores) <- colnames(distance_scores) <- names
   p <- distance_heatmap(distance_scores)
   expect_type(p, "list")
 })
 
 test_that("Character limitation works correctly", {
-  distance_scores <- Matrix::Matrix(runif(1000, min=0, max=1), 100, 100)
+  names <- c(1:10)
+  names <- as.character(names)
+  distance_scores <- Matrix::Matrix(runif(100, min=0, max=1), 10, 10)
+  rownames(distance_scores) <- colnames(distance_scores) <- names
   char_lim <- 10
   p <- distance_heatmap(distance_scores, chars_limit = char_lim)
   expect_type(p, "list")

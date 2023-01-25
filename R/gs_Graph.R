@@ -47,7 +47,7 @@ getAdjacencyMatrix <- function(distanceMatrix, cutOff){
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
 #'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
-#' @importFrom igraph graph_from_adjacency_matrix V
+#' @import igraph
 #' @export
 #'
 #' @examples
@@ -64,7 +64,13 @@ buildGraph <- function(adjMatrix){
     diag = F
   )
 
-  igraph::V(g)$color <- "#0092AC"
+  gs_names <- rownames(adjMatrix)
+  ids <- which(names(V(g)) %in% gs_names)
+
+  V(g)$title[ids] <- paste0(
+    "<h4>",
+    sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
+    V(g)$name[ids], "<br><br>")
 
   return(g)
 }
