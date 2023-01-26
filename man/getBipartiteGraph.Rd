@@ -26,5 +26,10 @@ to its members
 \examples{
 cluster <- list(c(1:5), c(6:9))
 geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+ c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+ c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+ c("AHI1", "ALMS1"))
+
+g <- getBipartiteGraph(cluster, geneset_names, genes)
 }
