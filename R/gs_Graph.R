@@ -110,6 +110,162 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
   return(adj)
 }
 
+#' Title
+#'
+#' @param cluster
+#' @param geneset_df
+#' @param gs_names
+#' @param color_by
+#'
+#' @return
+#' @import igraph
+#' @importFrom GeneTonic map2color
+#' @importFrom grDevices colorRampPalette
+#' @export
+#'
+#' @examples
+buildClusterGraph <- function(cluster,
+                              geneset_df,
+                              gs_names,
+                              color_by = NULL){
+
+  adj <- getClusterAdjacencyMatrix(cluster,
+                                   gs_names)
+  g <- buildGraph(adj)
+
+  if(!is.null(color_by)){
+    if (!color_by %in% colnames(geneset_df)) {
+      stop(
+        "Your data does not contain the ",
+        color_by,
+        " column.\n",
+        "Please select another column to use for the color."
+      )
+    }
+  }
+
+  ids <- which(names(V(g)) %in% gs_names)
+
+  if(!is.null(color_by)){
+    col_var <- geneset_df[ids, color_by]
+    # the palette changes if it is z_score VS pvalue
+    if (all(col_var <= 1) & all(col_var > 0)) { # likely p-values...
+      col_var <- -log10(col_var)
+      # V(g)$color <- colVar
+      mypal <- (scales::alpha(
+        colorRampPalette(RColorBrewer::brewer.pal(name = "YlOrRd", 9))(50), 0.8
+      ))
+      mypal_hover <- (scales::alpha(
+        colorRampPalette(RColorBrewer::brewer.pal(name = "YlOrRd", 9))(50), 0.5
+      ))
+      mypal_select <- (scales::alpha(
+        colorRampPalette(RColorBrewer::brewer.pal(name = "YlOrRd", 9))(50), 1
+      ))
+
+      V(g)$color.background <- map2color(col_var, mypal, symmetric = FALSE,
+                                         limits = range(na.omit(col_var)))
+      V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = FALSE,
+                                        limits = range(na.omit(col_var)))
+      V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = FALSE,
+                                    limits = range(na.omit(col_var)))
+
+      V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
+      V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
+      V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
+    } else {
+      # e.g. using z_score or aggregated value
+      if (prod(range(na.omit(col_var))) >= 0) {
+        # gradient palette
+        mypal <- (scales::alpha(
+          colorRampPalette(RColorBrewer::brewer.pal(name = "Oranges", 9))(50), 0.8
+        ))
+        mypal_hover <- (scales::alpha(
+          colorRampPalette(RColorBrewer::brewer.pal(name = "Oranges", 9))(50), 0.5
+        ))
+        mypal_select <- (scales::alpha(
+          colorRampPalette(RColorBrewer::brewer.pal(name = "Oranges", 9))(50), 1
+        ))
+
+        V(g)$color.background <- map2color(col_var, mypal, symmetric = FALSE,
+                                           limits = range(na.omit(col_var)))
+        V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = FALSE,
+                                          limits = range(na.omit(col_var)))
+        V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = FALSE,
+                                      limits = range(na.omit(col_var)))
+        V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
+        V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
+        V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
+
+      } else {
+        # divergent palette to be used
+        mypal <- rev(scales::alpha(
+          colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.8
+        ))
+        mypal_hover <- rev(scales::alpha(
+          colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.5
+        ))
+        mypal_select <- rev(scales::alpha(
+          colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 1
+        ))
+
+        V(g)$color.background <- map2color(col_var, mypal, symmetric = TRUE,
+                                           limits = range(na.omit(col_var)))
+        V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = TRUE,
+                                          limits = range(na.omit(col_var)))
+        V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = TRUE,
+                                      limits = range(na.omit(col_var)))
+
+        V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
+        V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
+        V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
+      }
+    }
+  }
+
+  no_cluster <- V(g)[degree(g) == 0]
+  g <- delete_vertices(g, no_cluster)
+
+  transposed_df <- as.data.frame(t(geneset_df))
+
+
+  title <- list()
+  names_rows <- rownames(transposed_df)
+
+  for(i in 1:ncol(transposed_df)){
+    node_title <-"<!DOCTYPE html> <html> <head> <style>
+      table {font-family: arial, sans-serif; font-size: 10px; border-collapse: collapse;width: 100%;} td,
+      th { border: 1px solid #dddddd; text-align: center; padding: 5px;}
+      tr:nth-child(even) {background-color: #dddddd;}
+      </style> </head> <body>
+      <table>";
+    for(j in 1:nrow(transposed_df)){
+      text <- gsub(",", " ", transposed_df[j,i])
+      text <- gsub("(.{101,}?)\\s", "\\1<br>", text)
+      node_title = paste0(node_title,
+                          " <tr>",
+                          "<td>",
+                          names_rows[j],
+                          "</td>",
+                          "<td>",
+                          text,
+                          "</td>",
+                          "</tr> ")
+    }
+    node_title = paste0(node_title, "</table> </body> </html>")
+    title[[i]] <- node_title
+  }
+
+
+
+
+  V(g)$title[ids] <- paste0(
+    "<h4>",
+    sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
+    title[ids], "<br><br>")
+  return(g)
+
+}
+
 #' Construct a bipartite graph
 #'
 #' Construct a bipartite graph from cluster information, mapping the cluster
@@ -188,12 +344,15 @@ getBipartiteGraph <- function(cluster, geneset_names, genes){
   igraph::V(graph)$color[geneset_id] <- "#0092AC"
   igraph::E(graph)$color <- "black"
 
+  #cluster_size <- sapply(cluster, length)
+  #igraph::V(graph)$size[cluster_id] <- 5 * sqrt(cluster_size)
+
 
   igraph::V(graph)$title <- NA
 
   text <- list()
   for(i in cluster_id){
-    mem <- paste(cluster[[i]], collapse = " ")
+    mem <- paste(geneset_names[cluster[[i]]], collapse = " ")
     mem <- gsub("(.{21,}?)\\s", "\\1<br>", mem)
     text[[i]] <- mem
   }
@@ -208,14 +367,14 @@ getBipartiteGraph <- function(cluster, geneset_names, genes){
   for(i in cluster_id){
     igraph::V(graph)$title[i] <- paste(
       "<h4>", igraph::V(graph)$name[i], "</h4><br>",
-      "Members = ", text[[i]]
+      "Members:<br>", text[[i]]
     )
   }
 
   for(j in geneset_id){
     igraph::V(graph)$title[[j]] <- paste(
       "<h4>", igraph::V(graph)$name[j], "</h4><br>",
-      "Genes :<br>", text[[j]])
+      "Genes:<br>", text[[j]])
   }
 
   return(graph)

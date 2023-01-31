@@ -285,7 +285,6 @@ GeDi <- function(genesets = NULL,
     reactive_values$scores <- NULL
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
-    brush_heatmap <- reactiveValues(x = NULL, y = NULL)
 
 
     # panel Welcome ----------------------------------------------------------
@@ -712,11 +711,11 @@ GeDi <- function(genesets = NULL,
               selected = "Geneset Graph",
               side = "right",
               tabPanel(title = "Geneset Graph",
-                       withSpinner(
-                         visNetworkOutput("cluster_Network",
-                                          height = "700px",
-                                          width = "100%")
-                       )),
+                       withSpinner(visNetworkOutput("cluster_Network",
+                                                    height = "700px",
+                                                    width = "100%"))
+
+              ),
               tabPanel(title = "Cluster-Geneset Bipartite Graph",
                        withSpinner(
                          visNetworkOutput(
@@ -777,8 +776,8 @@ GeDi <- function(genesets = NULL,
         )
       } else{
         visNetwork::visIgraph(reactive_values$cluster_graph()) %>%
-          visNodes(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
-          visEdges(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
+          #visNodes(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
+          #visEdges(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
           visOptions(
             highlightNearest = list(
               enabled = TRUE,
@@ -794,12 +793,10 @@ GeDi <- function(genesets = NULL,
     })
 
     reactive_values$cluster_graph <- reactive({
-      adj <- getClusterAdjacencyMatrix(reactive_values$cluster,
-                                       reactive_values$gs_names)
-      g <- buildGraph(adj)
-
-      no_cluster <- V(g)[degree(g) == 0]
-      g <- delete_vertices(g, no_cluster)
+      g <- buildClusterGraph(reactive_values$cluster,
+                             reactive_values$genesets,
+                             reactive_values$gs_names,
+                             input$graphColoring)
       return(g)
     })
 
@@ -856,7 +853,7 @@ GeDi <- function(genesets = NULL,
         textInput(inputId = "alt_genes_colname",
                   label = "Alternative name for the Genes Column"),
         textInput(inputId = "alt_geneset_colname",
-                  label = "Alternative name for the Geneset column"),
+                  label = "Alternative name for the Geneset Column"),
         numericInput(
           inputId = "n_genesets",
           label = "Number of genesets",
@@ -864,12 +861,17 @@ GeDi <- function(genesets = NULL,
           min = 1,
           max = 100
         ),
+        # currently broken if no data is available
         selectInput(
-          "exp_condition",
-          label = "Group/color by: ",
-          choices = c(NULL),
+          "graphColoring",
+          label = "Color the nodes by: ",
+          choices = if (!(is.null(reactive_values$genesets))) {
+            c(NULL, colnames(dplyr::select_if(reactive_values$genesets, is.numeric)))
+          } else{
+            c(NULL)
+          },
           selected = NULL,
-          multiple = TRUE
+          multiple = FALSE
         ),
         checkboxInput("labels", label = "Display all labels", value = FALSE)
       )

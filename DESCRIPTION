@@ -50,4 +50,8 @@ Imports:
     ggplot2,
     plotly,
     hrbrthemes,
-    viridis
+    viridis,
+    ivdoctr,
+    GeneTonic,
+    RColorBrewer,
+    scales
