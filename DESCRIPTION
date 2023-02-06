@@ -54,4 +54,5 @@ Imports:
     ivdoctr,
     GeneTonic,
     RColorBrewer,
-    scales
+    scales,
+    readxl

@@ -79,7 +79,7 @@ GeDi <- function(genesets = NULL,
             style = .actionButtonStyle
           ),
           actionButton(
-            inputId = "btn_info_genetonic",
+            inputId = "btn_info_gedi",
             icon = icon("heart"),
             label = "About GeDi",
             style = .actionButtonStyle
@@ -203,6 +203,7 @@ GeDi <- function(genesets = NULL,
               )
             ),
             uiOutput("ui_panel_data_upload"),
+            uiOutput("ui_filter_data"),
             uiOutput("ui_panel_specify_species"),
             uiOutput("ui_panel_download_ppi")
           )
@@ -262,16 +263,12 @@ GeDi <- function(genesets = NULL,
       )
     ),
     # controlbar definition ------------------------------------------------
-    controlbar = bs4Dash::bs4DashControlbar(
-      collapsed = TRUE,
-      uiOutput("ui_controlbar")
-      ),
+    controlbar = bs4Dash::bs4DashControlbar(collapsed = TRUE,
+                                            uiOutput("ui_controlbar")),
 
     # footer definition -------------------------------------------------------
-    footer = bs4Dash::bs4DashFooter(
-      left = GeDi_footer,
-      right = NULL
-    )
+    footer = bs4Dash::bs4DashFooter(left = GeDi_footer,
+                                    right = NULL)
   )
   # server deifnition ---------------------------------------------------------
   gedi_server <- function(input, output, session) {
@@ -285,6 +282,7 @@ GeDi <- function(genesets = NULL,
     reactive_values$scores <- NULL
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
+    reactive_values$alt_names <- FALSE
 
 
     # panel Welcome ----------------------------------------------------------
@@ -302,57 +300,58 @@ GeDi <- function(genesets = NULL,
           status = "danger",
           solidHeader = TRUE,
           h2("Upload your Genesets input data"),
-          fluidRow(column(
-            width = 6,
-            fileInput(inputId = "uploadgenesetfile",
-                      label = "Upload a geneset file")
-            # br(),
-            # "... or you can also ",
-            # actionButton("btn_loaddemo", "Load the demo airway data",
-            #              icon = icon("play-circle"),
-            #              class = "btn btn-info"
-            # ), br(), p()),
-          ),
-          column(
-            width = 6,
-            box(
-              id = "Genests_preview",
-              width = NULL,
-              title = "Genesets preview",
-              status = "info",
-              solidHeader = TRUE,
-              collapsible = TRUE,
-              collapsed = TRUE,
-              fluidRow(column(
-                width = 12,
-                offset = 0.5,
-                DT::dataTableOutput("dt_genesets")
-              ))
+          fluidRow(
+            column(
+              width = 6,
+              fileInput(
+                inputId = "uploadgenesetfile",
+                label = "Upload a geneset file",
+                accept = c(
+                  "text/csv",
+                  "text/comma-separated-values",
+                  "text/tab-separated-values",
+                  "text/plain",
+                  ".csv",
+                  ".tsv"
+                ),
+                multiple = FALSE
+              ),
+              br(),
+              "... or you can also ",
+              actionButton(
+                "btn_loaddemo",
+                "Load the demo data",
+                icon = icon("play-circle"),
+                class = "btn btn-info",
+                style = .actionButtonStyle
+              ),
+              br(),
+              p(),
+              uiOutput("ui_alt_column_names")
+            ),
+            column(
+              width = 6,
+              box(
+                id = "Genests_preview",
+                width = NULL,
+                title = "Genesets preview",
+                status = "info",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                collapsed = TRUE,
+                fluidRow(column(
+                  width = 12,
+                  offset = 0.5,
+                  DT::dataTableOutput("dt_genesets")
+                ))
+              )
             )
-          ))
+          )
         )
       )
     })
 
-    # output$upload_genesets <- renderUI({
-    #   return(
-    #     fileInput(
-    #       inputId = "uploadgenesetfile",
-    #       label = "Upload a geneset file",
-    #       accept = c(
-    #         "text/csv",
-    #         "text/comma-separated-values",
-    #         "text/tab-separated-values",
-    #         "text/plain",
-    #         ".csv",
-    #         ".tsv"
-    #       ),
-    #       multiple = FALSE
-    #     )
-    #   )
-    # })
-
-    readGenesets <- reactive({
+    readGenesetsTxt <- reactive({
       if (is.null(input$uploadgenesetfile)) {
         return(NULL)
       }
@@ -371,6 +370,42 @@ GeDi <- function(genesets = NULL,
       return(genesets)
     })
 
+    output$ui_alt_column_names <- renderUI({
+      if (reactive_values$alt_names == FALSE) {
+        return(NULL)
+      }
+      fluidRow(
+        column(
+          width = 12,
+          "It seems like your data does not contain columns named Genesets and Genes.
+        Please select the column which contains the identifiers for the Genesets
+        and the column which contains the Genes. If you are unsure about the
+        format of the input data, please check out the Welcome panel.",
+          br(),
+          selectInput(
+            inputId = "alt_name_genesets",
+            label = "Geneset column",
+            choices = c(colnames(reactive_values$genesets)),
+            multiple = FALSE,
+            selected = NULL
+          ),
+          selectInput(
+            inputId = "alt_name_genes",
+            label = "Genes column",
+            choices = c(colnames(reactive_values$genesets)),
+            multiple = FALSE,
+            selected = NULL
+          ),
+          actionButton(
+            inputId = "alt_names_start",
+            label = "Submit your alternative columns",
+            icon = icon("play-circle"),
+            style = .actionButtonStyle
+          )
+        )
+      )
+    })
+
     output$dt_genesets <- DT::renderDataTable({
       validate(need(!(
         is.null(reactive_values$genesets)
@@ -381,6 +416,73 @@ GeDi <- function(genesets = NULL,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
+    output$ui_filter_data <- renderUI({
+      if (is.null(reactive_values$genesets)) {
+        return(NULL)
+      }
+      tagList(
+        box(
+          width = 12,
+          title = "Optional Filtering Step",
+          status = "info",
+          solidHeader = TRUE,
+          h2("Filter your uploaded Genesets"),
+          fluidRow(
+            "It might be beneficial to your analysis to filter out general terms
+            and genesets before proceeding with the next steps.",
+            column(
+              width = 6,
+              sliderInput(
+                inputId = "bins_gs_hist",
+                label = "Select the bins for the histogram",
+                min = 0,
+                max = max(sapply(reactive_values$genes, length)),
+                value = c(0, max(sapply(reactive_values$genes, length)))
+              )
+            ),
+            column(width = 6,
+                   sliderInput(inputId = "bindwidth_hist",
+                               label = "Select width of the bins",
+                               min = 1,
+                               max = 50,
+                               value = 5))
+          ),
+          fluidRow(column(
+            width = 12,
+            plotOutput("histogram_initial_data",
+                       brush = brushOpts("plot_brush", resetOnNew = T, direction = "x"))
+          )),
+          fluidRow(column(width = 12,
+                          DT::dataTableOutput("table"))),
+          fluidRow(column(
+            width = 6,
+            selectizeInput(
+              inputId = "select_filter_genesets",
+              label = "Select the genesets to be filtered",
+              choices = c(reactive_values$gs_names),
+              multiple = TRUE,
+              options = list(create = TRUE)
+            ),
+            actionButton(
+              inputId = "filter_genesets",
+              label = "Remove the selected Genesets",
+              icon = icon("play-circle"),
+              style = .actionButtonStyle
+            )
+          )
+          )
+        )
+      )
+    })
+
+    output$histogram_initial_data <- renderPlot({
+      gs_histogram(reactive_values$genes,
+                   reactive_values$gs_names,
+                   start = input$bins_gs_hist[1],
+                   end = input$bins_gs_hist[2],
+                   binwidth = input$bindwidth_hist)
+    })
+
 
     output$ui_panel_specify_species <- renderUI({
       if (is.null(reactive_values$genesets)) {
@@ -388,7 +490,7 @@ GeDi <- function(genesets = NULL,
       }
       box(
         width = 12,
-        title = "Step 2",
+        title = "Step 2 (optional)",
         status = "warning",
         solidHeader = TRUE,
         tagList(
@@ -411,11 +513,12 @@ GeDi <- function(genesets = NULL,
       }
       fluidRow(column(
         width = 12,
-        textInput(
+        selectizeInput(
           "species",
-          label = "Please specify the species of your data
-                          (e.g. Homo Sapiens, Mus musculus, etc.)",
-          width = '400px'
+          label = "Please select the species of your data.",
+          choices = c("", "Homo Sapiens", "Mus musculus", "Rattus norvegicus"),
+          multiple = TRUE,
+          options = list(create = TRUE)
         )
       ))
     })
@@ -459,10 +562,16 @@ GeDi <- function(genesets = NULL,
           is.na(input$species) || is.null(input$species)) {
         return(NULL)
       }
+      if (length(strsplit(input$species, "\\s+")) > 1) {
+        showNotification(
+          "It seems like you have selected more than one species. Please go back to the box and select the correct species.",
+          type = "error"
+        )
+      }
       reactive_values$species <- input$species
       box(
         width = 12,
-        title = "Step 3",
+        title = "Step 3 (optional)",
         status = "success",
         solidHeader = TRUE,
         tagList(
@@ -632,8 +741,16 @@ GeDi <- function(genesets = NULL,
         )
       } else{
         visNetwork::visIgraph(reactive_values$scores_graph()) %>%
-          visNodes(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
-          visEdges(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
+          visNodes(color = list(
+            background = "#0092AC",
+            highlight = "gold",
+            hover = "gold"
+          )) %>%
+          visEdges(color = list(
+            background = "#0092AC",
+            highlight = "gold",
+            hover = "gold"
+          )) %>%
           visOptions(
             highlightNearest = list(
               enabled = TRUE,
@@ -711,11 +828,11 @@ GeDi <- function(genesets = NULL,
               selected = "Geneset Graph",
               side = "right",
               tabPanel(title = "Geneset Graph",
-                       withSpinner(visNetworkOutput("cluster_Network",
-                                                    height = "700px",
-                                                    width = "100%"))
-
-              ),
+                       withSpinner(
+                         visNetworkOutput("cluster_Network",
+                                          height = "700px",
+                                          width = "100%")
+                       )),
               tabPanel(title = "Cluster-Geneset Bipartite Graph",
                        withSpinner(
                          visNetworkOutput(
@@ -793,10 +910,12 @@ GeDi <- function(genesets = NULL,
     })
 
     reactive_values$cluster_graph <- reactive({
-      g <- buildClusterGraph(reactive_values$cluster,
-                             reactive_values$genesets,
-                             reactive_values$gs_names,
-                             input$graphColoring)
+      g <- buildClusterGraph(
+        reactive_values$cluster,
+        reactive_values$genesets,
+        reactive_values$gs_names,
+        input$graphColoring
+      )
       return(g)
     })
 
@@ -866,7 +985,9 @@ GeDi <- function(genesets = NULL,
           "graphColoring",
           label = "Color the nodes by: ",
           choices = if (!(is.null(reactive_values$genesets))) {
-            c(NULL, colnames(dplyr::select_if(reactive_values$genesets, is.numeric)))
+            c(NULL, colnames(
+              dplyr::select_if(reactive_values$genesets, is.numeric)
+            ))
           } else{
             c(NULL)
           },
@@ -882,8 +1003,27 @@ GeDi <- function(genesets = NULL,
 
     # Data Upload Panel ----------------------------------------------------------
     observeEvent(input$uploadgenesetfile, {
-      reactive_values$genesets <-
-        readRDS(input$uploadgenesetfile$datapath)
+      filename <-
+        unlist(strsplit(input$uploadgenesetfile$datapath, ".", fixed = TRUE))
+      format <- tail(filename, n = 1)
+
+      if (format == "RDS") {
+        reactive_values$genesets <-
+          readRDS(input$uploadgenesetfile$datapath)
+      } else if (format == "txt") {
+        reactive_values$genesets <- readGenesetsTxt()
+      } else if (format == "xlsx") {
+        reactive_values$genesets <-
+          readxl::read_excel(input$uploadgenesetfile$datapath)
+      } else{
+        showNotification(
+          "It seems like your input file has not the right format.
+          Please check the Welcome panel for the right input format and
+          upload your data again. ",
+          type = "error"
+        )
+      }
+
       if (input$alt_geneset_colname != "") {
         reactive_values$gs_names <-
           reactive_values$genesets[, input$alt_geneset_colname]
@@ -904,16 +1044,47 @@ GeDi <- function(genesets = NULL,
             "It seems like your data does not have a column named 'Genes'. Please check your data and try to upload it again.",
             type = "error"
           )
-          reactive_values$genesets <- NULL
+          reactive_values$alt_names <- TRUE
           reactive_values$gs_names <- NULL
           reactive_values$genes <- NULL
         }
       )
     })
 
+    observeEvent(input$alt_names_start, {
+      reactive_values$gs_names <-
+        reactive_values$genesets[, input$alt_name_genesets]
+
+      reactive_values$genes <- getGenes(reactive_values$genesets,
+                                        input$alt_name_genes)
+      reactive_values$alt_names_start <- FALSE
+      showNotification(
+        "Successfully selected your columns and uploaded your data.
+        You can now proceed.",
+        type = "message"
+      )
+    })
+
+    observeEvent(input$plot_brush, {
+      df <- .buildHistogramData(genes = reactive_values$genes,
+                                gs_names = reactive_values$gs_names,
+                                start = input$bins_gs_hist[1],
+                                end = input$bins_gs_hist[2])
+
+      info_plot <- brushedPoints(df, input$plot_brush)
+      output$table <- DT::renderDataTable(info_plot)
+    })
+
     observeEvent(input$download_ppi, {
       validate(need(!(input$species == ""),
                     message = "Please specify the species of your data"))
+      if (length(strsplit(input$species, "\\s+")) > 1) {
+        showNotification(
+          "It seems like you have selected more than one species. Please go back to the box and select the correct species.",
+          type = "error"
+        )
+        return()
+      }
       reactive_values$species <- input$species
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
