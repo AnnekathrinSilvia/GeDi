@@ -7,8 +7,36 @@
 buildClusterGraph(cluster, geneset_df, gs_names, color_by = NULL)
 }
 \arguments{
-\item{color_by}{}
+\item{cluster}{A \code{list} of clusters, where each cluster member is indicated
+by a numeric value}
+
+\item{geneset_df}{A \code{data.frame} of the input data of the application}
+
+\item{gs_names}{A vector of geneset names}
+
+\item{color_by}{A column name of geneset_df which is used to color the nodes
+of the resulting graph}
+}
+\value{
+An \code{igraph} object to be further manipulated or processed/plotted
+(e.g. via \code{\link[igraph:plot.igraph]{igraph::plot.igraph()}} or
+\link[visNetwork:visNetwork-igraph]{visNetwork::visIgraph()})
 }
 \description{
 Title
+}
+\examples{
+cluster <- list(c(1:5), c(6:9))
+genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+ c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+ c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+ c("AHI1", "ALMS1"))
+gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+geneset_df <- data.frame(Genesets = gs_names,
+                         value = rep(1, 9))
+geneset_df$Genes <- genes
+graph <- buildClusterGraph(cluster = cluster,
+                          geneset_df = geneset_df,
+                          gs_names = gs_names,
+                          color_by = "value")
 }

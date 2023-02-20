@@ -1,19 +1,484 @@
 ---
-title: "GeDi_manual"
-output: rmarkdown::html_vignette
+title: >
+ The `GeDi` User's Guide
+author:
+- name: Annekathrin Ludt
+  affiliation: 
+  - Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  email: anneludt@uni-mainz.de
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('GeDi')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
 vignette: >
-  %\VignetteIndexEntry{GeDi_manual}
+  %\VignetteIndexEntry{The GeDi User's Guide}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{GeDi}
+  %\VignetteKeywords{FunctionalAnnotation, Enrichment Analysis, Distance measurements,  Exploration, Visualization, GUI}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+editor_options: 
+  chunk_output_type: console
+bibliography: GeDi.bib
 ---
+
+<style type="text/css">
+.smaller {
+  font-size: 10px
+}
+</style>
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2023-02-10
+
+**License**: `r packageDescription("GeDi")[["License"]]`
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment  = "#>",
+  error    = FALSE,
+  warning  = FALSE,
+  eval     = TRUE,
+  message  = FALSE,
+  fig.width = 10
 )
+options(width = 100)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
-```{r setup}
-library(GeDi)
+<hr>
+
+# Introduction {#introduction}
+
+This vignette describes how to use the `r BiocStyle::Biocpkg("GeDi")` package for exploring the results of a functional annotation and enrichment analysis. 
+
+This package provides a Shiny application which aims at facilitating the exploration and interpretation of functional annotation and enrichment analysis results. The applications aims to achieve a reasonable aggregation of the detailed and sometimes overwhelming functional annotation or enrichment analysis results. This is achieved through a combination of interactivity, visualization and reproducibility.   
+
+In order to use `r BiocStyle::Biocpkg("GeDi")` in your workflow, the results of a functional annotation or enrichment analysis is required.  
+
+
+This workflow has mainly been tested with enrichment analyses conducted on the Gene Ontology signature database (TODO: reference) e.g. resulting from analyses with `r BiocStyle::Biocpkg("topGO")` (TODO: reference) or `r BiocStyle::Biocpkg("clusterProfiler")` (TODO: reference). Results containing identifiers from the KEGG (TODO. reference) or Reactome (TODO: reference) database (e.g. generated using `enrichKegg` or `enrichPathway` from the `r BiocStyle::Biocpkg("clusterProfiler")` package) can also serve as input for `GeDi` but might need some additional data transformation beforehand. Please refer to the Welcome panel of the application for a detailed description of the expected input data format.  
+
+In the remainder of this vignette, we will illustrate the main features of `r BiocStyle::Biocpkg("GeDi")` on a publicly available dataset from Alasoo, et al. "Shared genetic effects on chromatin and gene expression indicate a role for enhancer priming in immune response", published in Nature Genetics, January 2018 [@Alasoo2018]
+[doi:10.1038/s41588-018-0046-7](https://doi.org/10.1038/s41588-018-0046-7).
+
+The data is made available via the `r BiocStyle::Biocpkg("macrophage")` Bioconductor package, which contains the files output from the Salmon quantification (version 0.12.0, with Gencode v29 reference), as well as the values summarized at the gene level, which we will use to exemplify.
+
+In the `macrophage` experimental setting, the samples are available from 6 different donors, in 4 different conditions (naive, treated with Interferon gamma, with SL1344, or with a combination of Interferon gamma and SL1344).
+We will restrict our attention on the comparison between Interferon gamma treated samples vs naive samples.
+
+# Getting started {#gettingstarted}
+
+To install this package, start R and enter:
+
+```{r install, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("GeDi")
 ```
+
+Once installed, the package can be loaded and attached to your current workspace as follows:
+
+```{r loadlib, eval = TRUE}
+library("GeDi")
+```
+
+With the attached package, you can simply start the application by running `GeDi()`. This will launch the application and land you on the Welcome page. Via the Data upload panel you can simply upload your data directly to the application. This will also ensure that your data is in the right input format. Another way to start the applicationis to run:
+
+```{r launchapp, eval=FALSE}
+GeDi(genesets = geneset_df,
+     ppi = ppi_df)
+```
+
+where 
+- `geneset_df` is a `DataFrame` of input data and contains at least one column named Genesets containing the geneset identifiers and one column named Genes which contains a comma seperated list of genes belonging to the respective geneset
+- `ppi_df` is a `DataFrame` containing protein protein interactions scores with the columns from, to and combined_score
+
+
+In this vignette, we showcase the functionality of `r BiocStyle::Biocpkg("GeDi")` using the enrichment analysis results of the `macrophage` dataset.
+If you want to dive in and start playing with the app immediately, you can simply run:
+
+```{r examplerun, eval=FALSE}
+example("GeDi", ask = FALSE)
+```
+
+Otherwise, you can follow the next chunks of code to generate the required input objects, step by step. This can also be used as reference guide of the steps ideally performed before the anlysis of the data with `GeDi`.
+
+In order to use `GeDi` you will need results from a functional annotation analysis. In this vignette, we will show how to perform an enrichment analysis on differentially expressed (DE) genes of the `macrophage` dataset. 
+
+In the first step, we will load the `macrophage` data and generate a `DESeqDataset` as the differential expression analysis will be performed with `r BiocStyle::Biocpkg("DESeq2")`.
+
+
+
+```{r create_dds, eval=TRUE}
+library("macrophage")
+library("DESeq2")
+
+data("gse", package = "macrophage")
+
+dds_macrophage <- DESeqDataSet(gse, design = ~line + condition)
+# changing the ids to Ensembl instead of the Gencode used in the object
+rownames(dds_macrophage) <- substr(rownames(dds_macrophage), 1, 15)
+dds_macrophage
+```
+
+Now that we have our `DESeqDataset`, we can perform the DE analysis. In this vignette, we will use the results of the comparison of two different conditions of the data set, namely `IFNg` and `naive`, while controlling for the cell line of origin (which has 6 levels, namely `r knitr::combine_words(levels(dds_macrophage$condition))`).
+
+Before we perform the DE analysis, we filter lowly expressed features from the data set. In this example we filter all genes that do not have at least 10 counts in at least 6 samples (where 6 is the size of the smallest group in the data).
+
+Afterwards, we perfrom the DE analysis and test against a null hypothesis of a log2FoldChange of 1 in order to ensure that we call those genes with a consistent *and* robust expression change DE.
+
+In a last step, we add the gene symbols to the resulting `DataFrame` which will later serve as our Genes column in the input data to `GeDi`.
+
+```{r create_resde1, eval = TRUE}
+keep <- rowSums(counts(dds_macrophage) >= 10) >= 6
+dds_macrophage <- dds_macrophage[keep, ]
+dds_macrophage
+```
+
+```{r create_resde2, eval = TRUE}
+dds_macrophage <- DESeq(dds_macrophage)
+
+res_macrophage_IFNg_vs_naive <- results(dds_macrophage,
+                                        contrast = c("condition", "IFNg", "naive"),
+                                        lfcThreshold = 1, alpha = 0.05)
+res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
+```
+
+TODO: make sure this also works for my vignette
+```{r load_resde, eval=FALSE}
+## To speed up the operations in the vignette, we can also load this object directly
+data("res_de_macrophage")
+head(res_macrophage_IFNg_vs_naive)
+```
+
+After we performed the differential expression analysis, we can now perform the functional annotation analysis. For this purpose, we are first going to extract the DE genes from the previously generated results as well as determine the background genes to be used for the functional enrichment. 
+
+For the enrichment analysis, we are going to use the overrepresentation anlysis method implemented in the `r BiocStyle::Biocpkg("topGO")` package. In order to facilitate the later usage of these results in `GeDi`, we use the `topGOtable` wrapper function available in the `r BiocStyle::Biocpkg("pcaExplorer")`. This function uses per default the `BP` ontology and the `elim` method to decorrelate the GO graph structure and deliver less redundant functional categories and generated a `DataFrame` object that can readily be used in `GeDi`.
+
+As previously mentioned, also enrichment results generated with `r BiocStyle::Biocpkg("clusterProfiler")` can be used. Especially results generated with the `enrichGO` method have been tested during the development of `GeDi`, but also the results form the `enrichKEGG` and `enrichPathway` method can be used as input.
+
+
+```{r create_resenrich1, eval=TRUE}
+library("pcaExplorer")
+library("GeneTonic")
+library("AnnotationDbi")
+# we extract the differential expression genes from the result object
+de_symbols_IFNg_vs_naive <- deseqresult2df(res_macrophage_IFNg_vs_naive, FDR = 0.05)$SYMBOL
+# we determine the background genes for the ORA 
+bg_ids <- rowData(dds_macrophage)$SYMBOL[rowSums(counts(dds_macrophage)) > 0]
+```
+
+```{r create_resenrich2, eval=TRUE}
+library("topGO")
+topgoDE_macrophage_IFNg_vs_naive <-
+  pcaExplorer::topGOtable(de_symbols_IFNg_vs_naive,
+                          bg_ids,
+                          ontology = "BP",
+                          mapping = "org.Hs.eg.db",
+                          geneID = "symbol",
+                          topTablerows = 500)
+```
+
+As previously mentioned, `Gedi` expects the input to have at least two columns, one named Genesets and one named Genes. While this is not strictly necessary if you upload your data, it is required if you want to start the application with your input as parameters (e.g. `GeDi(genesets = genesets_df)`). In this case, the Genesets column is expected to contain some form of geneset identifiers for each set of the input , while the Genes column is expected to be a comma-separated list of genes belonging to each geneset. 
+
+Hence, we will rename the columns of the resulting `DataFrame` of the enrichment analysis to fit the required format. 
+
+TODO: maybe function erstellen, die die columns renamed? 
+
+   
+```{r renamecolumns, eval=TRUE}
+names(topgoDE_macrophage_IFNg_vs_naive)[names(topgoDE_macrophage_IFNg_vs_naive) == "GO.ID"] <- "Genesets"
+names(topgoDE_macrophage_IFNg_vs_naive)[names(topgoDE_macrophage_IFNg_vs_naive) == "genes"] <- "Genes"
+```
+  
+
+## All set!
+
+Now we have generated functional annotation results form the `macrophage` dataset and can start exploring the data with `GeDi`. You can either start the application and upload the generated data using the `GeDi()` command. Or, if you followed this vignette, you can start the application directly with the loaded data by running `GeDi(genesets = topgoDE_macrophage_IFNg_vs_naive)`.
+
+
+```{r dryrun, eval=FALSE}
+GeDi()
+
+GeDi(genesets = topgoDE_macrophage_IFNg_vs_naive)
+```
+
+# Description of the `GeDi` user interface {#userinterface}
+
+The `GeDi` app is built with `r BiocStyle::CRANpkg("shiny")`, and its layout is built around the components of `r BiocStyle::CRANpkg("bs4Dash")`, a modern looking dashboard based on Bootstrap 4.
+
+## Header (navbar)
+
+The dashboard navbar (as it is called in `bs4Dash`) contains two dropdown menus, which can be expanded by clicking on the respective icons (<i class="fa fa-book"></i> and <i class="fa fa-info"></i>).
+These provide additional buttons to do one the following:
+
+- <i class="fa fa-book"></i> - inspect the `r BiocStyle::Biocpkg("GeDi")` vignette (either the one installed in bundle with the package, or the online version)
+- <i class="fa fa-question-circle"></i> - read some first help information on `GeDi` (what the package does in brief, what is required to run properly)
+- <i class="fa fa-info-circle"></i> - display information about the current session (via `sessionInfo()`)
+- <i class="fa fa-heart"></i> - show some general information on `r BiocStyle::Biocpkg("GeDi")`, like where to find its development version (and contribute to that), or how to cite this tool.
+
+## Sidebar
+
+On the left side of the app, by clicking on the <i class="fa fa-bars"></i> menu bar icon (or if the app is viewed in full screen, by simply moving the mouse over to the left side), the sidebar menu is triggered.
+This constitutes the main way to access the different tabs of `GeDi`, which will be explained in more detail in the next section (\@ref(functionality)).
+
+## Controlbar
+
+The controlbar is triggered by clicking on the cogs <i class="fa fa-cogs"></i> icon on the upper right part of the navbar. 
+There you can find widgets that control the appearance of output (plots, tables, graphs) in multiple tabs of the main application, such as for example the number of gene sets to focus your attention on.
+
+## Body
+
+The main body of the `GeDi` application is structured in tabs that are activated by clicking on the respective icons or text in the sidebar.
+
+While the Welcome tab might be self-explanatory, the functionality of each tab can go in depth, and new users can benefit of the question circle button (<i class="fa fa-question-circle"></i>) button to trigger an interactive tour of `GeDi`, which allows users to learn the basic usage mechanisms by doing.
+During a tour, the highlighted elements respond to the user's actions, while the rest of the UI is kept shaded.
+Tours can be interrupted anytime by clicking outside of the focused window, and arrows (left, right) can be used as well to navigate between steps.
+The tour functionality is provided by the beautiful `r BiocStyle::CRANpkg("rintrojs")` package.
+
+# The `GeDi` functionality {#functionality}
+
+The main `GeDi` app is structured in different panels, and each of these is presented in detail in the subsequent sections.
+
+## The Welcome panel
+
+This panel is intended to give an overview on how to use `GeDi`. For this purpose, the panel highlights in detail how to generate the input data for the application. It also explains the expected input format and the different interactive elements that you will find in the remaining panels of the app.  
+
+## The Data Upload panel
+
+This panel will handle the upload of the data if not provided in the function call. 
+
+The panel is divided into boxes which will correspond to the individual steps of the data upload. The individual boxes will appear consecutively once the previous step has been completed successfully. 
+
+In the first step, you can upload you data via the Browse button. This will open a modal window to your computer storage where you can select the respective file with your input data. Once the data has successfully been read in, you can have a look at you data via the Data Preview box on the right. 
+During the data upload, the application will check if your input contains the columns Genesets and Genes. If these columns are not found, the application will show a small error message in the lower right corner and show two drop down menus in which you can select the correct columns of your data. 
+
+This panel has as its main component an interactive bipartite graph illustrating the relationship between genesets and genes that belong to them.
+One of the relevant parameters for this output is the number of gene sets to be displayed, adjustable from the widget in the control panel on the right.
+
+Such a representation is particularly useful to see overlap between terms, and grasp the way how different genes may play a concerting role in different processes.
+
+The color and shape of the nodes depend on the entity they are related to:
+
+- genes are shown as ellipses, colored with a palette diverging from a neutral color to red (log2FC > 0) or to blue (log2FC < 0)
+- gene sets are enclosed in gold boxes
+
+The interactivity in this graph is essential for zooming, panning, and selecting its nodes.
+The node selection, in particular, triggers a drill-down exploration, which populates a box on the right side, either with a signature heatmap (for a gene set), or with an expression plot, split by the experimental covariates of interest (for a gene) - this behavior can be controlled by the "Group/color by" selectize widget in the control sidebar.
+In both cases, some HTML content is also generated, with buttons linking to external databases where to retrieve additional information (e.g. ENSEMBL, NCBI, AmiGO, ...).
+
+A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
+
+**Bookmarking from the Gene-Geneset panel:** When clicking on the Bookmark button while in this tab, it is possible to add to the shortlisted items of interest both genes and gene sets.
+To do so, while one of the nodes is selected, click on the button with the mouse - or alternatively, click on the Left Ctrl button of your keyboard.
+A notification will be triggered, informing the status of the bookmarked elements.
+
+## The Enrichment Map panel
+
+This panel, similar to the Gene-Geneset tab, has again an interactive graph of a subset of the gene sets (you can control again the number of included sets from the control sidebar).
+This is also called an enrichment map - it is also possible to generate them in tools such as Cytoscape.
+In this case, the genesets are directly connected by an edge, where the thickness encodes the degree of similarity (e.g. in terms of overlap) between them; sets below a similarity threshold are not displayed for the sake of better clarity.
+
+The size of the node encodes the information of the number of genes detected as Differentially Expressed (from the column `gs_de_count`), while the color is representative of the computed Z score for each set.
+This value is computed as $z = \frac{(upgenes - downgenes)}{\sqrt{(upgenes + downgenes)}}$ and is indicative of the expression changes of the genes assigned to a particular set.
+Please, keep in mind that methods based on overrepresentation analysis only do not account for the topology that might be behind the set of interacting features (i.e. an upregulated gene involved in inhibition of a pathway would still be counted as a positive element in the equation above).
+
+The `z_score` and `aggr_score` (in the simplest form, a mean of the log2FoldChange values for all the genes of a set) can be easily computed with the `get_aggrscores()`, which appends these scores for each gene set to the original `res_enrich` data frame.
+
+The interactive flavor in this tab permits a quick exploration of the signature heatmaps for the genesets of interest by simply clicking on a node; this also triggers the display of some HTML content, if related to a Gene Ontology term.
+
+A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
+
+In the section below the interactive enrichment map, the functionality for the _distillation_ of gene sets into meta-genesets is provided.  
+In brief, a community detection algorithm is run on the graph underlying the enrichment map, and the additional information extracted is rendered as a table, linked to a meta-geneset box to display the expression signature for all its member genes.
+
+**Bookmarking from the Enrichment Map panel:** If the user clicks on the Bookmark button while in this tab, it will add the selected node to the shortlist of genesets, visible later in the Bookmarks panel.
+The Left Ctrl button of your keyboard can again be used for this purpose, and this will trigger a notification in the lower right part of the screen.
+
+## The Overview panel
+
+This panel presents to the user a series of summary plots, based on the outputs of `enhance_table()` and `gs_volcano()`, aiming to provide a mean to summarize the most relevant genesets in the `res_enrich` object.
+The number of displayed (or labeled, according to each function) genesets can be as usual controlled by the widget in the right sidebar.
+
+We avoid (re)rendering all plots at once by placing them as content of different tabs in a `bs4TabCard` container - this allows the user to navigate in a more agile way to the desired output elements.
+
+Interactive versions of the plots are returned via calls to `ggplotly`.
+
+A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
+
+## The GSViz panel
+
+This panel, similarly to the Overview panel, presents a variety of plots visualizing the gene sets - and their mutual relationships, or their behavior across samples.
+This includes, for example:
+
+- a genesets by sample heatmap (via `gs_scores()` and `gs_scoresheat()`),  with a score for each matrix element corresponding to the sum of the standardized expression values of its components
+- a genesets-gene Sankey diagram (via `gs_alluvial()`, aliased to `gs_sankey()`), to represent the N:N membership relationships
+- a summary heatmap (via `gs_summary_heat()`) to display the memberships and at the same time the expression change of each gene set member
+- a multi-dimensional scaling (MDS) plot, based on `gs_mds()`, to provide a 2d visualization of the distance among genesets (based on a similarity measure e.g. their overlap or other criteria, such as their semantic similarity)
+- a compact summary of `res_enrich`, via `gs_summary_overview()`, where aggregated scores and significance can be displayed on the same plot - for this, there are functions to compare different `res_enrich` objects (`gs_summary_overview()`, `gs_summary_overview_pair()`)
+- alternative visual representation of the `res_enrich` objects, based on `gs_radar()` (equivalent to `gs_spider()`) and `gs_dendro()`
+
+As in many other panels, the control over the number of genesets displayed is tweaked with the widget in the right sidebar, "Number of genesets".
+
+A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
+
+## The Bookmarks panel
+
+In this panel, the user can obtain a complete overview on the bookmarked features of interest, both genes (left side) and genesets (right side). 
+
+During a live exploration session, it might be tricky to recall the exact aspect of each point of interest. 
+
+Below the interactive `DT::datatable` objects, the content of each table can also be separately downloaded by clicking on the respective button.
+Moreover, there is a button (with the cocktail icon <i class="fa fa-cocktail"></i>) that triggers the generation of a content-rich report which will focus on all the shortlisted elements.
+This leverages a template report delivered as a part of `r BiocStyle::Biocpkg("GeneTonic")`, which accesses the input elements and the reactive values for the bookmarks, based on the `happy_hour()` function.
+
+If a user already knows a set of features and geneset of interest, it is also possible to practically call `happy_hour()` directly from the command line (see the example in the chunk below).
+Please keep in mind that the identifiers to be used should match the values used as row names of the `dds` object and as `gs_id` column of the original `res_enrich` input.
+
+This report will serve as a useful means to generate a permanent and reproducible analysis output, that can be further stored or shared.
+
+Ideally, each live session with `GeneTonic` could terminate with a call to `happy_hour()` - admittedly, an aperitivo should start with that, and not end - please accept our apologies :) .
+
+A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
+
+In this panel, an export button to a `SummarizedExperiment` object to be provided as input to the `r BiocStyle::Biocpkg("iSEE")` package has been added in version >= 1.2.0. 
+This enables further and fine-grained visualization options in the `iSEE` framework -  if the flavors of `GeneTonic` are not yet what you would want, you might find an excellent venue there.
+
+# Using the `GeneTonic` functions {#functions}
+
+The `r BiocStyle::Biocpkg("GeneTonic")` package provides, apart from the main app where to perform the analysis in an interactive way, a number of functions which can be used also as standalone components for a workflow.
+
+This sections contains some showcase examples on how to use them.
+
+## Overview functions: genes and gene sets
+
+Summarize the top genesets by displaying the logFC of each set's components - and transform the `ggplot` output into a `plotly` visualization, where tooltips can deliver additional information:
+
+Display the relationship between genesets and genes that belong to them (useful e.g. to see overlap between terms):
+
+Display a bipartite graph where genesets and genes are included, and make it interactive:
+
+## Summary representations
+
+Plot an enrichment map of the enrichment results, where you can choose with `n_gs` the number of top genesets to be displayed, and specify in `gs_ids` the gene set identifiers - these will be merged together for each function's context:
+
+Expanding on the enrichment map, the distilled content of the `res_enrich` can be represented as enhanced tables and interactive graphs, depicting the membership of the respective meta-genesets
+
+
+Another possibility to summarize the result of enrichment is by applying fuzzy clustering on it to detect groups of related genesets, with the peculiarity that a geneset can belong to different clusters - this reflects the original implementation of DAVID [@Huang2009].  
+The `gs_fuzzyclustering()` function returns a table with additional columns, related to the cluster id and the status for the geneset in that cluster ("Representative" or "Member", where the Representative geneset is the one with lowest p-value in that cluster).
+
+
+Display a volcano plot for genesets, plotting significance (y-axis) versus Z score (x-axis), with color and size encoding some geneset features:
+
+
+Plot a dendrogram of the enrichment results (or a subset thereof), using node color, node size, and branch color to encode relevant geneset features (and their groups):
+
+Produce a MultiDimensional Scaling plot of the genesets in the enrichment results:
+
+
+Obtain a simple overview of enrichment results, showing e.g. significance and direction of change (`z_score`)
+
+
+Plot a summary heatmap of genes vs genesets, encoding the logFC of genes and representing the overlap among genesets:
+
+
+Recalling that you can also use a `gtl` list object as input, a similar call would be:
+
+
+
+Plot a heatmap on the geneset scores, computed sample-wise via `gs_scores` so that the geneset members compose a Z score that gets summarized: 
+
+
+## Reporting
+
+Enjoy a fully fledged `happy_hour` by running offline the analysis contained in the report, included in the `r BiocStyle::Biocpkg("GeneTonic")` package.
+
+
+Again, if used with the `gtl` object, the call would look like this:
+
+
+The functionality is also the same activated in the Bookmarks section of the interactive app.
+Here you can choose a number of genesets (`mygenesets`) and genes (`mygenes`), specifying their identifiers, and obtain in batch a number of summary representations focused on these elements.
+
+Advanced users can also provide a custom RMarkdown file, and to guarantee it works in the context of `happy_hour`, we recommend to inspect the template available here:
+
+
+## Comparison between sets
+
+While `GeneTonic` works currently with a single `res_enrich` object, there are some functions that allow a visual comparison between two different enrichment results (the functions are displaying a shuffled instance of the single `res_enrich`):
+
+In particular, the `gs_horizon` function tries to group the different genesets based on their relative enrichment across conditions, similar to a representation of [@Dutertre2019] (e.g. Fig. 5G).
+Thanks to Charlotte Soneson for providing a compact working implementation of this!
+
+## Miscellaneous functions
+
+Extract results and sort them (filtering by FDR) with `deseqresult2df`, select one top-ranking gene, extract its expression values and plot them, and display some buttons to link to external databases:
+
+
+Plot a signature heatmap for a gene set, where a matrix of genes times samples for the set members is extracted, plus generate some HTML code to summarize the information of a Gene Ontology term:
+
+
+Plot a signature volcano plot for a gene set, with the genes of the geneset highlighted in color and the remaining genes shown shaded in the background: 
+
+
+Some functions are just to ensure that the input objects are conform with the format expected by `GeneTonic`:
+
+
+As an internal check, one can see if all required arguments are fine for running `GeneTonic` by running `checkup_GeneTonic`:
+
+
+
+# Additional Information {#additionalinfo}
+
+Bug reports can be posted on the Bioconductor support site (https://support.bioconductor.org/) or raised as issues in the `GeneTonic` GitHub repository (https://github.com/federicomarini/GeneTonic/issues). 
+The GitHub repository also contains the development version of the package, where new functionality is added over time - careful, you might be running bleeding edge versions!
+
+The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
+
+If you use `GeneTonic` for your analysis, please cite it as shown below:
+
+
+
+# FAQs {#faqs}
+
+**Q: Why is this package called `GeneTonic`?**
+
+A: For obvious reasons :) Like in a cocktail, ingredients (expression matrix, results from DE, and results from functional enrichment analysis) do taste better together.  
+Plus, I like puns with words.  
+And cocktails.  
+Sometimes simultaneously.
+
+**Q: My configuration on two machines is somewhat different, so I am having difficulty in finding out what packages are different. Is there something to help on this?**
+
+A: Yes, you can check out `r BiocStyle::Githubpkg("federicomarini/sessionDiffo")`, a small utility to compare the outputs of two different `sessionInfo` outputs.
+This can help you pinpoint what packages might be causing the issue.
+
+**Q: I am using a different service/software for generating the results of functional enrichment analysis. How do I plug this into `GeneTonic`?**
+
+A: You can set up a small conversion function, on the line of `shake_topGOtableResult` and `shake_enrichResult` (*use the source, Luke* to see how you can build your own), or request such a function - make sure to specify the formatting specifications of your tool of choice (e.g. DAVID, g:Profiler, or commercial solutions such as Ingenuity Pathway Analysis).  
+As of Bioconductor release 3.12 (version >= 1.2.0 for `r BiocStyle::Biocpkg("GeneTonic")`), shaker functions are available for these tools:
+
+- `DAVID` (https://david.ncifcrf.gov/), with the result exported in text format
+- `topGO` (available in the `r BiocStyle::Biocpkg("topGO")` package), as in the wrapper function provided by `r BiocStyle::Biocpkg("pcaExplorer")`, `pcaExplorer::topGOtable()`
+- `Enrichr` (https://amp.pharm.mssm.edu/Enrichr/), either from text format or from a call via the `r BiocStyle::CRANpkg("enrichr")` package
+- `fgsea`, taking the output of the workflow from the `r BiocStyle::Biocpkg("fgsea")` package
+- `g:Profiler` (https://biit.cs.ut.ee/gprofiler/), either from text file format or with the output of `gost()` in `r BiocStyle::CRANpkg("gprofiler2")`
+- `clusterProfiler`, providing `enrichResult` objects, commonly returned by `enrichGO()` from `r BiocStyle::Biocpkg("clusterProfiler")` or `enrichPathway()` from `r BiocStyle::Biocpkg("ReactomePA")`
+
+**Q: I'd like to try `GeneTonic` but I could not install it/I just want a quick peek into it. What can I do for this?**
+
+A: We set up an instance of `GeneTonic` running on the `macrophage` dataset at this address: http://shiny.imbei.uni-mainz.de:3838/GeneTonic.
+
+# Session Info {- .smaller}
+
+```{r sessioninfo}
+sessionInfo()
+```
+
+# References {-}

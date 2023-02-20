@@ -23,6 +23,12 @@ also some with the example data not only with some to see the data structure
 \examples{
 \dontrun{
 GeDi()
+
+# Alternatively, you can also start the application with your data directly
+  loaded.
+
+data(macrophage_topGO_example, package = "GeDi")
+GeDi(genesets = macrophage_topGO_example)
 }
 
 }

@@ -81,7 +81,7 @@ buildGraph <- function(adjMatrix){
 #'
 #' @param cluster A `list` of clusters, where each cluster member is indicated
 #'                by a numeric value
-#' @param geneset_names A vector of geneset names
+#' @param gs_names A vector of geneset names
 #'
 #' @return A [Matrix::Matrix()] of adjacency status
 #' @importFrom Matrix Matrix
@@ -89,13 +89,13 @@ buildGraph <- function(adjMatrix){
 #'
 #' @examples
 #' cluster <- list(c(1:5), c(6:9))
-#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' adj <- getClusterAdjacencyMatrix(cluster, geneset_names)
-getClusterAdjacencyMatrix <- function(cluster, geneset_names){
-  l <- length(geneset_names)
+#' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' adj <- getClusterAdjacencyMatrix(cluster, gs_names)
+getClusterAdjacencyMatrix <- function(cluster, gs_names){
+  l <- length(gs_names)
   adj <- Matrix::Matrix(0, l, l)
   if(length(cluster) == 0){
-    rownames(adj) <-  colnames(adj) <- geneset_names
+    rownames(adj) <-  colnames(adj) <- gs_names
     diag(adj) <- 0
     return(adj)
   }
@@ -105,7 +105,7 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
     adj[subcluster, subcluster] <- 1
   }
 
-  rownames(adj) <- colnames(adj) <- geneset_names
+  rownames(adj) <- colnames(adj) <- gs_names
   diag(adj) <- 0
   return(adj)
 }
@@ -115,7 +115,7 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
 #' @param cluster A `list` of clusters, where each cluster member is indicated
 #'                by a numeric value
 #' @param geneset_df A `data.frame` of the input data of the application
-#' @param geneset_names A vector of geneset names
+#' @param gs_names A vector of geneset names
 #' @param color_by A column name of geneset_df which is used to color the nodes
 #'                 of the resulting graph
 #'
@@ -133,21 +133,21 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
 #'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
 #'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
 #'  c("AHI1", "ALMS1"))
-#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' geneset_df <- data.frame(Genesets = geneset_names,
-#'                          Genes = genes,
-#'                          value = c(1, 2, 3, 4, 5, 6, 7, 8, 9))
-#' graph <- builClusterGraph(cluster = cluster,
+#' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' geneset_df <- data.frame(Genesets = gs_names,
+#'                          value = rep(1, 9))
+#' geneset_df$Genes <- genes
+#' graph <- buildClusterGraph(cluster = cluster,
 #'                           geneset_df = geneset_df,
-#'                           geneset_names = geneset_names,
+#'                           gs_names = gs_names,
 #'                           color_by = "value")
 buildClusterGraph <- function(cluster,
                               geneset_df,
-                              geneset_names,
+                              gs_names,
                               color_by = NULL){
 
   adj <- getClusterAdjacencyMatrix(cluster,
-                                   geneset_names)
+                                   gs_names)
   g <- buildGraph(adj)
 
   if(!is.null(color_by)){
@@ -290,8 +290,8 @@ buildClusterGraph <- function(cluster,
 #'
 #' @param cluster A `list` clusters, where each cluster member is indicated
 #'                by a numeric value
-#' @param geneset_names A vector of geneset names
-#' @param genes A `list` of `list` of genes which belong to the genesets in geneset_names
+#' @param gs_names A vector of geneset names
+#' @param genes A `list` of `list` of genes which belong to the genesets in gs_names
 #'
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
@@ -302,23 +302,23 @@ buildClusterGraph <- function(cluster,
 #'
 #' @examples
 #' cluster <- list(c(1:5), c(6:9))
-#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
 #' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
 #'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
 #'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
 #'  c("AHI1", "ALMS1"))
 #'
-#' g <- getBipartiteGraph(cluster, geneset_names, genes)
-getBipartiteGraph <- function(cluster, geneset_names, genes){
+#' g <- getBipartiteGraph(cluster, gs_names, genes)
+getBipartiteGraph <- function(cluster, gs_names, genes){
   stopifnot(length(cluster) > 0)
-  stopifnot(length(geneset_names) > 0)
+  stopifnot(length(gs_names) > 0)
   stopifnot(length(genes) > 0)
 
   edgelist <- c()
   type <- c()
   n_cluster <- length(cluster)
   node_number <- n_cluster + 1
-  df_node_mapping <- data.frame(matrix(NA, nrow = length(geneset_names), ncol = 1))
+  df_node_mapping <- data.frame(matrix(NA, nrow = length(gs_names), ncol = 1))
   colnames(df_node_mapping) <- "Node_number"
 
   node_labels <- c()
@@ -337,7 +337,7 @@ getBipartiteGraph <- function(cluster, geneset_names, genes){
         edgelist <- c(edgelist, i, node_number)
         df_node_mapping[j, ] <- node_number
         node_number <- node_number + 1
-        node_labels <- c(node_labels, geneset_names[[j]])
+        node_labels <- c(node_labels, gs_names[[j]])
       }
     }
   }
@@ -369,7 +369,7 @@ getBipartiteGraph <- function(cluster, geneset_names, genes){
 
   text <- list()
   for(i in cluster_id){
-    mem <- paste(geneset_names[cluster[[i]]], collapse = " ")
+    mem <- paste(gs_names[cluster[[i]]], collapse = " ")
     mem <- gsub("(.{21,}?)\\s", "\\1<br>", mem)
     text[[i]] <- mem
   }

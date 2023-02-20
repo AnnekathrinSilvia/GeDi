@@ -121,6 +121,36 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   return(results)
 }
 
+#' Title
+#'
+#' @param g
+#'
+#' @return
+#' @export
+#'
+#' @examples
+.hubGenesDT <- function(g){
+  nodes <- V(g)$name
+
+  # Get degree of gene nodes in the graph
+  node_degrees <- sapply(nodes, function(x) degree(g, x))
+  #buttons <- sapply(genes, generate_buttons_hubgenes)
+
+  node_degrees_df <- data.frame(
+    gene = nodes,
+    degree = node_degrees
+    #buttons = buttons
+  )
+
+
+  # Sort in descending degree order
+  rownames(node_degrees_df) <- NULL
+  node_degrees_df <- arrange(node_degrees_df, desc(.data$degree))
+  colnames(node_degrees_df) <- c("Gene", "Degree")
+  return(node_degrees_df)
+
+}
+
 
 .actionButtonStyle <-
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"

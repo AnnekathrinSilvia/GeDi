@@ -12,14 +12,20 @@ Description: The package provides different distances measurements
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Depends:
     R (>= 3.5.0)
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    ideal
+    ideal,
+    DESeq2,
+    htmltools,
+    pcaExplorer,
+    AnnotationDbi,
+    macrophage,
+    topGO
 Config/testthat/edition: 3
 URL: https://github.com/AnnekathrinSilvia/GeDi
 BugReports: https://github.com/AnnekathrinSilvia/GeDi/issues
@@ -40,7 +46,6 @@ Imports:
     igraph,
     visNetwork,
     stringr,
-    pheatmap,
     shinycssloaders,
     fontawesome,
     grDevices,
@@ -51,7 +56,6 @@ Imports:
     plotly,
     hrbrthemes,
     viridis,
-    ivdoctr,
     GeneTonic,
     RColorBrewer,
     scales,

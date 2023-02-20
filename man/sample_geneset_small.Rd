@@ -6,7 +6,7 @@
 \title{A small sample input textfile}
 \description{
 A sample input textfile taken from the GSCluster package, which is reduced
-to a smaller number of entries for faster testing of the application-
+to a smaller number of entries for faster testing of the application.
 }
 \details{
 This sample input textfile contains data from the GSCluster package.

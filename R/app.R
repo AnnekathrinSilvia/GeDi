@@ -15,7 +15,7 @@
 #' @import shinyBS
 #' @import fontawesome
 #' @importFrom rintrojs introjs
-#' @importFrom utils read.delim
+#' @importFrom utils read.delim data
 #' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4Card bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems tabBox bs4DashFooter updateBox
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices
@@ -273,7 +273,32 @@ GeDi <- function(genesets = NULL,
                                             uiOutput("ui_controlbar")),
 
     # footer definition -------------------------------------------------------
-    footer = bs4Dash::bs4DashFooter(left = GeDi_footer,
+    footer = bs4Dash::bs4DashFooter(left =
+                                      fluidRow(
+                                        column(
+                                          width = 1,
+
+                                          align = "right",
+                                          a(
+                                            href = "https://github.com/AnnekathrinSilvia/GeDi",
+                                            target = "_blank",
+                                            img(src = "GeDi/GeneTonic.png", height = "50px")
+                                          )
+                                        ),
+                                        column(
+                                          width = 11,
+                                          align = "center",
+                                          "GeDi is a project developed by Annekathrin Ludt
+     in the Bioinformatics division of the ",
+                                          tags$a(href = "http://www.unimedizin-mainz.de/imbei", "IMBEI"),
+                                          "- Institute for Medical Biostatistics, Epidemiology and Informatics",
+                                          br(),
+                                          "License: ",
+                                          tags$a(href = "https://opensource.org/licenses/MIT", "MIT"),
+                                          "- The GeDi package is developed and available on ",
+                                          tags$a(href = "https://github.com/AnnekathrinSilvia/GeDi", "GitHub")
+                                        )
+                                      ),
                                     right = NULL)
   )
   # server deifnition ---------------------------------------------------------
@@ -450,23 +475,37 @@ GeDi <- function(genesets = NULL,
                 label = "Select the bins for the histogram",
                 min = 0,
                 max = max(sapply(reactive_values$genes, length)),
-                value = c(0, max(sapply(reactive_values$genes, length)))
+                value = c(0, max(
+                  sapply(reactive_values$genes, length)
+                ))
               )
             ),
-            column(width = 6,
-                   sliderInput(inputId = "bindwidth_hist",
-                               label = "Select width of the bins",
-                               min = 1,
-                               max = 50,
-                               value = 5))
+            column(
+              width = 6,
+              sliderInput(
+                inputId = "bindwidth_hist",
+                label = "Select width of the bins",
+                min = 1,
+                max = 50,
+                value = 5
+              )
+            )
           ),
           fluidRow(column(
             width = 12,
-            plotOutput("histogram_initial_data",
-                       brush = brushOpts("plot_brush", resetOnNew = T, direction = "x"))
+            plotOutput(
+              "histogram_initial_data",
+              brush = brushOpts(
+                "plot_brush",
+                resetOnNew = T,
+                direction = "x"
+              )
+            )
           )),
-          fluidRow(column(width = 12,
-                          DT::dataTableOutput("table"))),
+          fluidRow(column(
+            width = 12,
+            DT::dataTableOutput("table")
+          )),
           fluidRow(column(
             width = 6,
             selectizeInput(
@@ -482,18 +521,19 @@ GeDi <- function(genesets = NULL,
               icon = icon("play-circle"),
               style = .actionButtonStyle
             )
-          )
-          )
+          ))
         )
       )
     })
 
     output$histogram_initial_data <- renderPlot({
-      gs_histogram(reactive_values$genes,
-                   reactive_values$gs_names,
-                   start = input$bins_gs_hist[1],
-                   end = input$bins_gs_hist[2],
-                   binwidth = input$bindwidth_hist)
+      gs_histogram(
+        reactive_values$genes,
+        reactive_values$gs_names,
+        start = input$bins_gs_hist[1],
+        end = input$bins_gs_hist[2],
+        binwidth = input$bindwidth_hist
+      )
     })
 
 
@@ -531,15 +571,17 @@ GeDi <- function(genesets = NULL,
         selectizeInput(
           "species",
           label = "Please select the species of your data.",
-          choices = c("",
-                      "Homo Sapiens",
-                      "Mus musculus",
-                      "Rattus norvegicus",
-                      "Arabidopsis thaliana",
-                      "Saccharomyces cerevisiae",
-                      "Drosophila melanogaster",
-                      "Danio rerio",
-                      "Caenorhabiditis elegans"),
+          choices = c(
+            "",
+            "Homo Sapiens",
+            "Mus musculus",
+            "Rattus norvegicus",
+            "Arabidopsis thaliana",
+            "Saccharomyces cerevisiae",
+            "Drosophila melanogaster",
+            "Danio rerio",
+            "Caenorhabiditis elegans"
+          ),
           multiple = TRUE,
           options = list(create = TRUE)
         )
@@ -658,7 +700,7 @@ GeDi <- function(genesets = NULL,
               radioButtons(
                 inputId = "scoringmethod",
                 label = "Select the scoring method for your data",
-                choices = c("Meet-Min", "Kappa", "PMM", "Jaccard"),
+                choices = c("PMM", "Kappa", "Jaccard", "Meet-Min"),
                 selected = character(0)
               )
             ),
@@ -697,6 +739,17 @@ GeDi <- function(genesets = NULL,
                              max = 1,
                              value = 0.3,
                              step = 0.05
+                           ),
+                           selectizeInput(
+                             inputId = "scores_graph_search",
+                             label = "Search for a specific geneset",
+                             choices = c("", reactive_values$gs_names),
+                             multiple = TRUE,
+                             options = list(
+                               create = FALSE,
+                               placeholder = "",
+                               maxItems = '1'
+                             )
                            )
                          ),
                          column(width = 9,
@@ -705,12 +758,29 @@ GeDi <- function(genesets = NULL,
                                                    width = "800px",
                                                    height = "800px")
                                 ))
+                       ),
+                       fluidRow(
+                         box(
+                           id = "hub_genes_box",
+                           width = 12,
+                           title = "Graph metrics",
+                           status = "info",
+                           solidHeader = TRUE,
+                           collapsible = TRUE,
+                           collapsed = TRUE,
+                           h2("Hub Genes"),
+                           fluidRow(column(
+                             width = 12,
+                             DT::dataTableOutput("dt_hub_genes")
+                           ))
+                         )
                        ))
             )
           )
         ))
       )
     })
+
 
     # TODO: Workaround with empty string, check to fix that later in another way
     output$ui_score_data <- renderUI({
@@ -788,6 +858,17 @@ GeDi <- function(genesets = NULL,
       }
     })
 
+    output$dt_hub_genes <- DT::renderDataTable({
+      validate(
+        need(!(is.null(
+          reactive_values$scores
+        )),
+        message = "Please score you genesets first in the above box")
+      )
+      dt <- .hubGenesDT(reactive_values$scores_graph())
+      DT::datatable(dt,
+                    options = list(scrollX = TRUE, scrollY = "400px"))
+    })
 
     # panel Graph ------------------------------------------------------
 
@@ -1003,7 +1084,6 @@ GeDi <- function(genesets = NULL,
           min = 1,
           max = 100
         ),
-        # currently broken if no data is available
         selectInput(
           "graphColoring",
           label = "Color the nodes by: ",
@@ -1095,7 +1175,9 @@ GeDi <- function(genesets = NULL,
 
       progress$set(message = "Loading demo data now", value = 0)
 
-      data(macrophage_topGO_example, package = "GeDi")
+      data(macrophage_topGO_example,
+           package = "GeDi",
+           envir = environment())
 
       progress$inc(1 / 3, detail = "Extracting Genesets")
 
@@ -1110,22 +1192,26 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$plot_brush, {
-      df <- .buildHistogramData(genes = reactive_values$genes,
-                                gs_names = reactive_values$gs_names,
-                                start = input$bins_gs_hist[1],
-                                end = input$bins_gs_hist[2])
+      df <- .buildHistogramData(
+        genes = reactive_values$genes,
+        gs_names = reactive_values$gs_names,
+        start = input$bins_gs_hist[1],
+        end = input$bins_gs_hist[2]
+      )
 
       info_plot <- brushedPoints(df, input$plot_brush)
       output$table <- DT::renderDataTable(info_plot)
     })
 
     observeEvent(input$filter_genesets, {
-      if(reactive_values$alt_names){
-        filtered_data <- .filterGenesets(input$select_filter_genesets,
-                                         reactive_values$genesets,
-                                         input$alt_name_genesets,
-                                         input$alt_name_genes)
-      }else{
+      if (reactive_values$alt_names) {
+        filtered_data <- .filterGenesets(
+          input$select_filter_genesets,
+          reactive_values$genesets,
+          input$alt_name_genesets,
+          input$alt_name_genes
+        )
+      } else{
         filtered_data <- .filterGenesets(input$select_filter_genesets,
                                          reactive_values$genesets)
       }
@@ -1134,19 +1220,22 @@ GeDi <- function(genesets = NULL,
       reactive_values$gs_names <- filtered_data$gs_names
       reactive_values$genes <- filtered_data$Genes
 
-      showNotification(
-        "Successfully filtered the selected Genesets.",
-        type = "message"
+      showNotification("Successfully filtered the selected Genesets.",
+                       type = "message")
+      updateBox(
+        "optional_filtering_box",
+        action = "update",
+        options = list(
+          id = "optional_filtering_box",
+          width = 12,
+          title = "Optional Filtering Step",
+          status = "info",
+          solidHeader = TRUE,
+          h2("Filter your uploaded Genesets"),
+          collapsible = TRUE,
+          collapsed = FALSE
+        )
       )
-      updateBox("optional_filtering_box", action = "update",
-                options = list(id = "optional_filtering_box",
-                               width = 12,
-                               title = "Optional Filtering Step",
-                               status = "info",
-                               solidHeader = TRUE,
-                               h2("Filter your uploaded Genesets"),
-                               collapsible = TRUE,
-                               collapsed = FALSE))
     })
 
     observeEvent(input$download_ppi, {
@@ -1245,6 +1334,22 @@ GeDi <- function(genesets = NULL,
         rownames(scores) <- colnames(scores) <- reactive_values$gs_names
         reactive_values$scores <- scores
         updateBox("distance_calc_box", action = "toggle")
+      }
+    })
+
+    observeEvent(input$scores_graph_search, {
+      current_node <- input$scores_graph_search
+      if (current_node != "") {
+        isolate({
+          if (current_node %in% gs_names)
+            visNetworkProxy("scores_Network") %>% visSelectNodes(id  = current_node)
+        })
+      } else{
+        showNotification(
+          "It seems like the geneset identifier you searched for cannot be found
+          in your input data. Please select a different geneset.",
+          type = "message"
+        )
       }
     })
 

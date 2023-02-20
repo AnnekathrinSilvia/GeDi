@@ -1,8 +1,8 @@
 #' TODO: Title
 #'
 #' @param genes A `list` of `list` of genes which belong to the genesets in
-#'              geneset_names
-#' @param geneset_names A vector of geneset names
+#'              gs_names
+#' @param gs_names A vector of geneset names
 #' @param start numeric, at which number to start the x-axis, defaults to NULL
 #'              meaning the x-axis starts at 0
 #' @param end numeric, at which number to end the x-axis, defaults to NULL,
@@ -17,20 +17,20 @@
 #' @import ggplot2
 #'
 #' @examples
-#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
 #' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
 #'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
 #'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
 #'  c("AHI1", "ALMS1"))
 #'
-#'  p <- gs_histogram(genes, geneset_names)
+#'  p <- gs_histogram(genes, gs_names)
 gs_histogram <- function(genes,
-                         geneset_names,
+                         gs_names,
                          start = NULL,
                          end = NULL,
                          binwidth = 5,
                          color = "#0092AC"){
-  n_genes <- .buildHistogramData(genes, geneset_names, start, end)
+  n_genes <- .buildHistogramData(genes, gs_names, start, end)
 
   p <- ggplot(n_genes, aes(x = Size)) +
     geom_histogram(binwidth = binwidth, fill = color) +
@@ -43,8 +43,8 @@ gs_histogram <- function(genes,
 #' TODO: Title
 #'
 #' @param genes A `list` of `list` of genes which belong to the genesets in
-#'              geneset_names
-#' @param geneset_names A vector of geneset names
+#'              gs_names
+#' @param gs_names A vector of geneset names
 #' @param start numeric, at which number to start the x-axis, defaults to NULL
 #'              meaning the x-axis starts at 0
 #' @param end numeric, at which number to end the x-axis, defaults to NULL,
