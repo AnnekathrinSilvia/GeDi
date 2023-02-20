@@ -42,7 +42,7 @@ NULL
 #' A small sample input textfile
 #'
 #' A sample input textfile taken from the GSCluster package, which is reduced
-#' to a smaller number of entries for faster testing of the application-
+#' to a smaller number of entries for faster testing of the application.
 #'
 #' @details This sample input textfile contains data from the GSCluster package.
 #'          It was taken from the sample_geneset.txt file found on the Github
@@ -57,3 +57,20 @@ NULL
 #' @docType data
 NULL
 
+
+#' A sample input RDS file
+#'
+#' A sample input RDS file generated from the macrophage dataset.
+#'
+#' @details This sample input contains data from the macrophage package found on
+#'          Bioconductor. The exact steps used to generated this file can be
+#'          found in the package vignette.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name macrophage_topGO_example
+#' @docType data
+NULL

@@ -1,22 +1,36 @@
-#' Title
+#' TODO: Title
 #'
-#' @param genes
-#' @param start
-#' @param end
+#' @param genes A `list` of `list` of genes which belong to the genesets in
+#'              geneset_names
+#' @param geneset_names A vector of geneset names
+#' @param start numeric, at which number to start the x-axis, defaults to NULL
+#'              meaning the x-axis starts at 0
+#' @param end numeric, at which number to end the x-axis, defaults to NULL,
+#'        meaning the size of the largest geneset is the end
+#' @param binwidth numeric, size of the individual bins, defaults to 6
+#' @param color color to use for the bars of the histogram, defaults to #0092AC
 #'
-#' @return
+#' @return A `ggplot2` histogram with the distribution of the size of the
+#'         genesets, i.e. number of genes in the genesets
+#'
 #' @export
 #' @import ggplot2
 #'
 #' @examples
+#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'  c("AHI1", "ALMS1"))
+#'
+#'  p <- gs_histogram(genes, geneset_names)
 gs_histogram <- function(genes,
-                         gs_names,
+                         geneset_names,
                          start = NULL,
                          end = NULL,
                          binwidth = 5,
                          color = "#0092AC"){
-  # get the number of genes per geneset
-  n_genes <- .buildHistogramData(genes, gs_names, start, end)
+  n_genes <- .buildHistogramData(genes, geneset_names, start, end)
 
   p <- ggplot(n_genes, aes(x = Size)) +
     geom_histogram(binwidth = binwidth, fill = color) +
@@ -26,17 +40,20 @@ gs_histogram <- function(genes,
 }
 
 
-#' Title
+#' TODO: Title
 #'
-#' @param genes
-#' @param gs_names
-#' @param start
-#' @param end
+#' @param genes A `list` of `list` of genes which belong to the genesets in
+#'              geneset_names
+#' @param geneset_names A vector of geneset names
+#' @param start numeric, at which number to start the x-axis, defaults to NULL
+#'              meaning the x-axis starts at 0
+#' @param end numeric, at which number to end the x-axis, defaults to NULL,
+#'        meaning the size of the largest geneset is the end
 #'
-#' @return
-#' @export
+#' @return A `data.frame` which maps each geneset to its size (i.e. number of
+#'         genes in the genesets), if start and/ or end are given, only those
+#'         genesets whose size are larger/smaller than start/end are returned
 #'
-#' @examples
 .buildHistogramData <- function(genes,
                                 gs_names,
                                 start = NULL,

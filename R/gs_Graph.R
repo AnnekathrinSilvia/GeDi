@@ -112,25 +112,42 @@ getClusterAdjacencyMatrix <- function(cluster, geneset_names){
 
 #' Title
 #'
-#' @param cluster
-#' @param geneset_df
-#' @param gs_names
-#' @param color_by
+#' @param cluster A `list` of clusters, where each cluster member is indicated
+#'                by a numeric value
+#' @param geneset_df A `data.frame` of the input data of the application
+#' @param geneset_names A vector of geneset names
+#' @param color_by A column name of geneset_df which is used to color the nodes
+#'                 of the resulting graph
 #'
-#' @return
+#' @return An `igraph` object to be further manipulated or processed/plotted
+#'         (e.g. via [igraph::plot.igraph()] or
+#'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
 #' @import igraph
 #' @importFrom GeneTonic map2color
 #' @importFrom grDevices colorRampPalette
 #' @export
 #'
 #' @examples
+#' cluster <- list(c(1:5), c(6:9))
+#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'  c("AHI1", "ALMS1"))
+#' geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' geneset_df <- data.frame(Genesets = geneset_names,
+#'                          Genes = genes,
+#'                          value = c(1, 2, 3, 4, 5, 6, 7, 8, 9))
+#' graph <- builClusterGraph(cluster = cluster,
+#'                           geneset_df = geneset_df,
+#'                           geneset_names = geneset_names,
+#'                           color_by = "value")
 buildClusterGraph <- function(cluster,
                               geneset_df,
-                              gs_names,
+                              geneset_names,
                               color_by = NULL){
 
   adj <- getClusterAdjacencyMatrix(cluster,
-                                   gs_names)
+                                   geneset_names)
   g <- buildGraph(adj)
 
   if(!is.null(color_by)){

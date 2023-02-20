@@ -16,7 +16,7 @@
 #' @import fontawesome
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.delim
-#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4Card bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems tabBox bs4DashFooter
+#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4Card bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems tabBox bs4DashFooter updateBox
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices
 #'
@@ -24,13 +24,19 @@
 #' @examples
 #' \dontrun{
 #' GeDi()
+#'
+#' # Alternatively, you can also start the application with your data directly
+#'   loaded.
+#'
+#' data(macrophage_topGO_example, package = "GeDi")
+#' GeDi(genesets = macrophage_topGO_example)
 #' }
 #'
 GeDi <- function(genesets = NULL,
                  ppi = NULL,
                  alpha = 1) {
-  options(spinner.type = 6, spinner.color = "#0092AC")
-  #on.exit(options(oopt))
+  oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
+  on.exit(options(oopt))
 
   usage_mode <- "shiny_mode"
 
@@ -312,7 +318,9 @@ GeDi <- function(genesets = NULL,
                   "text/tab-separated-values",
                   "text/plain",
                   ".csv",
-                  ".tsv"
+                  ".tsv",
+                  ".RDS",
+                  ".xslx"
                 ),
                 multiple = FALSE
               ),
@@ -417,16 +425,21 @@ GeDi <- function(genesets = NULL,
     })
 
     output$ui_filter_data <- renderUI({
-      if (is.null(reactive_values$genesets)) {
+      if (is.null(reactive_values$genesets) ||
+          is.null(reactive_values$genes) ||
+          is.null(reactive_values$gs_names)) {
         return(NULL)
       }
       tagList(
         box(
+          id = "optional_filtering_box",
           width = 12,
           title = "Optional Filtering Step",
           status = "info",
           solidHeader = TRUE,
           h2("Filter your uploaded Genesets"),
+          collapsible = TRUE,
+          collapsed = TRUE,
           fluidRow(
             "It might be beneficial to your analysis to filter out general terms
             and genesets before proceeding with the next steps.",
@@ -485,7 +498,9 @@ GeDi <- function(genesets = NULL,
 
 
     output$ui_panel_specify_species <- renderUI({
-      if (is.null(reactive_values$genesets)) {
+      if (is.null(reactive_values$genesets) ||
+          is.null(reactive_values$genes) ||
+          is.null(reactive_values$gs_names)) {
         return(NULL)
       }
       box(
@@ -516,7 +531,15 @@ GeDi <- function(genesets = NULL,
         selectizeInput(
           "species",
           label = "Please select the species of your data.",
-          choices = c("", "Homo Sapiens", "Mus musculus", "Rattus norvegicus"),
+          choices = c("",
+                      "Homo Sapiens",
+                      "Mus musculus",
+                      "Rattus norvegicus",
+                      "Arabidopsis thaliana",
+                      "Saccharomyces cerevisiae",
+                      "Drosophila melanogaster",
+                      "Danio rerio",
+                      "Caenorhabiditis elegans"),
           multiple = TRUE,
           options = list(create = TRUE)
         )
@@ -1019,7 +1042,7 @@ GeDi <- function(genesets = NULL,
         showNotification(
           "It seems like your input file has not the right format.
           Please check the Welcome panel for the right input format and
-          upload your data again. ",
+          upload your data again.",
           type = "error"
         )
       }
@@ -1065,6 +1088,27 @@ GeDi <- function(genesets = NULL,
       )
     })
 
+    observeEvent(input$btn_loaddemo, {
+      progress <- shiny::Progress$new()
+      # Make sure it closes when we exit this reactive, even if there's an error
+      on.exit(progress$close())
+
+      progress$set(message = "Loading demo data now", value = 0)
+
+      data(macrophage_topGO_example, package = "GeDi")
+
+      progress$inc(1 / 3, detail = "Extracting Genesets")
+
+      reactive_values$genesets <- macrophage_topGO_example
+      reactive_values$gs_names <- macrophage_topGO_example$Genesets
+
+      progress$inc(1 / 3, detail = "Extracting Genes")
+      reactive_values$genes <- getGenes(reactive_values$genesets)
+
+      progress$inc(1 / 3, detail = "Successfully loaded demo data")
+
+    })
+
     observeEvent(input$plot_brush, {
       df <- .buildHistogramData(genes = reactive_values$genes,
                                 gs_names = reactive_values$gs_names,
@@ -1073,6 +1117,36 @@ GeDi <- function(genesets = NULL,
 
       info_plot <- brushedPoints(df, input$plot_brush)
       output$table <- DT::renderDataTable(info_plot)
+    })
+
+    observeEvent(input$filter_genesets, {
+      if(reactive_values$alt_names){
+        filtered_data <- .filterGenesets(input$select_filter_genesets,
+                                         reactive_values$genesets,
+                                         input$alt_name_genesets,
+                                         input$alt_name_genes)
+      }else{
+        filtered_data <- .filterGenesets(input$select_filter_genesets,
+                                         reactive_values$genesets)
+      }
+
+      reactive_values$genesets <- filtered_data$Geneset
+      reactive_values$gs_names <- filtered_data$gs_names
+      reactive_values$genes <- filtered_data$Genes
+
+      showNotification(
+        "Successfully filtered the selected Genesets.",
+        type = "message"
+      )
+      updateBox("optional_filtering_box", action = "update",
+                options = list(id = "optional_filtering_box",
+                               width = 12,
+                               title = "Optional Filtering Step",
+                               status = "info",
+                               solidHeader = TRUE,
+                               h2("Filter your uploaded Genesets"),
+                               collapsible = TRUE,
+                               collapsed = FALSE))
     })
 
     observeEvent(input$download_ppi, {
@@ -1112,7 +1186,7 @@ GeDi <- function(genesets = NULL,
       reactive_values$ppi <- getPPI(reactive_values$genes,
                                     string_db = stringdb,
                                     anno_df = anno_df)
-      progress$inc(4 / 12, detail = "Done")
+      progress$inc(4 / 12, detail = "Successfully downloaded PPI")
     })
 
     # Scoring panel --------------------------------------------------------------
@@ -1170,7 +1244,7 @@ GeDi <- function(genesets = NULL,
       } else{
         rownames(scores) <- colnames(scores) <- reactive_values$gs_names
         reactive_values$scores <- scores
-        bs4Dash::updateBox("distance_calc_box", action = "toggle")
+        updateBox("distance_calc_box", action = "toggle")
       }
     })
 

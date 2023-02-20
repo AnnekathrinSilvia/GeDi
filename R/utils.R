@@ -76,6 +76,51 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   return(sep)
 }
 
+#' Title
+#'
+#' @param remove A `list` of Geneset identifiers to be removed from the data
+#' @param df_genesets A `data.frame` of the input data
+#' @param alt_name_genesets A character string with the name of the column
+#'                          containing the geneset identifiers; if not provided,
+#'                          the column is expected to be called Genesets
+#' @param alt_name_genes A character string with the name of the column
+#'                       containing the genes of the individual genesets; if
+#'                       not provided, the column is expected to be called Genes
+#'
+#' @return A `data.frame`of the input data without the genesets listed in
+#'         `remove`
+#'
+.filterGenesets <- function(remove,
+                            df_genesets,
+                            alt_name_genesets = NULL,
+                            alt_name_genes = NULL){
+  genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
+  results <- list()
+  if(!is.null(alt_name_genesets)){
+    filter <- !(df_genesets[, alt_name_genesets] %in% genesets_to_remove)
+    df_genesets <- df_genesets[filter, ]
+    results[[1]] <- df_genesets
+    results[[2]] <- df_genesets[, alt_name_genesets]
+  }else{
+    df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
+    results[[1]] <- df_genesets
+    results[[2]] <- df_genesets$Geneset
+  }
+
+
+  if(!is.null(alt_name_genes)){
+    genes <- getGenes(df_genesets,
+                         alt_name_genes)
+    results[[3]] <- genes
+  }else{
+    genes <- getGenes(df_genesets)
+    results[[3]] <- genes
+  }
+
+  names(results) <- c("Geneset", "gs_names", "Genes")
+  return(results)
+}
+
 
 .actionButtonStyle <-
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
