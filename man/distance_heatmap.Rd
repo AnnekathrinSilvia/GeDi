@@ -4,7 +4,7 @@
 \alias{distance_heatmap}
 \title{Plot a heatmap on the distance scores of the genesets}
 \usage{
-distance_heatmap(distance_scores, chars_limit = 50)
+distance_heatmap(distance_scores, chars_limit = 50, hcluster = FALSE)
 }
 \arguments{
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores for each
@@ -20,8 +20,8 @@ A plot returned by the \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} function
 Plot a heatmap of a matrix of (distance) scores of the input genesets
 }
 \examples{
-distance_score <- Matrix::Matrix(0.5, 20, 20)
-distance_score[c(11:15), c(2:6)] <- 0.2
-rownames(distance_score) <- colnames(distance_score) <- as.character(c(1:20))
-p <- distance_heatmap(distance_score)
+distance_scores <- Matrix::Matrix(0.5, 20, 20)
+distance_scores[c(11:15), c(2:6)] <- 0.2
+rownames(distance_scores) <- colnames(distance_scores) <- as.character(c(1:20))
+p <- distance_heatmap(distance_score, cluster = T)
 }

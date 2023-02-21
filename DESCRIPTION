@@ -59,4 +59,5 @@ Imports:
     GeneTonic,
     RColorBrewer,
     scales,
-    readxl
+    readxl,
+    ggdendro

@@ -726,6 +726,12 @@ GeDi <- function(genesets = NULL,
                                       height = "800px",
                                       width = "1000px")
                        )),
+              tabPanel(title = "Distance Scores Dendrogram",
+                       withSpinner(
+                         plotlyOutput("scores_dendro",
+                                    height = "800px",
+                                    width = "1000px")
+                       )),
               tabPanel(title = "Distance Scores Graph",
                        fluidRow(
                          column(
@@ -780,7 +786,6 @@ GeDi <- function(genesets = NULL,
     })
 
 
-    # TODO: Workaround with empty string, check to fix that later in another way
     output$ui_score_data <- renderUI({
       if (is.null(input$scoringmethod) || input$scoringmethod == "") {
         return(NULL)
@@ -804,10 +809,17 @@ GeDi <- function(genesets = NULL,
       validate(need(!(is.null(
         reactive_values$scores
       )),
-      message = "Please score you genesets first in the above box"))
+      message = "Please score your genesets first in the above box"))
       distance_heatmap(reactive_values$scores,
                        chars_limit = 20,
                        hcluster = input$hcluster)
+    })
+
+    output$scores_dendro <- renderPlotly({
+      validate(need(!(is.null(reactive_values$scores)),
+                    message = "Please score your genesets first in
+                    the above box"))
+      distance_dendro(reactive_values$scores)
     })
 
 
