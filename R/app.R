@@ -1072,10 +1072,6 @@ GeDi <- function(genesets = NULL,
 
     output$ui_controlbar <- renderUI({
       tagList(
-        textInput(inputId = "alt_genes_colname",
-                  label = "Alternative name for the Genes Column"),
-        textInput(inputId = "alt_geneset_colname",
-                  label = "Alternative name for the Geneset Column"),
         numericInput(
           inputId = "n_genesets",
           label = "Number of genesets",
