@@ -273,33 +273,30 @@ GeDi <- function(genesets = NULL,
                                             uiOutput("ui_controlbar")),
 
     # footer definition -------------------------------------------------------
-    footer = bs4Dash::bs4DashFooter(left =
-                                      fluidRow(
-                                        column(
-                                          width = 1,
-
-                                          align = "right",
-                                          a(
-                                            href = "https://github.com/AnnekathrinSilvia/GeDi",
-                                            target = "_blank",
-                                            img(src = "GeDi/GeneTonic.png", height = "50px")
-                                          )
-                                        ),
-                                        column(
-                                          width = 11,
-                                          align = "center",
-                                          "GeDi is a project developed by Annekathrin Ludt
-     in the Bioinformatics division of the ",
-                                          tags$a(href = "http://www.unimedizin-mainz.de/imbei", "IMBEI"),
-                                          "- Institute for Medical Biostatistics, Epidemiology and Informatics",
-                                          br(),
-                                          "License: ",
-                                          tags$a(href = "https://opensource.org/licenses/MIT", "MIT"),
-                                          "- The GeDi package is developed and available on ",
-                                          tags$a(href = "https://github.com/AnnekathrinSilvia/GeDi", "GitHub")
-                                        )
-                                      ),
-                                    right = NULL)
+    footer = bs4Dash::bs4DashFooter(
+      left =
+        fluidRow(
+          column(
+            width = 1,
+            align = "right",
+            a(href = "https://github.com/AnnekathrinSilvia/GeDi",
+              target = "_blank",
+              img(src = "GeDi/GeneTonic.png", height = "50px"))),
+          column(
+            width = 11,
+            align = "center",
+            "GeDi is a project developed by Annekathrin Ludt
+            in the Bioinformatics division of the ",
+            tags$a(href = "http://www.unimedizin-mainz.de/imbei", "IMBEI"),
+            "- Institute for Medical Biostatistics, Epidemiology and
+            Informatics",
+            br(),
+            "License: ",
+            tags$a(href = "https://opensource.org/licenses/MIT", "MIT"),
+            "- The GeDi package is developed and available on ",
+            tags$a(href = "https://github.com/AnnekathrinSilvia/GeDi", "GitHub")
+            )),
+      right = NULL)
   )
   # server deifnition ---------------------------------------------------------
   gedi_server <- function(input, output, session) {
@@ -467,7 +464,8 @@ GeDi <- function(genesets = NULL,
           collapsed = TRUE,
           fluidRow(
             "It might be beneficial to your analysis to filter out general terms
-            and genesets before proceeding with the next steps.",
+            and genesets before proceeding with the next steps."),
+          fluidRow(
             column(
               width = 6,
               sliderInput(
@@ -486,7 +484,7 @@ GeDi <- function(genesets = NULL,
                 inputId = "bindwidth_hist",
                 label = "Select width of the bins",
                 min = 1,
-                max = 50,
+                max = 20,
                 value = 5
               )
             )
@@ -808,7 +806,8 @@ GeDi <- function(genesets = NULL,
       )),
       message = "Please score you genesets first in the above box"))
       distance_heatmap(reactive_values$scores,
-                       chars_limit = 20)
+                       chars_limit = 20,
+                       hcluster = input$hcluster)
     })
 
 
@@ -1097,7 +1096,7 @@ GeDi <- function(genesets = NULL,
           selected = NULL,
           multiple = FALSE
         ),
-        checkboxInput("labels", label = "Display all labels", value = FALSE)
+        checkboxInput("hcluster", label = "Activate hclust on the heatmap", value = FALSE)
       )
     })
     outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
