@@ -30,7 +30,7 @@ checkInclusion <- function(seeds) {
   remove <- unique(remove)
   if (length(remove) == 0) {
     return(seeds)
-  } else{
+  } else {
     return(seeds[-remove])
   }
 }
@@ -58,13 +58,14 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
   seeds <- list()
 
   reach <-
-    apply(distances, 1, function(x)
-      as.numeric(x <= simThreshold))
+    apply(distances, 1, function(x) {
+      as.numeric(x <= simThreshold)
+    })
   for (i in 1:nrow(distances)) {
     if (sum(reach[i, ], na.rm = TRUE) >= 2) {
-      members <- which(reach[i,] == 1)
+      members <- which(reach[i, ] == 1)
       includethreshold <-
-        (length(members) ^ 2 - length(members)) * memThreshold
+        (length(members)^2 - length(members)) * memThreshold
       reach_red <- reach[members, members]
       in_reach <- sum(reach_red)
       if (in_reach >= includethreshold) {
@@ -120,7 +121,6 @@ clustering <- function(seeds, threshold) {
     if (l == length(seeds)) {
       mergeable[[index]] <- FALSE
     }
-
   }
   return(seeds)
 }
@@ -155,7 +155,7 @@ getClusterDatatable <- function(cluster, geneset_names) {
       entry <- df[[j]]
       if (is.null(entry)) {
         entry <- i
-      } else{
+      } else {
         entry <- c(entry, i)
       }
 
@@ -167,12 +167,13 @@ getClusterDatatable <- function(cluster, geneset_names) {
   colnames(df) <- c("Cluster")
   cluster <- df$Cluster
   cluster <-
-    lapply(cluster, function(x)
+    lapply(cluster, function(x) {
       if (is.null(x)) {
         "No associated Cluster"
-      } else{
+      } else {
         x
-      })
+      }
+    })
   df$Cluster <- cluster
   rownames(df) <- geneset_names
   return(df)

@@ -16,10 +16,10 @@
 #' b <- c("IARS2", "PDHA1")
 #' all_genes <- c("PDHB", "VARS2", "IARS2", "PDHA1")
 #' c <- calculateKappa(a, b, all_genes)
-calculateKappa <- function(a, b, all_genes){
+calculateKappa <- function(a, b, all_genes) {
   n_genes <- length(all_genes)
   stopifnot(n_genes > 0)
-  if(length(a) == 0 || length(b) == 0){
+  if (length(a) == 0 || length(b) == 0) {
     return(1)
   }
 
@@ -35,9 +35,9 @@ calculateKappa <- function(a, b, all_genes){
   E <- (set_int + only_a) * (set_int + only_b) + (only_b + set_none) * (only_a + set_none)
   E <- E / total^2
 
-  kappa <- ((O-E) / (1-E))
+  kappa <- ((O - E) / (1 - E))
 
-  if(is.nan(kappa)){
+  if (is.nan(kappa)) {
     kappa <- 1
   }
   return(kappa)
@@ -66,45 +66,45 @@ calculateKappa <- function(a, b, all_genes){
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 #' m <- getKappaMatrix(genesets, n_cores = 1)
-getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL){
+getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   l <- length(genesets)
-  if(l == 0){
+  if (l == 0) {
     return(NULL)
   }
   k <- Matrix::Matrix(0, l, l)
   unique_genes <- unique(unlist(genesets))
 
-  if(is.null(n_cores)){
+  if (is.null(n_cores)) {
     n_cores <- parallel::detectCores()
     n_cores <- max(round(n_cores / 2), 1)
   }
 
   results <- list()
 
-  for (j in 1:(l-1)) {
+  for (j in 1:(l - 1)) {
     a <- genesets[[j]]
     if (!is.null(progress)) {
       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
     }
-    results[[j]] <- parallel::mclapply((j+1):l, function(i) {
+    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
       b <- genesets[[i]]
       calculateKappa(a, b, unique_genes)
     }, mc.cores = n_cores)
-    k[j,(j+1):l] <- k[(j+1):l, j] <- unlist(results[[j]])
+    k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
   }
 
   min <- min(k)
   max <- max(k)
-  if(!is.null(progress)){
-    progress$inc(1/(l+1), detail = "Normalizing Kappa Matrix")
+  if (!is.null(progress)) {
+    progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
   }
 
   results <- list()
-  for(j in 1:(l-1)){
-    results[[j]] <- parallel::mclapply((j+1):l, function(i){
-      return(1 - ((k[j, i] - min)/(max - min)))
+  for (j in 1:(l - 1)) {
+    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
+      return(1 - ((k[j, i] - min) / (max - min)))
     }, mc.cores = n_cores)
-    k[j,(j+1):l] <- k[(j+1):l, j] <- unlist(results[[j]])
+    k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
   }
 
   return(round(k, 2))

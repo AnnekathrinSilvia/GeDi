@@ -13,8 +13,8 @@
 #' a <- c("PDHB", "VARS2")
 #' b <- c("IARS2", "PDHA1")
 #' c <- calculateJaccard(a, b)
-calculateJaccard <- function(a, b){
-  if(length(a) == 0 || length(b) == 0){
+calculateJaccard <- function(a, b) {
+  if (length(a) == 0 || length(b) == 0) {
     return(1)
   }
 
@@ -47,29 +47,29 @@ calculateJaccard <- function(a, b){
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 #' m <- getJaccardMatrix(genesets, n_cores = 1)
-getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL){
+getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   l <- length(genesets)
-  if(l == 0){
+  if (l == 0) {
     return(NULL)
   }
   j <- Matrix::Matrix(0, l, l)
   results <- list()
 
-  if(is.null(n_cores)){
+  if (is.null(n_cores)) {
     n_cores <- parallel::detectCores()
     n_cores <- max(round(n_cores / 2), 1)
   }
 
-  for (k in 1:(l-1)) {
+  for (k in 1:(l - 1)) {
     a <- genesets[[k]]
     if (!is.null(progress)) {
       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
     }
-    results[[k]] <- parallel::mclapply((k+1):l, function(i) {
+    results[[k]] <- parallel::mclapply((k + 1):l, function(i) {
       b <- genesets[[i]]
       calculateJaccard(a, b)
     }, mc.cores = n_cores)
-    j[k,(k+1):l] <- j[(k+1):l, k] <- unlist(results[[k]])
+    j[k, (k + 1):l] <- j[(k + 1):l, k] <- unlist(results[[k]])
   }
 
   return(round(j, 2))

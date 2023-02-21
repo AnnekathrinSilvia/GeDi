@@ -25,6 +25,7 @@ sepguesser(system.file("extdata/design_commas.txt", package = "ideal"))
 sepguesser(system.file("extdata/design_semicolons.txt", package = "ideal"))
 sepguesser(system.file("extdata/design_spaces.txt", package = "ideal"))
 mysep <- sepguesser(system.file("extdata/design_tabs.txt",
-                    package = "ideal"))
+  package = "ideal"
+))
 
 }

@@ -37,11 +37,11 @@ bibliography: GeDi.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment  = "#>",
-  error    = FALSE,
-  warning  = FALSE,
-  eval     = TRUE,
-  message  = FALSE,
+  comment = "#>",
+  error = FALSE,
+  warning = FALSE,
+  eval = TRUE,
+  message = FALSE,
   fig.width = 10
 )
 options(width = 100)
@@ -75,8 +75,9 @@ We will restrict our attention on the comparison between Interferon gamma treate
 To install this package, start R and enter:
 
 ```{r install, eval=FALSE}
-if (!requireNamespace("BiocManager", quietly = TRUE))
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
+}
 
 BiocManager::install("GeDi")
 ```
@@ -90,8 +91,10 @@ library("GeDi")
 With the attached package, you can simply start the application by running `GeDi()`. This will launch the application and land you on the Welcome page. Via the Data upload panel you can simply upload your data directly to the application. This will also ensure that your data is in the right input format. Another way to start the applicationis to run:
 
 ```{r launchapp, eval=FALSE}
-GeDi(genesets = geneset_df,
-     ppi = ppi_df)
+GeDi(
+  genesets = geneset_df,
+  ppi = ppi_df
+)
 ```
 
 where 
@@ -120,7 +123,7 @@ library("DESeq2")
 
 data("gse", package = "macrophage")
 
-dds_macrophage <- DESeqDataSet(gse, design = ~line + condition)
+dds_macrophage <- DESeqDataSet(gse, design = ~ line + condition)
 # changing the ids to Ensembl instead of the Gencode used in the object
 rownames(dds_macrophage) <- substr(rownames(dds_macrophage), 1, 15)
 dds_macrophage
@@ -144,8 +147,9 @@ dds_macrophage
 dds_macrophage <- DESeq(dds_macrophage)
 
 res_macrophage_IFNg_vs_naive <- results(dds_macrophage,
-                                        contrast = c("condition", "IFNg", "naive"),
-                                        lfcThreshold = 1, alpha = 0.05)
+  contrast = c("condition", "IFNg", "naive"),
+  lfcThreshold = 1, alpha = 0.05
+)
 res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
 ```
 
@@ -169,7 +173,7 @@ library("GeneTonic")
 library("AnnotationDbi")
 # we extract the differential expression genes from the result object
 de_symbols_IFNg_vs_naive <- deseqresult2df(res_macrophage_IFNg_vs_naive, FDR = 0.05)$SYMBOL
-# we determine the background genes for the ORA 
+# we determine the background genes for the ORA
 bg_ids <- rowData(dds_macrophage)$SYMBOL[rowSums(counts(dds_macrophage)) > 0]
 ```
 
@@ -177,11 +181,12 @@ bg_ids <- rowData(dds_macrophage)$SYMBOL[rowSums(counts(dds_macrophage)) > 0]
 library("topGO")
 topgoDE_macrophage_IFNg_vs_naive <-
   pcaExplorer::topGOtable(de_symbols_IFNg_vs_naive,
-                          bg_ids,
-                          ontology = "BP",
-                          mapping = "org.Hs.eg.db",
-                          geneID = "symbol",
-                          topTablerows = 500)
+    bg_ids,
+    ontology = "BP",
+    mapping = "org.Hs.eg.db",
+    geneID = "symbol",
+    topTablerows = 500
+  )
 ```
 
 As previously mentioned, `Gedi` expects the input to have at least two columns, one named Genesets and one named Genes. While this is not strictly necessary if you upload your data, it is required if you want to start the application with your input as parameters (e.g. `GeDi(genesets = genesets_df)`). In this case, the Genesets column is expected to contain some form of geneset identifiers for each set of the input , while the Genes column is expected to be a comma-separated list of genes belonging to each geneset. 

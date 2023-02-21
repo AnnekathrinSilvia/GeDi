@@ -27,16 +27,22 @@ Title
 }
 \examples{
 cluster <- list(c(1:5), c(6:9))
-genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
- c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
- c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
- c("AHI1", "ALMS1"))
+genes <- list(
+  c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+  c("AHI1", "ALMS1")
+)
 gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-geneset_df <- data.frame(Genesets = gs_names,
-                         value = rep(1, 9))
+geneset_df <- data.frame(
+  Genesets = gs_names,
+  value = rep(1, 9)
+)
 geneset_df$Genes <- genes
-graph <- buildClusterGraph(cluster = cluster,
-                          geneset_df = geneset_df,
-                          gs_names = gs_names,
-                          color_by = "value")
+graph <- buildClusterGraph(
+  cluster = cluster,
+  geneset_df = geneset_df,
+  gs_names = gs_names,
+  color_by = "value"
+)
 }

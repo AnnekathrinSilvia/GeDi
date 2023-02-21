@@ -19,7 +19,7 @@
 #' p <- distance_heatmap(distance_score, cluster = T)
 distance_heatmap <- function(distance_scores,
                              chars_limit = 50,
-                             hcluster = FALSE){
+                             hcluster = FALSE) {
   stopifnot(!is.null(distance_scores))
 
   labels <- substr(as.character(rownames(distance_scores)), 1, chars_limit)
@@ -28,7 +28,7 @@ distance_heatmap <- function(distance_scores,
   scores <- unlist(as.list(as.matrix(distance_scores)))
   df$distance_score <- scores
 
-  if(hcluster){
+  if (hcluster) {
     m <- tidyr::pivot_wider(df, names_from = "Geneset1", values_from = "distance_score")
     m <- as.matrix(m[, -1])
     ord <- hclust(dist(t(m)), method = "ward.D")$order
@@ -36,12 +36,12 @@ distance_heatmap <- function(distance_scores,
 
   p <- ggplot(df, aes(Geneset1, Geneset2, fill = distance_score)) +
     geom_tile() +
-    scale_fill_viridis(discrete=FALSE) +
+    scale_fill_viridis(discrete = FALSE) +
     hrbrthemes::theme_ipsum() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1))
 
-  if(hcluster){
-   p <- p + scale_y_discrete(limits = colnames(m)[ord])
+  if (hcluster) {
+    p <- p + scale_y_discrete(limits = colnames(m)[ord])
   }
 
   return(p)

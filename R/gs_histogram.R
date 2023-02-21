@@ -18,18 +18,20 @@
 #'
 #' @examples
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
-#'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
-#'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
-#'  c("AHI1", "ALMS1"))
+#' genes <- list(
+#'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'   c("AHI1", "ALMS1")
+#' )
 #'
-#'  p <- gs_histogram(genes, gs_names)
+#' p <- gs_histogram(genes, gs_names)
 gs_histogram <- function(genes,
                          gs_names,
                          start = NULL,
                          end = NULL,
                          binwidth = 5,
-                         color = "#0092AC"){
+                         color = "#0092AC") {
   n_genes <- .buildHistogramData(genes, gs_names, start, end)
 
   p <- ggplot(n_genes, aes(x = Size)) +
@@ -57,14 +59,14 @@ gs_histogram <- function(genes,
 .buildHistogramData <- function(genes,
                                 gs_names,
                                 start = NULL,
-                                end = NULL){
+                                end = NULL) {
   n_genes <- sapply(genes, length)
   n_genes <- as.data.frame(n_genes)
   colnames(n_genes) <- "Size"
   n_genes$Geneset <- gs_names
 
   # filter only for those between start and end
-  if(!is.null(start) && !is.null(end)){
+  if (!is.null(start) && !is.null(end)) {
     n_genes <- subset(n_genes, Size >= start & Size <= end, select = c(Geneset, Size))
   }
 

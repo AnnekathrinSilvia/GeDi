@@ -21,17 +21,19 @@
 #' a <- c("PDHB", "VARS2")
 #' b <- c("IARS2", "PDHA1")
 #'
-#' ppi <- data.frame(from = c("PDHB", "VARS2"),
-#'                   to = c("IARS2", "PDHA1"),
-#'                   combined_score = c(0.5, 0.2))
+#' ppi <- data.frame(
+#'   from = c("PDHB", "VARS2"),
+#'   to = c("IARS2", "PDHA1"),
+#'   combined_score = c(0.5, 0.2)
+#' )
 #'
 #' score <- sumInteraction(a, b, ppi)
 sumInteraction <- function(a, b, ppi) {
-  if (length(a) ==  0 | length(b) == 0) {
+  if (length(a) == 0 | length(b) == 0) {
     return(0)
-  } else{
+  } else {
     interactions <- which(ppi$from %in% a & ppi$to %in% b)
-    return(sum(ppi[which(ppi$from %in% a & ppi$to %in% b),]$combined_score))
+    return(sum(ppi[which(ppi$from %in% a & ppi$to %in% b), ]$combined_score))
   }
 }
 
@@ -58,14 +60,16 @@ sumInteraction <- function(a, b, ppi) {
 #' a <- c("PDHB", "VARS2")
 #' b <- c("IARS2", "PDHA1")
 #'
-#' ppi <- data.frame(from = c("PDHB", "VARS2"),
-#'                   to = c("IARS2", "PDHA1"),
-#'                   combined_score = c(0.5, 0.2))
+#' ppi <- data.frame(
+#'   from = c("PDHB", "VARS2"),
+#'   to = c("IARS2", "PDHA1"),
+#'   combined_score = c(0.5, 0.2)
+#' )
 #' maxInteract <- max(ppi$combined_score)
 #'
 #' interaction <- getInteractionScore(a, b, ppi, maxInteract)
 getInteractionScore <- function(a, b, ppi, maxInteract) {
-  if(length(a) == 0 || length(b) == 0){
+  if (length(a) == 0 || length(b) == 0) {
     return(0)
   }
   onlya <- setdiff(a, b)
@@ -77,20 +81,20 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
   onlyblength <- length(onlyb)
   onlyalength <- length(onlya)
 
-  if(intlength == 0 || onlyblength == 0 || onlyalength == 0){
+  if (intlength == 0 || onlyblength == 0 || onlyalength == 0) {
     return(0)
   }
 
-  sumInta_to_b <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% int),]$combined_score)
-  sumOnlyb <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% onlyb),]$combined_score)
+  sumInta_to_b <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% int), ]$combined_score)
+  sumOnlyb <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% onlyb), ]$combined_score)
 
   nom_a_to_b <- (w * sumInta_to_b) + sumOnlyb
   denom_a_to_b <- maxInteract * (w * intlength + onlyblength)
 
   score_a_to_b <- nom_a_to_b / denom_a_to_b
 
-  sumIntb_to_a <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% int),]$combined_score)
-  sumOnlya <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% onlya),]$combined_score)
+  sumIntb_to_a <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% int), ]$combined_score)
+  sumOnlya <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% onlya), ]$combined_score)
 
   nom_b_to_a <- (w * sumIntb_to_a) + sumOnlya
   denom_b_to_a <- maxInteract * (w * intlength + onlyalength)
@@ -126,15 +130,17 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' a <- c("PDHB", "VARS2")
 #' b <- c("IARS2", "PDHA1")
 #'
-#' ppi <- data.frame(from = c("PDHB", "VARS2"),
-#'                   to = c("IARS2", "PDHA1"),
-#'                   combined_score = c(0.5, 0.2))
+#' ppi <- data.frame(
+#'   from = c("PDHB", "VARS2"),
+#'   to = c("IARS2", "PDHA1"),
+#'   combined_score = c(0.5, 0.2)
+#' )
 #' maxInteract <- max(ppi$combined_score)
 #'
 #' pMM_score <- pMMlocal(a, b, ppi, maxInteract)
 pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
   z <- min(length(a), length(b))
-  if(z == 0){
+  if (z == 0) {
     return(1)
   }
 
@@ -177,21 +183,23 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' @examples
 #' genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 #'
-#' ppi <- data.frame(from = c("PDHB", "VARS2"),
-#'                   to = c("IARS2", "PDHA1"),
-#'                   combined_score = c(0.5, 0.2))
+#' ppi <- data.frame(
+#'   from = c("PDHB", "VARS2"),
+#'   to = c("IARS2", "PDHA1"),
+#'   combined_score = c(0.5, 0.2)
+#' )
 #'
 #' pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
-getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL){
+getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL) {
   l <- length(genes)
-  if(l == 0){
+  if (l == 0) {
     return(NULL)
   }
   stopifnot(!is.null(ppi))
   scores <- Matrix::Matrix(0, l, l)
   maxInteract <- max(ppi$combined_score)
 
-  if(is.null(n_cores)){
+  if (is.null(n_cores)) {
     n_cores <- parallel::detectCores()
     n_cores <- max(round(n_cores / 2), 1)
   }
@@ -199,14 +207,14 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
 
   for (j in 1:(l - 1)) {
     a <- genes[[j]]
-    if(!is.null(progress)){
-      progress$inc(1/l, detail = paste("Scoring geneset number", j))
+    if (!is.null(progress)) {
+      progress$inc(1 / l, detail = paste("Scoring geneset number", j))
     }
-      results[[j]] <- parallel::mclapply((j+1):l, function(i) {
-        b <- genes[[i]]
-        pMMlocal(a, b, ppi, maxInteract)
-      }, mc.cores = n_cores)
-      scores[j,(j+1):l] <- scores[(j+1):l, j] <- unlist(results[[j]])
+    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
+      b <- genes[[i]]
+      pMMlocal(a, b, ppi, maxInteract)
+    }, mc.cores = n_cores)
+    scores[j, (j + 1):l] <- scores[(j + 1):l, j] <- unlist(results[[j]])
   }
   return(scores)
 }

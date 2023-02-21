@@ -16,25 +16,31 @@
 #' @export
 #'
 #' @examples
-#' df <- data.frame(Geneset = c("Cell Cycle",
-#'                            "Biological Process",
-#'                             "Mitosis"),
-#'                  Genes =  c(c("PDHB,VARS2,IARS2"),
-#'                           c("LARS,LARS2"),
-#'                           c("IARS,SUV3")))
+#' df <- data.frame(
+#'   Geneset = c(
+#'     "Cell Cycle",
+#'     "Biological Process",
+#'     "Mitosis"
+#'   ),
+#'   Genes = c(
+#'     c("PDHB,VARS2,IARS2"),
+#'     c("LARS,LARS2"),
+#'     c("IARS,SUV3")
+#'   )
+#' )
 #' genes <- getGenes(df)
 getGenes <- function(genesets, gene_name = NULL) {
   if (length(genesets) == 0) {
     return(NULL)
   }
-  #stopifnot(any(names(genesets) == "Genes") && !is.null(gene_name))
+  # stopifnot(any(names(genesets) == "Genes") && !is.null(gene_name))
 
 
   if (!is.null(gene_name)) {
     genes <- lapply(1:nrow(genesets), function(i) {
       toupper(strsplit(genesets[, gene_name][i], ",")[[1]])
     })
-  } else{
+  } else {
     genes <- lapply(1:nrow(genesets), function(i) {
       toupper(strsplit(genesets$Genes[i], ",")[[1]])
     })
@@ -63,15 +69,17 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' sepguesser(system.file("extdata/design_semicolons.txt", package = "ideal"))
 #' sepguesser(system.file("extdata/design_spaces.txt", package = "ideal"))
 #' mysep <- sepguesser(system.file("extdata/design_tabs.txt",
-#'                     package = "ideal"))
+#'   package = "ideal"
+#' ))
 #'
 sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   separators_list <- sep_list
   rl <- readLines(file, warn = FALSE)
   rl <- rl[rl != ""] # allow last line to be empty
   sephits_min <-
-    sapply(separators_list, function(x)
-      min(stringr::str_count(rl, x))) # minimal number of separators on all lines
+    sapply(separators_list, function(x) {
+      min(stringr::str_count(rl, x))
+    }) # minimal number of separators on all lines
   sep <- separators_list[which.max(sephits_min)]
   return(sep)
 }
@@ -93,26 +101,28 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
 .filterGenesets <- function(remove,
                             df_genesets,
                             alt_name_genesets = NULL,
-                            alt_name_genes = NULL){
+                            alt_name_genes = NULL) {
   genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
   results <- list()
-  if(!is.null(alt_name_genesets)){
+  if (!is.null(alt_name_genesets)) {
     filter <- !(df_genesets[, alt_name_genesets] %in% genesets_to_remove)
     df_genesets <- df_genesets[filter, ]
     results[[1]] <- df_genesets
     results[[2]] <- df_genesets[, alt_name_genesets]
-  }else{
+  } else {
     df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
     results[[1]] <- df_genesets
     results[[2]] <- df_genesets$Geneset
   }
 
 
-  if(!is.null(alt_name_genes)){
-    genes <- getGenes(df_genesets,
-                         alt_name_genes)
+  if (!is.null(alt_name_genes)) {
+    genes <- getGenes(
+      df_genesets,
+      alt_name_genes
+    )
     results[[3]] <- genes
-  }else{
+  } else {
     genes <- getGenes(df_genesets)
     results[[3]] <- genes
   }
@@ -129,17 +139,17 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
 #' @export
 #'
 #' @examples
-.hubGenesDT <- function(g){
+.hubGenesDT <- function(g) {
   nodes <- V(g)$name
 
   # Get degree of gene nodes in the graph
   node_degrees <- sapply(nodes, function(x) degree(g, x))
-  #buttons <- sapply(genes, generate_buttons_hubgenes)
+  # buttons <- sapply(genes, generate_buttons_hubgenes)
 
   node_degrees_df <- data.frame(
     gene = nodes,
     degree = node_degrees
-    #buttons = buttons
+    # buttons = buttons
   )
 
 
@@ -148,7 +158,6 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   node_degrees_df <- arrange(node_degrees_df, desc(.data$degree))
   colnames(node_degrees_df) <- c("Gene", "Degree")
   return(node_degrees_df)
-
 }
 
 

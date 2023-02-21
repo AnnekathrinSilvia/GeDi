@@ -18,16 +18,16 @@
 #' m <- Matrix::Matrix(runif(1000, 0, 1), 100, 100)
 #' threshold <- 0.3
 #' adj <- getAdjacencyMatrix(m, threshold)
-getAdjacencyMatrix <- function(distanceMatrix, cutOff){
-  if(is.null(distanceMatrix)){
+getAdjacencyMatrix <- function(distanceMatrix, cutOff) {
+  if (is.null(distanceMatrix)) {
     return(NULL)
   }
   l <- nrow(distanceMatrix)
   adjMat <- Matrix::Matrix(0, l, l)
 
-  for(i in 1:l){
+  for (i in 1:l) {
     edge <- which(distanceMatrix[i, ] <= cutOff)
-    if(length(edge) > 0){
+    if (length(edge) > 0) {
       adjMat[i, edge] <- 1
     }
   }
@@ -55,7 +55,7 @@ getAdjacencyMatrix <- function(distanceMatrix, cutOff){
 #' adj <- Matrix::Matrix(0, 100, 100)
 #' adj[c(80:100), c(80:100)] <- 1
 #' graph <- buildGraph(adj)
-buildGraph <- function(adjMatrix){
+buildGraph <- function(adjMatrix) {
   g <- igraph::graph_from_adjacency_matrix(
     adjMatrix,
     mode = "undirected",
@@ -70,7 +70,8 @@ buildGraph <- function(adjMatrix){
   V(g)$title[ids] <- paste0(
     "<h4>",
     sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
-    V(g)$name[ids], "<br><br>")
+    V(g)$name[ids], "<br><br>"
+  )
 
   return(g)
 }
@@ -91,16 +92,16 @@ buildGraph <- function(adjMatrix){
 #' cluster <- list(c(1:5), c(6:9))
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
 #' adj <- getClusterAdjacencyMatrix(cluster, gs_names)
-getClusterAdjacencyMatrix <- function(cluster, gs_names){
+getClusterAdjacencyMatrix <- function(cluster, gs_names) {
   l <- length(gs_names)
   adj <- Matrix::Matrix(0, l, l)
-  if(length(cluster) == 0){
-    rownames(adj) <-  colnames(adj) <- gs_names
+  if (length(cluster) == 0) {
+    rownames(adj) <- colnames(adj) <- gs_names
     diag(adj) <- 0
     return(adj)
   }
 
-  for(i in 1:length(cluster)){
+  for (i in 1:length(cluster)) {
     subcluster <- cluster[[i]]
     adj[subcluster, subcluster] <- 1
   }
@@ -129,28 +130,35 @@ getClusterAdjacencyMatrix <- function(cluster, gs_names){
 #'
 #' @examples
 #' cluster <- list(c(1:5), c(6:9))
-#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
-#'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
-#'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
-#'  c("AHI1", "ALMS1"))
+#' genes <- list(
+#'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'   c("AHI1", "ALMS1")
+#' )
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' geneset_df <- data.frame(Genesets = gs_names,
-#'                          value = rep(1, 9))
+#' geneset_df <- data.frame(
+#'   Genesets = gs_names,
+#'   value = rep(1, 9)
+#' )
 #' geneset_df$Genes <- genes
-#' graph <- buildClusterGraph(cluster = cluster,
-#'                           geneset_df = geneset_df,
-#'                           gs_names = gs_names,
-#'                           color_by = "value")
+#' graph <- buildClusterGraph(
+#'   cluster = cluster,
+#'   geneset_df = geneset_df,
+#'   gs_names = gs_names,
+#'   color_by = "value"
+#' )
 buildClusterGraph <- function(cluster,
                               geneset_df,
                               gs_names,
-                              color_by = NULL){
-
-  adj <- getClusterAdjacencyMatrix(cluster,
-                                   gs_names)
+                              color_by = NULL) {
+  adj <- getClusterAdjacencyMatrix(
+    cluster,
+    gs_names
+  )
   g <- buildGraph(adj)
 
-  if(!is.null(color_by)){
+  if (!is.null(color_by)) {
     if (!color_by %in% colnames(geneset_df)) {
       stop(
         "Your data does not contain the ",
@@ -163,7 +171,7 @@ buildClusterGraph <- function(cluster,
 
   ids <- which(names(V(g)) %in% gs_names)
 
-  if(!is.null(color_by)){
+  if (!is.null(color_by)) {
     col_var <- geneset_df[ids, color_by]
     # the palette changes if it is z_score VS pvalue
     if (all(col_var <= 1) & all(col_var > 0)) { # likely p-values...
@@ -179,12 +187,18 @@ buildClusterGraph <- function(cluster,
         colorRampPalette(RColorBrewer::brewer.pal(name = "YlOrRd", 9))(50), 1
       ))
 
-      V(g)$color.background <- map2color(col_var, mypal, symmetric = FALSE,
-                                         limits = range(na.omit(col_var)))
-      V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = FALSE,
-                                        limits = range(na.omit(col_var)))
-      V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = FALSE,
-                                    limits = range(na.omit(col_var)))
+      V(g)$color.background <- map2color(col_var, mypal,
+        symmetric = FALSE,
+        limits = range(na.omit(col_var))
+      )
+      V(g)$color.highlight <- map2color(col_var, mypal_select,
+        symmetric = FALSE,
+        limits = range(na.omit(col_var))
+      )
+      V(g)$color.hover <- map2color(col_var, mypal_hover,
+        symmetric = FALSE,
+        limits = range(na.omit(col_var))
+      )
 
       V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
       V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
@@ -203,16 +217,21 @@ buildClusterGraph <- function(cluster,
           colorRampPalette(RColorBrewer::brewer.pal(name = "Oranges", 9))(50), 1
         ))
 
-        V(g)$color.background <- map2color(col_var, mypal, symmetric = FALSE,
-                                           limits = range(na.omit(col_var)))
-        V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = FALSE,
-                                          limits = range(na.omit(col_var)))
-        V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = FALSE,
-                                      limits = range(na.omit(col_var)))
+        V(g)$color.background <- map2color(col_var, mypal,
+          symmetric = FALSE,
+          limits = range(na.omit(col_var))
+        )
+        V(g)$color.highlight <- map2color(col_var, mypal_select,
+          symmetric = FALSE,
+          limits = range(na.omit(col_var))
+        )
+        V(g)$color.hover <- map2color(col_var, mypal_hover,
+          symmetric = FALSE,
+          limits = range(na.omit(col_var))
+        )
         V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
         V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
         V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
-
       } else {
         # divergent palette to be used
         mypal <- rev(scales::alpha(
@@ -225,12 +244,18 @@ buildClusterGraph <- function(cluster,
           colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 1
         ))
 
-        V(g)$color.background <- map2color(col_var, mypal, symmetric = TRUE,
-                                           limits = range(na.omit(col_var)))
-        V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = TRUE,
-                                          limits = range(na.omit(col_var)))
-        V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = TRUE,
-                                      limits = range(na.omit(col_var)))
+        V(g)$color.background <- map2color(col_var, mypal,
+          symmetric = TRUE,
+          limits = range(na.omit(col_var))
+        )
+        V(g)$color.highlight <- map2color(col_var, mypal_select,
+          symmetric = TRUE,
+          limits = range(na.omit(col_var))
+        )
+        V(g)$color.hover <- map2color(col_var, mypal_hover,
+          symmetric = TRUE,
+          limits = range(na.omit(col_var))
+        )
 
         V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
         V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
@@ -248,27 +273,29 @@ buildClusterGraph <- function(cluster,
   title <- list()
   names_rows <- rownames(transposed_df)
 
-  for(i in 1:ncol(transposed_df)){
-    node_title <-"<!DOCTYPE html> <html> <head> <style>
+  for (i in 1:ncol(transposed_df)) {
+    node_title <- "<!DOCTYPE html> <html> <head> <style>
       table {font-family: arial, sans-serif; font-size: 10px; border-collapse: collapse;width: 100%;} td,
       th { border: 1px solid #dddddd; text-align: center; padding: 5px;}
       tr:nth-child(even) {background-color: #dddddd;}
       </style> </head> <body>
-      <table>";
-    for(j in 1:nrow(transposed_df)){
-      text <- gsub(",", " ", transposed_df[j,i])
+      <table>"
+    for (j in 1:nrow(transposed_df)) {
+      text <- gsub(",", " ", transposed_df[j, i])
       text <- gsub("(.{101,}?)\\s", "\\1<br>", text)
-      node_title = paste0(node_title,
-                          " <tr>",
-                          "<td>",
-                          names_rows[j],
-                          "</td>",
-                          "<td>",
-                          text,
-                          "</td>",
-                          "</tr> ")
+      node_title <- paste0(
+        node_title,
+        " <tr>",
+        "<td>",
+        names_rows[j],
+        "</td>",
+        "<td>",
+        text,
+        "</td>",
+        "</tr> "
+      )
     }
-    node_title = paste0(node_title, "</table> </body> </html>")
+    node_title <- paste0(node_title, "</table> </body> </html>")
     title[[i]] <- node_title
   }
 
@@ -278,9 +305,9 @@ buildClusterGraph <- function(cluster,
   V(g)$title[ids] <- paste0(
     "<h4>",
     sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
-    title[ids], "<br><br>")
+    title[ids], "<br><br>"
+  )
   return(g)
-
 }
 
 #' Construct a bipartite graph
@@ -303,13 +330,15 @@ buildClusterGraph <- function(cluster,
 #' @examples
 #' cluster <- list(c(1:5), c(6:9))
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
-#'  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
-#'  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
-#'  c("AHI1", "ALMS1"))
+#' genes <- list(
+#'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'   c("AHI1", "ALMS1")
+#' )
 #'
 #' g <- getBipartiteGraph(cluster, gs_names, genes)
-getBipartiteGraph <- function(cluster, gs_names, genes){
+getBipartiteGraph <- function(cluster, gs_names, genes) {
   stopifnot(length(cluster) > 0)
   stopifnot(length(gs_names) > 0)
   stopifnot(length(genes) > 0)
@@ -323,17 +352,17 @@ getBipartiteGraph <- function(cluster, gs_names, genes){
 
   node_labels <- c()
 
-  for(i in 1:n_cluster){
+  for (i in 1:n_cluster) {
     node_labels <- c(node_labels, paste0("Cluster ", i))
   }
 
-  for(i in 1:n_cluster){
+  for (i in 1:n_cluster) {
     subcluster <- cluster[[i]]
-    for(j in subcluster){
-      if(!is.na(df_node_mapping[j, ])){
+    for (j in subcluster) {
+      if (!is.na(df_node_mapping[j, ])) {
         n <- df_node_mapping[j, ]
         edgelist <- c(edgelist, i, n)
-      }else{
+      } else {
         edgelist <- c(edgelist, i, node_number)
         df_node_mapping[j, ] <- node_number
         node_number <- node_number + 1
@@ -343,7 +372,7 @@ getBipartiteGraph <- function(cluster, gs_names, genes){
   }
 
   type <- c(rep(0, n_cluster))
-  type <- c(type, rep(1, node_number-n_cluster-1))
+  type <- c(type, rep(1, node_number - n_cluster - 1))
 
   graph <- igraph::make_bipartite_graph(type, edgelist, directed = TRUE)
   graph <- set_vertex_attr(graph, "name", value = node_labels)
@@ -361,37 +390,37 @@ getBipartiteGraph <- function(cluster, gs_names, genes){
   igraph::V(graph)$color[geneset_id] <- "#0092AC"
   igraph::E(graph)$color <- "black"
 
-  #cluster_size <- sapply(cluster, length)
-  #igraph::V(graph)$size[cluster_id] <- 5 * sqrt(cluster_size)
+  # cluster_size <- sapply(cluster, length)
+  # igraph::V(graph)$size[cluster_id] <- 5 * sqrt(cluster_size)
 
 
   igraph::V(graph)$title <- NA
 
   text <- list()
-  for(i in cluster_id){
+  for (i in cluster_id) {
     mem <- paste(gs_names[cluster[[i]]], collapse = " ")
     mem <- gsub("(.{21,}?)\\s", "\\1<br>", mem)
     text[[i]] <- mem
   }
 
-  for(j in geneset_id){
-    gs <- paste(unlist(genes[as.integer(na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))]
-                ),collapse = " ")
+  for (j in geneset_id) {
+    gs <- paste(unlist(genes[as.integer(na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))]), collapse = " ")
     gs <- gsub("(.{71,}?)\\s", "\\1<br>", gs)
     text[[j]] <- gs
   }
 
-  for(i in cluster_id){
+  for (i in cluster_id) {
     igraph::V(graph)$title[i] <- paste(
       "<h4>", igraph::V(graph)$name[i], "</h4><br>",
       "Members:<br>", text[[i]]
     )
   }
 
-  for(j in geneset_id){
+  for (j in geneset_id) {
     igraph::V(graph)$title[[j]] <- paste(
       "<h4>", igraph::V(graph)$name[j], "</h4><br>",
-      "Genes:<br>", text[[j]])
+      "Genes:<br>", text[[j]]
+    )
   }
 
   return(graph)

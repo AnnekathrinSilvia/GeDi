@@ -29,9 +29,11 @@ all genes in the given genesets.
 a <- c("PDHB", "VARS2")
 b <- c("IARS2", "PDHA1")
 
-ppi <- data.frame(from = c("PDHB", "VARS2"),
-                  to = c("IARS2", "PDHA1"),
-                  combined_score = c(0.5, 0.2))
+ppi <- data.frame(
+  from = c("PDHB", "VARS2"),
+  to = c("IARS2", "PDHA1"),
+  combined_score = c(0.5, 0.2)
+)
 
 score <- sumInteraction(a, b, ppi)
 }

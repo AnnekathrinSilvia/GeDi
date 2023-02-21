@@ -38,10 +38,12 @@ TODO: Title
 }
 \examples{
 gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
- c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
- c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
- c("AHI1", "ALMS1"))
+genes <- list(
+  c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+  c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+  c("AHI1", "ALMS1")
+)
 
- p <- gs_histogram(genes, gs_names)
+p <- gs_histogram(genes, gs_names)
 }

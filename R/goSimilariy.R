@@ -12,17 +12,17 @@
 #' @examples
 #' genesets <- list()
 #' gS <- goSimilarity(genesets)
-goSimilarity <- function(genesets, method = 'Wang', ontology = 'BP', species = 'org.Hs.eg.db'){
+goSimilarity <- function(genesets, method = "Wang", ontology = "BP", species = "org.Hs.eg.db") {
   l <- length(genesets)
-  if(l == 0){
+  if (l == 0) {
     return(-1)
   }
   go_sim <- Matrix::Matrix(0, l, l)
   go <- GOSemSim::godata(species, ont = ontology)
 
-  for(i in 1:(l-1)){
+  for (i in 1:(l - 1)) {
     go1 <- genesets[[i]]
-    for(j in (i+1):l){
+    for (j in (i + 1):l) {
       go2 <- genesets[[j]]
       sim <- GOSemSim::goSim(go1, go2, go, measure = method)
       go_sim[i, j] <- go_sim[j, i] <- sim
@@ -47,16 +47,16 @@ goSimilarity <- function(genesets, method = 'Wang', ontology = 'BP', species = '
 #' genesets <- list()
 #' scores <- Matrix::Matrix(0.5, 4, 4)
 #' scaled <- scaleGO(scores, genesets)
-scaleGO <- function(scores, genesets, method = 'Wang', ontology = 'BP', species = 'org.Hs.eg.db'){
+scaleGO <- function(scores, genesets, method = "Wang", ontology = "BP", species = "org.Hs.eg.db") {
   l <- nrow(scores)
-  if(length(genesets) != l){
+  if (length(genesets) != l) {
     return(scores)
   }
   scaled <- Matrix::Matrix(0, l, l)
   scores_go <- goSimilarity(genesets, method, ontology, species)
 
-  for(i in 1:(l-1)){
-    for(j in (i+1):l){
+  for (i in 1:(l - 1)) {
+    for (j in (i + 1):l) {
       scaled[i, j] <- scaled[j, i] <- scores[i, j] * scores_go[i, j]
     }
   }

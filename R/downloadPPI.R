@@ -27,7 +27,7 @@ getId <- function(species) {
 #' @examples
 #' species <- getId(species = "Homo Sapiens")
 #' string_db <- getStringDB(as.numeric(species))
-getStringDB <- function(species, version = "11.5", score_threshold = 0.00 , input_directory = "") {
+getStringDB <- function(species, version = "11.5", score_threshold = 0.00, input_directory = "") {
   return(
     STRINGdb$new(
       version = version,

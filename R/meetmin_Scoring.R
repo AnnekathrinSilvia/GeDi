@@ -21,34 +21,34 @@
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 #' m <- getMeetMinMatrix(genesets, n_cores = 1)
-getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL){
+getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   l <- length(genesets)
-  if(l == 0){
+  if (l == 0) {
     return(NULL)
   }
   m <- Matrix::Matrix(0, l, l)
   results <- list()
 
-  if(is.null(n_cores)){
+  if (is.null(n_cores)) {
     n_cores <- parallel::detectCores()
     n_cores <- max(round(n_cores / 2), 1)
   }
 
-  for(j in 1:(l - 1)){
+  for (j in 1:(l - 1)) {
     a <- genesets[[j]]
-    if(!is.null(progress)){
-      progress$inc(1/l, detail = paste("Scoring geneset number", j))
+    if (!is.null(progress)) {
+      progress$inc(1 / l, detail = paste("Scoring geneset number", j))
     }
-    results[[j]] <- parallel::mclapply((j+1):l, function(i){
+    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
       b <- genesets[[i]]
-      if(length(a) == 0 || length(b) == 0){
+      if (length(a) == 0 || length(b) == 0) {
         return(1)
-      }else{
+      } else {
         int <- length(intersect(a, b))
         return(1 - (int / min(length(a), length(b))))
       }
     }, mc.cores = n_cores)
-    m[j,(j+1):l] <- m[(j+1):l, j] <- unlist(results[[j]])
+    m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
   }
   return(m)
 }

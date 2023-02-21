@@ -25,11 +25,17 @@ Split a long string of space separated genes into a \code{list} of individual
 genes.
 }
 \examples{
-df <- data.frame(Geneset = c("Cell Cycle",
-                           "Biological Process",
-                            "Mitosis"),
-                 Genes =  c(c("PDHB,VARS2,IARS2"),
-                          c("LARS,LARS2"),
-                          c("IARS,SUV3")))
+df <- data.frame(
+  Geneset = c(
+    "Cell Cycle",
+    "Biological Process",
+    "Mitosis"
+  ),
+  Genes = c(
+    c("PDHB,VARS2,IARS2"),
+    c("LARS,LARS2"),
+    c("IARS,SUV3")
+  )
+)
 genes <- getGenes(df)
 }

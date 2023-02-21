@@ -40,9 +40,11 @@ set of genesets.
 \examples{
 genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 
-ppi <- data.frame(from = c("PDHB", "VARS2"),
-                  to = c("IARS2", "PDHA1"),
-                  combined_score = c(0.5, 0.2))
+ppi <- data.frame(
+  from = c("PDHB", "VARS2"),
+  to = c("IARS2", "PDHA1"),
+  combined_score = c(0.5, 0.2)
+)
 
 pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
 }

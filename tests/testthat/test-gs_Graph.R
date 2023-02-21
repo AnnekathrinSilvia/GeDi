@@ -14,6 +14,8 @@ test_that("getAdjacencyMatrix runs correctly", {
 test_that("buildGraph runs correctly", {
   distance_scores <- Matrix::Matrix(runif(1000, min = 0, max = 1), 100, 100)
   threshold <- 0.3
+  geneset_names <- as.character(runif(100, min = 0, max = 1))
+  rownames(distance_scores) <- colnames(distance_scores) <- geneset_names
   m <- getAdjacencyMatrix(distance_scores, threshold)
   g <- buildGraph(m)
   expect_type(g, "list")

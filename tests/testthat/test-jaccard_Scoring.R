@@ -16,7 +16,7 @@ test_that("calculateJaccard runs correctly", {
 })
 
 test_that("Empty genesets - getJaccardMatrix", {
-  expect_true(is.null(getJaccardMatrix(genes = list(),n_cores = 1)))
+  expect_true(is.null(getJaccardMatrix(genes = list(), n_cores = 1)))
 })
 
 test_that("Scoring identical sets - getJaccardMatrix", {
