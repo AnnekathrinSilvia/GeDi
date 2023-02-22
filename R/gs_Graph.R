@@ -430,28 +430,22 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
 #'
 #' @param g
 #' @param genesets
-#' @param alt_name
 #'
 #' @return
 #' @export
 #'
 #' @examples
-.hubGenesDT <- function(g, genesets, alt_name = NULL) {
+.hubGenesDT <- function(g, genesets) {
   nodes <- V(g)$name
 
   # Get degree of gene nodes in the graph
   node_degrees <- sapply(nodes, function(x) degree(g, x))
 
-  if(!is.null(alt_name)){
-    genesets <- genesets[,!names(genesets) %in% c(alt_name)]
-  }else{
-    genesets <- genesets[,!names(genesets) %in% c("Genes")]
-  }
+  genesets <- genesets[,!names(genesets) %in% c("Genes")]
 
   node_degrees_df <- data.frame(
     gene = nodes,
     degree = node_degrees
-    # buttons = buttons
   )
 
   node_degrees_df <- cbind(node_degrees_df, genesets)

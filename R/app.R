@@ -450,16 +450,20 @@ GeDi <- function(genesets = NULL,
         and the column which contains the Genes. If you are unsure about the
         format of the input data, please check out the Welcome panel.",
           br(),
+          "Upon choosing the respective columns, we will rename the column
+          containing the geneset identifiers to 'Genesets' and the column
+          containing the gene lists to 'Genes'. ",
+          br(),
           selectInput(
             inputId = "alt_name_genesets",
-            label = "Geneset column",
+            label = "Which column contains the Geneset identifiers?",
             choices = c(colnames(reactive_values$genesets)),
             multiple = FALSE,
             selected = NULL
           ),
           selectInput(
             inputId = "alt_name_genes",
-            label = "Genes column",
+            label = "Which column contains the Genes?",
             choices = c(colnames(reactive_values$genesets)),
             multiple = FALSE,
             selected = NULL
@@ -929,13 +933,8 @@ GeDi <- function(genesets = NULL,
           message = "Please score you genesets first in the above box"
         )
       )
-      if(reactive_values$alt_names){
-        dt <- .hubGenesDT(reactive_values$scores_graph(),
-                          reactive_values$genesets,
-                          input$alt_name_genes)
-      }else{
-        dt <- .hubGenesDT(reactive_values$scores_graph(), reactive_values$genesets)
-      }
+
+      dt <- .hubGenesDT(reactive_values$scores_graph(), reactive_values$genesets)
       DT::datatable(dt,
         options = list(scrollX = TRUE, scrollY = "400px")
       )
@@ -1438,22 +1437,10 @@ GeDi <- function(genesets = NULL,
         )
       }
 
-      if (input$alt_geneset_colname != "") {
-        reactive_values$gs_names <-
-          reactive_values$genesets[, input$alt_geneset_colname]
-      } else {
-        reactive_values$gs_names <- reactive_values$genesets$Geneset
-      }
+      reactive_values$gs_names <- reactive_values$genesets$Geneset
       tryCatch(
         expr = {
-          if (input$alt_genes_colname != "") {
-            reactive_values$genes <- getGenes(
-              reactive_values$genesets,
-              input$alt_genes_colname
-            )
-          } else {
             reactive_values$genes <- getGenes(reactive_values$genesets)
-          }
         },
         error = function(cond) {
           showNotification(
@@ -1476,8 +1463,12 @@ GeDi <- function(genesets = NULL,
         input$alt_name_genes
       )
 
+      names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genesets] <- "Genesets"
+      names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genes] <- "Genes"
+
       showNotification(
         "Successfully selected your columns and uploaded your data.
+        We renamed the columns to 'Genesets' and 'Genes'.
         You can now proceed.",
         type = "message"
       )
@@ -1519,19 +1510,10 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$filter_genesets, {
-      if (reactive_values$alt_names) {
-        filtered_data <- .filterGenesets(
-          input$select_filter_genesets,
-          reactive_values$genesets,
-          input$alt_name_genesets,
-          input$alt_name_genes
-        )
-      } else {
         filtered_data <- .filterGenesets(
           input$select_filter_genesets,
           reactive_values$genesets
         )
-      }
 
       reactive_values$genesets <- filtered_data$Geneset
       reactive_values$gs_names <- filtered_data$gs_names
@@ -1540,20 +1522,22 @@ GeDi <- function(genesets = NULL,
       showNotification("Successfully filtered the selected Genesets.",
         type = "message"
       )
-      updateBox(
-        "optional_filtering_box",
-        action = "update",
-        options = list(
-          id = "optional_filtering_box",
-          width = 12,
-          title = "Optional Filtering Step",
-          status = "info",
-          solidHeader = TRUE,
-          h2("Filter your uploaded Genesets"),
-          collapsible = TRUE,
-          collapsed = FALSE
-        )
-      )
+
+      # TODO: Does not work correctly currently, box still closes after one filtering round
+      # updateBox(
+      #   "optional_filtering_box",
+      #   action = "update",
+      #   options = list(
+      #     id = "optional_filtering_box",
+      #     width = 12,
+      #     title = "Optional Filtering Step",
+      #     status = "info",
+      #     solidHeader = TRUE,
+      #     h2("Filter your uploaded Genesets"),
+      #     collapsible = TRUE,
+      #     collapsed = FALSE
+      #   )
+      # )
     })
 
     observeEvent(input$download_ppi, {
@@ -1663,7 +1647,7 @@ GeDi <- function(genesets = NULL,
       current_node <- input$scores_graph_search
       if (current_node != "") {
         isolate({
-          if (current_node %in% gs_names) {
+          if (current_node %in% reactive_values$gs_names) {
             visNetworkProxy("scores_Network") %>% visSelectNodes(id = current_node)
           }
         })
