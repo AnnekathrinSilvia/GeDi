@@ -14,9 +14,9 @@
 #' @import plotly
 #' @import shinyBS
 #' @import fontawesome
+#' @import bs4Dash
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.delim data
-#' @importFrom bs4Dash bs4DashPage bs4DashNavbar box bs4DashBrand bs4DashBody bs4Card bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4TabItem bs4TabItems tabBox bs4DashFooter updateBox
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices
 #'
@@ -79,6 +79,15 @@ GeDi <- function(genesets = NULL,
           tooltip = shinyWidgets::tooltipOptions(title = "More info on GeDi and on the current session"),
           tags$h5("Additional information"),
           actionButton(
+            inputId = "btn_docs_vignette",
+            icon = icon("book-open"),
+            label = "Open GeDi Vignette", style = .actionButtonStyle,
+            onclick = ifelse(system.file("doc", "GeDi_manual.html", package = "GeDi") != "",
+                             "",
+                             "window.open('https://federicomarini.github.io/GeneTonic/articles/GeneTonic_manual.html', '_blank')"
+            )
+          ),
+          actionButton(
             inputId = "btn_info_session",
             icon = icon("circle-info"),
             label = "About this session",
@@ -125,6 +134,11 @@ GeDi <- function(genesets = NULL,
           "Graph",
           tabName = "tab_graph",
           icon = icon("square-share-nodes")
+        ),
+        bs4SidebarMenuItem(
+          "Report",
+          tabName = "tab_report",
+          icon = icon("file")
         )
       )
     ),
@@ -278,6 +292,10 @@ GeDi <- function(genesets = NULL,
             ),
             uiOutput("ui_panel_graph")
           )
+        ),
+        bs4TabItem(
+          tabName = "tab_report",
+          uiOutput("ui_panel_report")
         )
       )
     ),
@@ -579,7 +597,16 @@ GeDi <- function(genesets = NULL,
             ),
             column(
               width = 6,
-              uiOutput("ui_specify_opt_params_ppi_download")
+              "Currently we are only supporting organisms which have a Protein-
+              Protein-Interaction (PPI) matrix in the STRING Database. If you
+              are not sure if your organisms is represented in this database,
+              please follow this link and have a look at the available organisms.
+              This can also be used to ensure the correct spelling of your
+              organism of interest.",
+              br(),
+              tags$a(
+                href="https://string-db.org/cgi/download?sessionId=bs0ZXo3WieT0",
+                "Click here to get to STRING!")
             )
           )
         )
@@ -610,41 +637,6 @@ GeDi <- function(genesets = NULL,
           options = list(create = TRUE)
         )
       ))
-    })
-
-    output$ui_specify_opt_params_ppi_download <- renderUI({
-      if (is.null(reactive_values$genesets)) {
-        return(NULL)
-      }
-      box(
-        id = "Optional_parameters",
-        width = 12,
-        title = "Optional Parameters",
-        status = "info",
-        solidHeader = TRUE,
-        collapsible = TRUE,
-        collapsed = TRUE,
-        tagList(fluidRow(column(
-          width = 6,
-          fluidRow(column(
-            width = 12,
-            textInput("stringVersion",
-              label = "Specify the StringDb version to use",
-              value = "11.5"
-            ),
-            textInput(
-              "scoreThresholdString",
-              label = "Specify the score threshold",
-              value = "0.00"
-            ),
-            textInput(
-              "inputDirectoryString",
-              label = "Specify the input directory",
-              value = ""
-            )
-          ))
-        )))
-      )
     })
 
     output$ui_panel_download_ppi <- renderUI({
@@ -937,7 +929,13 @@ GeDi <- function(genesets = NULL,
           message = "Please score you genesets first in the above box"
         )
       )
-      dt <- .hubGenesDT(reactive_values$scores_graph())
+      if(reactive_values$alt_names){
+        dt <- .hubGenesDT(reactive_values$scores_graph(),
+                          reactive_values$genesets,
+                          input$alt_name_genes)
+      }else{
+        dt <- .hubGenesDT(reactive_values$scores_graph(), reactive_values$genesets)
+      }
       DT::datatable(dt,
         options = list(scrollX = TRUE, scrollY = "400px")
       )
@@ -1208,6 +1206,213 @@ GeDi <- function(genesets = NULL,
     })
     outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
 
+
+    # Report panel -------------------------------------------------------------
+    output$ui_panel_report <- renderUI({
+      tagList(
+        fluidRow(
+          column(
+            width = 11
+          ),
+          column(
+            width = 1,
+            actionButton(
+              "tour_bookmarks",
+              label = "", icon = icon("question-circle"),
+              style = .tourButtonStyle
+            )
+          )
+        ),
+        fluidRow(
+          column(
+            width = 12,
+            uiOutput("ui_bookmarks")
+          )
+        ),
+        fluidRow(
+          bs4Dash::column(
+            width = 8,
+            offset = 2,
+            br(), br(),
+            tags$a(
+              id = "start_report",
+              class = "btn btn-default shiny-download-link",
+              href = "",
+              target = "_blank",
+              download = NA,
+              icon("download"),
+              "Start the generation of the report"
+            )
+          )
+        )
+      )
+    })
+
+    output$ui_bookmarks <- renderUI({
+      tagList(
+        fluidRow(
+          column(
+            width = 6,
+            bs4InfoBoxOutput("infobox_book_genes",
+                             width = 6
+            ),
+            h5("Bookmarked genes"),
+            DT::dataTableOutput("bookmarks_genes"),
+            downloadButton("btn_export_genes", label = "", class = "biocdlbutton"),
+            actionButton("btn_reset_genes",
+                         label ="",
+                         icon = icon("trash"),
+                         style = .actionButtonStyle),
+
+            bs4Dash::box(
+              title = "Manually add genes to bookmarks",
+              collapsible = TRUE,
+              collapsed = TRUE,
+              id = "box_bm_genes",
+              width = 12,
+              shinyAce::aceEditor(
+                "editor_bookmarked_genes",
+                theme = "solarized_light",
+                height = "200px",
+                readOnly = FALSE,
+                wordWrap = TRUE,
+                placeholder = paste(
+                  c(
+                    "Enter some gene identifiers or gene names, ",
+                    "as they are provided in the `gene_id` and ",
+                    "`gene_name` columns of the annotation object. ",
+                    "For example:"
+                  ),
+                  collapse = "\n"
+                )
+              ),
+              actionButton("load_bookmarked_genes",
+                           label = "Upload genes",
+                           icon = icon("upload"),
+                           style = .actionButtonStyle)
+            )
+          ),
+          column(
+            width = 6,
+            bs4InfoBoxOutput("infobox_book_genesets",
+                             width = 6
+            ),
+            h5("Bookmarked genesets"),
+            DT::dataTableOutput("bookmarks_genesets"),
+            downloadButton("btn_export_genesets", label = "", class = "biocdlbutton"),
+            actionButton("btn_reset_genesets",
+                         label ="",
+                         icon = icon("trash"),
+                         style = .actionButtonStyle),
+
+            bs4Dash::box(
+              title = "Manually add genesets to bookmarks",
+              collapsible = TRUE,
+              collapsed = TRUE,
+              id = "box_bm_genesets",
+              width = 12,
+              shinyAce::aceEditor(
+                "editor_bookmarked_genesets",
+                theme = "solarized_light",
+                height = "200px",
+                readOnly = FALSE,
+                wordWrap = TRUE,
+                placeholder = paste(
+                  c(
+                    "Enter some geneset identifiers, as they are ",
+                    "provided in the `gs_id` column of the ",
+                    "res_enrich object. You can also use the ",
+                    "values in the `gs_description` field. ",
+                    "For example:"
+                  ),
+                  collapse = "\n"
+                )
+              ),
+              actionButton("load_bookmarked_genesets",
+                           label = "Upload genesets",
+                           icon = icon("upload"),
+                           style = .actionButtonStyle)
+            )
+          )
+        )
+      )
+    })
+
+    output$infobox_book_genes <- renderbs4InfoBox({
+      bs4InfoBox(
+        title = "Bookmarked genes",
+        value = length(reactive_values$genes),
+        icon = icon("bookmark"),
+        iconElevation = 3,
+        color = "info",
+        fill = TRUE,
+        width = 12
+      )
+    })
+
+    output$infobox_book_genesets <- renderbs4InfoBox({
+      bs4InfoBox(
+        title = "Bookmarked genesets",
+        value = length(reactive_values$genes),
+        icon = icon("bookmark"),
+        iconElevation = 3,
+        color = "success",
+        fill = TRUE,
+        width = 12
+      )
+    })
+
+    output$bookmarks_genes <- DT::renderDataTable({
+      DT::datatable(reactive_values$genesets, rownames = FALSE)
+    })
+    output$bookmarks_genesets <- DT::renderDataTable({
+     DT::datatable(reactive_values$genesets, rownames = FALSE)
+    })
+
+    output$btn_export_genes <- downloadHandler(
+      filename = function() {
+        paste0("GeneTonicBookmarks_genes_", gsub(" ", "_", gsub("-", "", gsub(":", "-", as.character(Sys.time())))), ".txt")
+      }, content = function(file) {
+        writeLines(
+          text = reactive_values$mygenes,
+          con = file
+        )
+      }
+    )
+
+    output$btn_export_genesets <- downloadHandler(
+      filename = function() {
+        paste0("GeneTonicBookmarks_genesets_", gsub(" ", "_", gsub("-", "", gsub(":", "-", as.character(Sys.time())))), ".txt")
+      }, content = function(file) {
+        writeLines(
+          text = reactive_values$mygenesets,
+          con = file
+        )
+      }
+    )
+
+    output$start_report <- downloadHandler(
+      filename = paste0(
+        Sys.Date(),
+        "_", round(runif(1) * 100), # for not having all w the same name
+        "_GeDiReport.html"
+      ),
+      content = function(file) {
+        # temporarily switch to the temp dir, in case you do not have write permission to the current working directory
+        owd <- setwd(tempdir())
+        on.exit(setwd(owd))
+        withProgress(rmarkdown::render(
+          input = system.file("extdata", "report_GeDi.Rmd", package = "GeDi"),
+          output_file = file,
+          quiet = TRUE
+        ),
+        message = "Generating the html report",
+        detail = "This can take some time"
+        )
+      }
+    )
+
+
     # Observers ------------------------------------------------------------------
 
     # Data Upload Panel ----------------------------------------------------------
@@ -1270,7 +1475,7 @@ GeDi <- function(genesets = NULL,
         reactive_values$genesets,
         input$alt_name_genes
       )
-      reactive_values$alt_names_start <- FALSE
+
       showNotification(
         "Successfully selected your columns and uploaded your data.
         You can now proceed.",
@@ -1568,6 +1773,51 @@ GeDi <- function(genesets = NULL,
       )
       introjs(session, options = list(steps = tour))
     })
+
+
+    #Buttons Navbar Observers -------------------------------------------------
+    observeEvent(input$btn_first_help, {
+      showModal(
+        modalDialog(
+          title = "First Help Info", size = "l", fade = TRUE,
+          footer = NULL, easyClose = TRUE,
+          tagList(
+            includeMarkdown(system.file("extdata", "GeDi101.md", package = "GeDi")),
+          )
+        )
+      )
+    })
+
+    observeEvent(input$btn_info_session, {
+      showModal(
+        modalDialog(
+          title = "Session information", size = "l", fade = TRUE,
+          footer = NULL, easyClose = TRUE,
+          tagList(
+            tags$code("> sessionInfo()"),
+            renderPrint({
+              sessionInfo()
+            })
+          )
+        )
+      )
+    })
+
+    observeEvent(input$btn_info_gedi, {
+      showModal(
+        modalDialog(
+          title = "About GeDi", size = "l", fade = TRUE,
+          footer = NULL, easyClose = TRUE,
+          tagList(
+            includeMarkdown(system.file("extdata", "about.md", package = "GeDi")),
+            renderPrint({
+              citation("GeneTonic")
+            })
+          )
+        )
+      )
+    })
+
   }
   shinyApp(ui = gedi_ui, server = gedi_server)
 }
