@@ -149,7 +149,11 @@ GeDi <- function(genesets = NULL,
                  width: 1000px;
                  color: white;
                  background-color: black;
-                 }"
+                 }
+          .introjs-tooltip {
+            max-width: 700px;
+            min-width: 300px;
+          }"
         )
       )),
       tags$head(
@@ -1548,14 +1552,14 @@ GeDi <- function(genesets = NULL,
         row.names = NULL,
         quote = ""
       )
-      introjs(session, options = list(steps = tour))
+      introjs(session, options = list(steps = tour, tooltipPosition = "bottom"))
     })
 
     observeEvent(input$tour_graph, {
       tour <- utils::read.delim(
         system.file("extdata",
-          "intro_graph.txt",
-          package = "GeDi"
+                    "intro_graph.txt",
+                    package = "GeDi"
         ),
         sep = ";",
         stringsAsFactors = FALSE,
