@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-#' m <- Matrix::Matrix(runif(1000, 0, 1), 100, 100)
+#' m <- Matrix::Matrix(stats::runif(1000, 0, 1), 100, 100)
 #' threshold <- 0.3
 #' adj <- getAdjacencyMatrix(m, threshold)
 getAdjacencyMatrix <- function(distanceMatrix, cutOff) {
@@ -54,6 +54,8 @@ getAdjacencyMatrix <- function(distanceMatrix, cutOff) {
 #'
 #' adj <- Matrix::Matrix(0, 100, 100)
 #' adj[c(80:100), c(80:100)] <- 1
+#' geneset_names <- as.character(stats::runif(100, min = 0, max = 1))
+#' rownames(adj) <- colnames(adj) <- geneset_names
 #' graph <- buildGraph(adj)
 buildGraph <- function(adjMatrix) {
   g <- igraph::graph_from_adjacency_matrix(
@@ -386,6 +388,7 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
 
   igraph::V(graph)$shape <- c("box", "ellipse")[factor(V(graph)$nodeType, levels = c("Cluster", "Geneset"))]
 
+  igraph::V(graph)$color <- NA
   igraph::V(graph)$color[cluster_id] <- "gold"
   igraph::V(graph)$color[geneset_id] <- "#0092AC"
   igraph::E(graph)$color <- "black"
@@ -426,34 +429,40 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
   return(graph)
 }
 
+
 #' Title
 #'
 #' @param g
 #' @param genesets
+#' @param res_metric
+#' @param name_metric
 #'
 #' @return
 #' @export
 #'
 #' @examples
-.hubGenesDT <- function(g, genesets) {
-  nodes <- V(g)$name
-
-  # Get degree of gene nodes in the graph
-  node_degrees <- sapply(nodes, function(x) degree(g, x))
+.graphMetricsGenesetsDT <- function(g,
+                                    genesets,
+                                    res_metric,
+                                    name_metric){
+  nodes <- igraph::V(g)$name
 
   genesets <- genesets[,!names(genesets) %in% c("Genes")]
+  genesets <- genesets[genesets$Genesets %in% nodes, ]
 
-  node_degrees_df <- data.frame(
+
+  df <- data.frame(
     gene = nodes,
-    degree = node_degrees
+    name_metric = res_metric
   )
+  print(head(df))
 
-  node_degrees_df <- cbind(node_degrees_df, genesets)
-
+  df <- cbind(df, genesets)
 
   # Sort in descending degree order
-  rownames(node_degrees_df) <- NULL
-  node_degrees_df <- arrange(node_degrees_df, desc(.data$degree))
-  colnames(node_degrees_df) <- c("Geneset", "Degree", names(genesets))
-  return(node_degrees_df)
+  rownames(df) <- NULL
+  df <- df[order(df$name_metric, decreasing = TRUE), ]
+  colnames(df) <- c("Geneset", name_metric, names(genesets))
+  return(df)
 }
+

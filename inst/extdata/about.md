@@ -20,5 +20,5 @@ If you have some suggestions on new features, or would like to contribute to the
 
 If you use `GeneTonic` for your analysis, please cite it as here below:
 
-`> citation("GeneTonic")`
+`> utils::citation("GeneTonic")`
 

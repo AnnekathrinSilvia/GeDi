@@ -812,11 +812,28 @@ GeDi <- function(genesets = NULL,
                     solidHeader = TRUE,
                     collapsible = TRUE,
                     collapsed = TRUE,
-                    h2("Hub Genes"),
-                    fluidRow(column(
-                      width = 12,
-                      DT::dataTableOutput("dt_hub_genes")
-                    ))
+                    bs4Dash::tabsetPanel(
+                      id = "tabsetpanel_graph_metrics",
+                      type = "tabs",
+                      selected = "Node degree",
+                      side = "right",
+                      tabPanel(
+                        title = "Node degree",
+                        DT::dataTableOutput("dt_degree")
+                      ),
+                      tabPanel(
+                        title = "Node betweenness",
+                        DT::dataTableOutput("dt_betweenness")
+                      ),
+                      tabPanel(
+                        title = "Harmonic centrality",
+                        DT::dataTableOutput("dt_harmonic_centrality")
+                      ),
+                      tabPanel(
+                        title = "Clustering Coefficient",
+                        DT::dataTableOutput("dt_clustering_coefficient")
+                      )
+                    )
                   )
                 )
               )
@@ -924,7 +941,7 @@ GeDi <- function(genesets = NULL,
       }
     })
 
-    output$dt_hub_genes <- DT::renderDataTable({
+    output$dt_degree <- DT::renderDataTable({
       validate(
         need(
           !(is.null(
@@ -934,11 +951,78 @@ GeDi <- function(genesets = NULL,
         )
       )
 
-      dt <- .hubGenesDT(reactive_values$scores_graph(), reactive_values$genesets)
+      degree <- igraph::degree(reactive_values$scores_graph(),
+                               mode = "all")
+      dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
+                                    reactive_values$genesets,
+                                    degree,
+                                    "Degree")
       DT::datatable(dt,
-        options = list(scrollX = TRUE, scrollY = "400px")
+                    rownames = FALSE,
+                    options = list(scrollX = TRUE, scrollY = "400px")
       )
     })
+
+    output$dt_betweenness <- DT::renderDataTable({
+      validate(
+        need(
+          !(is.null(
+            reactive_values$scores
+          )),
+          message = "Please score you genesets first in the above box"
+        )
+      )
+      betweenness <- igraph::betweenness(reactive_values$scores_graph(),
+                                         directed = FALSE)
+      dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
+                                    reactive_values$genesets,
+                                    betweenness,
+                                    "Betweenness")
+      DT::datatable(dt,
+                    rownames = FALSE,
+                    options = list(scrollX = TRUE, scrollY = "400px"))
+    })
+
+    output$dt_harmonic_centrality <- DT::renderDataTable({
+      validate(
+        need(
+          !(is.null(
+            reactive_values$scores
+          )),
+          message = "Please score you genesets first in the above box"
+        )
+      )
+      centrality <- igraph::harmonic_centrality(reactive_values$scores_graph(),
+                                                mode = "all")
+      dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
+                                    reactive_values$genesets,
+                                    centrality,
+                                    "Harmonic Centrality")
+      DT::datatable(dt,
+                    rownames = FALSE,
+                    options = list(scrollX = TRUE, scrollY = "400px"))
+    })
+
+    output$dt_clustering_coefficient <- DT::renderDataTable({
+      validate(
+        need(
+          !(is.null(
+            reactive_values$scores
+          )),
+          message = "Please score you genesets first in the above box"
+        )
+      )
+      clustering_coef <- igraph::transitivity(reactive_values$scores_graph(),
+                                              type = "global")
+      dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
+                                    reactive_values$genesets,
+                                    clustering_coef,
+                                    "Clustering Coefficient")
+      DT::datatable(dt,
+                    rownames = FALSE,
+                    options = list(scrollX = TRUE, scrollY = "400px"))
+    })
+
 
     # panel Graph ------------------------------------------------------
 
@@ -1393,7 +1477,7 @@ GeDi <- function(genesets = NULL,
     output$start_report <- downloadHandler(
       filename = paste0(
         Sys.Date(),
-        "_", round(runif(1) * 100), # for not having all w the same name
+        "_", round(stats::runif(1) * 100), # for not having all w the same name
         "_GeDiReport.html"
       ),
       content = function(file) {
@@ -1780,7 +1864,7 @@ GeDi <- function(genesets = NULL,
           tagList(
             tags$code("> sessionInfo()"),
             renderPrint({
-              sessionInfo()
+              utils::sessionInfo()
             })
           )
         )
@@ -1795,7 +1879,7 @@ GeDi <- function(genesets = NULL,
           tagList(
             includeMarkdown(system.file("extdata", "about.md", package = "GeDi")),
             renderPrint({
-              citation("GeneTonic")
+              utils::citation("GeneTonic")
             })
           )
         )

@@ -23,7 +23,7 @@ Construct an adjacency matrix from the (distance) scores and a given
 threshold.
 }
 \examples{
-m <- Matrix::Matrix(runif(1000, 0, 1), 100, 100)
+m <- Matrix::Matrix(stats::runif(1000, 0, 1), 100, 100)
 threshold <- 0.3
 adj <- getAdjacencyMatrix(m, threshold)
 }

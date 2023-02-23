@@ -4,25 +4,12 @@
 \alias{.filterGenesets}
 \title{Title}
 \usage{
-.filterGenesets(
-  remove,
-  df_genesets,
-  alt_name_genesets = NULL,
-  alt_name_genes = NULL
-)
+.filterGenesets(remove, df_genesets)
 }
 \arguments{
 \item{remove}{A \code{list} of Geneset identifiers to be removed from the data}
 
 \item{df_genesets}{A \code{data.frame} of the input data}
-
-\item{alt_name_genesets}{A character string with the name of the column
-containing the geneset identifiers; if not provided,
-the column is expected to be called Genesets}
-
-\item{alt_name_genes}{A character string with the name of the column
-containing the genes of the individual genesets; if
-not provided, the column is expected to be called Genes}
 }
 \value{
 A \code{data.frame}of the input data without the genesets listed in

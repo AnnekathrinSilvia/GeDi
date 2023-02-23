@@ -49,7 +49,7 @@ checkInclusion <- function(seeds) {
 #' @export
 #'
 #' @examples
-#' m <- Matrix::Matrix(runif(100, min = 0, max = 1), 10, 10)
+#' m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 #' seeds <- seedFinding(distances = m, simThreshold = 0.3, memThreshold = 0.5)
 seedFinding <- function(distances, simThreshold, memThreshold) {
   if (is.null(distances) || length(distances) == 0) {

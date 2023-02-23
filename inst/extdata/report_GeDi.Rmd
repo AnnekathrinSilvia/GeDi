@@ -22,10 +22,6 @@ knitr::opts_chunk$set(
   message = FALSE,
   error = TRUE
 )
-# knitr::opts_knit$set(
-#   progress = FALSE, 
-#   verbose = FALSE
-# )
 ```
 
 
@@ -220,7 +216,7 @@ You can extend and modify the template provided in the package, and provide the 
 If you use this report in your scientific work, please cite GeneTonic:
 
 ```{r}
-citation("GeneTonic")
+utils::citation("GeneTonic")
 ```
 
 
@@ -229,6 +225,6 @@ citation("GeneTonic")
 This is the output of the `sessionInfo()` command, reported for improving the reproducibility of the analysis.
 
 ```{r}
-sessionInfo()
+utils::sessionInfo()
 ```
 

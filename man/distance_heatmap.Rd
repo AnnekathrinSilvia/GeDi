@@ -23,5 +23,5 @@ Plot a heatmap of a matrix of (distance) scores of the input genesets
 distance_scores <- Matrix::Matrix(0.5, 20, 20)
 distance_scores[c(11:15), c(2:6)] <- 0.2
 rownames(distance_scores) <- colnames(distance_scores) <- as.character(c(1:20))
-p <- distance_heatmap(distance_score, cluster = T)
+p <- distance_heatmap(distance_scores, hcluster = TRUE)
 }

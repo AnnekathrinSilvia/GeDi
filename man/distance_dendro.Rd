@@ -2,13 +2,27 @@
 % Please edit documentation in R/distance_dendro.R
 \name{distance_dendro}
 \alias{distance_dendro}
-\title{Title}
+\title{Plot a dendrogram on the distance scores of the genesets}
 \usage{
 distance_dendro(distance_scores, cluster_method = "average")
 }
 \arguments{
-\item{cluster_method}{}
+\item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} containing (distance) scores
+between 0 and 1.}
+
+\item{cluster_method}{A character string indicating the clustering method
+for the \code{\link[stats:hclust]{stats::hclust()}} function. See the
+\code{\link[stats:hclust]{stats::hclust()}} function for the available options.
+Defaults to 'average'.}
+}
+\value{
+A dendrogram returned by the \code{\link[ggdendro:ggdendrogram]{ggdendro::ggdendrogram()}} function.
 }
 \description{
-Title
+Plot a dendrogram of a matrix of (distance) scores of the input genesets
+}
+\examples{
+distance_scores <- Matrix::Matrix(0.5, 20, 20)
+distance_scores[c(11:15), c(2:6)] <- 0.2
+dendro <- distance_dendro(distance_scores, cluster_method = "single")
 }

@@ -22,6 +22,6 @@ A \code{list} of seeds which can be used for clustering
 Find initial seeds for the clustering. #TODO: Verlinken auf die David publication
 }
 \examples{
-m <- Matrix::Matrix(runif(100, min = 0, max = 1), 10, 10)
+m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 seeds <- seedFinding(distances = m, simThreshold = 0.3, memThreshold = 0.5)
 }
