@@ -47,7 +47,8 @@ distance_heatmap <- function(distance_scores,
   # }
 
   rownames(distance_scores) <- colnames(distance_scores) <- labels
-  p <- ComplexHeatmap::Heatmap(as.matrix(distance_scores))
+  p <- ComplexHeatmap::Heatmap(as.matrix(distance_scores),
+                               name = "Distance Scores")
 
   return(p)
 }

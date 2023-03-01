@@ -761,14 +761,55 @@ GeDi <- function(genesets = NULL,
           ),
           fluidRow(column(width = 12))
         ),
-        fluidRow(column(
+        box(
+          id = "distance_scores_box",
           width = 12,
-          bs4Dash::bs4Card(
-            id = "tabcard_scores",
-            title = "Geneset Distance Scores",
-            elevation = 1,
-            width = 12,
-            closable = FALSE,
+          status = "info",
+          title = "Geneset Distance Scores",
+          collapsible = TRUE,
+          collapsed = FALSE,
+          solidHeader = TRUE,
+          fluidRow(
+            column(
+              width = 12,
+              uiOutput("ui_distance_scores_visuals")
+            )
+          )
+        )
+      )
+    })
+
+
+    output$ui_score_data <- renderUI({
+      if (is.null(input$scoringmethod) || input$scoringmethod == "") {
+        return(NULL)
+      }
+      fluidRow(
+        column(
+          width = 12,
+          strong("Now you can score your data"),
+          br(),
+          "Attention: If you have many genesets to score,
+           this operation may take some time",
+          br(),
+          actionButton("score_data",
+            label = "Score the Genesets",
+            style = .actionButtonStyle
+          )
+        )
+      )
+    })
+
+    output$ui_distance_scores_visuals <- renderUI({
+      validate(need(
+        !(is.null(
+          reactive_values$scores
+        )),
+        message = "Please score your genesets first in the above box"
+      ))
+      fluidRow(
+        column(
+          width = 12,
             bs4Dash::tabsetPanel(
               id = "tabsetpanel_scores",
               type = "tabs",
@@ -776,27 +817,18 @@ GeDi <- function(genesets = NULL,
               side = "right",
               tabPanel(
                 title = "Distance Scores Heatmap",
-                # withSpinner(
-                #   plotlyOutput("scores_heatmap",
-                #     height = "800px",
-                #     width = "1000px"
-                #   )
-                # ),
-                # withSpinner(
-                #   InteractiveComplexHeatmap::
-                #     InteractiveComplexHeatmapOutput()
-                # ),
                 actionButton(inputId = "create_heatmap",
                              label = "Calculate Distance Score Heatmap",
-                             icon = icon("gears")),
+                             icon = icon("gears"),
+                             style = .actionButtonStyle),
                 htmlOutput("scores_heatmap")
               ),
               tabPanel(
                 title = "Distance Scores Dendrogram",
                 withSpinner(
                   plotlyOutput("scores_dendro",
-                    height = "800px",
-                    width = "1000px"
+                               height = "800px",
+                               width = "1000px"
                   )
                 )
               ),
@@ -829,8 +861,8 @@ GeDi <- function(genesets = NULL,
                     width = 9,
                     withSpinner(
                       visNetworkOutput("scores_Network",
-                        width = "800px",
-                        height = "800px"
+                                       width = "800px",
+                                       height = "800px"
                       )
                     )
                   )
@@ -870,28 +902,6 @@ GeDi <- function(genesets = NULL,
                 )
               )
             )
-          )
-        ))
-      )
-    })
-
-
-    output$ui_score_data <- renderUI({
-      if (is.null(input$scoringmethod) || input$scoringmethod == "") {
-        return(NULL)
-      }
-      fluidRow(
-        column(
-          width = 12,
-          strong("Now you can score your data"),
-          br(),
-          "Attention: If you have many genesets to score,
-           this operation may take some time",
-          br(),
-          actionButton("score_data",
-            label = "Score the Genesets",
-            style = .actionButtonStyle
-          )
         )
       )
     })
@@ -903,34 +913,15 @@ GeDi <- function(genesets = NULL,
         )),
         message = "Please score your genesets first in the above box"
       ))
-      res <- distance_heatmap(reactive_values$scores,
-                       chars_limit = 20,
-                       hcluster = input$hcluster
-      )
-
-      res <- ComplexHeatmap::draw(res)
+      res <- ComplexHeatmap::draw(distance_heatmap(reactive_values$scores,
+                                                   chars_limit = 20,
+                                                   hcluster = input$hcluster
+      ))
       return(res)
     })
 
-    # # output$scores_heatmap <-
-    # reactive({
-    # #   validate(need(
-    # #     !(is.null(
-    # #       reactive_values$scores
-    # #     )),
-    # #     message = "Please score your genesets first in the above box"
-    # #   ))
-    #   InteractiveComplexHeatmap::makeInteractiveComplexHeatmap(input,
-    #                                                            output,
-    #                                                            session,
-    #                                                            scores_heatmap_react())
-    #  })
 
     output$scores_dendro <- renderPlotly({
-      validate(need(!(is.null(reactive_values$scores)),
-        message = "Please score your genesets first in
-                    the above box"
-      ))
       distance_dendro(
         reactive_values$scores,
         input$cluster_method_dendro
@@ -949,14 +940,6 @@ GeDi <- function(genesets = NULL,
     })
 
     output$scores_Network <- renderVisNetwork({
-      validate(need(
-        !(is.null(
-          reactive_values$scores
-        )),
-        message = "Please score you genesets first in the above box"
-      ))
-
-
       if (!any(igraph::get.edgelist(reactive_values$scores_graph()) != 0)) {
         showNotification(
           "Please select a larger distance threshold as currently no nodes are connected and the graph cannot be properly rendered.",
@@ -991,15 +974,6 @@ GeDi <- function(genesets = NULL,
     })
 
     output$dt_degree <- DT::renderDataTable({
-      validate(
-        need(
-          !(is.null(
-            reactive_values$scores
-          )),
-          message = "Please score you genesets first in the above box"
-        )
-      )
-
       degree <- igraph::degree(reactive_values$scores_graph(),
                                mode = "all")
       dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
@@ -1798,9 +1772,14 @@ GeDi <- function(genesets = NULL,
       column = unique(unlist(df$column_index))
       output[["info"]] = renderUI({
         if(!is.null(df)) {
-          HTML(kable_styling(kbl(as.matrix(reactive_values$scores)[row, column, drop = FALSE], digits = 2, format = "html"),
-                             full_width = FALSE,
-                             position = "left"))
+          # HTML(kable_styling(kbl(as.matrix(reactive_values$scores)[row, column, drop = FALSE], digits = 2, format = "html"),
+          #                    full_width = FALSE,
+          #                    position = "left"))
+
+          subset <- as.matrix(reactive_values$scores)[row, column, drop = FALSE]
+          df <- as.data.frame(subset)
+          DT::datatable(df,
+                        options = list(scrollX = TRUE, scrollY = "400px"))
         }
       })
     }
