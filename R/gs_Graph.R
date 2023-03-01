@@ -131,7 +131,7 @@ getClusterAdjacencyMatrix <- function(cluster, gs_names) {
 #' @export
 #'
 #' @examples
-#' cluster <- list(c(1:5), c(6:9))
+#' cluster <- list(c(1:5), c(6:9, 1))
 #' genes <- list(
 #'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
 #'   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
@@ -263,6 +263,24 @@ buildClusterGraph <- function(cluster,
         V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
         V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
       }
+    }
+  }
+
+  V(g)$cluster <- ""
+
+  for(i in 1:length(cluster)){
+    clus <- cluster[[i]]
+    for(y in 1:length(clus)){
+      gs_name <- gs_names[clus[[y]]]
+      id <- which(names(V(g)) %in% gs_name)
+      mem <- V(g)$cluster[id]
+      cluster_name <- paste("Cluster ", i, sep = "")
+      if(mem != ""){
+        mem <- paste(mem, cluster_name, sep = ",")
+      }else{
+        mem <- cluster_name
+      }
+      V(g)$cluster[id] <- mem
     }
   }
 

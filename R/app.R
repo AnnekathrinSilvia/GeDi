@@ -1031,7 +1031,7 @@ GeDi <- function(genesets = NULL,
           width = 12,
           bs4Dash::bs4Card(
             id = "tabcard_cluster",
-            title = "Geneset Cluster Graph",
+            title = "Geneset Cluster Graphs",
             elevation = 1,
             width = 12,
             closable = TRUE,
@@ -1112,7 +1112,8 @@ GeDi <- function(genesets = NULL,
               degree = 1,
               hover = TRUE
             ),
-            nodesIdSelection = TRUE
+            nodesIdSelection = TRUE,
+            selectedBy = list(variable = "cluster", multiple = TRUE)
           ) %>%
           visExport(name = "cluster_network",
                     type = "png",

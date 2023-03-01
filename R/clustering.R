@@ -108,7 +108,7 @@ clustering <- function(seeds, threshold) {
     for (j in 1:length(seeds)) {
       s2 <- seeds[[j]]
       int <- intersect(s1, s2)
-      union <- union(s1, s2)
+      union <- sort(union(s1, s2))
       if (length(int) >= (threshold * length(union))) {
         remove <- list(s1, s2)
         seeds <- seeds[!(seeds %in% remove)]
@@ -122,6 +122,7 @@ clustering <- function(seeds, threshold) {
       mergeable[[index]] <- FALSE
     }
   }
+
   return(seeds)
 }
 
