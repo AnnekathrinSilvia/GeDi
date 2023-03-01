@@ -25,7 +25,10 @@ Suggests:
     pcaExplorer,
     AnnotationDbi,
     macrophage,
-    topGO
+    topGO,
+    biomaRt,
+    ReactomePA,
+    clusterProfiler
 Config/testthat/edition: 3
 URL: https://github.com/AnnekathrinSilvia/GeDi
 BugReports: https://github.com/AnnekathrinSilvia/GeDi/issues

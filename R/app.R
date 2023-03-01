@@ -352,8 +352,30 @@ GeDi <- function(genesets = NULL,
 
 
     # panel Welcome ----------------------------------------------------------
-    output$ui_welcome <- renderUI({
-      tagList(fluidRow(column(width = 12)))
+    output$ui_panel_welcome <- renderUI({
+      tagList(fluidRow(
+        column(
+          width = 12,
+          includeMarkdown(system.file("extdata", "welcome.md", package = "GeDi")),
+          br(), br(),
+          p("If you see a grey box like this one open below..."),
+
+          shinyBS::bsCollapse(
+            id = "help_welcome", open = "Help",
+            shinyBS::bsCollapsePanel(
+              "Help",
+              includeMarkdown(system.file("extdata", "help_welcome.md", package = "GeDi"))
+            )
+          ),
+
+          actionButton("introexample", "If you see a button like this...", icon("info"),
+                       style = "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+          ),
+          p("... you can click on that to start a tour based on introJS"),
+          br(), br()
+        )
+      )
+      )
     })
 
 

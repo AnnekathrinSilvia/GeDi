@@ -1,10 +1,10 @@
-## What is `GeneTonic`?
+## What is `GeDi`?
 
 `GeneTonic` is a Bioconductor package whose aim is to analyze and integrate the results from Differential Expression analysis and functional enrichment analysis, together with the original expression matrix.
 
 As a distinctive trait, this app combines the ease and beauty of interactive analysis with the technical robustness and the practicality of generating a reproducible report.
 
-## What do I need to use `GeneTonic`?
+## What do I need to use `GeDi`?
 
 Four main ingredients are required:
 

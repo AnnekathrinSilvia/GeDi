@@ -38,18 +38,37 @@ getGenes <- function(genesets, gene_name = NULL) {
   }
 
   if (!is.null(gene_name)) {
-    genes <- lapply(1:nrow(genesets), function(i) {
-      toupper(strsplit(genesets[, gene_name][i], ",")[[1]])
-    })
-  } else {
-    genes <- lapply(1:nrow(genesets), function(i) {
-      toupper(strsplit(genesets$Genes[i], ",")[[1]])
-    })
+    genesList <- genesets[, gene_name]
+  }else{
+    genesList <- genesets$Genes
   }
+
+    sep <- .findSeparator(genesList)
+    genes <- lapply(1:nrow(genesets), function(i) {
+    toupper(strsplit(genesList[i], sep)[[1]])})
 
   return(genes)
 }
 
+
+#' Title
+#'
+#' @param stringList
+#' @param sepList
+#'
+#' @return
+#' @export
+#'
+#' @examples
+.findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")){
+  sephits_min <-
+    sapply(sepList, function(x) {
+      min(stringr::str_count(stringList, x))
+    }) # minimal number of separators on all lines
+  sep <- sepList[which.max(sephits_min)]
+
+  return(sep)
+}
 
 #' Make an educated guess on the separator character
 #'
@@ -58,10 +77,11 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @param file The name of the file which the data are to be read from.
 #' @param sep_list A vector containing the candidates for being identified as
-#'                 separators. Defaults to \code{c(",", "\t", ";"," ")}.
+#'                 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.
 #'
 #' @return A character value, corresponding to the guessed separator. One of ","
-#'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace).
+#'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
+#'         (backslash).
 #' @export
 #' @importFrom stringr str_count
 #'
@@ -77,11 +97,7 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   separators_list <- sep_list
   rl <- readLines(file, warn = FALSE)
   rl <- rl[rl != ""] # allow last line to be empty
-  sephits_min <-
-    sapply(separators_list, function(x) {
-      min(stringr::str_count(rl, x))
-    }) # minimal number of separators on all lines
-  sep <- separators_list[which.max(sephits_min)]
+  sep <- .findSeparator(rl, separators_list)
   return(sep)
 }
 

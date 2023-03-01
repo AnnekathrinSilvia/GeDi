@@ -455,11 +455,9 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
     gene = nodes,
     name_metric = res_metric
   )
-  print(head(df))
 
   df <- cbind(df, genesets)
 
-  # Sort in descending degree order
   rownames(df) <- NULL
   df <- df[order(df$name_metric, decreasing = TRUE), ]
   colnames(df) <- c("Geneset", name_metric, names(genesets))

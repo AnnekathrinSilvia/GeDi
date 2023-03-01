@@ -10,11 +10,12 @@ sepguesser(file, sep_list = c(",", "\\t", ";", " ", "/"))
 \item{file}{The name of the file which the data are to be read from.}
 
 \item{sep_list}{A vector containing the candidates for being identified as
-separators. Defaults to \code{c(",", "\t", ";"," ")}.}
+separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.}
 }
 \value{
 A character value, corresponding to the guessed separator. One of ","
-(comma), "\\t" (tab), ";" (semicolon)," " (whitespace).
+(comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
+(backslash).
 }
 \description{
 This function tries to guess which separator was used in a text delimited
