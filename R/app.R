@@ -83,10 +83,12 @@ GeDi <- function(genesets = NULL,
           actionButton(
             inputId = "btn_docs_vignette",
             icon = icon("book-open"),
-            label = "Open GeDi Vignette", style = .actionButtonStyle,
-            onclick = ifelse(system.file("doc", "GeDi_manual.html", package = "GeDi") != "",
-                             "",
-                             "window.open('https://federicomarini.github.io/GeneTonic/articles/GeneTonic_manual.html', '_blank')"
+            label = "Open GeDi Vignette",
+            style = .actionButtonStyle,
+            onclick = ifelse(
+              system.file("doc", "GeDi_manual.html", package = "GeDi") != "",
+              "",
+              "window.open('https://federicomarini.github.io/GeneTonic/articles/GeneTonic_manual.html', '_blank')"
             )
           ),
           actionButton(
@@ -119,9 +121,8 @@ GeDi <- function(genesets = NULL,
       opacity = 0.8,
       bs4SidebarMenu(
         bs4SidebarMenuItem("Welcome!",
-          tabName = "tab_welcome",
-          icon = icon("house")
-        ),
+                           tabName = "tab_welcome",
+                           icon = icon("house")),
         bs4SidebarMenuItem(
           "Data Upload",
           tabName = "tab_data_upload",
@@ -137,11 +138,9 @@ GeDi <- function(genesets = NULL,
           tabName = "tab_graph",
           icon = icon("square-share-nodes")
         ),
-        bs4SidebarMenuItem(
-          "Report",
-          tabName = "tab_report",
-          icon = icon("file")
-        )
+        bs4SidebarMenuItem("Report",
+                           tabName = "tab_report",
+                           icon = icon("file"))
       )
     ),
 
@@ -190,24 +189,20 @@ GeDi <- function(genesets = NULL,
       ),
       bs4TabItems(
         # ui panel welcome ---------------------------------------------------
-        bs4TabItem(
-          tabName = "tab_welcome",
-          tagList(
-            fluidRow(
-              column(width = 11),
-              column(
-                width = 1,
-                actionButton(
-                  "tour_welcome",
-                  label = "",
-                  icon = icon("circle-question"),
-                  style = .tourButtonStyle
-                )
-              )
-            ),
-            uiOutput("ui_panel_welcome")
-          )
-        ),
+        bs4TabItem(tabName = "tab_welcome",
+                   tagList(
+                     fluidRow(column(width = 11),
+                              column(
+                                width = 1,
+                                actionButton(
+                                  "tour_welcome",
+                                  label = "",
+                                  icon = icon("circle-question"),
+                                  style = .tourButtonStyle
+                                )
+                              )),
+                     uiOutput("ui_panel_welcome")
+                   )),
         # ui panel data upload -----------------------------------------------
         bs4TabItem(
           tabName = "tab_data_upload",
@@ -240,65 +235,59 @@ GeDi <- function(genesets = NULL,
           )
         ),
         # ui panel scores -------------------------------------------------
-        bs4TabItem(
-          tabName = "tab_scores",
-          tagList(
-            fluidRow(
-              column(width = 11),
-              column(
-                width = 1,
-                br(),
-                actionButton(
-                  "tour_scoring",
-                  label = "",
-                  icon = icon("circle-question"),
-                  style = .tourButtonStyle
-                ),
-                shinyBS::bsTooltip(
-                  id = "tour_scoring",
-                  title = "Click me to start a tour of this section!",
-                  placement = "top",
-                  trigger = "hover",
-                  options = list(container = "body")
-                ),
-                style = "float:right"
-              )
-            ),
-            uiOutput("ui_panel_scores")
-          )
-        ),
+        bs4TabItem(tabName = "tab_scores",
+                   tagList(
+                     fluidRow(
+                       column(width = 11),
+                       column(
+                         width = 1,
+                         br(),
+                         actionButton(
+                           "tour_scoring",
+                           label = "",
+                           icon = icon("circle-question"),
+                           style = .tourButtonStyle
+                         ),
+                         shinyBS::bsTooltip(
+                           id = "tour_scoring",
+                           title = "Click me to start a tour of this section!",
+                           placement = "top",
+                           trigger = "hover",
+                           options = list(container = "body")
+                         ),
+                         style = "float:right"
+                       )
+                     ),
+                     uiOutput("ui_panel_scores")
+                   )),
         # ui panel graph ---------------------------------------------------
-        bs4TabItem(
-          tabName = "tab_graph",
-          tagList(
-            fluidRow(
-              column(width = 11),
-              column(
-                width = 1,
-                br(),
-                actionButton(
-                  "tour_graph",
-                  label = "",
-                  icon = icon("circle-question"),
-                  style = .tourButtonStyle
-                ),
-                shinyBS::bsTooltip(
-                  id = "tour_graph",
-                  title = "Click me to start a tour of this section!",
-                  placement = "top",
-                  trigger = "hover",
-                  options = list(container = "body")
-                ),
-                style = "float:right"
-              )
-            ),
-            uiOutput("ui_panel_graph")
-          )
-        ),
-        bs4TabItem(
-          tabName = "tab_report",
-          uiOutput("ui_panel_report")
-        )
+        bs4TabItem(tabName = "tab_graph",
+                   tagList(
+                     fluidRow(
+                       column(width = 11),
+                       column(
+                         width = 1,
+                         br(),
+                         actionButton(
+                           "tour_graph",
+                           label = "",
+                           icon = icon("circle-question"),
+                           style = .tourButtonStyle
+                         ),
+                         shinyBS::bsTooltip(
+                           id = "tour_graph",
+                           title = "Click me to start a tour of this section!",
+                           placement = "top",
+                           trigger = "hover",
+                           options = list(container = "body")
+                         ),
+                         style = "float:right"
+                       )
+                     ),
+                     uiOutput("ui_panel_graph")
+                   )),
+        bs4TabItem(tabName = "tab_report",
+                   uiOutput("ui_panel_report"))
       )
     ),
     # controlbar definition ------------------------------------------------
@@ -309,35 +298,33 @@ GeDi <- function(genesets = NULL,
     ),
 
     # footer definition -------------------------------------------------------
-    footer = bs4Dash::bs4DashFooter(
-      left =
-        fluidRow(
-          column(
-            width = 1,
-            align = "right",
-            a(
-              href = "https://github.com/AnnekathrinSilvia/GeDi",
-              target = "_blank",
-              img(src = "GeDi/GeneTonic.png", height = "50px")
-            )
-          ),
-          column(
-            width = 11,
-            align = "center",
-            "GeDi is a project developed by Annekathrin Ludt
+    footer = bs4Dash::bs4DashFooter(left =
+                                      fluidRow(
+                                        column(
+                                          width = 1,
+                                          align = "right",
+                                          a(
+                                            href = "https://github.com/AnnekathrinSilvia/GeDi",
+                                            target = "_blank",
+                                            img(src = "GeDi/GeneTonic.png", height = "50px")
+                                          )
+                                        ),
+                                        column(
+                                          width = 11,
+                                          align = "center",
+                                          "GeDi is a project developed by Annekathrin Ludt
             in the Bioinformatics division of the ",
-            tags$a(href = "http://www.unimedizin-mainz.de/imbei", "IMBEI"),
-            "- Institute for Medical Biostatistics, Epidemiology and
+                                          tags$a(href = "http://www.unimedizin-mainz.de/imbei", "IMBEI"),
+                                          "- Institute for Medical Biostatistics, Epidemiology and
             Informatics",
-            br(),
-            "License: ",
-            tags$a(href = "https://opensource.org/licenses/MIT", "MIT"),
-            "- The GeDi package is developed and available on ",
-            tags$a(href = "https://github.com/AnnekathrinSilvia/GeDi", "GitHub")
-          )
-        ),
-      right = NULL
-    )
+                                          br(),
+                                          "License: ",
+                                          tags$a(href = "https://opensource.org/licenses/MIT", "MIT"),
+                                          "- The GeDi package is developed and available on ",
+                                          tags$a(href = "https://github.com/AnnekathrinSilvia/GeDi", "GitHub")
+                                        )
+                                      ),
+                                    right = NULL)
   )
   # server deifnition ---------------------------------------------------------
   gedi_server <- function(input, output, session) {
@@ -360,25 +347,30 @@ GeDi <- function(genesets = NULL,
         column(
           width = 12,
           includeMarkdown(system.file("extdata", "welcome.md", package = "GeDi")),
-          br(), br(),
+          br(),
+          br(),
           p("If you see a grey box like this one open below..."),
 
           shinyBS::bsCollapse(
-            id = "help_welcome", open = "Help",
-            shinyBS::bsCollapsePanel(
-              "Help",
-              includeMarkdown(system.file("extdata", "help_welcome.md", package = "GeDi"))
-            )
+            id = "help_welcome",
+            open = "Help",
+            shinyBS::bsCollapsePanel("Help",
+                                     includeMarkdown(
+                                       system.file("extdata", "help_welcome.md", package = "GeDi")
+                                     ))
           ),
 
-          actionButton("introexample", "If you see a button like this...", icon("info"),
-                       style = "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+          actionButton(
+            "introexample",
+            "If you see a button like this...",
+            icon("info"),
+            style = "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
           ),
           p("... you can click on that to start a tour based on introJS"),
-          br(), br()
+          br(),
+          br()
         )
-      )
-      )
+      ))
     })
 
 
@@ -504,22 +496,19 @@ GeDi <- function(genesets = NULL,
     })
 
     output$dt_genesets <- DT::renderDataTable({
-      validate(need(
-        !(
-          is.null(reactive_values$genesets)
-        ),
-        message = "Please upload a text file via the button on the left."
-      ))
+      validate(need(!(
+        is.null(reactive_values$genesets)
+      ),
+      message = "Please upload a text file via the button on the left."))
 
       DT::datatable(reactive_values$genesets,
-        options = list(scrollX = TRUE, scrollY = "400px")
-      )
+                    options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
     output$ui_filter_data <- renderUI({
       if (is.null(reactive_values$genesets) ||
-        is.null(reactive_values$genes) ||
-        is.null(reactive_values$gs_names)) {
+          is.null(reactive_values$genes) ||
+          is.null(reactive_values$gs_names)) {
         return(NULL)
       }
       tagList(
@@ -608,8 +597,8 @@ GeDi <- function(genesets = NULL,
 
     output$ui_panel_specify_species <- renderUI({
       if (is.null(reactive_values$genesets) ||
-        is.null(reactive_values$genes) ||
-        is.null(reactive_values$gs_names)) {
+          is.null(reactive_values$genes) ||
+          is.null(reactive_values$gs_names)) {
         return(NULL)
       }
       box(
@@ -620,10 +609,8 @@ GeDi <- function(genesets = NULL,
         tagList(
           h2("Select the species of your data"),
           fluidRow(
-            column(
-              width = 6,
-              uiOutput("ui_specify_species")
-            ),
+            column(width = 6,
+                   uiOutput("ui_specify_species")),
             column(
               width = 6,
               "Currently we are only supporting organisms which have a Protein-
@@ -634,9 +621,10 @@ GeDi <- function(genesets = NULL,
               organism of interest.",
               br(),
               tags$a(
-                href="https://string-db.org/cgi/download?sessionId=bs0ZXo3WieT0",
+                href = "https://string-db.org/cgi/download?sessionId=bs0ZXo3WieT0",
                 "Click here to get to STRING!",
-                target = "_blank")
+                target = "_blank"
+              )
             )
           )
         )
@@ -671,7 +659,7 @@ GeDi <- function(genesets = NULL,
 
     output$ui_panel_download_ppi <- renderUI({
       if (input$species == "" ||
-        is.na(input$species) || is.null(input$species)) {
+          is.na(input$species) || is.null(input$species)) {
         return(NULL)
       }
       if (length(strsplit(input$species, "\\s+")) > 1) {
@@ -688,50 +676,45 @@ GeDi <- function(genesets = NULL,
         solidHeader = TRUE,
         tagList(
           h2("Download the PPI matrix from STRING"),
-          fluidRow(
-            column(
-              width = 6,
-              actionButton(
-                "download_ppi",
-                label = "Download PPI matrix",
-                icon = icon("download"),
-                style = .actionButtonStyle
-              )
-            ),
-            column(
-              width = 6,
-              box(
-                id = "PPI_preview",
-                width = NULL,
-                title = "PPI preview",
-                status = "info",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                collapsed = TRUE,
-                fluidRow(column(
-                  width = 12,
-                  offset = 0.5,
-                  DT::dataTableOutput("dt_ppi")
-                ))
-              )
+          fluidRow(column(
+            width = 6,
+            actionButton(
+              "download_ppi",
+              label = "Download PPI matrix",
+              icon = icon("download"),
+              style = .actionButtonStyle
             )
-          )
+          ),
+          column(
+            width = 6,
+            box(
+              id = "PPI_preview",
+              width = NULL,
+              title = "PPI preview",
+              status = "info",
+              solidHeader = TRUE,
+              collapsible = TRUE,
+              collapsed = TRUE,
+              fluidRow(column(
+                width = 12,
+                offset = 0.5,
+                DT::dataTableOutput("dt_ppi")
+              ))
+            )
+          ))
         )
       )
     })
 
     output$dt_ppi <- DT::renderDataTable({
       validate(
-        need(
-          !(is.null(
-            reactive_values$ppi
-          )),
-          message = "Please download a Protein-Protein Interaction (PPI) matrix via the button on the left."
-        )
+        need(!(is.null(
+          reactive_values$ppi
+        )),
+        message = "Please download a Protein-Protein Interaction (PPI) matrix via the button on the left.")
       )
       DT::datatable(reactive_values$ppi,
-        options = list(scrollX = TRUE, scrollY = "400px")
-      )
+                    options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
     # panel Scores ----------------------------------------------------
@@ -756,10 +739,8 @@ GeDi <- function(genesets = NULL,
                 selected = character(0)
               )
             ),
-            column(
-              width = 6,
-              uiOutput("ui_score_data")
-            )
+            column(width = 6,
+                   uiOutput("ui_score_data"))
           ),
           fluidRow(column(width = 12))
         ),
@@ -771,12 +752,10 @@ GeDi <- function(genesets = NULL,
           collapsible = TRUE,
           collapsed = FALSE,
           solidHeader = TRUE,
-          fluidRow(
-            column(
-              width = 12,
-              uiOutput("ui_distance_scores_visuals")
-            )
-          )
+          fluidRow(column(
+            width = 12,
+            uiOutput("ui_distance_scores_visuals")
+          ))
         )
       )
     })
@@ -795,146 +774,109 @@ GeDi <- function(genesets = NULL,
            this operation may take some time",
           br(),
           actionButton("score_data",
-            label = "Score the Genesets",
-            style = .actionButtonStyle
-          )
+                       label = "Score the Genesets",
+                       style = .actionButtonStyle)
         )
       )
     })
 
     output$ui_distance_scores_visuals <- renderUI({
-      validate(need(
-        !(is.null(
-          reactive_values$scores
-        )),
-        message = "Please score your genesets first in the above box"
-      ))
-      fluidRow(
-        column(
-          width = 12,
-            bs4Dash::tabsetPanel(
-              id = "tabsetpanel_scores",
-              type = "tabs",
-              selected = "Distance Scores Heatmap",
-              side = "right",
-              tabPanel(
-                title = "Distance Scores Heatmap",
-                actionButton(inputId = "create_heatmap",
-                             label = "Calculate Distance Score Heatmap",
-                             icon = icon("gears"),
-                             style = .actionButtonStyle),
-                htmlOutput("scores_heatmap")
-              ),
-              tabPanel(
-                title = "Distance Scores Dendrogram",
-                withSpinner(
-                  plotlyOutput("scores_dendro",
-                               height = "800px",
-                               width = "1000px"
-                  )
-                )
-              ),
-              tabPanel(
-                title = "Distance Scores Graph",
-                fluidRow(
-                  column(
-                    width = 2,
-                    sliderInput(
-                      "similarityScores",
-                      "Distance Threshold:",
-                      min = 0,
-                      max = 1,
-                      value = 0.3,
-                      step = 0.05
-                    ),
-                    selectizeInput(
-                      inputId = "scores_graph_search",
-                      label = "Search for a specific geneset",
-                      choices = c("", reactive_values$gs_names),
-                      multiple = TRUE,
-                      options = list(
-                        create = FALSE,
-                        placeholder = "",
-                        maxItems = "1"
-                      )
-                    )
-                  ),
-                  column(
-                    width = 9,
-                    withSpinner(
-                      visNetworkOutput("scores_Network",
-                                       width = "800px",
-                                       height = "800px"
-                      )
-                    )
-                  )
-                ),
-                fluidRow(
-                  box(
-                    id = "hub_genes_box",
-                    width = 12,
-                    title = "Graph metrics",
-                    status = "info",
-                    solidHeader = TRUE,
-                    collapsible = TRUE,
-                    collapsed = TRUE,
-                    bs4Dash::tabsetPanel(
-                      id = "tabsetpanel_graph_metrics",
-                      type = "tabs",
-                      selected = "Node degree",
-                      side = "right",
-                      tabPanel(
-                        title = "Node degree",
-                        DT::dataTableOutput("dt_degree")
-                      ),
-                      tabPanel(
-                        title = "Node betweenness",
-                        DT::dataTableOutput("dt_betweenness")
-                      ),
-                      tabPanel(
-                        title = "Harmonic centrality",
-                        DT::dataTableOutput("dt_harmonic_centrality")
-                      ),
-                      tabPanel(
-                        title = "Clustering Coefficient",
-                        DT::dataTableOutput("dt_clustering_coefficient")
-                      )
-                    )
-                  )
-                )
-              )
-            )
+      validate(need(!(is.null(
+        reactive_values$scores
+      )),
+      message = "Please score your genesets first in the above box"))
+      fluidRow(column(
+        width = 12,
+        bs4Dash::tabsetPanel(
+          id = "tabsetpanel_scores",
+          type = "tabs",
+          selected = "Distance Scores Heatmap",
+          side = "right",
+          tabPanel(
+            title = "Distance Scores Heatmap",
+            actionButton(
+              inputId = "create_heatmap",
+              label = "Calculate Distance Score Heatmap",
+              icon = icon("gears"),
+              style = .actionButtonStyle
+            ),
+            htmlOutput("scores_heatmap")
+          ),
+          tabPanel(title = "Distance Scores Dendrogram",
+                   withSpinner(
+                     plotlyOutput("scores_dendro",
+                                  height = "800px",
+                                  width = "1000px")
+                   )),
+          tabPanel(title = "Distance Scores Graph",
+                   fluidRow(
+                     column(
+                       width = 2,
+                       sliderInput(
+                         "similarityScores",
+                         "Distance Threshold:",
+                         min = 0,
+                         max = 1,
+                         value = 0.3,
+                         step = 0.05
+                       ),
+                       selectizeInput(
+                         inputId = "scores_graph_search",
+                         label = "Search for a specific geneset",
+                         choices = c("", reactive_values$gs_names),
+                         multiple = TRUE,
+                         options = list(
+                           create = FALSE,
+                           placeholder = "",
+                           maxItems = "1"
+                         )
+                       )
+                     ),
+                     column(width = 9,
+                            withSpinner(
+                              visNetworkOutput("scores_Network",
+                                               width = "800px",
+                                               height = "800px")
+                            ))
+                   ),
+                   fluidRow(
+                     box(
+                       id = "hub_genes_box",
+                       width = 12,
+                       title = "Graph metrics",
+                       status = "info",
+                       solidHeader = TRUE,
+                       collapsible = TRUE,
+                       collapsed = TRUE,
+                       DT::dataTableOutput("dt_graph_metrics")
+                     )
+                   ))
         )
-      )
+      ))
     })
 
     scores_heatmap_react <- reactive({
-      validate(need(
-        !(is.null(
-          reactive_values$scores
-        )),
-        message = "Please score your genesets first in the above box"
-      ))
-      res <- ComplexHeatmap::draw(distance_heatmap(reactive_values$scores,
-                                                   chars_limit = 20))
+      validate(need(!(is.null(
+        reactive_values$scores
+      )),
+      message = "Please score your genesets first in the above box"))
+      res <-
+        ComplexHeatmap::draw(distance_heatmap(reactive_values$scores,
+                                              chars_limit = 20))
       return(res)
     })
 
 
     output$scores_dendro <- renderPlotly({
-      distance_dendro(
-        reactive_values$scores,
-        input$cluster_method_dendro
-      )
+      distance_dendro(reactive_values$scores,
+                      input$cluster_method_dendro)
     })
 
 
     reactive_values$scores_graph <- reactive({
       # TODO: Handle empty scores matrix (matrix of nrow() == 0)
-      adj <- getAdjacencyMatrix(
-        reactive_values$scores,
-        input$similarityScores
-      )
+      adj <- getAdjacencyMatrix(reactive_values$scores,
+                                input$similarityScores)
       g <- buildGraph(adj)
       return(g)
     })
@@ -965,82 +907,72 @@ GeDi <- function(genesets = NULL,
             ),
             nodesIdSelection = TRUE
           ) %>%
-          visExport(
-            name = "distance_scores_network",
-            type = "png",
-            label = "Save Distance Scores graph"
-          )
+          visExport(name = "distance_scores_network",
+                    type = "png",
+                    label = "Save Distance Scores graph")
       }
     })
 
-    output$dt_degree <- DT::renderDataTable({
-      degree <- igraph::degree(reactive_values$scores_graph(),
-                               mode = "all")
+    output$dt_graph_metrics <- DT::renderDataTable({
       dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
-                                    reactive_values$genesets,
-                                    degree,
-                                    "Degree")
+                                    reactive_values$genesets)
       DT::datatable(dt,
                     rownames = FALSE,
-                    options = list(scrollX = TRUE, scrollY = "400px")
-      )
+                    options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
     output$dt_betweenness <- DT::renderDataTable({
-      validate(
-        need(
-          !(is.null(
-            reactive_values$scores
-          )),
-          message = "Please score you genesets first in the above box"
-        )
+      validate(need(!(is.null(
+        reactive_values$scores
+      )),
+      message = "Please score you genesets first in the above box"))
+      betweenness <-
+        igraph::betweenness(reactive_values$scores_graph(),
+                            directed = FALSE)
+      dt <- .graphMetricsGenesetsDT(
+        reactive_values$scores_graph(),
+        reactive_values$genesets,
+        betweenness,
+        "Betweenness"
       )
-      betweenness <- igraph::betweenness(reactive_values$scores_graph(),
-                                         directed = FALSE)
-      dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
-                                    reactive_values$genesets,
-                                    betweenness,
-                                    "Betweenness")
       DT::datatable(dt,
                     rownames = FALSE,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
     output$dt_harmonic_centrality <- DT::renderDataTable({
-      validate(
-        need(
-          !(is.null(
-            reactive_values$scores
-          )),
-          message = "Please score you genesets first in the above box"
-        )
+      validate(need(!(is.null(
+        reactive_values$scores
+      )),
+      message = "Please score you genesets first in the above box"))
+      centrality <-
+        igraph::harmonic_centrality(reactive_values$scores_graph(),
+                                    mode = "all")
+      dt <- .graphMetricsGenesetsDT(
+        reactive_values$scores_graph(),
+        reactive_values$genesets,
+        centrality,
+        "Harmonic Centrality"
       )
-      centrality <- igraph::harmonic_centrality(reactive_values$scores_graph(),
-                                                mode = "all")
-      dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
-                                    reactive_values$genesets,
-                                    centrality,
-                                    "Harmonic Centrality")
       DT::datatable(dt,
                     rownames = FALSE,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
     output$dt_clustering_coefficient <- DT::renderDataTable({
-      validate(
-        need(
-          !(is.null(
-            reactive_values$scores
-          )),
-          message = "Please score you genesets first in the above box"
-        )
+      validate(need(!(is.null(
+        reactive_values$scores
+      )),
+      message = "Please score you genesets first in the above box"))
+      clustering_coef <-
+        igraph::transitivity(reactive_values$scores_graph(),
+                             type = "global")
+      dt <- .graphMetricsGenesetsDT(
+        reactive_values$scores_graph(),
+        reactive_values$genesets,
+        clustering_coef,
+        "Clustering Coefficient"
       )
-      clustering_coef <- igraph::transitivity(reactive_values$scores_graph(),
-                                              type = "global")
-      dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
-                                    reactive_values$genesets,
-                                    clustering_coef,
-                                    "Clustering Coefficient")
       DT::datatable(dt,
                     rownames = FALSE,
                     options = list(scrollX = TRUE, scrollY = "400px"))
@@ -1051,8 +983,7 @@ GeDi <- function(genesets = NULL,
 
     output$ui_panel_graph <- renderUI({
       validate(need(!is.null(reactive_values$scores),
-        message = "Please score you genesets first in the Scores panel."
-      ))
+                    message = "Please score you genesets first in the Scores panel."))
 
       tagList(
         box(
@@ -1091,10 +1022,8 @@ GeDi <- function(genesets = NULL,
                 step = 0.1
               )
             ),
-            column(
-              width = 6,
-              uiOutput("ui_cluster")
-            )
+            column(width = 6,
+                   uiOutput("ui_cluster"))
           ),
           fluidRow(column(width = 12))
         ),
@@ -1111,25 +1040,20 @@ GeDi <- function(genesets = NULL,
               type = "tabs",
               selected = "Geneset Graph",
               side = "right",
-              tabPanel(
-                title = "Geneset Graph",
-                withSpinner(
-                  visNetworkOutput("cluster_Network",
-                    height = "700px",
-                    width = "100%"
-                  )
-                )
-              ),
-              tabPanel(
-                title = "Cluster-Geneset Bipartite Graph",
-                withSpinner(
-                  visNetworkOutput(
-                    "cluster_geneset_bipartite_Network",
-                    height = "700px",
-                    width = "100%"
-                  )
-                )
-              )
+              tabPanel(title = "Geneset Graph",
+                       withSpinner(
+                         visNetworkOutput("cluster_Network",
+                                          height = "700px",
+                                          width = "100%")
+                       )),
+              tabPanel(title = "Cluster-Geneset Bipartite Graph",
+                       withSpinner(
+                         visNetworkOutput(
+                           "cluster_geneset_bipartite_Network",
+                           height = "700px",
+                           width = "100%"
+                         )
+                       ))
             )
           )
         )),
@@ -1162,20 +1086,17 @@ GeDi <- function(genesets = NULL,
            this operation may take some time",
           br(),
           actionButton("cluster_data",
-            label = "Cluster the Genesets",
-            style = .actionButtonStyle
-          )
+                       label = "Cluster the Genesets",
+                       style = .actionButtonStyle)
         )
       )
     })
 
     output$cluster_Network <- renderVisNetwork({
-      validate(need(
-        !(is.null(
-          reactive_values$cluster
-        )),
-        message = "Please cluster you genesets first in the above box"
-      ))
+      validate(need(!(is.null(
+        reactive_values$cluster
+      )),
+      message = "Please cluster you genesets first in the above box"))
 
 
       if (!any(igraph::get.edgelist(reactive_values$cluster_graph()) != 0)) {
@@ -1185,8 +1106,6 @@ GeDi <- function(genesets = NULL,
         )
       } else {
         visNetwork::visIgraph(reactive_values$cluster_graph()) %>%
-          # visNodes(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
-          # visEdges(color = list(background = "#0092AC", highlight = "gold", hover = "gold")) %>%
           visOptions(
             highlightNearest = list(
               enabled = TRUE,
@@ -1195,11 +1114,9 @@ GeDi <- function(genesets = NULL,
             ),
             nodesIdSelection = TRUE
           ) %>%
-          visExport(
-            name = "cluster_network",
-            type = "png",
-            label = "Save Cluster graph"
-          )
+          visExport(name = "cluster_network",
+                    type = "png",
+                    label = "Save Cluster graph")
       }
     })
 
@@ -1216,12 +1133,10 @@ GeDi <- function(genesets = NULL,
 
 
     output$cluster_geneset_bipartite_Network <- renderVisNetwork({
-      validate(need(
-        !(is.null(
-          reactive_values$cluster
-        )),
-        message = "Please cluster you genesets first in the above box"
-      ))
+      validate(need(!(is.null(
+        reactive_values$cluster
+      )),
+      message = "Please cluster you genesets first in the above box"))
 
       visNetwork::visIgraph(reactive_values$bipartite_graph()) %>%
         visIgraphLayout(layout = "layout_as_bipartite") %>%
@@ -1233,20 +1148,16 @@ GeDi <- function(genesets = NULL,
           ),
           nodesIdSelection = TRUE
         ) %>%
-        visExport(
-          name = "bipartite_network",
-          type = "png",
-          label = "Save Cluster-Geneset bipartite graph"
-        )
+        visExport(name = "bipartite_network",
+                  type = "png",
+                  label = "Save Cluster-Geneset bipartite graph")
     })
 
     reactive_values$bipartite_graph <- reactive({
       # TODO: Handle no clusters
-      g <- getBipartiteGraph(
-        reactive_values$cluster,
-        reactive_values$gs_names,
-        reactive_values$genes
-      )
+      g <- getBipartiteGraph(reactive_values$cluster,
+                             reactive_values$gs_names,
+                             reactive_values$genes)
       # g <- add_layout_(as_bipartite(g))
       return(g)
     })
@@ -1254,20 +1165,15 @@ GeDi <- function(genesets = NULL,
 
     output$dt_cluster <- DT::renderDataTable({
       validate(
-        need(
-          !(is.null(
-            reactive_values$cluster
-          )),
-          message = "It seems like the data has not yet been clustered. Please cluster your data first with the box above."
-        )
+        need(!(is.null(
+          reactive_values$cluster
+        )),
+        message = "It seems like the data has not yet been clustered. Please cluster your data first with the box above.")
       )
-      dt_cluster <- getClusterDatatable(
-        reactive_values$cluster,
-        reactive_values$gs_names
-      )
+      dt_cluster <- getClusterDatatable(reactive_values$cluster,
+                                        reactive_values$gs_names)
       DT::datatable(dt_cluster,
-        options = list(scrollX = TRUE, scrollY = "400px")
-      )
+                    options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
     # controlbar --------------------------------------------------------------
@@ -1277,10 +1183,8 @@ GeDi <- function(genesets = NULL,
         selectInput(
           inputId = "cluster_method_dendro",
           label = "Select a clustering method for the Dendrogram",
-          choices = c(
-            "average", "single", "complete",
-            "median", "centroid"
-          ),
+          choices = c("average", "single", "complete",
+                      "median", "centroid"),
           selected = "average",
           multiple = FALSE
         ),
@@ -1311,133 +1215,133 @@ GeDi <- function(genesets = NULL,
 
     # Report panel -------------------------------------------------------------
     output$ui_panel_report <- renderUI({
-      tagList(
-        fluidRow(
-          column(
-            width = 11
-          ),
-          column(
-            width = 1,
-            actionButton(
-              "tour_bookmarks",
-              label = "", icon = icon("question-circle"),
-              style = .tourButtonStyle
-            )
-          )
-        ),
-        fluidRow(
-          column(
-            width = 12,
-            uiOutput("ui_bookmarks")
-          )
-        ),
-        fluidRow(
-          bs4Dash::column(
-            width = 8,
-            offset = 2,
-            br(), br(),
-            tags$a(
-              id = "start_report",
-              class = "btn btn-default shiny-download-link",
-              href = "",
-              target = "_blank",
-              download = NA,
-              icon("download"),
-              "Start the generation of the report"
-            )
-          )
-        )
-      )
+      tagList(fluidRow(column(width = 11),
+                       column(
+                         width = 1,
+                         actionButton(
+                           "tour_bookmarks",
+                           label = "",
+                           icon = icon("question-circle"),
+                           style = .tourButtonStyle
+                         )
+                       )),
+              fluidRow(column(width = 12,
+                              uiOutput(
+                                "ui_bookmarks"
+                              ))),
+              fluidRow(bs4Dash::column(
+                width = 8,
+                offset = 2,
+                br(),
+                br(),
+                tags$a(
+                  id = "start_report",
+                  class = "btn btn-default shiny-download-link",
+                  href = "",
+                  target = "_blank",
+                  download = NA,
+                  icon("download"),
+                  "Start the generation of the report"
+                )
+              )))
     })
 
     output$ui_bookmarks <- renderUI({
-      tagList(
-        fluidRow(
-          column(
-            width = 6,
-            bs4InfoBoxOutput("infobox_book_genes",
-                             width = 6
-            ),
-            h5("Bookmarked genes"),
-            DT::dataTableOutput("bookmarks_genes"),
-            downloadButton("btn_export_genes", label = "", class = "biocdlbutton"),
-            actionButton("btn_reset_genes",
-                         label ="",
-                         icon = icon("trash"),
-                         style = .actionButtonStyle),
-
-            bs4Dash::box(
-              title = "Manually add genes to bookmarks",
-              collapsible = TRUE,
-              collapsed = TRUE,
-              id = "box_bm_genes",
-              width = 12,
-              shinyAce::aceEditor(
-                "editor_bookmarked_genes",
-                theme = "solarized_light",
-                height = "200px",
-                readOnly = FALSE,
-                wordWrap = TRUE,
-                placeholder = paste(
-                  c(
-                    "Enter some gene identifiers or gene names, ",
-                    "as they are provided in the `gene_id` and ",
-                    "`gene_name` columns of the annotation object. ",
-                    "For example:"
-                  ),
-                  collapse = "\n"
-                )
-              ),
-              actionButton("load_bookmarked_genes",
-                           label = "Upload genes",
-                           icon = icon("upload"),
-                           style = .actionButtonStyle)
-            )
+      tagList(fluidRow(
+        column(
+          width = 6,
+          bs4InfoBoxOutput("infobox_book_genes",
+                           width = 6),
+          h5("Bookmarked genes"),
+          DT::dataTableOutput("bookmarks_genes"),
+          downloadButton("btn_export_genes", label = "", class = "biocdlbutton"),
+          actionButton(
+            "btn_reset_genes",
+            label = "",
+            icon = icon("trash"),
+            style = .actionButtonStyle
           ),
-          column(
-            width = 6,
-            bs4InfoBoxOutput("infobox_book_genesets",
-                             width = 6
-            ),
-            h5("Bookmarked genesets"),
-            DT::dataTableOutput("bookmarks_genesets"),
-            downloadButton("btn_export_genesets", label = "", class = "biocdlbutton"),
-            actionButton("btn_reset_genesets",
-                         label ="",
-                         icon = icon("trash"),
-                         style = .actionButtonStyle),
 
-            bs4Dash::box(
-              title = "Manually add genesets to bookmarks",
-              collapsible = TRUE,
-              collapsed = TRUE,
-              id = "box_bm_genesets",
-              width = 12,
-              shinyAce::aceEditor(
-                "editor_bookmarked_genesets",
-                theme = "solarized_light",
-                height = "200px",
-                readOnly = FALSE,
-                wordWrap = TRUE,
-                placeholder = paste(
-                  c(
-                    "Enter some geneset identifiers, as they are ",
-                    "provided in the `gs_id` column of the ",
-                    "res_enrich object. You can also use the ",
-                    "values in the `gs_description` field. ",
-                    "For example:"
-                  ),
-                  collapse = "\n"
-                )
-              ),
-              actionButton("load_bookmarked_genesets",
-                           label = "Upload genesets",
-                           icon = icon("upload"),
-                           style = .actionButtonStyle)
+          bs4Dash::box(
+            title = "Manually add genes to bookmarks",
+            collapsible = TRUE,
+            collapsed = TRUE,
+            id = "box_bm_genes",
+            width = 12,
+            shinyAce::aceEditor(
+              "editor_bookmarked_genes",
+              theme = "solarized_light",
+              height = "200px",
+              readOnly = FALSE,
+              wordWrap = TRUE,
+              placeholder = paste(
+                c(
+                  "Enter some gene identifiers or gene names, ",
+                  "as they are provided in the `gene_id` and ",
+                  "`gene_name` columns of the annotation object. ",
+                  "For example:"
+                ),
+                collapse = "\n"
+              )
+            ),
+            actionButton(
+              "load_bookmarked_genes",
+              label = "Upload genes",
+              icon = icon("upload"),
+              style = .actionButtonStyle
+            )
+          )
+        ),
+        column(
+          width = 6,
+          bs4InfoBoxOutput("infobox_book_genesets",
+                           width = 6),
+          h5("Bookmarked genesets"),
+          DT::dataTableOutput("bookmarks_genesets"),
+          downloadButton(
+            "btn_export_genesets",
+            label = "",
+            class = "biocdlbutton"
+          ),
+          actionButton(
+            "btn_reset_genesets",
+            label = "",
+            icon = icon("trash"),
+            style = .actionButtonStyle
+          ),
+
+          bs4Dash::box(
+            title = "Manually add genesets to bookmarks",
+            collapsible = TRUE,
+            collapsed = TRUE,
+            id = "box_bm_genesets",
+            width = 12,
+            shinyAce::aceEditor(
+              "editor_bookmarked_genesets",
+              theme = "solarized_light",
+              height = "200px",
+              readOnly = FALSE,
+              wordWrap = TRUE,
+              placeholder = paste(
+                c(
+                  "Enter some geneset identifiers, as they are ",
+                  "provided in the `gs_id` column of the ",
+                  "res_enrich object. You can also use the ",
+                  "values in the `gs_description` field. ",
+                  "For example:"
+                ),
+                collapse = "\n"
+              )
+            ),
+            actionButton(
+              "load_bookmarked_genesets",
+              label = "Upload genesets",
+              icon = icon("upload"),
+              style = .actionButtonStyle
             )
           )
         )
-      )
+      ))
     })
 
     output$infobox_book_genes <- renderbs4InfoBox({
@@ -1468,48 +1372,57 @@ GeDi <- function(genesets = NULL,
       DT::datatable(reactive_values$genesets, rownames = FALSE)
     })
     output$bookmarks_genesets <- DT::renderDataTable({
-     DT::datatable(reactive_values$genesets, rownames = FALSE)
+      DT::datatable(reactive_values$genesets, rownames = FALSE)
     })
 
     output$btn_export_genes <- downloadHandler(
       filename = function() {
-        paste0("GeneTonicBookmarks_genes_", gsub(" ", "_", gsub("-", "", gsub(":", "-", as.character(Sys.time())))), ".txt")
-      }, content = function(file) {
-        writeLines(
-          text = reactive_values$mygenes,
-          con = file
-        )
+        paste0("GeneTonicBookmarks_genes_",
+               gsub(" ", "_", gsub(
+                 "-", "", gsub(":", "-", as.character(Sys.time()))
+               )),
+               ".txt")
+      },
+      content = function(file) {
+        writeLines(text = reactive_values$mygenes,
+                   con = file)
       }
     )
 
     output$btn_export_genesets <- downloadHandler(
       filename = function() {
-        paste0("GeneTonicBookmarks_genesets_", gsub(" ", "_", gsub("-", "", gsub(":", "-", as.character(Sys.time())))), ".txt")
-      }, content = function(file) {
-        writeLines(
-          text = reactive_values$mygenesets,
-          con = file
-        )
+        paste0("GeneTonicBookmarks_genesets_",
+               gsub(" ", "_", gsub(
+                 "-", "", gsub(":", "-", as.character(Sys.time()))
+               )),
+               ".txt")
+      },
+      content = function(file) {
+        writeLines(text = reactive_values$mygenesets,
+                   con = file)
       }
     )
 
     output$start_report <- downloadHandler(
       filename = paste0(
         Sys.Date(),
-        "_", round(stats::runif(1) * 100), # for not having all w the same name
+        "_",
+        round(stats::runif(1) * 100),
+        # for not having all w the same name
         "_GeDiReport.html"
       ),
       content = function(file) {
         # temporarily switch to the temp dir, in case you do not have write permission to the current working directory
         owd <- setwd(tempdir())
         on.exit(setwd(owd))
-        withProgress(rmarkdown::render(
-          input = system.file("extdata", "report_GeDi.Rmd", package = "GeDi"),
-          output_file = file,
-          quiet = TRUE
-        ),
-        message = "Generating the html report",
-        detail = "This can take some time"
+        withProgress(
+          rmarkdown::render(
+            input = system.file("extdata", "report_GeDi.Rmd", package = "GeDi"),
+            output_file = file,
+            quiet = TRUE
+          ),
+          message = "Generating the html report",
+          detail = "This can take some time"
         )
       }
     )
@@ -1543,7 +1456,7 @@ GeDi <- function(genesets = NULL,
       reactive_values$gs_names <- reactive_values$genesets$Geneset
       tryCatch(
         expr = {
-            reactive_values$genes <- getGenes(reactive_values$genesets)
+          reactive_values$genes <- getGenes(reactive_values$genesets)
         },
         error = function(cond) {
           showNotification(
@@ -1561,13 +1474,13 @@ GeDi <- function(genesets = NULL,
       reactive_values$gs_names <-
         reactive_values$genesets[, input$alt_name_genesets]
 
-      reactive_values$genes <- getGenes(
-        reactive_values$genesets,
-        input$alt_name_genes
-      )
+      reactive_values$genes <- getGenes(reactive_values$genesets,
+                                        input$alt_name_genes)
 
-      names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genesets] <- "Genesets"
-      names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genes] <- "Genes"
+      names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genesets] <-
+        "Genesets"
+      names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genes] <-
+        "Genes"
 
       showNotification(
         "Successfully selected your columns and uploaded your data.
@@ -1585,9 +1498,8 @@ GeDi <- function(genesets = NULL,
       progress$set(message = "Loading demo data now", value = 0)
 
       data(macrophage_topGO_example,
-        package = "GeDi",
-        envir = environment()
-      )
+           package = "GeDi",
+           envir = environment())
 
       progress$inc(1 / 3, detail = "Extracting Genesets")
 
@@ -1613,18 +1525,15 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$filter_genesets, {
-        filtered_data <- .filterGenesets(
-          input$select_filter_genesets,
-          reactive_values$genesets
-        )
+      filtered_data <- .filterGenesets(input$select_filter_genesets,
+                                       reactive_values$genesets)
 
       reactive_values$genesets <- filtered_data$Geneset
       reactive_values$gs_names <- filtered_data$gs_names
       reactive_values$genes <- filtered_data$Genes
 
       showNotification("Successfully filtered the selected Genesets.",
-        type = "message"
-      )
+                       type = "message")
 
       # TODO: Does not work correctly currently, box still closes after one filtering round
       # updateBox(
@@ -1645,8 +1554,7 @@ GeDi <- function(genesets = NULL,
 
     observeEvent(input$download_ppi, {
       validate(need(!(input$species == ""),
-        message = "Please specify the species of your data"
-      ))
+                    message = "Please specify the species of your data"))
       if (length(strsplit(input$species, "\\s+")) > 1) {
         showNotification(
           "It seems like you have selected more than one species. Please go back to the box and select the correct species.",
@@ -1679,16 +1587,15 @@ GeDi <- function(genesets = NULL,
 
       progress$inc(1 / 12, detail = "Download PPI")
       reactive_values$ppi <- getPPI(reactive_values$genes,
-        string_db = stringdb,
-        anno_df = anno_df
-      )
+                                    string_db = stringdb,
+                                    anno_df = anno_df)
       progress$inc(4 / 12, detail = "Successfully downloaded PPI")
     })
 
     # Scoring panel --------------------------------------------------------------
     observeEvent(input$score_data, {
       if (input$scoringmethod == "" ||
-        (is.null(input$scoringmethod))) {
+          (is.null(input$scoringmethod))) {
         showNotification(
           "It seems like you did not select a scoring method. Please select a scoring method on the left.",
           type = "error"
@@ -1696,7 +1603,7 @@ GeDi <- function(genesets = NULL,
       }
 
       if ((length(reactive_values$genes) == 0 ||
-        (is.null(reactive_values$genes)))) {
+           (is.null(reactive_values$genes)))) {
         showNotification(
           "It seems like the file you've provided does not
              contain any genesets. Please check you input and retry.",
@@ -1724,14 +1631,12 @@ GeDi <- function(genesets = NULL,
           scores <- NULL
         } else {
           scores <- getpMMMatrix(reactive_values$genes,
-            reactive_values$ppi,
-            progress = progress
-          )
+                                 reactive_values$ppi,
+                                 progress = progress)
         }
       } else if (input$scoringmethod == "Jaccard") {
         scores <- getJaccardMatrix(reactive_values$genes,
-          progress = progress
-        )
+                                   progress = progress)
       }
 
       if (is.null(scores)) {
@@ -1746,33 +1651,35 @@ GeDi <- function(genesets = NULL,
       }
     })
 
-    observeEvent(input$create_heatmap,{
-      InteractiveComplexHeatmap::InteractiveComplexHeatmapWidget(input,
-                                                               output,
-                                                               session,
-                                                               scores_heatmap_react(),
-                                                               output_id = "scores_heatmap",
-                                                               width1 = 600,
-                                                               height1 = 600,
-                                                               width2 = 600,
-                                                               height2 = 600,
-                                                               click_action = .click_action,
-                                                               brush_action = .brush_action,
-                                                               close_button = FALSE,
-                                                               output_ui = htmlOutput("info"))
-    }
-                 )
+    observeEvent(input$create_heatmap, {
+      InteractiveComplexHeatmap::InteractiveComplexHeatmapWidget(
+        input,
+        output,
+        session,
+        scores_heatmap_react(),
+        output_id = "scores_heatmap",
+        width1 = 600,
+        height1 = 600,
+        width2 = 600,
+        height2 = 600,
+        click_action = .click_action,
+        brush_action = .brush_action,
+        close_button = FALSE,
+        output_ui = htmlOutput("info")
+      )
+    })
 
     .brush_action = function(df, output) {
       row = unique(unlist(df$row_index))
       column = unique(unlist(df$column_index))
       output[["info"]] = renderUI({
-        if(!is.null(df)) {
+        if (!is.null(df)) {
           # HTML(kable_styling(kbl(as.matrix(reactive_values$scores)[row, column, drop = FALSE], digits = 2, format = "html"),
           #                    full_width = FALSE,
           #                    position = "left"))
 
-          subset <- as.matrix(reactive_values$scores)[row, column, drop = FALSE]
+          subset <-
+            as.matrix(reactive_values$scores)[row, column, drop = FALSE]
           df <- as.data.frame(subset)
           DT::datatable(df,
                         options = list(scrollX = TRUE, scrollY = "400px"))
@@ -1782,8 +1689,12 @@ GeDi <- function(genesets = NULL,
 
     .click_action = function(df, output) {
       output[["info"]] = renderUI({
-        if(!is.null(df)) {
-          HTML(qq("<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"))
+        if (!is.null(df)) {
+          HTML(
+            qq(
+              "<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"
+            )
+          )
         }
       })
     }
@@ -1821,11 +1732,9 @@ GeDi <- function(genesets = NULL,
 
       progress$set(message = "Finding initial seeds", value = 0)
 
-      seeds <- seedFinding(
-        reactive_values$scores,
-        input$simThreshold,
-        input$memThreshold
-      )
+      seeds <- seedFinding(reactive_values$scores,
+                           input$simThreshold,
+                           input$memThreshold)
 
       progress$inc(0.5, detail = "Found initial seeds. Now clustering the data.")
 
@@ -1850,9 +1759,8 @@ GeDi <- function(genesets = NULL,
     observeEvent(input$tour_welcome, {
       tour <- utils::read.delim(
         system.file("extdata",
-          "intro_welcome.txt",
-          package = "GeDi"
-        ),
+                    "intro_welcome.txt",
+                    package = "GeDi"),
         sep = ";",
         stringsAsFactors = FALSE,
         row.names = NULL,
@@ -1864,9 +1772,8 @@ GeDi <- function(genesets = NULL,
     observeEvent(input$tour_data_upload, {
       tour <- utils::read.delim(
         system.file("extdata",
-          "intro_data_upload.txt",
-          package = "GeDi"
-        ),
+                    "intro_data_upload.txt",
+                    package = "GeDi"),
         sep = ";",
         stringsAsFactors = FALSE,
         row.names = NULL,
@@ -1878,23 +1785,22 @@ GeDi <- function(genesets = NULL,
     observeEvent(input$tour_scoring, {
       tour <- utils::read.delim(
         system.file("extdata",
-          "intro_scoring.txt",
-          package = "GeDi"
-        ),
+                    "intro_scoring.txt",
+                    package = "GeDi"),
         sep = ";",
         stringsAsFactors = FALSE,
         row.names = NULL,
         quote = ""
       )
-      introjs(session, options = list(steps = tour, tooltipPosition = "bottom"))
+      introjs(session,
+              options = list(steps = tour, tooltipPosition = "bottom"))
     })
 
     observeEvent(input$tour_graph, {
       tour <- utils::read.delim(
         system.file("extdata",
                     "intro_graph.txt",
-                    package = "GeDi"
-        ),
+                    package = "GeDi"),
         sep = ";",
         stringsAsFactors = FALSE,
         row.names = NULL,
@@ -1908,11 +1814,14 @@ GeDi <- function(genesets = NULL,
     observeEvent(input$btn_first_help, {
       showModal(
         modalDialog(
-          title = "First Help Info", size = "l", fade = TRUE,
-          footer = NULL, easyClose = TRUE,
-          tagList(
-            includeMarkdown(system.file("extdata", "GeDi101.md", package = "GeDi")),
-          )
+          title = "First Help Info",
+          size = "l",
+          fade = TRUE,
+          footer = NULL,
+          easyClose = TRUE,
+          tagList(includeMarkdown(
+            system.file("extdata", "GeDi101.md", package = "GeDi")
+          ),)
         )
       )
     })
@@ -1920,14 +1829,15 @@ GeDi <- function(genesets = NULL,
     observeEvent(input$btn_info_session, {
       showModal(
         modalDialog(
-          title = "Session information", size = "l", fade = TRUE,
-          footer = NULL, easyClose = TRUE,
-          tagList(
-            tags$code("> sessionInfo()"),
-            renderPrint({
-              utils::sessionInfo()
-            })
-          )
+          title = "Session information",
+          size = "l",
+          fade = TRUE,
+          footer = NULL,
+          easyClose = TRUE,
+          tagList(tags$code("> sessionInfo()"),
+                  renderPrint({
+                    utils::sessionInfo()
+                  }))
         )
       )
     })
@@ -1935,14 +1845,17 @@ GeDi <- function(genesets = NULL,
     observeEvent(input$btn_info_gedi, {
       showModal(
         modalDialog(
-          title = "About GeDi", size = "l", fade = TRUE,
-          footer = NULL, easyClose = TRUE,
-          tagList(
-            includeMarkdown(system.file("extdata", "about.md", package = "GeDi")),
-            renderPrint({
-              utils::citation("GeneTonic")
-            })
-          )
+          title = "About GeDi",
+          size = "l",
+          fade = TRUE,
+          footer = NULL,
+          easyClose = TRUE,
+          tagList(includeMarkdown(
+            system.file("extdata", "about.md", package = "GeDi")
+          ),
+          renderPrint({
+            utils::citation("GeneTonic")
+          }))
         )
       )
     })

@@ -431,33 +431,37 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
 #'
 #' @param g
 #' @param genesets
-#' @param res_metric
-#' @param name_metric
 #'
 #' @return
 #' @export
 #'
 #' @examples
 .graphMetricsGenesetsDT <- function(g,
-                                    genesets,
-                                    res_metric,
-                                    name_metric){
+                                    genesets){
   nodes <- igraph::V(g)$name
 
   genesets <- genesets[,!names(genesets) %in% c("Genes")]
   genesets <- genesets[genesets$Genesets %in% nodes, ]
 
+  clustering_coef <- igraph::transitivity(g,
+                                          type = "global")
+  centrality <- igraph::harmonic_centrality(g,
+                                            mode = "all")
+  betweenness <- igraph::betweenness(g,
+                                     directed = FALSE)
+  degree <- igraph::degree(g,
+                           mode = "all")
 
-  df <- data.frame(
-    gene = nodes,
-    name_metric = res_metric
-  )
-
-  df <- cbind(df, genesets)
+  df <- data.frame(nodes, degree, betweenness, centrality, clustering_coef, genesets)
 
   rownames(df) <- NULL
-  df <- df[order(df$name_metric, decreasing = TRUE), ]
-  colnames(df) <- c("Geneset", name_metric, names(genesets))
+  colnames(df) <- c("Geneset",
+                    "Degree",
+                    "Betweenness",
+                    "Harmonic Centrality",
+                    "Clustering Coefficient",
+                    names(genesets))
+  df <- df[order(df$Degree, decreasing = TRUE), ]
   return(df)
 }
 
