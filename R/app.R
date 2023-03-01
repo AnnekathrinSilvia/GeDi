@@ -19,6 +19,8 @@
 #' @importFrom utils read.delim data
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices
+#' @importFrom ComplexHeatmap draw
+#' @importFrom InteractiveComplexHeatmap InteractiveComplexHeatmapWidget
 #'
 #'
 #' @examples
@@ -448,7 +450,7 @@ GeDi <- function(genesets = NULL,
       }
 
       guessed_sep <-
-        sepguesser(input$uploadgenesetfile$datapath)
+        .sepguesser(input$uploadgenesetfile$datapath)
       genesets <-
         utils::read.delim(
           input$uploadgenesetfile$datapath,
@@ -914,9 +916,7 @@ GeDi <- function(genesets = NULL,
         message = "Please score your genesets first in the above box"
       ))
       res <- ComplexHeatmap::draw(distance_heatmap(reactive_values$scores,
-                                                   chars_limit = 20,
-                                                   hcluster = input$hcluster
-      ))
+                                                   chars_limit = 20))
       return(res)
     })
 
@@ -1274,10 +1274,6 @@ GeDi <- function(genesets = NULL,
 
     output$ui_controlbar <- renderUI({
       tagList(
-        checkboxInput("hcluster",
-          label = "Activate hclust on the heatmap",
-          value = FALSE
-        ),
         selectInput(
           inputId = "cluster_method_dendro",
           label = "Select a clustering method for the Dendrogram",
@@ -1780,6 +1776,14 @@ GeDi <- function(genesets = NULL,
           df <- as.data.frame(subset)
           DT::datatable(df,
                         options = list(scrollX = TRUE, scrollY = "400px"))
+        }
+      })
+    }
+
+    .click_action = function(df, output) {
+      output[["info"]] = renderUI({
+        if(!is.null(df)) {
+          HTML(qq("<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"))
         }
       })
     }

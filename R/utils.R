@@ -51,19 +51,25 @@ getGenes <- function(genesets, gene_name = NULL) {
 }
 
 
-#' Title
+#' Make an educated guess on the separator character
 #'
-#' @param stringList
-#' @param sepList
+#' This function tries to guess which separator was used in a list of delimited
+#' strings.
 #'
-#' @return
-#' @export
+#' @param stringList A list of strings
+#' @param sepList A vector containing the candidates for being identified as
+#'                 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.
 #'
-#' @examples
+#' @return A character value, corresponding to the guessed separator. One of ","
+#'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
+#'         (backslash).
+#'
+#'@importFrom stringr str_count
+#'
 .findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")){
   sephits_min <-
     sapply(sepList, function(x) {
-      min(stringr::str_count(stringList, x))
+      min(str_count(stringList, x))
     }) # minimal number of separators on all lines
   sep <- sepList[which.max(sephits_min)]
 
@@ -82,26 +88,17 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' @return A character value, corresponding to the guessed separator. One of ","
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
-#' @export
-#' @importFrom stringr str_count
 #'
-#' @examples
-#' sepguesser(system.file("extdata/design_commas.txt", package = "ideal"))
-#' sepguesser(system.file("extdata/design_semicolons.txt", package = "ideal"))
-#' sepguesser(system.file("extdata/design_spaces.txt", package = "ideal"))
-#' mysep <- sepguesser(system.file("extdata/design_tabs.txt",
-#'   package = "ideal"
-#' ))
-#'
-sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
-  separators_list <- sep_list
+.sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   rl <- readLines(file, warn = FALSE)
   rl <- rl[rl != ""] # allow last line to be empty
-  sep <- .findSeparator(rl, separators_list)
+  sep <- .findSeparator(rl, sep_list)
   return(sep)
 }
 
-#' Title
+#' Filter Genesets from the input data
+#'
+#' Filter a preselected list of genesets from a `data.frame` of genesets
 #'
 #' @param remove A `list` of Geneset identifiers to be removed from the data
 #' @param df_genesets A `data.frame` of the input data
@@ -123,36 +120,6 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
 
   names(results) <- c("Geneset", "gs_names", "Genes")
   return(results)
-}
-
-#' Title
-#'
-#' @param df
-#' @param output
-#'
-#' @return
-#' @export
-#' @import kableExtra
-#'
-#' @examples
-# .brush_action = function(df, output) {
-#   row = unique(unlist(df$row_index))
-#   column = unique(unlist(df$column_index))
-#   output[["info"]] = renderUI({
-#     if(!is.null(df)) {
-#       HTML(kable_styling(kbl(m[row, column, drop = FALSE], digits = 2, format = "html"),
-#                          full_width = TRUE,
-#                          position = "left"))
-#     }
-#   })
-# }
-
-.click_action = function(df, output) {
-  output[["info"]] = renderUI({
-    if(!is.null(df)) {
-      HTML(qq("<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"))
-    }
-  })
 }
 
 

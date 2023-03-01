@@ -67,4 +67,6 @@ Imports:
     gghighlight,
     tidyr,
     ComplexHeatmap,
-    kableExtra
+    kableExtra,
+    InteractiveComplexHeatmap,
+    shinyAce

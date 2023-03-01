@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{.filterGenesets}
 \alias{.filterGenesets}
-\title{Title}
+\title{Filter Genesets from the input data}
 \usage{
 .filterGenesets(remove, df_genesets)
 }
@@ -16,5 +16,5 @@ A \code{data.frame}of the input data without the genesets listed in
 \code{remove}
 }
 \description{
-Title
+Filter a preselected list of genesets from a \code{data.frame} of genesets
 }

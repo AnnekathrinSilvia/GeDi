@@ -7,21 +7,17 @@
 #' @param chars_limit Numeric value, how many characters of the geneset names
 #'                    of `distance_scores`. Defaults to 50.
 #'
-#' @return A plot returned by the [ggplot2::ggplot()] function
-#' @import ggplot2
-#' @import viridis
+#' @return A plot returned by the [ComplexHeatmap::Heatmap()] function
 #' @import ComplexHeatmap
-#' @importFrom stats dist hclust
 #' @export
 #'
 #' @examples
 #' distance_scores <- Matrix::Matrix(0.5, 20, 20)
 #' distance_scores[c(11:15), c(2:6)] <- 0.2
 #' rownames(distance_scores) <- colnames(distance_scores) <- as.character(c(1:20))
-#' p <- distance_heatmap(distance_scores, hcluster = TRUE)
+#' p <- distance_heatmap(distance_scores)
 distance_heatmap <- function(distance_scores,
-                             chars_limit = 50,
-                             hcluster = FALSE) {
+                             chars_limit = 50) {
   stopifnot(!is.null(distance_scores))
 
   labels <- substr(as.character(rownames(distance_scores)), 1, chars_limit)

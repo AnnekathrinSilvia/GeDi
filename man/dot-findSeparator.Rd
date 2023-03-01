@@ -2,13 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{.findSeparator}
 \alias{.findSeparator}
-\title{Title}
+\title{Make an educated guess on the separator character}
 \usage{
 .findSeparator(stringList, sepList = c(",", "\\t", ";", " ", "/"))
 }
 \arguments{
-\item{sepList}{}
+\item{stringList}{A list of strings}
+
+\item{sepList}{A vector containing the candidates for being identified as
+separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.}
+}
+\value{
+A character value, corresponding to the guessed separator. One of ","
+(comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
+(backslash).
 }
 \description{
-Title
+This function tries to guess which separator was used in a list of delimited
+strings.
 }
