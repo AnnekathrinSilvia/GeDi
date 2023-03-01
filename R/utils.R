@@ -125,6 +125,36 @@ sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   return(results)
 }
 
+#' Title
+#'
+#' @param df
+#' @param output
+#'
+#' @return
+#' @export
+#' @import kableExtra
+#'
+#' @examples
+# .brush_action = function(df, output) {
+#   row = unique(unlist(df$row_index))
+#   column = unique(unlist(df$column_index))
+#   output[["info"]] = renderUI({
+#     if(!is.null(df)) {
+#       HTML(kable_styling(kbl(m[row, column, drop = FALSE], digits = 2, format = "html"),
+#                          full_width = TRUE,
+#                          position = "left"))
+#     }
+#   })
+# }
+
+.click_action = function(df, output) {
+  output[["info"]] = renderUI({
+    if(!is.null(df)) {
+      HTML(qq("<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"))
+    }
+  })
+}
+
 
 .actionButtonStyle <-
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"

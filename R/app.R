@@ -302,6 +302,7 @@ GeDi <- function(genesets = NULL,
     # controlbar definition ------------------------------------------------
     controlbar = bs4Dash::bs4DashControlbar(
       collapsed = TRUE,
+      icon = icon("gears"),
       uiOutput("ui_controlbar")
     ),
 
@@ -775,12 +776,20 @@ GeDi <- function(genesets = NULL,
               side = "right",
               tabPanel(
                 title = "Distance Scores Heatmap",
-                withSpinner(
-                  plotlyOutput("scores_heatmap",
-                    height = "800px",
-                    width = "1000px"
-                  )
-                )
+                # withSpinner(
+                #   plotlyOutput("scores_heatmap",
+                #     height = "800px",
+                #     width = "1000px"
+                #   )
+                # ),
+                # withSpinner(
+                #   InteractiveComplexHeatmap::
+                #     InteractiveComplexHeatmapOutput()
+                # ),
+                actionButton(inputId = "create_heatmap",
+                             label = "Calculate Distance Score Heatmap",
+                             icon = icon("gears")),
+                htmlOutput("scores_heatmap")
               ),
               tabPanel(
                 title = "Distance Scores Dendrogram",
@@ -887,18 +896,35 @@ GeDi <- function(genesets = NULL,
       )
     })
 
-    output$scores_heatmap <- renderPlotly({
+    scores_heatmap_react <- reactive({
       validate(need(
         !(is.null(
           reactive_values$scores
         )),
         message = "Please score your genesets first in the above box"
       ))
-      distance_heatmap(reactive_values$scores,
-        chars_limit = 20,
-        hcluster = input$hcluster
+      res <- distance_heatmap(reactive_values$scores,
+                       chars_limit = 20,
+                       hcluster = input$hcluster
       )
+
+      res <- ComplexHeatmap::draw(res)
+      return(res)
     })
+
+    # # output$scores_heatmap <-
+    # reactive({
+    # #   validate(need(
+    # #     !(is.null(
+    # #       reactive_values$scores
+    # #     )),
+    # #     message = "Please score your genesets first in the above box"
+    # #   ))
+    #   InteractiveComplexHeatmap::makeInteractiveComplexHeatmap(input,
+    #                                                            output,
+    #                                                            session,
+    #                                                            scores_heatmap_react())
+    #  })
 
     output$scores_dendro <- renderPlotly({
       validate(need(!(is.null(reactive_values$scores)),
@@ -1749,6 +1775,35 @@ GeDi <- function(genesets = NULL,
         updateBox("distance_calc_box", action = "toggle")
       }
     })
+
+    observeEvent(input$create_heatmap,{
+      InteractiveComplexHeatmap::InteractiveComplexHeatmapWidget(input,
+                                                               output,
+                                                               session,
+                                                               scores_heatmap_react(),
+                                                               output_id = "scores_heatmap",
+                                                               width1 = 600,
+                                                               height1 = 600,
+                                                               width2 = 600,
+                                                               height2 = 600,
+                                                               click_action = .click_action,
+                                                               brush_action = .brush_action,
+                                                               close_button = FALSE,
+                                                               output_ui = htmlOutput("info"))
+    }
+                 )
+
+    .brush_action = function(df, output) {
+      row = unique(unlist(df$row_index))
+      column = unique(unlist(df$column_index))
+      output[["info"]] = renderUI({
+        if(!is.null(df)) {
+          HTML(kable_styling(kbl(as.matrix(reactive_values$scores)[row, column, drop = FALSE], digits = 2, format = "html"),
+                             full_width = FALSE,
+                             position = "left"))
+        }
+      })
+    }
 
     observeEvent(input$scores_graph_search, {
       current_node <- input$scores_graph_search

@@ -10,7 +10,7 @@
 #' @return A plot returned by the [ggplot2::ggplot()] function
 #' @import ggplot2
 #' @import viridis
-#' @import gghighlight
+#' @import ComplexHeatmap
 #' @importFrom stats dist hclust
 #' @export
 #'
@@ -26,27 +26,28 @@ distance_heatmap <- function(distance_scores,
 
   labels <- substr(as.character(rownames(distance_scores)), 1, chars_limit)
 
-  df <- expand.grid(Geneset1 = rownames(distance_scores), Geneset2 = colnames(distance_scores))
-  scores <- unlist(as.list(as.matrix(distance_scores)))
-  df$distance_score <- scores
+  # df <- expand.grid(Geneset1 = rownames(distance_scores), Geneset2 = colnames(distance_scores))
+  # scores <- unlist(as.list(as.matrix(distance_scores)))
+  # df$distance_score <- scores
+  #
+  # if (hcluster) {
+  #   m <- tidyr::pivot_wider(df, names_from = "Geneset1", values_from = "distance_score")
+  #   m <- as.matrix(m[, -1])
+  #   ord <- hclust(dist(t(m)), method = "average")$order
+  # }
+  #
+  # p <- ggplot(df, aes(Geneset1, Geneset2, fill = distance_score)) +
+  #   geom_tile() +
+  #   scale_fill_viridis(discrete = FALSE) +
+  #   hrbrthemes::theme_ipsum() +
+  #   theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1))
+  #
+  # if (hcluster) {
+  #   p <- p + scale_y_discrete(limits = colnames(m)[ord])
+  # }
 
-  if (hcluster) {
-    m <- tidyr::pivot_wider(df, names_from = "Geneset1", values_from = "distance_score")
-    m <- as.matrix(m[, -1])
-    ord <- hclust(dist(t(m)), method = "average")$order
-  }
-
-  p <- ggplot(df, aes(Geneset1, Geneset2, fill = distance_score)) +
-    geom_tile() +
-    scale_fill_viridis(discrete = FALSE) +
-    hrbrthemes::theme_ipsum() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1))
-
-  if (hcluster) {
-    p <- p + scale_y_discrete(limits = colnames(m)[ord])
-  }
-
-  #p <- p + gghighlight(Geneset2 == "GO:0002250")
+  rownames(distance_scores) <- colnames(distance_scores) <- labels
+  p <- ComplexHeatmap::Heatmap(as.matrix(distance_scores))
 
   return(p)
 }
