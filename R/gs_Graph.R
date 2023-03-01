@@ -298,10 +298,6 @@ buildClusterGraph <- function(cluster,
     title[[i]] <- node_title
   }
 
-  print(length(title))
-
-
-
   V(g)$title[ids] <- paste0(
     "<h4>",
     sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
