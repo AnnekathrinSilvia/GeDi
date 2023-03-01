@@ -632,7 +632,8 @@ GeDi <- function(genesets = NULL,
               br(),
               tags$a(
                 href="https://string-db.org/cgi/download?sessionId=bs0ZXo3WieT0",
-                "Click here to get to STRING!")
+                "Click here to get to STRING!",
+                target = "_blank")
             )
           )
         )

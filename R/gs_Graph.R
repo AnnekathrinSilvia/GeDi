@@ -266,9 +266,6 @@ buildClusterGraph <- function(cluster,
     }
   }
 
-  no_cluster <- V(g)[degree(g) == 0]
-  g <- delete_vertices(g, no_cluster)
-
   transposed_df <- as.data.frame(t(geneset_df))
 
 
@@ -301,6 +298,7 @@ buildClusterGraph <- function(cluster,
     title[[i]] <- node_title
   }
 
+  print(length(title))
 
 
 
@@ -309,6 +307,9 @@ buildClusterGraph <- function(cluster,
     sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
     title[ids], "<br><br>"
   )
+
+  no_cluster <- V(g)[degree(g) == 0]
+  g <- delete_vertices(g, no_cluster)
   return(g)
 }
 
