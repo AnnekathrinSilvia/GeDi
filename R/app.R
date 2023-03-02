@@ -642,7 +642,7 @@ GeDi <- function(genesets = NULL,
           label = "Please select the species of your data.",
           choices = c(
             "",
-            "Homo Sapiens",
+            "Homo sapiens",
             "Mus musculus",
             "Rattus norvegicus",
             "Arabidopsis thaliana",
@@ -676,6 +676,9 @@ GeDi <- function(genesets = NULL,
         solidHeader = TRUE,
         tagList(
           h2("Download the PPI matrix from STRING"),
+          "For more information on the downloaded PPI data,
+          please have a look at this panels tour.",
+          br(), p(),
           fluidRow(column(
             width = 6,
             actionButton(

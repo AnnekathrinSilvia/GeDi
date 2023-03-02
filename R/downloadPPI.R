@@ -8,10 +8,42 @@
 #'
 #' @examples
 #' id <- getId(species = "Homo Sapiens")
-getId <- function(species) {
-  id <- get_ids(species, db = "ncbi")
-  return(id$ncbi[species])
+# getId <- function(species) {
+#   id <- get_ids(species, db = "ncbi")
+#   return(id$ncbi[species])
+# }
+
+
+#' Title
+#'
+#' @param version
+#'
+#' @return
+#' @export
+#'
+#' @examples
+getId <- function(species, version = "11.5") {
+  # see from https://string-db.org/cgi/download
+
+  ## accessory data
+  ## e.g. https://stringdb-static.org/download/species.v11.5.txt
+
+  url_species <- sprintf(
+    "https://stringdb-static.org/download/species.v%s.txt",
+    version
+  )
+
+  df_species <- read.delim(url(url_species))
+
+  species_id <- df_species$X.taxon_id[
+    match(species, df_species$official_name_NCBI)]
+
+  print(species_id)
+  return(species_id)
+
+
 }
+
 
 #' Get the STRINGdb entry of your searched species
 #'
@@ -80,7 +112,7 @@ getPPI <- function(genes, string_db, anno_df) {
   min <- min(scores$combined_score, Inf)
 
   scores$combined_score <-
-    (scores$combined_score - min) / (max - min)
+    round((scores$combined_score - min) / (max - min), 2)
 
   gene_names_to <-
     anno_df$alias[match(scores$to, anno_df$STRING_id)]
