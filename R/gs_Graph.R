@@ -23,7 +23,7 @@ getAdjacencyMatrix <- function(distanceMatrix, cutOff) {
     return(NULL)
   }
   l <- nrow(distanceMatrix)
-  adjMat <- Matrix::Matrix(0, l, l)
+  adjMat <- Matrix(0, l, l)
 
   for (i in 1:l) {
     edge <- which(distanceMatrix[i, ] <= cutOff)

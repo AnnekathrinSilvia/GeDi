@@ -332,6 +332,7 @@ GeDi <- function(genesets = NULL,
     reactive_values <- reactiveValues()
     reactive_values$genesets <- NULL
     reactive_values$gs_names <- NULL
+    reactive_values$gs_description <- NULL
     reactive_values$genes <- NULL
     reactive_values$species <- NULL
     reactive_values$ppi <- NULL
@@ -826,7 +827,7 @@ GeDi <- function(genesets = NULL,
                        selectizeInput(
                          inputId = "scores_graph_search",
                          label = "Search for a specific geneset",
-                         choices = c("", reactive_values$gs_names),
+                         choices = c("", reactive_values$gs_description),
                          multiple = TRUE,
                          options = list(
                            create = FALSE,
@@ -1458,6 +1459,15 @@ GeDi <- function(genesets = NULL,
       }
 
       reactive_values$gs_names <- reactive_values$genesets$Geneset
+      columns <- names(reactive_values$genesets)
+      if("Term" %in% columns){
+        reactive_values$gs_description <- reactive_values$genesets$Term
+      }else if("Description" %in% columns){
+        reactive_values$gs_description <- reactive_values$genesets$Description
+      }else{
+        reactive_values$gs_description <- reactive_values$gs_names
+      }
+
       tryCatch(
         expr = {
           reactive_values$genes <- getGenes(reactive_values$genesets)
@@ -1480,6 +1490,10 @@ GeDi <- function(genesets = NULL,
 
       reactive_values$genes <- getGenes(reactive_values$genesets,
                                         input$alt_name_genes)
+
+      if(!any(c("Term", "Description") %in% names(reactive_values$genesets))){
+        reactive_values$gs_description <- reactive_values$gs_names
+      }
 
       names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genesets] <-
         "Genesets"
@@ -1509,6 +1523,7 @@ GeDi <- function(genesets = NULL,
 
       reactive_values$genesets <- macrophage_topGO_example
       reactive_values$gs_names <- macrophage_topGO_example$Genesets
+      reactive_values$gs_description <- macrophage_topGO_example$Term
 
       progress$inc(1 / 3, detail = "Extracting Genes")
       reactive_values$genes <- getGenes(reactive_values$genesets)
@@ -1707,7 +1722,8 @@ GeDi <- function(genesets = NULL,
       current_node <- input$scores_graph_search
       if (current_node != "") {
         isolate({
-          if (current_node %in% reactive_values$gs_names) {
+          if (current_node %in% reactive_values$gs_description) {
+            current_node <- reactive_values$gs_names[which(reactive_values$gs_description == current_node)]
             visNetworkProxy("scores_Network") %>% visSelectNodes(id = current_node)
           }
         })
