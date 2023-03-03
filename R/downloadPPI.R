@@ -38,7 +38,6 @@ getId <- function(species, version = "11.5") {
   species_id <- df_species$X.taxon_id[
     match(species, df_species$official_name_NCBI)]
 
-  print(species_id)
   return(species_id)
 
 
@@ -107,6 +106,7 @@ getPPI <- function(genes, string_db, anno_df) {
   genes <- unlist(genes)
   string_ids <- anno_df$STRING_id[match(genes, anno_df$alias)]
   scores <- string_db$get_interactions(string_ids)
+  colnames(scores) <- c("Gene1", "Gene2", "combined_score")
 
   max <- max(scores$combined_score, -Inf)
   min <- min(scores$combined_score, Inf)
@@ -115,20 +115,20 @@ getPPI <- function(genes, string_db, anno_df) {
     round((scores$combined_score - min) / (max - min), 2)
 
   gene_names_to <-
-    anno_df$alias[match(scores$to, anno_df$STRING_id)]
+    anno_df$alias[match(scores$Gene2, anno_df$STRING_id)]
   gene_names_from <-
-    anno_df$alias[match(scores$from, anno_df$STRING_id)]
+    anno_df$alias[match(scores$Gene1, anno_df$STRING_id)]
 
-  scores$to <- gene_names_to
-  scores$from <- gene_names_from
+  scores$Gene2 <- gene_names_to
+  scores$Gene1 <- gene_names_from
 
-  reverse_to <- scores$from
-  reverse_from <- scores$to
+  reverse_to <- scores$Gene1
+  reverse_from <- scores$Gene2
 
   df <-
     data.frame(
-      from = reverse_from,
-      to = reverse_to,
+      Gene1 = reverse_from,
+      Gene2 = reverse_to,
       combined_score = scores$combined_score
     )
   scores <- distinct(scores)

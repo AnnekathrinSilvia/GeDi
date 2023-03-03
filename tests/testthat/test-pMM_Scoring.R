@@ -1,34 +1,7 @@
-test_that("Empty Genesets - sumInteraction", {
-  ppi <- data.frame()
-  expect_equal(sumInteraction(a = c(), b = c(), ppi = ppi), 0)
-})
-
-test_that("One empty Geneset - sumInteraction", {
-  a <- c("PDHB", "VARS2")
-  ppi <- data.frame(
-    from = c("PDHB", "VARS2"),
-    to = c("IARS2", "PDHA1"),
-    combined_score = c(0.5, 0.2)
-  )
-  expect_equal(sumInteraction(a = c(), b = a, ppi = ppi), 0)
-  expect_equal(sumInteraction(a = a, b = c(), ppi = ppi), 0)
-})
-
-test_that("sumInteraction runs correctly", {
-  a <- c("PDHB", "VARS2")
-  b <- c("IARS2", "PDHA1")
-  ppi <- data.frame(
-    from = c("PDHB", "VARS2"),
-    to = c("IARS2", "PDHA1"),
-    combined_score = c(0.5, 0.2)
-  )
-  expect_equal(sumInteraction(a = a, b = b, ppi = ppi), 0.7)
-})
-
 test_that("Empty Genesets - getInteractionScore", {
   ppi <- data.frame(
-    from = c("PDHB", "VARS2"),
-    to = c("IARS2", "PDHA1"),
+    Gene1 = c("PDHB", "VARS2"),
+    Gene2 = c("IARS2", "PDHA1"),
     combined_score = c(0.5, 0.2)
   )
   expect_equal(getInteractionScore(a = c(), b = c(), ppi = ppi, maxInteract = max(ppi$combined_score)), 0)
@@ -37,8 +10,8 @@ test_that("Empty Genesets - getInteractionScore", {
 test_that("One empty Geneset - getInteractionScore", {
   a <- c("PDHB", "VARS2")
   ppi <- data.frame(
-    from = c("PDHB", "VARS2"),
-    to = c("IARS2", "PDHA1"),
+    Gene1 = c("PDHB", "VARS2"),
+    Gene2 = c("IARS2", "PDHA1"),
     combined_score = c(0.5, 0.2)
   )
   maxInteract <- max(ppi$combined_score)
@@ -50,8 +23,8 @@ test_that("getInteractionScore runs correctly", {
   a <- c("PDHB", "VARS2")
   b <- c("IARS2", "PDHA1")
   ppi <- data.frame(
-    from = c("PDHB", "VARS2"),
-    to = c("IARS2", "PDHA1"),
+    Gene1 = c("PDHB", "VARS2"),
+    Gene2 = c("IARS2", "PDHA1"),
     combined_score = c(0.5, 0.2)
   )
   maxInteract <- max(ppi$combined_score)
@@ -73,8 +46,8 @@ test_that("pMMlocal runs correctly", {
   a <- c("PDHB", "VARS2")
   b <- c("IARS2", "PDHA1")
   ppi <- data.frame(
-    from = c("PDHB", "VARS2"),
-    to = c("IARS2", "PDHA1"),
+    Gene1 = c("PDHB", "VARS2"),
+    Gene2 = c("IARS2", "PDHA1"),
     combined_score = c(0.5, 0.2)
   )
   maxInteract <- max(ppi$combined_score)
@@ -89,8 +62,8 @@ test_that("Empty genesets - getpMMMatrix", {
 test_that("getpMMMatrix runs correctly", {
   genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
   ppi <- data.frame(
-    from = c("PDHB", "VARS2"),
-    to = c("IARS2", "PDHA1"),
+    Gene1 = c("PDHB", "VARS2"),
+    Gene2 = c("IARS2", "PDHA1"),
     combined_score = c(0.5, 0.2)
   )
   m <- getpMMMatrix(genes = genes, ppi = ppi, n_cores = 1)

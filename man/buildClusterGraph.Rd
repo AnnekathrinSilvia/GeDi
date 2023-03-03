@@ -26,7 +26,7 @@ An \code{igraph} object to be further manipulated or processed/plotted
 Title
 }
 \examples{
-cluster <- list(c(1:5), c(6:9))
+cluster <- list(c(1:5), c(6:9, 1))
 genes <- list(
   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),

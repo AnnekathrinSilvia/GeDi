@@ -4,10 +4,12 @@
 \alias{getId}
 \title{Get NCBI ID of a species}
 \usage{
-getId(species)
+getId(species, version = "11.5")
 }
 \arguments{
 \item{species}{the species you want to get the NCBI ID of}
+
+\item{version}{}
 }
 \value{
 the NCBI ID of your searched species
@@ -17,4 +19,6 @@ Get NCBI ID of a species
 }
 \examples{
 id <- getId(species = "Homo Sapiens")
+Title
+
 }

@@ -12,7 +12,7 @@ of the corresponding genes).}
 
 \item{ppi}{A \code{data.frame} object which contains the Protein-Protein
 interactions.
-The object has three columns, \code{from} and \code{to} which
+The object has three columns, \code{Gene1} and \code{Gene2} which
 specify the gene names of the interacting proteins in no
 particular order (symmetric interaction) and a column
 \code{combined_score} which is a numerical value of the strength of
@@ -41,8 +41,8 @@ set of genesets.
 genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 
 ppi <- data.frame(
-  from = c("PDHB", "VARS2"),
-  to = c("IARS2", "PDHA1"),
+  Gene1 = c("PDHB", "VARS2"),
+  Gene2 = c("IARS2", "PDHA1"),
   combined_score = c(0.5, 0.2)
 )
 

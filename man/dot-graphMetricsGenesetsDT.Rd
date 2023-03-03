@@ -4,10 +4,10 @@
 \alias{.graphMetricsGenesetsDT}
 \title{Title}
 \usage{
-.graphMetricsGenesetsDT(g, genesets, res_metric, name_metric)
+.graphMetricsGenesetsDT(g, genesets)
 }
 \arguments{
-\item{name_metric}{}
+\item{genesets}{}
 }
 \description{
 Title

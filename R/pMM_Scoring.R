@@ -1,42 +1,3 @@
-#' Sum up Protein-Protein interactions between two genesets
-#'
-#' The function sums up the strength of the Protein-Protein interactions of
-#' all genes in the given genesets.
-#'
-#' @param a,b A vector of gene names whose interactions should
-#'            be scored.
-#' @param ppi A `data.frame` object which contains the Protein-Protein
-#'            interactions.
-#'            The object has three columns, `from` and `to` which
-#'            specify the gene names of the interacting proteins in no
-#'            particular order (symmetric interaction) and a column
-#'            `combined_score` which is a numerical value of the strength of
-#'            the interaction.
-#'
-#'
-#' @return The sum of the Protein-Protein interactions.
-#' @export
-#' @import dplyr
-#' @examples
-#' a <- c("PDHB", "VARS2")
-#' b <- c("IARS2", "PDHA1")
-#'
-#' ppi <- data.frame(
-#'   from = c("PDHB", "VARS2"),
-#'   to = c("IARS2", "PDHA1"),
-#'   combined_score = c(0.5, 0.2)
-#' )
-#'
-#' score <- sumInteraction(a, b, ppi)
-sumInteraction <- function(a, b, ppi) {
-  if (length(a) == 0 | length(b) == 0) {
-    return(0)
-  } else {
-    interactions <- which(ppi$from %in% a & ppi$to %in% b)
-    return(sum(ppi[which(ppi$from %in% a & ppi$to %in% b), ]$combined_score))
-  }
-}
-
 #' Calculate interaction score for two genesets
 #'
 #' The function calculates the interaction score for two given genesets.
@@ -45,7 +6,7 @@ sumInteraction <- function(a, b, ppi) {
 #'            be used.
 #' @param ppi A `data.frame` object which contains the Protein-Protein
 #'            interactions.
-#'            The object has three columns, `from` and `to` which
+#'            The object has three columns, `Gene1` and `Gene2` which
 #'            specify the gene names of the interacting proteins in no
 #'            particular order (symmetric interaction) and a column
 #'            `combined_score` which is a numerical value of the strength of
@@ -55,53 +16,52 @@ sumInteraction <- function(a, b, ppi) {
 #'
 #' @return The interaction score of the two given genesets.
 #' @export
+#' @import dplyr
 #'
 #' @examples
-#' a <- c("PDHB", "VARS2")
+#' a <- c("PDHB", "VARS2", "IARS2")
 #' b <- c("IARS2", "PDHA1")
 #'
 #' ppi <- data.frame(
-#'   from = c("PDHB", "VARS2"),
-#'   to = c("IARS2", "PDHA1"),
-#'   combined_score = c(0.5, 0.2)
+#'   Gene1 = c("PDHB", "VARS2", "IARS2"),
+#'   Gene2 = c("IARS2", "PDHA1", "CD3"),
+#'   combined_score = c(0.5, 0.2, 0.1)
 #' )
 #' maxInteract <- max(ppi$combined_score)
 #'
 #' interaction <- getInteractionScore(a, b, ppi, maxInteract)
 getInteractionScore <- function(a, b, ppi, maxInteract) {
-  if (length(a) == 0 || length(b) == 0) {
-    return(0)
-  }
+  # get size of set a and b
+  len_a <- length(a)
+  len_b <- length(b)
+
+  # get the set of genes exclusive to a, b and the intersection of both
   onlya <- setdiff(a, b)
   onlyb <- setdiff(b, a)
   int <- intersect(a, b)
 
-  w <- min(length(a), length(b)) / (length(a) + length(b))
-  intlength <- length(int)
-  onlyblength <- length(onlyb)
-  onlyalength <- length(onlya)
+  w <- min(len_a, len_b) / (len_a + len_b)
 
-  if (intlength == 0 || onlyblength == 0 || onlyalength == 0) {
+  # get the size of the sets
+  len_int <- length(int)
+  len_onlyB <- length(onlyb)
+  len_onlyA <- length(onlya)
+  lengths <- c(len_a, len_b, len_int, len_onlyA, len_onlyB)
+
+  # check if any set is empty, if so score will be 0
+  if (any(lengths == 0)) {
     return(0)
   }
 
-  sumInta_to_b <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% int), ]$combined_score)
-  sumOnlyb <- sum(ppi[which(ppi$from %in% onlya & ppi$to %in% onlyb), ]$combined_score)
+  sumInt <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% int), ]$combined_score)
+  sumOnlyB <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% onlyb), ]$combined_score)
 
-  nom_a_to_b <- (w * sumInta_to_b) + sumOnlyb
-  denom_a_to_b <- maxInteract * (w * intlength + onlyblength)
+  nom <- (w * sumInt) + sumOnlyB
+  denom <- maxInteract * (w * len_int + len_onlyB)
 
-  score_a_to_b <- nom_a_to_b / denom_a_to_b
+  score <- nom / denom
 
-  sumIntb_to_a <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% int), ]$combined_score)
-  sumOnlya <- sum(ppi[which(ppi$from %in% onlyb & ppi$to %in% onlya), ]$combined_score)
-
-  nom_b_to_a <- (w * sumIntb_to_a) + sumOnlya
-  denom_b_to_a <- maxInteract * (w * intlength + onlyalength)
-
-  score_b_to_a <- nom_b_to_a / denom_b_to_a
-
-  return(min(score_a_to_b, score_b_to_a))
+  return(score)
 }
 
 #' Calculate local pMM distance
@@ -112,7 +72,7 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #'            be scored.
 #' @param ppi A `data.frame` object which contains the Protein-Protein
 #'            interactions.
-#'            The object has three columns, `from` and `to` which
+#'            The object has three columns, `Gene1` and `Gene2` which
 #'            specify the gene names of the interacting proteins in no
 #'            particular order (symmetric interaction) and a column
 #'            `combined_score` which is a numerical value of the strength of
@@ -131,8 +91,8 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' b <- c("IARS2", "PDHA1")
 #'
 #' ppi <- data.frame(
-#'   from = c("PDHB", "VARS2"),
-#'   to = c("IARS2", "PDHA1"),
+#'   Gene1 = c("PDHB", "VARS2"),
+#'   Gene2 = c("IARS2", "PDHA1"),
 #'   combined_score = c(0.5, 0.2)
 #' )
 #' maxInteract <- max(ppi$combined_score)
@@ -145,7 +105,9 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
   }
 
   factor1 <- (length(intersect(a, b))) / z
-  factor2 <- (alpha / z) * getInteractionScore(a, b, ppi, maxInteract)
+  interaction_score <- min(getInteractionScore(a, b, ppi, maxInteract),
+                           getInteractionScore(b, a, ppi, maxInteract))
+  factor2 <- (alpha / z) * interaction_score
 
   return(min(factor1 + factor2, 1))
 }
@@ -160,7 +122,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'              of the corresponding genes).
 #' @param ppi A `data.frame` object which contains the Protein-Protein
 #'            interactions.
-#'            The object has three columns, `from` and `to` which
+#'            The object has three columns, `Gene1` and `Gene2` which
 #'            specify the gene names of the interacting proteins in no
 #'            particular order (symmetric interaction) and a column
 #'            `combined_score` which is a numerical value of the strength of
@@ -184,8 +146,8 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 #'
 #' ppi <- data.frame(
-#'   from = c("PDHB", "VARS2"),
-#'   to = c("IARS2", "PDHA1"),
+#'   Gene1 = c("PDHB", "VARS2"),
+#'   Gene2 = c("IARS2", "PDHA1"),
 #'   combined_score = c(0.5, 0.2)
 #' )
 #'

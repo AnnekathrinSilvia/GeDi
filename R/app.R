@@ -417,7 +417,7 @@ GeDi <- function(genesets = NULL,
             column(
               width = 6,
               box(
-                id = "Genests_preview",
+                id = "Genesets_preview",
                 width = NULL,
                 title = "Genesets preview",
                 status = "info",
