@@ -3,8 +3,8 @@ test_that("no id", {
   expect_true(is.na(getId(species)))
 })
 
-test_that("Homo Sapiens ID", {
-  species <- "Homo Sapiens"
+test_that("Homo sapiens ID", {
+  species <- "Homo sapiens"
   expect_true(getId(species) == "9606")
 })
 

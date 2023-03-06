@@ -104,7 +104,16 @@ GeDi <- function(genesets = NULL,
             style = .actionButtonStyle
           )
         )
-      )
+      ),
+      title = bs4Dash::bs4DashBrand(
+        title = HTML("<small>GeDi</small>"),
+        href = "https://github.com/AnnekathrinSilvia/GeDi",
+      ),
+       skin = "dark",
+       status = "gray-dark",
+       border = FALSE,
+       controlbarIcon = icon("gears"),
+       fixed = TRUE
     ),
 
     # sidebar definition ------------------------------------------------------
@@ -723,6 +732,12 @@ GeDi <- function(genesets = NULL,
 
     # panel Scores ----------------------------------------------------
     output$ui_panel_scores <- renderUI({
+      validate(
+        need(!(is.null(
+          reactive_values$genesets
+        )) & !(is.null(reactive_values$genes)) & !(is.null(reactive_values$gs_names)),
+        message = "Please upload your data first before proceeding.")
+      )
       tagList(
         box(
           id = "distance_calc_box",
@@ -925,64 +940,6 @@ GeDi <- function(genesets = NULL,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
-    output$dt_betweenness <- DT::renderDataTable({
-      validate(need(!(is.null(
-        reactive_values$scores
-      )),
-      message = "Please score you genesets first in the above box"))
-      betweenness <-
-        igraph::betweenness(reactive_values$scores_graph(),
-                            directed = FALSE)
-      dt <- .graphMetricsGenesetsDT(
-        reactive_values$scores_graph(),
-        reactive_values$genesets,
-        betweenness,
-        "Betweenness"
-      )
-      DT::datatable(dt,
-                    rownames = FALSE,
-                    options = list(scrollX = TRUE, scrollY = "400px"))
-    })
-
-    output$dt_harmonic_centrality <- DT::renderDataTable({
-      validate(need(!(is.null(
-        reactive_values$scores
-      )),
-      message = "Please score you genesets first in the above box"))
-      centrality <-
-        igraph::harmonic_centrality(reactive_values$scores_graph(),
-                                    mode = "all")
-      dt <- .graphMetricsGenesetsDT(
-        reactive_values$scores_graph(),
-        reactive_values$genesets,
-        centrality,
-        "Harmonic Centrality"
-      )
-      DT::datatable(dt,
-                    rownames = FALSE,
-                    options = list(scrollX = TRUE, scrollY = "400px"))
-    })
-
-    output$dt_clustering_coefficient <- DT::renderDataTable({
-      validate(need(!(is.null(
-        reactive_values$scores
-      )),
-      message = "Please score you genesets first in the above box"))
-      clustering_coef <-
-        igraph::transitivity(reactive_values$scores_graph(),
-                             type = "global")
-      dt <- .graphMetricsGenesetsDT(
-        reactive_values$scores_graph(),
-        reactive_values$genesets,
-        clustering_coef,
-        "Clustering Coefficient"
-      )
-      DT::datatable(dt,
-                    rownames = FALSE,
-                    options = list(scrollX = TRUE, scrollY = "400px"))
-    })
-
-
     # panel Graph ------------------------------------------------------
 
     output$ui_panel_graph <- renderUI({
@@ -1102,14 +1059,15 @@ GeDi <- function(genesets = NULL,
       )),
       message = "Please cluster you genesets first in the above box"))
 
+      graph <- reactive_values$cluster_graph()
 
-      if (!any(igraph::get.edgelist(reactive_values$cluster_graph()) != 0)) {
+      if (!any(igraph::get.edgelist(graph) != 0)) {
         showNotification(
           "It seems like you don't have any clusters. Please adapt the similarity Threshold above and re-run the Clustering.",
           type = "warning"
         )
       } else {
-        visNetwork::visIgraph(reactive_values$cluster_graph()) %>%
+        visNetwork::visIgraph(graph) %>%
           visOptions(
             highlightNearest = list(
               enabled = TRUE,
@@ -1710,9 +1668,7 @@ GeDi <- function(genesets = NULL,
       output[["info"]] = renderUI({
         if (!is.null(df)) {
           HTML(
-            qq(
               "<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"
-            )
           )
         }
       })

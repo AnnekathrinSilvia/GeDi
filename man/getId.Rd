@@ -2,23 +2,24 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getId}
 \alias{getId}
-\title{Get NCBI ID of a species}
+\title{Get ID of a species}
 \usage{
 getId(species, version = "11.5")
 }
 \arguments{
-\item{species}{the species you want to get the NCBI ID of}
+\item{species}{character, the species of your input data}
 
-\item{version}{}
+\item{version}{character, the version of STRING you want to use, defaults to
+11.5, the current version of STRING}
 }
 \value{
-the NCBI ID of your searched species
+a character of the NCBI ID of \code{species}
 }
 \description{
-Get NCBI ID of a species
+Get the respective NCBI ID of a species to access it's respective STRING
+protein data
 }
 \examples{
-id <- getId(species = "Homo Sapiens")
-Title
-
+species <- "Homo sapiens"
+id <- getId(species = species)
 }

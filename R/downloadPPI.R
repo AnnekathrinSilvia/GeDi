@@ -1,33 +1,19 @@
-#' Get NCBI ID of a species
+#' Get ID of a species
 #'
-#' @param species the species you want to get the NCBI ID of
+#' Get the respective NCBI ID of a species to access it's respective STRING
+#' protein data
 #'
-#' @return the NCBI ID of your searched species
-#' @export
-#' @importFrom taxize get_ids
+#' @param species character, the species of your input data
+#' @param version character, the version of STRING you want to use, defaults to
+#'                11.5, the current version of STRING
 #'
-#' @examples
-#' id <- getId(species = "Homo Sapiens")
-# getId <- function(species) {
-#   id <- get_ids(species, db = "ncbi")
-#   return(id$ncbi[species])
-# }
-
-
-#' Title
-#'
-#' @param version
-#'
-#' @return
+#' @return a character of the NCBI ID of `species`
 #' @export
 #'
 #' @examples
+#' species <- "Homo sapiens"
+#' id <- getId(species = species)
 getId <- function(species, version = "11.5") {
-  # see from https://string-db.org/cgi/download
-
-  ## accessory data
-  ## e.g. https://stringdb-static.org/download/species.v11.5.txt
-
   url_species <- sprintf(
     "https://stringdb-static.org/download/species.v%s.txt",
     version
