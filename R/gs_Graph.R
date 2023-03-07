@@ -283,16 +283,16 @@ buildClusterGraph <- function(cluster,
   # the same cluster
   V(g)$cluster <- ""
 
-  for(i in 1:length(cluster)){
+  for (i in 1:length(cluster)) {
     clus <- cluster[[i]]
-    for(y in 1:length(clus)){
+    for (y in 1:length(clus)) {
       gs_name <- gs_names[clus[[y]]]
       id <- which(names(V(g)) %in% gs_name)
       mem <- V(g)$cluster[id]
       cluster_name <- paste("Cluster ", i, sep = "")
-      if(mem != ""){
+      if (mem != "") {
         mem <- paste(mem, cluster_name, sep = ",")
-      }else{
+      } else {
         mem <- cluster_name
       }
       V(g)$cluster[id] <- mem
@@ -484,36 +484,43 @@ getBipartiteGraph <- function(cluster,
 #'         geneset.
 #'
 .graphMetricsGenesetsDT <- function(g,
-                                    genesets){
+                                    genesets) {
   nodes <- igraph::V(g)$name
 
-  genesets <- genesets[,!names(genesets) %in% c("Genes")]
+  genesets <- genesets[, !names(genesets) %in% c("Genes")]
   genesets <- genesets[genesets$Genesets %in% nodes, ]
 
   clustering_coef <- igraph::transitivity(g,
-                                          type = "global")
+    type = "global"
+  )
   centrality <- igraph::harmonic_centrality(g,
-                                            mode = "all")
+    mode = "all"
+  )
   betweenness <- igraph::betweenness(g,
-                                     directed = FALSE)
+    directed = FALSE
+  )
   degree <- igraph::degree(g,
-                           mode = "all")
+    mode = "all"
+  )
 
-  df <- data.frame(nodes,
-                   degree,
-                   betweenness,
-                   centrality,
-                   clustering_coef,
-                   genesets)
+  df <- data.frame(
+    nodes,
+    degree,
+    betweenness,
+    centrality,
+    clustering_coef,
+    genesets
+  )
 
   rownames(df) <- NULL
-  colnames(df) <- c("Geneset",
-                    "Degree",
-                    "Betweenness",
-                    "Harmonic Centrality",
-                    "Clustering Coefficient",
-                    names(genesets))
+  colnames(df) <- c(
+    "Geneset",
+    "Degree",
+    "Betweenness",
+    "Harmonic Centrality",
+    "Clustering Coefficient",
+    names(genesets)
+  )
   df <- df[order(df$Degree, decreasing = TRUE), ]
   return(df)
 }
-

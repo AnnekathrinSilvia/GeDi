@@ -33,19 +33,20 @@ getGenes <- function(genesets, gene_name = NULL) {
   if (length(genesets) == 0) {
     return(NULL)
   }
-  if(is.null(gene_name)){
+  if (is.null(gene_name)) {
     stopifnot(any(names(genesets) == "Genes"))
   }
 
   if (!is.null(gene_name)) {
     genesList <- genesets[, gene_name]
-  }else{
+  } else {
     genesList <- genesets$Genes
   }
 
-    sep <- .findSeparator(genesList)
-    genes <- lapply(1:nrow(genesets), function(i) {
-    toupper(strsplit(genesList[i], sep)[[1]])})
+  sep <- .findSeparator(genesList)
+  genes <- lapply(1:nrow(genesets), function(i) {
+    toupper(strsplit(genesList[i], sep)[[1]])
+  })
 
   return(genes)
 }
@@ -64,9 +65,9 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
 #'
-#'@importFrom stringr str_count
+#' @importFrom stringr str_count
 #'
-.findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")){
+.findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")) {
   sephits_min <-
     sapply(sepList, function(x) {
       min(str_count(stringList, x))

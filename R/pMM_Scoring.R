@@ -105,8 +105,10 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
   }
 
   factor1 <- (length(intersect(a, b))) / z
-  interaction_score <- min(getInteractionScore(a, b, ppi, maxInteract),
-                           getInteractionScore(b, a, ppi, maxInteract))
+  interaction_score <- min(
+    getInteractionScore(a, b, ppi, maxInteract),
+    getInteractionScore(b, a, ppi, maxInteract)
+  )
   factor2 <- (alpha / z) * interaction_score
 
   return(min(factor1 + factor2, 1))

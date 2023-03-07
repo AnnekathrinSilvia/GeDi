@@ -463,15 +463,17 @@ library("biomaRt")
 mart <-
   useMart(biomart = "ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl")
 anns <- getBM(
-  attributes = c("ensembl_gene_id",
-                 "external_gene_name",
-                 "entrezgene_id",
-                 "description"),
+  attributes = c(
+    "ensembl_gene_id",
+    "external_gene_name",
+    "entrezgene_id",
+    "description"
+  ),
   filters = "ensembl_gene_id",
   values = rownames(dds_macrophage),
   mart = mart
 )
-anns <- anns[match(rownames(dds_macrophage), anns[, 1]),]
+anns <- anns[match(rownames(dds_macrophage), anns[, 1]), ]
 ```
 
 Next, we map the differentially expressed genes to get the right identifiers and run the `enrichKEGG` function. We set the organism to human and the p-value cutoff to 5%.
@@ -480,9 +482,10 @@ Next, we map the differentially expressed genes to get the right identifiers and
 library("clusterProfiler")
 genes <- anns$entrezgene_id[match(rownames(res_macrophage_IFNg_vs_naive), anns$ensembl_gene_id)]
 
-res_enrich <- enrichKEGG(genes, 
-                         organism = "hsa",
-                         pvalueCutoff = 0.05)
+res_enrich <- enrichKEGG(genes,
+  organism = "hsa",
+  pvalueCutoff = 0.05
+)
 ```
 
 We can now use the results of the enrichment in `GeDi`. For this, we can either save the results and upload them to a running instance of `GeDi` or we can provided it directly as an input to the app. 
@@ -502,10 +505,11 @@ In a similar manner we can use the Reactome database for the functional annotati
 
 ```{r enrichReactome}
 library("ReactomePA")
-reactome <- enrichPathway(genes, 
-                          organism = "human",
-                          pvalueCutoff = 0.05,
-                          readable = TRUE)
+reactome <- enrichPathway(genes,
+  organism = "human",
+  pvalueCutoff = 0.05,
+  readable = TRUE
+)
 ```
 
 Now we can use the results in the same manner as for the KEGG pathway analysis. 

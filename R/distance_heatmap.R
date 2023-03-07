@@ -47,7 +47,8 @@ distance_heatmap <- function(distance_scores,
   # set cut labels for plot annotation
   rownames(distance_scores) <- colnames(distance_scores) <- labels
   p <- ComplexHeatmap::Heatmap(as.matrix(distance_scores),
-                               name = "Distance Scores")
+    name = "Distance Scores"
+  )
 
   return(p)
 }

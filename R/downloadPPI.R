@@ -22,7 +22,8 @@ getId <- function(species, version = "11.5") {
 
   # get species ID of respective organism
   species_id <- df_species$X.taxon_id[
-    match(species, df_species$official_name_NCBI)]
+    match(species, df_species$official_name_NCBI)
+  ]
 
   return(species_id)
 }
