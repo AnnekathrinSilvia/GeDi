@@ -133,7 +133,7 @@ Now that we have our `DESeqDataset`, we can perform the DE analysis. In this vig
 
 Before we perform the DE analysis, we filter lowly expressed features from the data set. In this example we filter all genes that do not have at least 10 counts in at least 6 samples (where 6 is the size of the smallest group in the data).
 
-Afterwards, we perfrom the DE analysis and test against a null hypothesis of a log2FoldChange of 1 in order to ensure that we call those genes with a consistent *and* robust expression change DE.
+Afterwards, we pefrom the DE analysis and test against a null hypothesis of a log2FoldChange of 1 in order to ensure that we call those genes with a consistent *and* robust expression change DE.
 
 In a last step, we add the gene symbols to the resulting `DataFrame` which will later serve as our Genes column in the input data to `GeDi`.
 

@@ -372,31 +372,63 @@ GeDi <- function(genesets = NULL,
           width = 12,
           includeMarkdown(system.file("extdata", "welcome.md", package = "GeDi")),
           br(),
-          br(),
-          p("If you see a grey box like this one open below..."),
-          shinyBS::bsCollapse(
-            id = "help_welcome",
-            open = "Help",
-            shinyBS::bsCollapsePanel(
-              "Help",
-              includeMarkdown(
-                system.file("extdata", "help_welcome.md", package = "GeDi")
-              )
-            )
-          ),
-          actionButton(
-            "introexample",
-            "If you see a button like this...",
-            icon("info"),
-            style = "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
-          ),
-          p("... you can click on that to start a tour based on introJS"),
-          br(),
-          br()
+          uiOutput("ui_summary_data_generation")
         )
-      ))
+      ),
+      fluidRow(column(
+        width = 12,
+        includeMarkdown(system.file("extdata", "welcome_introduction.md", package = "GeDi")),
+        actionButton(
+          inputId = "example_button",
+          label = "Click me!",
+          style = .actionButtonStyle
+        ),
+        p("you can click on it and it will start some process in the app.
+          We tried to choose the button text wisely so that you can understand
+          what process will be started."),
+        p("Besides buttons, you will also find field where you can type
+          something like this"),
+        textInput(
+          inputId = "exampleText",
+          label = "Write some text here"
+        ),
+        p("In these boxes you generally have to provide some information.
+          In most cases, you will see that once you click inside the box, a
+          dropdown menu will appear with suggestions for the specific field to
+          provide you with an idea of what is expected."),
+        p("Otherwise, there are also options, where you have to select something"),
+        radioButtons(
+          inputId = "exampleRadioButton",
+          label = "Select the option of your choice",
+          choices = c("Option 1", "Option 2", "Option 3")
+        ),
+        p("and sliders where you can define a certain value based on an
+          interval of available values"),
+        sliderInput(
+          inputId = "exampleSlider",
+          label = "Choose a value",
+          max = 100,
+          min = 0,
+          value = 50
+        ),
+        p("We tried to keep the app as simple and self-explanatory as possible.
+          However, if you happen to be stuck at some part, we provide for each
+          panel of this app a dedicated tour which will explain each element
+          of the respective panel in detail. You can access the tours via the
+          question mark in the upper right corner, which you will find in each
+          panel.")
+      )))
     })
 
+
+    output$ui_summary_data_generation <- renderUI({
+      box(
+        width = 12,
+        title = "Summary on data generation", status = "info", solidHeader = TRUE,
+        collapsible = TRUE, collapsed = TRUE,
+        includeMarkdown(system.file("extdata", "summary_data_generation.md", package = "GeDi"))
+      )
+    })
 
     # panel Data Upload ------------------------------------------------------
     output$ui_panel_data_upload <- renderUI({
