@@ -123,6 +123,36 @@ getGenes <- function(genesets, gene_name = NULL) {
   return(results)
 }
 
+#' Check if PPI has right format
+#'
+#' Check if the Protein-Protein-interaction (PPI) has the expected format for
+#' this app
+#'
+#' @param ppi A PPI object
+#'
+#' @return A `data.frame` of the input `ppi` with the expected column names
+#'
+.checkPPI <- function(ppi){
+  stopifnot(is.data.frame(ppi))
+  stopifnot(ncol(ppi) == 3)
+  stopifnot(all(is.character(ppi[, 1])) & all(is.character(ppi[, 2])))
+  stopifnot(all(is.numeric(ppi[, 3])))
+
+  colnames(ppi) <- c("Gene1", "Gene2", "combined_score")
+  return(ppi)
+}
+
+#' Check if iput genesets have the right format
+#'
+#' Check if the input genesets have the expected format of the app
+#'
+#' @param genesets A object of geneset input data
+#'
+.checkGenesets <- function(genesets){
+  stopifnot(is.data.frame(genesets))
+  stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
+  stopifnot(all(is.character(genesets$Genesets)) & all(is.character(genesets$Genes)))
+}
 
 .actionButtonStyle <-
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"

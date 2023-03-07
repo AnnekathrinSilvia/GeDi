@@ -16,8 +16,7 @@ getId(species, version = "11.5")
 a character of the NCBI ID of \code{species}
 }
 \description{
-Get the respective NCBI ID of a species to access it's respective STRING
-protein data
+Get the NCBI ID of a species
 }
 \examples{
 species <- "Homo sapiens"

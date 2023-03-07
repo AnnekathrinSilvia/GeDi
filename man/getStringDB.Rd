@@ -2,29 +2,24 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getStringDB}
 \alias{getStringDB}
-\title{Get the STRINGdb entry of your searched species}
+\title{Get the STRING entry of a species}
 \usage{
-getStringDB(
-  species,
-  version = "11.5",
-  score_threshold = 0,
-  input_directory = ""
-)
+getStringDB(species, version = "11.5", score_threshold = 0)
 }
 \arguments{
-\item{species}{the NCBI ID of the species you want to search (numeric)}
+\item{species}{numeric, the NCBI ID of the species of interest}
 
-\item{version}{the STRINGdb version you want to use (defaults to the current version) (string)}
+\item{version}{character, the STRINGdb version to use, defaults to 11.5
+(current version)}
 
-\item{score_threshold}{a score threshold to cut out interactions with a lower score (defaults to 0/all interactions) (numeric)}
-
-\item{input_directory}{the directory to save the \code{STRINGdb} object}
+\item{score_threshold}{numeric, a score threshold to cut the retrieved
+interactions, defaults to 0 (all interactions)}
 }
 \value{
-a \code{STRINGdb} object of your searched species
+a \link{STRINGdb} object \code{species}
 }
 \description{
-Get the STRINGdb entry of your searched species
+Get the respective \link{STRINGdb} object of your species of interest
 }
 \examples{
 species <- getId(species = "Homo Sapiens")

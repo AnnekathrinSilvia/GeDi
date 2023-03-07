@@ -7,12 +7,14 @@
 getBipartiteGraph(cluster, gs_names, genes)
 }
 \arguments{
-\item{cluster}{A \code{list} clusters, where each cluster member is indicated
-by a numeric value}
+\item{cluster}{\code{list}, a \code{list} of clusters, cluster members are indicated by
+numeric values.}
 
-\item{gs_names}{A vector of geneset names}
+\item{gs_names}{vector, a vector of (geneset) identifiers/names to map the
+numeric member value in \code{cluster} to.}
 
-\item{genes}{A \code{list} of \code{list} of genes which belong to the genesets in gs_names}
+\item{genes}{\code{list}, a \code{list} of vectors of genenames which belong to the
+genesets in \code{gs_names}.}
 }
 \value{
 An \code{igraph} object to be further manipulated or processed/plotted

@@ -10,7 +10,7 @@ distance_dendro(distance_scores, cluster_method = "average")
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} containing (distance) scores
 between 0 and 1.}
 
-\item{cluster_method}{A character string indicating the clustering method
+\item{cluster_method}{character, indicating the clustering method
 for the \code{\link[stats:hclust]{stats::hclust()}} function. See the
 \code{\link[stats:hclust]{stats::hclust()}} function for the available options.
 Defaults to 'average'.}

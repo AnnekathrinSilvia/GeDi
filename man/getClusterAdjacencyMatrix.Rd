@@ -16,7 +16,7 @@ by a numeric value}
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of adjacency status
 }
 \description{
-Construct an adjacency matrix from a \code{list} of cluster..
+Construct an adjacency matrix from a \code{list} of cluster.
 }
 \examples{
 cluster <- list(c(1:5), c(6:9))

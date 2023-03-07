@@ -2,20 +2,26 @@
 % Please edit documentation in R/gs_Graph.R
 \name{buildClusterGraph}
 \alias{buildClusterGraph}
-\title{Title}
+\title{Build a cluster graph}
 \usage{
 buildClusterGraph(cluster, geneset_df, gs_names, color_by = NULL)
 }
 \arguments{
-\item{cluster}{A \code{list} of clusters, where each cluster member is indicated
-by a numeric value}
+\item{cluster}{list, a \code{list} of clusters, where each cluster member is
+indicated by a numeric value.}
 
-\item{geneset_df}{A \code{data.frame} of the input data of the application}
+\item{geneset_df}{\code{data.frame}, a \code{data.frame} of genesets with at least two
+columns, one called \code{Genesets} containing geneset
+identifiers and one called \code{Genes} containing a list of
+genes belonging to the individual genesets.}
 
-\item{gs_names}{A vector of geneset names}
+\item{gs_names}{vector, a vector of geneset identifiers, e.g. the \code{Genesets}
+column of \code{geneset_df}.}
 
-\item{color_by}{A column name of geneset_df which is used to color the nodes
-of the resulting graph}
+\item{color_by}{character, a column name of \code{geneset_df} which is used
+to color the nodes of the resulting graph. The column should
+ideally contain a numeric measurement. Defaults to NULL and
+nodes will remain uncolored.}
 }
 \value{
 An \code{igraph} object to be further manipulated or processed/plotted
@@ -23,7 +29,8 @@ An \code{igraph} object to be further manipulated or processed/plotted
 \link[visNetwork:visNetwork-igraph]{visNetwork::visIgraph()})
 }
 \description{
-Title
+Build a \link{igraph} from cluster information, connecting nodes which belong to
+the same cluster.
 }
 \examples{
 cluster <- list(c(1:5), c(6:9, 1))
