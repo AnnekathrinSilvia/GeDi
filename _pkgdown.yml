@@ -1,6 +1,6 @@
 authors:
-  Federico Marini:
-    href: https://federicomarini.github.io
+  Annekathrin Ludt:
+    href: https://github.com/AnnekathrinSilvia/GeDi
 
 template:
   params:
@@ -27,11 +27,11 @@ navbar:
       text: Articles
       menu:
       - text: |
-          The `GeneTonic` User's Guide
-        href: articles/GeneTonic_manual.html
+          The `GeDi` User's Guide
+        href: articles/GeDi_manual.html
     news:
       text: Changelog
       href: news/index.html
     github:
       icon: fab fa-github fa-lg
-      href: https://github.com/federicomarini/GeneTonic
+      href: https://github.com/AnnekathrinSilvia/GeDi
