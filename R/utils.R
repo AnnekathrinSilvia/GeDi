@@ -132,7 +132,7 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @return A `data.frame` of the input `ppi` with the expected column names
 #'
-.checkPPI <- function(ppi){
+.checkPPI <- function(ppi) {
   stopifnot(is.data.frame(ppi))
   stopifnot(ncol(ppi) == 3)
   stopifnot(all(is.character(ppi[, 1])) & all(is.character(ppi[, 2])))
@@ -148,7 +148,7 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @param genesets A object of geneset input data
 #'
-.checkGenesets <- function(genesets){
+.checkGenesets <- function(genesets) {
   stopifnot(is.data.frame(genesets))
   stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
   stopifnot(all(is.character(genesets$Genesets)) & all(is.character(genesets$Genes)))
