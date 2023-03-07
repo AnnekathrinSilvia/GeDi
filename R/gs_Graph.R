@@ -18,7 +18,8 @@
 #' m <- Matrix::Matrix(stats::runif(1000, 0, 1), 100, 100)
 #' threshold <- 0.3
 #' adj <- getAdjacencyMatrix(m, threshold)
-getAdjacencyMatrix <- function(distanceMatrix, cutOff) {
+getAdjacencyMatrix <- function(distanceMatrix,
+                               cutOff) {
   if (is.null(distanceMatrix)) {
     return(NULL)
   }
@@ -69,6 +70,7 @@ buildGraph <- function(adjMatrix) {
   gs_names <- rownames(adjMatrix)
   ids <- which(names(V(g)) %in% gs_names)
 
+  # TODO: check which type of identifiers the data has and provide the respective links
   V(g)$title[ids] <- paste0(
     "<h4>",
     sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
@@ -80,7 +82,7 @@ buildGraph <- function(adjMatrix) {
 
 #' Construct an adjacency matrix
 #'
-#' Construct an adjacency matrix from a `list` of cluster..
+#' Construct an adjacency matrix from a `list` of cluster.
 #'
 #' @param cluster A `list` of clusters, where each cluster member is indicated
 #'                by a numeric value
@@ -94,7 +96,8 @@ buildGraph <- function(adjMatrix) {
 #' cluster <- list(c(1:5), c(6:9))
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
 #' adj <- getClusterAdjacencyMatrix(cluster, gs_names)
-getClusterAdjacencyMatrix <- function(cluster, gs_names) {
+getClusterAdjacencyMatrix <- function(cluster,
+                                      gs_names) {
   l <- length(gs_names)
   adj <- Matrix::Matrix(0, l, l)
   if (length(cluster) == 0) {
@@ -113,14 +116,23 @@ getClusterAdjacencyMatrix <- function(cluster, gs_names) {
   return(adj)
 }
 
-#' Title
+#' Build a cluster graph
 #'
-#' @param cluster A `list` of clusters, where each cluster member is indicated
-#'                by a numeric value
-#' @param geneset_df A `data.frame` of the input data of the application
-#' @param gs_names A vector of geneset names
-#' @param color_by A column name of geneset_df which is used to color the nodes
-#'                 of the resulting graph
+#' Build a [igraph] from cluster information, connecting nodes which belong to
+#' the same cluster.
+#'
+#' @param cluster list, a `list` of clusters, where each cluster member is
+#'                indicated by a numeric value.
+#' @param geneset_df `data.frame`, a `data.frame` of genesets with at least two
+#'                   columns, one called `Genesets` containing geneset
+#'                   identifiers and one called `Genes` containing a list of
+#'                   genes belonging to the individual genesets.
+#' @param gs_names vector, a vector of geneset identifiers, e.g. the `Genesets`
+#'                 column of `geneset_df`.
+#' @param color_by character, a column name of `geneset_df` which is used
+#'                 to color the nodes of the resulting graph. The column should
+#'                 ideally contain a numeric measurement. Defaults to NULL and
+#'                 nodes will remain uncolored.
 #'
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
@@ -154,13 +166,19 @@ buildClusterGraph <- function(cluster,
                               geneset_df,
                               gs_names,
                               color_by = NULL) {
+  # get adjacency matrix (i.e. which genesets belong to the same cluster)
   adj <- getClusterAdjacencyMatrix(
     cluster,
     gs_names
   )
+  # build graph from adjacency matric
   g <- buildGraph(adj)
 
+  # get node ids to map color to respective node
+  ids <- which(names(V(g)) %in% gs_names)
+
   if (!is.null(color_by)) {
+    # check if color_by column exists
     if (!color_by %in% colnames(geneset_df)) {
       stop(
         "Your data does not contain the ",
@@ -169,11 +187,6 @@ buildClusterGraph <- function(cluster,
         "Please select another column to use for the color."
       )
     }
-  }
-
-  ids <- which(names(V(g)) %in% gs_names)
-
-  if (!is.null(color_by)) {
     col_var <- geneset_df[ids, color_by]
     # the palette changes if it is z_score VS pvalue
     if (all(col_var <= 1) & all(col_var > 0)) { # likely p-values...
@@ -266,6 +279,8 @@ buildClusterGraph <- function(cluster,
     }
   }
 
+  # add cluster information to the graph to highlight all nodes belonging to
+  # the same cluster
   V(g)$cluster <- ""
 
   for(i in 1:length(cluster)){
@@ -284,9 +299,9 @@ buildClusterGraph <- function(cluster,
     }
   }
 
+  # add title to the graph which is input information from geneset_df of each
+  # node
   transposed_df <- as.data.frame(t(geneset_df))
-
-
   title <- list()
   names_rows <- rownames(transposed_df)
 
@@ -322,6 +337,7 @@ buildClusterGraph <- function(cluster,
     title[ids], "<br><br>"
   )
 
+  # remove those nodes that do not belong to a cluster
   no_cluster <- V(g)[degree(g) == 0]
   g <- delete_vertices(g, no_cluster)
   return(g)
@@ -332,10 +348,12 @@ buildClusterGraph <- function(cluster,
 #' Construct a bipartite graph from cluster information, mapping the cluster
 #' to its members
 #'
-#' @param cluster A `list` clusters, where each cluster member is indicated
-#'                by a numeric value
-#' @param gs_names A vector of geneset names
-#' @param genes A `list` of `list` of genes which belong to the genesets in gs_names
+#' @param cluster `list`, a `list` of clusters, cluster members are indicated by
+#'                numeric values.
+#' @param gs_names vector, a vector of (geneset) identifiers/names to map the
+#'                 numeric member value in `cluster` to.
+#' @param genes `list`, a `list` of vectors of genenames which belong to the
+#'               genesets in `gs_names`.
 #'
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
@@ -355,7 +373,10 @@ buildClusterGraph <- function(cluster,
 #' )
 #'
 #' g <- getBipartiteGraph(cluster, gs_names, genes)
-getBipartiteGraph <- function(cluster, gs_names, genes) {
+getBipartiteGraph <- function(cluster,
+                              gs_names,
+                              genes) {
+  # check if parameters fulfill requirements
   stopifnot(length(cluster) > 0)
   stopifnot(length(gs_names) > 0)
   stopifnot(length(genes) > 0)
@@ -367,12 +388,14 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
   df_node_mapping <- data.frame(matrix(NA, nrow = length(gs_names), ncol = 1))
   colnames(df_node_mapping) <- "Node_number"
 
+  # set up node labels for the clusters
   node_labels <- c()
-
   for (i in 1:n_cluster) {
     node_labels <- c(node_labels, paste0("Cluster ", i))
   }
 
+  # map numerical cluster member value to the respective geneset identifier
+  # add edges from cluster to members of the cluster
   for (i in 1:n_cluster) {
     subcluster <- cluster[[i]]
     for (j in subcluster) {
@@ -388,6 +411,7 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
     }
   }
 
+  # set up graph
   type <- c(rep(0, n_cluster))
   type <- c(type, rep(1, node_number - n_cluster - 1))
 
@@ -397,23 +421,22 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
   cluster_id <- which(names(V(graph)) %in% node_labels[1:n_cluster])
   geneset_id <- which(!(names(V(graph)) %in% node_labels[1:n_cluster]))
 
+  # set node type to either cluster or genesets to get the bipartite structure
   igraph::V(graph)$nodeType <- NA
   igraph::V(graph)$nodeType[cluster_id] <- "Cluster"
   igraph::V(graph)$nodeType[geneset_id] <- "Geneset"
 
   igraph::V(graph)$shape <- c("box", "ellipse")[factor(V(graph)$nodeType, levels = c("Cluster", "Geneset"))]
 
+  # set color of the nodes and edges
   igraph::V(graph)$color <- NA
   igraph::V(graph)$color[cluster_id] <- "gold"
   igraph::V(graph)$color[geneset_id] <- "#0092AC"
   igraph::E(graph)$color <- "black"
 
-  # cluster_size <- sapply(cluster, length)
-  # igraph::V(graph)$size[cluster_id] <- 5 * sqrt(cluster_size)
 
-
+  # set title information of each node
   igraph::V(graph)$title <- NA
-
   text <- list()
   for (i in cluster_id) {
     mem <- paste(gs_names[cluster[[i]]], collapse = " ")
@@ -445,15 +468,21 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
 }
 
 
-#' Title
+#' Generate a `data.frame` of graph metrics
 #'
-#' @param g
-#' @param genesets
+#' Generate a `data.frame` of the graph metrics degree, betweenness,
+#' harmonic centrality and clustering coeficient for each node
+#' in a given graph.
 #'
-#' @return
-#' @export
+#' @param g A [igraph] graph object
+#' @param genesets A `data.frame` of genesets with a column `Genesets` containing
+#'                 geneset identifiers and a column `Genes` containing the
+#'                 genes belonging to each geneset
 #'
-#' @examples
+#' @return A `data.frame` of `geneset` extended by columns for the degree,
+#'         betweenness, harmonic centrality and clustering coefficient for each
+#'         geneset.
+#'
 .graphMetricsGenesetsDT <- function(g,
                                     genesets){
   nodes <- igraph::V(g)$name
@@ -470,7 +499,12 @@ getBipartiteGraph <- function(cluster, gs_names, genes) {
   degree <- igraph::degree(g,
                            mode = "all")
 
-  df <- data.frame(nodes, degree, betweenness, centrality, clustering_coef, genesets)
+  df <- data.frame(nodes,
+                   degree,
+                   betweenness,
+                   centrality,
+                   clustering_coef,
+                   genesets)
 
   rownames(df) <- NULL
   colnames(df) <- c("Geneset",

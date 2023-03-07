@@ -2,13 +2,24 @@
 % Please edit documentation in R/gs_Graph.R
 \name{.graphMetricsGenesetsDT}
 \alias{.graphMetricsGenesetsDT}
-\title{Title}
+\title{Generate a \code{data.frame} of graph metrics}
 \usage{
 .graphMetricsGenesetsDT(g, genesets)
 }
 \arguments{
-\item{genesets}{}
+\item{g}{A \link{igraph} graph object}
+
+\item{genesets}{A \code{data.frame} of genesets with a column \code{Genesets} containing
+geneset identifiers and a column \code{Genes} containing the
+genes belonging to each geneset}
+}
+\value{
+A \code{data.frame} of \code{geneset} extended by columns for the degree,
+betweenness, harmonic centrality and clustering coefficient for each
+geneset.
 }
 \description{
-Title
+Generate a \code{data.frame} of the graph metrics degree, betweenness,
+harmonic centrality and clustering coeficient for each node
+in a given graph.
 }

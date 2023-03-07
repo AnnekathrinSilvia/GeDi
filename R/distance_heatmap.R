@@ -18,8 +18,10 @@
 #' p <- distance_heatmap(distance_scores)
 distance_heatmap <- function(distance_scores,
                              chars_limit = 50) {
+  # check if there are distance scores
   stopifnot(!is.null(distance_scores))
 
+  # cut the labels to chars_limit
   labels <- substr(as.character(rownames(distance_scores)), 1, chars_limit)
 
   # df <- expand.grid(Geneset1 = rownames(distance_scores), Geneset2 = colnames(distance_scores))
@@ -42,6 +44,7 @@ distance_heatmap <- function(distance_scores,
   #   p <- p + scale_y_discrete(limits = colnames(m)[ord])
   # }
 
+  # set cut labels for plot annotation
   rownames(distance_scores) <- colnames(distance_scores) <- labels
   p <- ComplexHeatmap::Heatmap(as.matrix(distance_scores),
                                name = "Distance Scores")

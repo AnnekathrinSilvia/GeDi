@@ -578,7 +578,7 @@ GeDi <- function(genesets = NULL,
             width = 6,
             selectizeInput(
               inputId = "select_filter_genesets",
-              label = "Select the genesets to be filtered",
+              label = "Select individual genesets to be filtered",
               choices = c(reactive_values$gs_names),
               multiple = TRUE,
               options = list(create = TRUE)
@@ -589,6 +589,11 @@ GeDi <- function(genesets = NULL,
               icon = icon("play-circle"),
               style = .actionButtonStyle
             )
+          ),
+          column(
+            width = 6,
+            textInput(inputId = "select_filter_genesets_threshold",
+                      label = "Filter genesets with size =>")
           ))
         )
       )
@@ -1502,7 +1507,30 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$filter_genesets, {
-      filtered_data <- .filterGenesets(input$select_filter_genesets,
+      # first check with filtering method to use
+      if(length(input$select_filter_genesets) == 0){
+        if(length(input$select_filter_genesets_threshold) == 0){
+          showNotification("No Genesets selected for filtering.",
+                           type = "message")
+        }else{
+          threshold <- as.numeric(input$select_filter_genesets_threshold)
+          print(threshold)
+          data <- .buildHistogramData(reactive_values$genes,
+                                      reactive_values$gs_names)
+          remove <- data[data$Size >= threshold, ]$Geneset
+          print(remove)
+          if(length(remove) == 0){
+            showNotification(paste("No Genesets with size larger than ",
+                                   threshold,
+                                   " in input data.",
+                                   sep = ""),
+                             type = "message")
+          }
+        }
+      }else{
+        remove <- input$select_filter_genesets
+      }
+      filtered_data <- .filterGenesets(remove,
                                        reactive_values$genesets)
 
       reactive_values$genesets <- filtered_data$Geneset
@@ -1607,9 +1635,13 @@ GeDi <- function(genesets = NULL,
           )
           scores <- NULL
         } else {
+          start_time <- Sys.time()
+
           scores <- getpMMMatrix(reactive_values$genes,
                                  reactive_values$ppi,
                                  progress = progress)
+          end_time <- Sys.time()
+          print(end_time - start_time)
         }
       } else if (input$scoringmethod == "Jaccard") {
         scores <- getJaccardMatrix(reactive_values$genes,
@@ -1651,10 +1683,6 @@ GeDi <- function(genesets = NULL,
       column = unique(unlist(df$column_index))
       output[["info"]] = renderUI({
         if (!is.null(df)) {
-          # HTML(kable_styling(kbl(as.matrix(reactive_values$scores)[row, column, drop = FALSE], digits = 2, format = "html"),
-          #                    full_width = FALSE,
-          #                    position = "left"))
-
           subset <-
             as.matrix(reactive_values$scores)[row, column, drop = FALSE]
           df <- as.data.frame(subset)

@@ -4,7 +4,7 @@
 #'
 #' @param distance_scores A [Matrix::Matrix()] containing (distance) scores
 #'                        between 0 and 1.
-#' @param cluster_method A character string indicating the clustering method
+#' @param cluster_method character, indicating the clustering method
 #'                       for the [stats::hclust()] function. See the
 #'                       [stats::hclust()] function for the available options.
 #'                       Defaults to 'average'.
