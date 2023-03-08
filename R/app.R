@@ -1246,7 +1246,7 @@ GeDi <- function(genesets = NULL,
           message = "It seems like the data has not yet been clustered. Please cluster your data first with the box above."
         )
       )
-      dt_cluster <- getClusterDatatable(
+      dt_cluster <- .getClusterDatatable(
         reactive_values$cluster,
         reactive_values$gs_names
       )

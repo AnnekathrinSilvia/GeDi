@@ -97,7 +97,7 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
       reach_red <- sum(reach[members, members])
       # if the sum of entries in reach is larger than the individual threshold
       # of i the set is considered a seed
-      if (in_reach >= includethreshold) {
+      if (reach_red >= includethreshold) {
         members <- c(members, i)
         seeds <- c(list(sort(members)), seeds)
       }

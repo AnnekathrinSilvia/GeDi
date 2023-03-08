@@ -3,15 +3,16 @@
 #' Split a long string of space separated genes into a `list` of individual
 #' genes.
 #'
-#' @param genesets A `data.frame` with at least two columns. One should be
-#'                 called `Geneset`, which contains the names of the genesets
-#'                 in the data (or any other interpretative identifier for the
-#'                 genesets). The second column should be called `Genes` and
-#'                 contains one string of the genes contained in each geneset.
-#' @param gene_name An alternative name for the `Genes` column in the `genesets`
-#'                  data.
+#' @param genesets `data.frame`, a `data.frame` with at least two columns.
+#'                 One should be called `Geneset`, containing the
+#'                 names/identifiers of the genesets in the data. The second
+#'                 column should be called `Genes` and contains one string of
+#'                 the genes contained in each geneset.
+#' @param gene_name character, alternative name for the column containing the
+#'                  genes in `genesets`. If not given, the column is expected to
+#'                  be called `Genes`.
 #'
-#' @return A `list` which contains for each geneset in the `Geneset` column a
+#' @return `list`, containing for each geneset in the `Geneset` column a
 #'         `list` of the included genes.
 #' @export
 #'
@@ -37,13 +38,16 @@ getGenes <- function(genesets, gene_name = NULL) {
     stopifnot(any(names(genesets) == "Genes"))
   }
 
+  # check in whcih column the genes are
   if (!is.null(gene_name)) {
     genesList <- genesets[, gene_name]
   } else {
     genesList <- genesets$Genes
   }
 
+  # guess on the separator in the genes
   sep <- .findSeparator(genesList)
+  # separate large string of genes into list of individual genes
   genes <- lapply(1:nrow(genesets), function(i) {
     toupper(strsplit(genesList[i], sep)[[1]])
   })
@@ -57,16 +61,15 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' This function tries to guess which separator was used in a list of delimited
 #' strings.
 #'
-#' @param stringList A list of strings
-#' @param sepList A vector containing the candidates for being identified as
+#' @param stringList `list`, a `list` of strings
+#' @param sepList `list`, containing the candidates for being identified as
 #'                 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.
 #'
-#' @return A character value, corresponding to the guessed separator. One of ","
+#' @return character, corresponding to the guessed separator. One of ","
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
 #'
 #' @importFrom stringr str_count
-#'
 .findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")) {
   sephits_min <-
     sapply(sepList, function(x) {
@@ -82,14 +85,13 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' This function tries to guess which separator was used in a text delimited
 #' file.
 #'
-#' @param file The name of the file which the data are to be read from.
-#' @param sep_list A vector containing the candidates for being identified as
+#' @param file character, location of a file to read data from.
+#' @param sepList `list`, containing the candidates for being identified as
 #'                 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.
 #'
-#' @return A character value, corresponding to the guessed separator. One of ","
+#' @return character, corresponding to the guessed separator. One of ","
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
-#'
 .sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   rl <- readLines(file, warn = FALSE)
   rl <- rl[rl != ""] # allow last line to be empty
@@ -101,18 +103,20 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' Filter a preselected list of genesets from a `data.frame` of genesets
 #'
-#' @param remove A `list` of Geneset identifiers to be removed from the data
-#' @param df_genesets A `data.frame` of the input data
+#' @param remove `list`, a `list` of geneset identifiers to be removed from
+#'               `df_genesets`
+#' @param df_genesets `data.frame`, a `data.frame` of the genesets.
 #'
-#' @return A `data.frame`of the input data without the genesets listed in
-#'         `remove`
-#'
+#' @return A `data.frame` of the input data without the genesets listed in
+#'         `remove`.
 .filterGenesets <- function(remove,
                             df_genesets) {
+  # get genesets to remove
   genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
   results <- list()
   df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
 
+  # return information of the data.frame without the genesets in removed
   results[[1]] <- df_genesets
   results[[2]] <- df_genesets$Geneset
   genes <- getGenes(df_genesets)
@@ -152,6 +156,30 @@ getGenes <- function(genesets, gene_name = NULL) {
   stopifnot(is.data.frame(genesets))
   stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
   stopifnot(all(is.character(genesets$Genesets)) & all(is.character(genesets$Genes)))
+}
+
+#' Determine the number of cores touse for a function
+#'
+#' Determine the number of cores to use for a function
+#'
+#' @param n_cores numeric, number of cores to use for the function.
+#'                Defaults to `Null` in which case the function takes half of
+#'                the available cores.
+#'
+#' @return The number of cores to use.
+#'
+.getNumberCores <- function(n_cores = NULL){
+  # check the number of cores to use
+  available_cores <- parallel::detectCores()
+  if (is.null(n_cores)) {
+    n_cores <- max(round(available_cores / 2), 1)
+  }else{
+    if(n_cores > available_cores){
+      n_cores <- available_cores
+    }
+  }
+
+  return(n_cores)
 }
 
 .actionButtonStyle <-

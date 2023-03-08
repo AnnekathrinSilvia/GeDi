@@ -3,13 +3,13 @@
 #' Calculate the Meet-Min distance of all combinations of genesets in a given
 #' data set of genesets.
 #'
-#' @param genesets A `list` of genesets (each geneset is represented by a `list`
-#'                 of the corresponding genes).
-#' @param progress An optional [shiny::Progress()] object to track the progress
-#'                 of the function in the app.
-#' @param n_cores Numerical value indicating the number of cores to be used.
-#'                If no value is given, half of the available cores will be
-#'                used.
+#' @param genesets `list`, a `list` of genesets (each geneset is represented by
+#'                 a `list` of the corresponding genes).
+#' @param progress [shiny::Progress()] object, optional. To track the progress
+#'                 of the function (e.g. in a Shiny app)
+#' @param n_cores numeric, number of cores to use for the function.
+#'                Defaults to `NULL` in which case the function takes half of
+#'                the available cores (see function .detectNumberCores(n_cores)).
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Meet-Min distance of each
 #'         geneset pair. The matrix is symmetrical with values between 0 and 1,
@@ -26,13 +26,12 @@ getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   if (l == 0) {
     return(NULL)
   }
+  # set up parameters
   m <- Matrix::Matrix(0, l, l)
   results <- list()
 
-  if (is.null(n_cores)) {
-    n_cores <- parallel::detectCores()
-    n_cores <- max(round(n_cores / 2), 1)
-  }
+  # determine number of cores to use
+  n_cores <- .getNumberCores(n_cores)
 
   for (j in 1:(l - 1)) {
     a <- genesets[[j]]

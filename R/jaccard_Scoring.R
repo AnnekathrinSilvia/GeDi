@@ -2,10 +2,9 @@
 #'
 #' Calculate the Jaccard distance for two given genesets.
 #'
-#' @param a,b A vector of gene names whose interactions should
-#'            be scored.
+#' @param a,b character vector, set of gene identifiers.
 #'
-#' @return The Jaccard distance of the two genesets
+#' @return The Jaccard distance of the two sets.
 #' @import dplyr
 #' @export
 #'
@@ -14,12 +13,14 @@
 #' b <- c("IARS2", "PDHA1")
 #' c <- calculateJaccard(a, b)
 calculateJaccard <- function(a, b) {
-  if (length(a) == 0 || length(b) == 0) {
+  len_a <- length(a)
+  len_b <- length(b)
+  if (len_a == 0 || len_b == 0) {
     return(1)
   }
 
   set_int <- length(intersect(a, b))
-  jaccard <- set_int / (length(a) + length(b) - set_int)
+  jaccard <- set_int / (len_a + len_b - set_int)
 
   return(1 - jaccard)
 }
@@ -29,13 +30,13 @@ calculateJaccard <- function(a, b) {
 #' Calculate the Jaccard distance of all combinations of genesets in a given data
 #' set of genesets.
 #'
-#' @param genesets A `list` of genesets (each geneset is represented by a `list`
-#'                 of the corresponding genes).
-#' @param progress An optional [shiny::Progress()] object to track the progress
-#'                 of the function in the app.
-#' @param n_cores Numerical value indicating the number of cores to be used.
-#'                If no value is given, half of the available cores will be
-#'                used.
+#' @param genesets `list`, a `list` of genesets (each geneset is represented
+#'                 by a `list` of the corresponding genes).
+#' @param progress [shiny::Progress()] object, optional. To track the progress
+#'                 of the function (e.g. in a Shiny app).
+#' @param n_cores numeric, number of cores to use for the function.
+#'                Defaults to `NULL` in which case the function takes half of
+#'                the available cores (see function .detectNumberCores(n_cores)).
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Jaccard distance of each
 #'         geneset pair. The matrix is symmetrical with values between 0 and 1,
@@ -52,14 +53,14 @@ getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   if (l == 0) {
     return(NULL)
   }
+  #set up parameters
   j <- Matrix::Matrix(0, l, l)
   results <- list()
 
-  if (is.null(n_cores)) {
-    n_cores <- parallel::detectCores()
-    n_cores <- max(round(n_cores / 2), 1)
-  }
+  # determine number of cores to use
+  n_cores <- .getNumberCores(n_cores)
 
+  # calculate the Jaccard distance for each pair of genesets
   for (k in 1:(l - 1)) {
     a <- genesets[[k]]
     if (!is.null(progress)) {

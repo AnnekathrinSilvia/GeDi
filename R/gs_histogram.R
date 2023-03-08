@@ -1,17 +1,21 @@
-#' TODO: Title
+#' Generate a histogram of geneset size
 #'
-#' @param genes A `list` of `list` of genes which belong to the genesets in
-#'              gs_names
-#' @param gs_names A vector of geneset names
-#' @param start numeric, at which number to start the x-axis, defaults to NULL
-#'              meaning the x-axis starts at 0
-#' @param end numeric, at which number to end the x-axis, defaults to NULL,
-#'        meaning the size of the largest geneset is the end
-#' @param binwidth numeric, size of the individual bins, defaults to 6
-#' @param color color to use for the bars of the histogram, defaults to #0092AC
+#' Generate a histogram on the size of genesets (i.e. the number of genes
+#' associated with the geneset)
+#'
+#' @param genes `list`, a `list` of `list` of genes which belong to the genesets
+#'               in gs_names
+#' @param gs_names character vector, names/identifiers of genesets
+#' @param start numeric, at which number to start the x-axis. Defaults to NULL
+#'              meaning the x-axis starts at 0.
+#' @param end numeric, at which number to end the x-axis. Defaults to NULL,
+#'        meaning the size of the largest geneset is the end.
+#' @param binwidth numeric, size of the individual bins. Defaults to 5.
+#' @param color character, color to use for the bars of the histogram.
+#'              Defaults to #0092AC.
 #'
 #' @return A `ggplot2` histogram with the distribution of the size of the
-#'         genesets, i.e. number of genes in the genesets
+#'         genesets, i.e. number of genes in the genesets.
 #'
 #' @export
 #' @import ggplot2
@@ -32,8 +36,10 @@ gs_histogram <- function(genes,
                          end = NULL,
                          binwidth = 5,
                          color = "#0092AC") {
+  # set up data.frame for histogram
   n_genes <- .buildHistogramData(genes, gs_names, start, end)
 
+  # set up histogram plot
   p <- ggplot(n_genes, aes(x = Size)) +
     geom_histogram(binwidth = binwidth, fill = color) +
     theme_bw()
@@ -42,32 +48,37 @@ gs_histogram <- function(genes,
 }
 
 
-#' TODO: Title
+#' Generate a data.frame of histogram data
 #'
-#' @param genes A `list` of `list` of genes which belong to the genesets in
-#'              gs_names
-#' @param gs_names A vector of geneset names
-#' @param start numeric, at which number to start the x-axis, defaults to NULL
-#'              meaning the x-axis starts at 0
-#' @param end numeric, at which number to end the x-axis, defaults to NULL,
-#'        meaning the size of the largest geneset is the end
+#' Generate a data.frame for a histogram which maps a geneset identifier to the
+#' size of the geneset.
+#'
+#' @param genes `list`, a `list` of `list` of genes which belong to the genesets
+#'              in gs_names
+#' @param gs_names character vector, names/identifiers of genesets
+#' @param start numeric, at which number to start the x-axis. Defaults to NULL
+#'              meaning the x-axis starts at 0.
+#' @param end numeric, at which number to end the x-axis. Defaults to NULL,
+#'        meaning the size of the largest geneset is the end.
 #'
 #' @return A `data.frame` which maps each geneset to its size (i.e. number of
-#'         genes in the genesets), if start and/ or end are given, only those
-#'         genesets whose size are larger/smaller than start/end are returned
+#'         genes in the genesets). Ff start and/or end are given, only those
+#'         genesets whose size is larger/smaller than start/end are returned.
 #'
 .buildHistogramData <- function(genes,
                                 gs_names,
                                 start = NULL,
                                 end = NULL) {
+  # get size of each geneset
   n_genes <- sapply(genes, length)
+  # build up data.frame
   n_genes <- as.data.frame(n_genes)
   colnames(n_genes) <- "Size"
   n_genes$Geneset <- gs_names
 
-  # filter only for those between start and end
+  # filter only for those between start and end (if given)
   if (!is.null(start) && !is.null(end)) {
-    n_genes <- subset(n_genes, Size >= start & Size <= end, select = c(Geneset, Size))
+    n_genes <- n_genes[(n_genes$Size >= start & n_genes$Size <= end), ]
   }
 
   return(n_genes)

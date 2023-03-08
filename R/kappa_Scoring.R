@@ -2,12 +2,11 @@
 #'
 #' Calculate the Kappa distance for two given genesets.
 #'
-#' @param a,b A vector of gene names whose interactions should
-#'            be scored.
-#' @param all_genes A vector of all unique genes in the data set from which `a`
-#'                  and `b` are derived.
+#' @param a,b character vector, set of gene identifiers.
+#' @param all_genes character vector, list of all (unique) genes available in
+#'                  the input data.
 #'
-#' @return The Kappa distance of the two genesets
+#' @return The Kappa distance of the two sets.
 #' @import dplyr
 #' @export
 #'
@@ -48,13 +47,13 @@ calculateKappa <- function(a, b, all_genes) {
 #' Calculate the Kappa distance of all combinations of genesets in a given data
 #' set of genesets. The Kappa distance is normalized to the (0, 1) interval.
 #'
-#' @param genesets A `list` of genesets (each geneset is represented by a `list`
-#'                 of the corresponding genes).
-#' @param progress An optional [shiny::Progress()] object to track the progress
-#'                of the function in the app.
-#' @param n_cores Numerical value indicating the number of cores to be used.
-#'                If no value is given, half of the available cores will be
-#'                used.
+#' @param genesets `list`, a `list` of genesets (each geneset is represented by
+#'                 a `list` of the corresponding genes).
+#' @param progress [shiny::Progress()] object, optional. To track the progress
+#'                 of the function (e.g. in a Shiny app)
+#' @param n_cores numeric, number of cores to use for the function.
+#'                Defaults to `NULL` in which case the function takes half of
+#'                the available cores (see function .detectNumberCores(n_cores)).
 #'
 #' @return A [Matrix::Matrix()] with the pairwise Kappa distance of each
 #'         geneset pair. The matrix is symmetrical with values between 0 and 1,
@@ -71,16 +70,17 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   if (l == 0) {
     return(NULL)
   }
+
+  # set up parameters
   k <- Matrix::Matrix(0, l, l)
   unique_genes <- unique(unlist(genesets))
 
-  if (is.null(n_cores)) {
-    n_cores <- parallel::detectCores()
-    n_cores <- max(round(n_cores / 2), 1)
-  }
+  # determine number of cores to use
+  n_cores <- .getNumberCores(n_cores)
 
   results <- list()
 
+  # calculate Kappa distance for each pair of genesets
   for (j in 1:(l - 1)) {
     a <- genesets[[j]]
     if (!is.null(progress)) {
@@ -93,6 +93,7 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
     k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
   }
 
+  # normalize each value to the (0, 1) interval
   min <- min(k)
   max <- max(k)
   if (!is.null(progress)) {
