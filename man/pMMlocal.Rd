@@ -7,26 +7,23 @@
 pMMlocal(a, b, ppi, maxInteract, alpha = 1)
 }
 \arguments{
-\item{a, b}{A vector of gene names whose interactions should
-be scored.}
+\item{a, b}{character vector, set of gene identifiers.}
 
-\item{ppi}{A \code{data.frame} object which contains the Protein-Protein
-interactions.
-The object has three columns, \code{Gene1} and \code{Gene2} which
-specify the gene names of the interacting proteins in no
-particular order (symmetric interaction) and a column
-\code{combined_score} which is a numerical value of the strength of
-the interaction.}
+\item{ppi}{\code{data.frame}, a \code{data.frame} object which contains the
+Protein-Protein interactions information. The object is expected
+to have three columns, \code{Gene1} and \code{Gene2} which specify the gene
+names of the interacting proteins in no particular order
+(symmetric interaction) and a column \code{combined_score} which is a
+numerical value of the strength of the interaction.}
 
-\item{maxInteract}{The maximum value of the \code{combined_score} column of
-the \code{ppi}.}
+\item{maxInteract}{numeric, largest value of \code{ppi}.}
 
-\item{alpha}{A scaling factor (between 0 and 1) which indicates how much the
+\item{alpha}{numeric, scaling factor in (0, 1) which indicates how much the
 Protein-Protein interactions are weighted into the final score.
 Defaults to 1.}
 }
 \value{
-The pMM distance for two genesets.
+The pMM distance for two sets.
 }
 \description{
 Calculate the local pMM distance of two genesets.

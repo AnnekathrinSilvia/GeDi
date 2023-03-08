@@ -168,13 +168,13 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @return The number of cores to use.
 #'
-.getNumberCores <- function(n_cores = NULL){
+.getNumberCores <- function(n_cores = NULL) {
   # check the number of cores to use
   available_cores <- parallel::detectCores()
   if (is.null(n_cores)) {
     n_cores <- max(round(available_cores / 2), 1)
-  }else{
-    if(n_cores > available_cores){
+  } else {
+    if (n_cores > available_cores) {
       n_cores <- available_cores
     }
   }

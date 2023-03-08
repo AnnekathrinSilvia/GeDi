@@ -7,14 +7,13 @@
 calculateKappa(a, b, all_genes)
 }
 \arguments{
-\item{a, b}{A vector of gene names whose interactions should
-be scored.}
+\item{a, b}{character vector, set of gene identifiers.}
 
-\item{all_genes}{A vector of all unique genes in the data set from which \code{a}
-and \code{b} are derived.}
+\item{all_genes}{character vector, list of all (unique) genes available in
+the input data.}
 }
 \value{
-The Kappa distance of the two genesets
+The Kappa distance of the two sets.
 }
 \description{
 Calculate the Kappa distance for two given genesets.

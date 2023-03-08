@@ -7,15 +7,15 @@
 getKappaMatrix(genesets, progress = NULL, n_cores = NULL)
 }
 \arguments{
-\item{genesets}{A \code{list} of genesets (each geneset is represented by a \code{list}
-of the corresponding genes).}
+\item{genesets}{\code{list}, a \code{list} of genesets (each geneset is represented by
+a \code{list} of the corresponding genes).}
 
-\item{progress}{An optional \code{\link[shiny:Progress]{shiny::Progress()}} object to track the progress
-of the function in the app.}
+\item{progress}{\code{\link[shiny:Progress]{shiny::Progress()}} object, optional. To track the progress
+of the function (e.g. in a Shiny app)}
 
-\item{n_cores}{Numerical value indicating the number of cores to be used.
-If no value is given, half of the available cores will be
-used.}
+\item{n_cores}{numeric, number of cores to use for the function.
+Defaults to \code{NULL} in which case the function takes half of
+the available cores (see function .detectNumberCores(n_cores)).}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Kappa distance of each

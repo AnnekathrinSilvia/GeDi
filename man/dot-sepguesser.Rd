@@ -7,13 +7,13 @@
 .sepguesser(file, sep_list = c(",", "\\t", ";", " ", "/"))
 }
 \arguments{
-\item{file}{The name of the file which the data are to be read from.}
+\item{file}{character, location of a file to read data from.}
 
-\item{sep_list}{A vector containing the candidates for being identified as
+\item{sepList}{\code{list}, containing the candidates for being identified as
 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.}
 }
 \value{
-A character value, corresponding to the guessed separator. One of ","
+character, corresponding to the guessed separator. One of ","
 (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 (backslash).
 }

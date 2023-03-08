@@ -7,17 +7,18 @@
 getGenes(genesets, gene_name = NULL)
 }
 \arguments{
-\item{genesets}{A \code{data.frame} with at least two columns. One should be
-called \code{Geneset}, which contains the names of the genesets
-in the data (or any other interpretative identifier for the
-genesets). The second column should be called \code{Genes} and
-contains one string of the genes contained in each geneset.}
+\item{genesets}{\code{data.frame}, a \code{data.frame} with at least two columns.
+One should be called \code{Geneset}, containing the
+names/identifiers of the genesets in the data. The second
+column should be called \code{Genes} and contains one string of
+the genes contained in each geneset.}
 
-\item{gene_name}{An alternative name for the \code{Genes} column in the \code{genesets}
-data.}
+\item{gene_name}{character, alternative name for the column containing the
+genes in \code{genesets}. If not given, the column is expected to
+be called \code{Genes}.}
 }
 \value{
-A \code{list} which contains for each geneset in the \code{Geneset} column a
+\code{list}, containing for each geneset in the \code{Geneset} column a
 \code{list} of the included genes.
 }
 \description{

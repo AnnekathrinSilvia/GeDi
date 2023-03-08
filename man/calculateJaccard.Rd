@@ -7,11 +7,10 @@
 calculateJaccard(a, b)
 }
 \arguments{
-\item{a, b}{A vector of gene names whose interactions should
-be scored.}
+\item{a, b}{character vector, set of gene identifiers.}
 }
 \value{
-The Jaccard distance of the two genesets
+The Jaccard distance of the two sets.
 }
 \description{
 Calculate the Jaccard distance for two given genesets.

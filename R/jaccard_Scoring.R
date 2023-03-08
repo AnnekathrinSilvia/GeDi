@@ -53,7 +53,7 @@ getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   if (l == 0) {
     return(NULL)
   }
-  #set up parameters
+  # set up parameters
   j <- Matrix::Matrix(0, l, l)
   results <- list()
 

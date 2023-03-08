@@ -2,7 +2,7 @@
 % Please edit documentation in R/gs_histogram.R
 \name{gs_histogram}
 \alias{gs_histogram}
-\title{TODO: Title}
+\title{Generate a histogram of geneset size}
 \usage{
 gs_histogram(
   genes,
@@ -14,27 +14,29 @@ gs_histogram(
 )
 }
 \arguments{
-\item{genes}{A \code{list} of \code{list} of genes which belong to the genesets in
-gs_names}
+\item{genes}{\code{list}, a \code{list} of \code{list} of genes which belong to the genesets
+in gs_names}
 
-\item{gs_names}{A vector of geneset names}
+\item{gs_names}{character vector, names/identifiers of genesets}
 
-\item{start}{numeric, at which number to start the x-axis, defaults to NULL
-meaning the x-axis starts at 0}
+\item{start}{numeric, at which number to start the x-axis. Defaults to NULL
+meaning the x-axis starts at 0.}
 
-\item{end}{numeric, at which number to end the x-axis, defaults to NULL,
-meaning the size of the largest geneset is the end}
+\item{end}{numeric, at which number to end the x-axis. Defaults to NULL,
+meaning the size of the largest geneset is the end.}
 
-\item{binwidth}{numeric, size of the individual bins, defaults to 6}
+\item{binwidth}{numeric, size of the individual bins. Defaults to 5.}
 
-\item{color}{color to use for the bars of the histogram, defaults to #0092AC}
+\item{color}{character, color to use for the bars of the histogram.
+Defaults to #0092AC.}
 }
 \value{
 A \code{ggplot2} histogram with the distribution of the size of the
-genesets, i.e. number of genes in the genesets
+genesets, i.e. number of genes in the genesets.
 }
 \description{
-TODO: Title
+Generate a histogram on the size of genesets (i.e. the number of genes
+associated with the geneset)
 }
 \examples{
 gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")

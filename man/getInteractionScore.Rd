@@ -7,19 +7,16 @@
 getInteractionScore(a, b, ppi, maxInteract)
 }
 \arguments{
-\item{a, b}{A vector of gene names whose interactions should
-be used.}
+\item{a, b}{character vector, set of gene identifiers.}
 
-\item{ppi}{A \code{data.frame} object which contains the Protein-Protein
-interactions.
-The object has three columns, \code{Gene1} and \code{Gene2} which
-specify the gene names of the interacting proteins in no
-particular order (symmetric interaction) and a column
-\code{combined_score} which is a numerical value of the strength of
-the interaction.}
+\item{ppi}{\code{data.frame}, a \code{data.frame} object which contains the
+Protein-Protein interactions information. The object is expected
+to have three columns, \code{Gene1} and \code{Gene2} which specify the gene
+names of the interacting proteins in no particular order
+(symmetric interaction) and a column \code{combined_score} which is a
+numerical value of the strength of the interaction.}
 
-\item{maxInteract}{The maximum value of the \code{combined_score} column of
-the \code{ppi}.}
+\item{maxInteract}{numeric, largest value of \code{ppi}.}
 }
 \value{
 The interaction score of the two given genesets.

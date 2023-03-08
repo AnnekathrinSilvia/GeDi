@@ -7,13 +7,13 @@
 .findSeparator(stringList, sepList = c(",", "\\t", ";", " ", "/"))
 }
 \arguments{
-\item{stringList}{A list of strings}
+\item{stringList}{\code{list}, a \code{list} of strings}
 
-\item{sepList}{A vector containing the candidates for being identified as
+\item{sepList}{\code{list}, containing the candidates for being identified as
 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.}
 }
 \value{
-A character value, corresponding to the guessed separator. One of ","
+character, corresponding to the guessed separator. One of ","
 (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 (backslash).
 }
