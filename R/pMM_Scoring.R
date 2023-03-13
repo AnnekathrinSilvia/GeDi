@@ -51,8 +51,11 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
   }
 
   # calculate sums of interacting genes
-  sumInt <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% int), ]$combined_score)
-  sumOnlyB <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% onlyb), ]$combined_score)
+  # sumInt <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% int), ]$combined_score)
+  # sumOnlyB <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% onlyb), ]$combined_score)
+
+  sumInt <- sum(ppi[ppi$Gene1 %in% onlya & ppi$Gene2 %in% int, "combined_score"])
+  sumOnlyB <- sum(ppi[ppi$Gene1 %in% onlya & ppi$Gene2 %in% onlyb, "combined_score"])
 
   nom <- (w * sumInt) + sumOnlyB
   denom <- maxInteract * (w * len_int + len_onlyB)
@@ -175,4 +178,5 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
     scores[j, (j + 1):l] <- scores[(j + 1):l, j] <- unlist(results[[j]])
   }
   return(scores)
+
 }

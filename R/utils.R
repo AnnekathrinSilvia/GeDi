@@ -112,10 +112,12 @@ getGenes <- function(genesets, gene_name = NULL) {
 .filterGenesets <- function(remove,
                             df_genesets) {
   # get genesets to remove
-  genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
-  results <- list()
-  df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
+  if(length(remove) > 0){
+    genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
+    df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
+  }
 
+  results <- list()
   # return information of the data.frame without the genesets in removed
   results[[1]] <- df_genesets
   results[[2]] <- df_genesets$Geneset
@@ -146,7 +148,7 @@ getGenes <- function(genesets, gene_name = NULL) {
   return(ppi)
 }
 
-#' Check if iput genesets have the right format
+#' Check if input genesets have the right format
 #'
 #' Check if the input genesets have the expected format of the app
 #'
@@ -154,8 +156,9 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 .checkGenesets <- function(genesets) {
   stopifnot(is.data.frame(genesets))
-  stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
-  stopifnot(all(is.character(genesets$Genesets)) & all(is.character(genesets$Genes)))
+  stopifnot(any(names(genesets) == "Geneset") & any(names(genesets) == "Genes"))
+  stopifnot(all(is.character(genesets$Geneset)) & all(is.character(unlist(genesets$Genes))))
+  return(genesets)
 }
 
 #' Determine the number of cores touse for a function

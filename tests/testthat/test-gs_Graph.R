@@ -39,6 +39,13 @@ test_that("getClusterAdjacencyMatrix runs with no cluster", {
   expect_s4_class(adj, "Matrix")
 })
 
+test_that("getClusterAdjacencyMatrix - no gs_names", {
+  cluster <- list(c(1:5), c(6:9, 1))
+  gs_names <- list("a", "b")
+  expect_error(getClusterAdjacencyMatrix(cluster, list()))
+  expect_error(getClusterAdjacencyMatrix(cluster, gs_names))
+})
+
 test_that("getBipartiteGraph - no clusters", {
   expect_error(getBipartiteGraph(cluster = list(), geneset_names = list(), genes = list()))
 })
@@ -61,4 +68,44 @@ test_that("getBipartiteGraph runs correctly", {
   genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
   g <- getBipartiteGraph(cluster, geneset_names, genes)
   expect_type(g, "list")
+})
+
+test_that("buildClusterGraph - no cluster", {
+  cluster <- list()
+  genes <- list(
+    c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+    c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+    c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+    c("AHI1", "ALMS1")
+  )
+  gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+  geneset_df <- data.frame(
+    Genesets = gs_names
+  )
+  geneset_df$Genes <- genes
+  graph <- buildClusterGraph(cluster,
+                             geneset_df,
+                             genes)
+  expect_type(graph, "list")
+  expect_equal(gorder(graph), 0)
+  expect_equal(gsize(graph), 0)
+})
+
+test_that("buildClusterGraph works correctly", {
+  cluster <- list(c(1:5), c(6:9, 1))
+  genes <- list(
+    c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+    c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+    c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+    c("AHI1", "ALMS1")
+  )
+  gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+  geneset_df <- data.frame(
+    Genesets = gs_names
+  )
+  geneset_df$Genes <- genes
+  graph <- buildClusterGraph(cluster,
+                             geneset_df,
+                             genes)
+  expect_type(graph, "list")
 })

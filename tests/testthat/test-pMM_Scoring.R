@@ -20,10 +20,10 @@ test_that("One empty Geneset - getInteractionScore", {
 })
 
 test_that("getInteractionScore runs correctly", {
-  a <- c("PDHB", "VARS2")
+  a <- c("PDHB", "VARS2", "IARS2")
   b <- c("IARS2", "PDHA1")
   ppi <- data.frame(
-    Gene1 = c("PDHB", "VARS2"),
+    Gene1 = c("PDHB", "VARS2" ),
     Gene2 = c("IARS2", "PDHA1"),
     combined_score = c(0.5, 0.2)
   )

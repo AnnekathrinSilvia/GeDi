@@ -20,6 +20,7 @@
 #' dendro <- distance_dendro(distance_scores, cluster_method = "single")
 distance_dendro <- function(distance_scores,
                             cluster_method = "average") {
+  stopifnot(length(distance_scores) > 0)
   dist <- dist(t(distance_scores))
   hc <- hclust(dist, cluster_method)
   p <- ggdendrogram(hc, rotate = FALSE, size = 2)

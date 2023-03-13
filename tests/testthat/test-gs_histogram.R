@@ -1,3 +1,31 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("gs_histogram-no genes", {
+  genes <- NULL
+  expect_error(gs_histogram(genes, gs_names = list()))
+  expect_error(gs_histogram(list(), list()))
+})
+
+test_that("gs_histogram-no geneset names", {
+  genes <- list(
+    c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+    c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+    c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+    c("AHI1", "ALMS1")
+  )
+  expect_error(gs_histogram(genes, gs_names = list()))
+  expect_error(gs_histogram(genes, gs_names = c("a", "b")))
+})
+
+test_that("gs_histogram runs correctly", {
+  gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+  genes <- list(
+    c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+    c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+    c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+    c("AHI1", "ALMS1")
+  )
+  histogram <- gs_histogram(genes, gs_names = gs_names)
+  expect_type(histogram, "list")
+
+  histogram <- gs_histogram(genes, gs_names, start = 1, end = 5)
+  expect_type(histogram, "list")
 })

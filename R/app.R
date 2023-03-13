@@ -1640,6 +1640,7 @@ GeDi <- function(genesets = NULL,
 
     observeEvent(input$filter_genesets, {
       # first check with filtering method to use
+      # TODO: Filter anhand von namen problematisch wenn diese selbst ein leerzeichen enthalten
       if (length(input$select_filter_genesets) == 0) {
         if (length(input$select_filter_genesets_threshold) == 0) {
           showNotification("No Genesets selected for filtering.",

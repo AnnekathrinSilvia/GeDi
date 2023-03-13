@@ -37,6 +37,7 @@ gs_histogram <- function(genes,
                          binwidth = 5,
                          color = "#0092AC") {
   # set up data.frame for histogram
+  stopifnot(length(genes) > 0)
   n_genes <- .buildHistogramData(genes, gs_names, start, end)
 
   # set up histogram plot
@@ -74,6 +75,7 @@ gs_histogram <- function(genes,
   # build up data.frame
   n_genes <- as.data.frame(n_genes)
   colnames(n_genes) <- "Size"
+  stopifnot(length(gs_names) == length(genes))
   n_genes$Geneset <- gs_names
 
   # filter only for those between start and end (if given)

@@ -99,6 +99,7 @@ buildGraph <- function(adjMatrix) {
 getClusterAdjacencyMatrix <- function(cluster,
                                       gs_names) {
   l <- length(gs_names)
+  stopifnot(l > 0)
   adj <- Matrix::Matrix(0, l, l)
   if (length(cluster) == 0) {
     rownames(adj) <- colnames(adj) <- gs_names
@@ -106,6 +107,7 @@ getClusterAdjacencyMatrix <- function(cluster,
     return(adj)
   }
 
+  stopifnot(l >= max(unlist(cluster)))
   for (i in 1:length(cluster)) {
     subcluster <- cluster[[i]]
     adj[subcluster, subcluster] <- 1
@@ -283,19 +285,22 @@ buildClusterGraph <- function(cluster,
   # the same cluster
   V(g)$cluster <- ""
 
-  for (i in 1:length(cluster)) {
-    clus <- cluster[[i]]
-    for (y in 1:length(clus)) {
-      gs_name <- gs_names[clus[[y]]]
-      id <- which(names(V(g)) %in% gs_name)
-      mem <- V(g)$cluster[id]
-      cluster_name <- paste("Cluster ", i, sep = "")
-      if (mem != "") {
-        mem <- paste(mem, cluster_name, sep = ",")
-      } else {
-        mem <- cluster_name
+  n_cluster <- length(cluster)
+  if(n_cluster > 0){
+    for (i in 1:n_cluster) {
+      clus <- cluster[[i]]
+      for (y in 1:length(clus)) {
+        gs_name <- gs_names[clus[[y]]]
+        id <- which(names(V(g)) %in% gs_name)
+        mem <- V(g)$cluster[id]
+        cluster_name <- paste("Cluster ", i, sep = "")
+        if (mem != "") {
+          mem <- paste(mem, cluster_name, sep = ",")
+        } else {
+          mem <- cluster_name
+        }
+        V(g)$cluster[id] <- mem
       }
-      V(g)$cluster[id] <- mem
     }
   }
 

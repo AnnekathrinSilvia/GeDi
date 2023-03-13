@@ -1,3 +1,6 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("Shiny app is generated", {
+  expect_type(
+    GeDi(),
+    "list"
+  )
 })
