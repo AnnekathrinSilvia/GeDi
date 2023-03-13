@@ -94,10 +94,11 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
       includethreshold <-
         (length(members)^2 - length(members)) * memThreshold
       # subset the reach matrix and sum up the entries in reach
-      reach_red <- sum(reach[members, members])
+      reach_red <- reach[members, members]
+      in_reach <- sum(reach_red)
       # if the sum of entries in reach is larger than the individual threshold
       # of i the set is considered a seed
-      if (reach_red >= includethreshold) {
+      if (in_reach >= includethreshold) {
         members <- c(members, i)
         seeds <- c(list(sort(members)), seeds)
       }
@@ -151,7 +152,8 @@ clustering <- function(seeds, threshold) {
       if (length(int) >= (threshold * length(union))) {
         # if mergeable, remove the two individual seeds from the list of seeds
         # and add a new merged seed
-        seeds <- seeds[!(seeds %in% c(s1, s2))]
+        remove <- list(s1, s2)
+        seeds <- seeds[!(seeds %in% remove)]
         seeds <- c(list(union), seeds)
         mergeable <- mergeable[-c(index, j)]
         mergeable <- c(TRUE, mergeable)
@@ -177,10 +179,6 @@ clustering <- function(seeds, threshold) {
 #'
 #' @return A `data.frame` mapping each geneset to the cluster(s) it belongs to
 #'
-#' @examples
-#' cluster <- list(c(1:5), c(4:8))
-#' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' df <- getClusterDatatable(cluster, gs_names)
 .getClusterDatatable <- function(cluster, gs_names) {
   # check if geneset names are given
   stopifnot(length(gs_names) > 0)

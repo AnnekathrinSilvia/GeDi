@@ -44,7 +44,7 @@ getId <- function(species, version = "11.5") {
 #'
 #' @import STRINGdb
 #' @examples
-#' species <- getId(species = "Homo Sapiens")
+#' species <- getId(species = "Homo sapiens")
 #' string_db <- getStringDB(as.numeric(species))
 getStringDB <- function(species,
                         version = "11.5",

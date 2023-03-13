@@ -18,8 +18,3 @@ A \code{data.frame} mapping each geneset to the cluster(s) it belongs to
 Map each geneset to the cluster it belongs and return the information as
 a \code{data.frame}
 }
-\examples{
-cluster <- list(c(1:5), c(4:8))
-gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-df <- getClusterDatatable(cluster, gs_names)
-}

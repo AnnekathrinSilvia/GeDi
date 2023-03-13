@@ -22,6 +22,6 @@ a \link{STRINGdb} object \code{species}
 Get the respective \link{STRINGdb} object of your species of interest
 }
 \examples{
-species <- getId(species = "Homo Sapiens")
+species <- getId(species = "Homo sapiens")
 string_db <- getStringDB(as.numeric(species))
 }

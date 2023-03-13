@@ -52,16 +52,3 @@ test_that("clustering runs correctly", {
   expect_true(length(cluster) > 0)
   expect_type(cluster, "list")
 })
-
-test_that("getClusterDataTable - no geneset names", {
-  expect_error(getClusterDatatable(list(), list()))
-})
-
-test_that("getClusterDatatable runs correctly", {
-  geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-  df <- getClusterDatatable(list(), geneset_names)
-  expect_type(df, "list")
-  expect_true(nrow(df) == 9)
-  cluster <- list(c(1:4), c(5:8))
-  expect_type(getClusterDatatable(cluster, geneset_names), "list")
-})

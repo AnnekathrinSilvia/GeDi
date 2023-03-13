@@ -80,6 +80,7 @@ gs_histogram <- function(genes,
   if (!is.null(start) && !is.null(end)) {
     n_genes <- n_genes[(n_genes$Size >= start & n_genes$Size <= end), ]
   }
+  n_genes <- n_genes[, c(2, 1)]
 
   return(n_genes)
 }
