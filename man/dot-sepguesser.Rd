@@ -9,7 +9,7 @@
 \arguments{
 \item{file}{character, location of a file to read data from.}
 
-\item{sepList}{\code{list}, containing the candidates for being identified as
+\item{sep_list}{\code{list}, containing the candidates for being identified as
 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.}
 }
 \value{

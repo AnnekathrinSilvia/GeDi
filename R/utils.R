@@ -86,7 +86,7 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' file.
 #'
 #' @param file character, location of a file to read data from.
-#' @param sepList `list`, containing the candidates for being identified as
+#' @param sep_list `list`, containing the candidates for being identified as
 #'                 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.
 #'
 #' @return character, corresponding to the guessed separator. One of ","
