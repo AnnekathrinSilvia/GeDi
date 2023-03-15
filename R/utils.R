@@ -112,7 +112,7 @@ getGenes <- function(genesets, gene_name = NULL) {
 .filterGenesets <- function(remove,
                             df_genesets) {
   # get genesets to remove
-  if(length(remove) > 0){
+  if (length(remove) > 0) {
     genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
     df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
   }
@@ -174,7 +174,7 @@ getGenes <- function(genesets, gene_name = NULL) {
   # check the number of cores to use
   available_cores <- parallel::detectCores()
   if (is.null(n_cores)) {
-    n_cores <- max(round(available_cores/2), 1)
+    n_cores <- max(round(available_cores / 2), 1)
   } else {
     if (n_cores > available_cores) {
       n_cores <- available_cores - 1

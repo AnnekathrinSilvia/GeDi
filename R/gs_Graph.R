@@ -287,7 +287,7 @@ buildClusterGraph <- function(cluster,
   V(g)$cluster <- ""
 
   n_cluster <- length(cluster)
-  if(n_cluster > 0){
+  if (n_cluster > 0) {
     for (i in 1:n_cluster) {
       clus <- cluster[[i]]
       for (y in 1:length(clus)) {

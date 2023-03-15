@@ -53,18 +53,18 @@ goSimilarity <- function(geneset_ids,
     }, mc.cores = n_cores)
     go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
   }
-#
-#   for (i in 1:(l - 1)) {
-#     go1 <- geneset_ids[[i]]
-#     if (!is.null(progress)) {
-#       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", i))
-#     }
-#     for (j in (i + 1):l) {
-#       go2 <- geneset_ids[[j]]
-#       sim <- goSim(go1, go2, go, measure = method)
-#       go_sim[i, j] <- go_sim[j, i] <- sim
-#     }
-#   }
+  #
+  #   for (i in 1:(l - 1)) {
+  #     go1 <- geneset_ids[[i]]
+  #     if (!is.null(progress)) {
+  #       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", i))
+  #     }
+  #     for (j in (i + 1):l) {
+  #       go2 <- geneset_ids[[j]]
+  #       sim <- goSim(go1, go2, go, measure = method)
+  #       go_sim[i, j] <- go_sim[j, i] <- sim
+  #     }
+  #   }
   return(round(go_sim, 2))
 }
 

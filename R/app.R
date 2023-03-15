@@ -42,11 +42,10 @@ GeDi <- function(genesets = NULL,
 
   usage_mode <- "shiny_mode"
 
-  if(!(is.null(genesets))){
+  if (!(is.null(genesets))) {
     genesets <- .checkGenesets(genesets)
-
   }
-  if(!(is.null(ppi))){
+  if (!(is.null(ppi))) {
     ppi <- .checkPPI(ppi)
   }
 
@@ -362,7 +361,7 @@ GeDi <- function(genesets = NULL,
     # initializing reactives --------------------------------------------------
     reactive_values <- reactiveValues()
 
-    if(!is.null(genesets)){
+    if (!is.null(genesets)) {
       reactive_values$genesets <- genesets
       reactive_values$gs_names <- genesets$Genesets
       reactive_values$genes <- getGenes(genesets)
@@ -374,16 +373,16 @@ GeDi <- function(genesets = NULL,
       } else {
         reactive_values$gs_description <- gs_names
       }
-    }else{
+    } else {
       reactive_values$genesets <- NULL
       reactive_values$gs_names <- NULL
       reactive_values$gs_description <- NULL
       reactive_values$genes <- NULL
     }
 
-    if(!(is.null(ppi))){
+    if (!(is.null(ppi))) {
       reactive_values$ppi <- ppi
-    }else{
+    } else {
       reactive_values$ppi <- NULL
     }
 
@@ -1008,7 +1007,7 @@ GeDi <- function(genesets = NULL,
 
 
     reactive_values$scores_graph <- reactive({
-      if(is.null(reactive_values$scores) || length(reactive_values$scores) == 0){
+      if (is.null(reactive_values$scores) || length(reactive_values$scores) == 0) {
         showNotification(
           "It seems like you do not have any distance scores.
           Please score you data first in the Scores panel.",
@@ -1822,16 +1821,19 @@ GeDi <- function(genesets = NULL,
         scores <- getJaccardMatrix(reactive_values$genes,
           progress = progress
         )
-      }else if (input$scoringmethod == "GO Similarity"){
+      } else if (input$scoringmethod == "GO Similarity") {
         tryCatch(
           expr = {
             scores <- goSimilarity(reactive_values$gs_names,
-                                   progress = progress)
+              progress = progress
+            )
           },
           error = function(cond) {
             showNotification(
               paste("It seems like there occured the following error: ",
-                    cond, paste = ""),
+                cond,
+                paste = ""
+              ),
               type = "error"
             )
             scores <- NULL

@@ -8,16 +8,16 @@ test_that("Shiny app is generated", {
   )
 })
 
-test_that("Shiny app is generated with input",{
-  expect_type(GeDi(genesets = macrophage_topGO_example_small),
-              "list")
-  expect_type(GeDi(genesets = macrophage_topGO_example_small,
-                   ppi = ppi),
-              "list")
+test_that("Shiny app is generated with input", {
+  expect_type(
+    GeDi(genesets = macrophage_topGO_example_small),
+    "list"
+  )
+  expect_type(
+    GeDi(
+      genesets = macrophage_topGO_example_small,
+      ppi = ppi
+    ),
+    "list"
+  )
 })
-
-
-
-
-
-

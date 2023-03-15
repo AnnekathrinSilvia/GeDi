@@ -178,5 +178,4 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
     scores[j, (j + 1):l] <- scores[(j + 1):l, j] <- unlist(results[[j]])
   }
   return(scores)
-
 }

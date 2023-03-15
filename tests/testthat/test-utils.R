@@ -105,9 +105,11 @@ test_that("checkPPI", {
   expect_error(.checkPPI(df))
   df <- data.frame(c(1, 2, 3), c("a", "b", "c"), c("d", "e", "f"))
   expect_error(.checkPPI(df))
-  df <- data.frame(Gene1 = c("a", "b", "c"),
-                   Gene2 = c("a", "b", "c"),
-                   combined_score = c(1, 2, 3))
+  df <- data.frame(
+    Gene1 = c("a", "b", "c"),
+    Gene2 = c("a", "b", "c"),
+    combined_score = c(1, 2, 3)
+  )
   expect_identical(.checkPPI(df), df)
 })
 
