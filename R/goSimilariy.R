@@ -21,8 +21,14 @@
 goSimilarity <- function(geneset_ids,
                          method = "Wang",
                          ontology = "BP",
-                         species = "org.Hs.eg.db") {
-  stopifnot(system.file(package = species) != "")
+                         species = "org.Hs.eg.db",
+                         progress = NULL,
+                         n_cores = NULL) {
+  stopifnot("Species specific org.XX.eg.db
+            is not installed" = system.file(package = species) != "")
+  go_ids <- all(sapply(geneset_ids, function(x) substr(x, 1, 2) == "GO"))
+  stopifnot("Not all geneset ids are GO identifiers.
+            This score only works on GO identifiers" = go_ids)
   l <- length(geneset_ids)
   if (l == 0) {
     return(-1)
@@ -30,15 +36,36 @@ goSimilarity <- function(geneset_ids,
   go_sim <- Matrix::Matrix(0, l, l)
   go <- godata(species, ont = ontology)
 
-  for (i in 1:(l - 1)) {
-    go1 <- geneset_ids[[i]]
-    for (j in (i + 1):l) {
-      go2 <- geneset_ids[[j]]
-      sim <- goSim(go1, go2, go, measure = method)
-      go_sim[i, j] <- go_sim[j, i] <- sim
+  results <- list()
+
+  # determine number of cores to use
+  n_cores <- .getNumberCores(n_cores)
+
+  # calculate the Jaccard distance for each pair of genesets
+  for (g in 1:(l - 1)) {
+    a <- geneset_ids[[g]]
+    if (!is.null(progress)) {
+      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
     }
+    results[[g]] <- parallel::mclapply((g + 1):l, function(i) {
+      b <- geneset_ids[[i]]
+      goSim(a, b, go, measure = method)
+    }, mc.cores = n_cores)
+    go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
   }
-  return(go_sim)
+#
+#   for (i in 1:(l - 1)) {
+#     go1 <- geneset_ids[[i]]
+#     if (!is.null(progress)) {
+#       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", i))
+#     }
+#     for (j in (i + 1):l) {
+#       go2 <- geneset_ids[[j]]
+#       sim <- goSim(go1, go2, go, measure = method)
+#       go_sim[i, j] <- go_sim[j, i] <- sim
+#     }
+#   }
+  return(round(go_sim, 2))
 }
 
 #' Scaling computed distances with GO similarity scores

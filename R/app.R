@@ -851,7 +851,7 @@ GeDi <- function(genesets = NULL,
               radioButtons(
                 inputId = "scoringmethod",
                 label = "Select the scoring method for your data",
-                choices = c("PMM", "Kappa", "Jaccard", "Meet-Min"),
+                choices = c("PMM", "Kappa", "Jaccard", "Meet-Min", "GO Similarity"),
                 selected = character(0)
               )
             ),
@@ -1008,7 +1008,13 @@ GeDi <- function(genesets = NULL,
 
 
     reactive_values$scores_graph <- reactive({
-      # TODO: Handle empty scores matrix (matrix of nrow() == 0)
+      if(is.null(reactive_values$scores) || length(reactive_values$scores) == 0){
+        showNotification(
+          "It seems like you do not have any distance scores.
+          Please score you data first in the Scores panel.",
+          type = "warning"
+        )
+      }
       adj <- getAdjacencyMatrix(
         reactive_values$scores,
         input$similarityScores
@@ -1256,13 +1262,23 @@ GeDi <- function(genesets = NULL,
     })
 
     reactive_values$bipartite_graph <- reactive({
-      # TODO: Handle no clusters
-      g <- getBipartiteGraph(
-        reactive_values$cluster,
-        reactive_values$gs_names,
-        reactive_values$genes
+      tryCatch(
+        expr = {
+          g <- getBipartiteGraph(
+            reactive_values$cluster,
+            reactive_values$gs_names,
+            reactive_values$genes
+          )
+        },
+        error = function(cond) {
+          showNotification(
+            "It seems like your data does not have any clusters.
+            Please adapt the thresholds and try again.",
+            type = "error"
+          )
+          return(NULL)
+        }
       )
-      # g <- add_layout_(as_bipartite(g))
       return(g)
     })
 
@@ -1668,7 +1684,6 @@ GeDi <- function(genesets = NULL,
 
     observeEvent(input$filter_genesets, {
       # first check with filtering method to use
-      # TODO: Filter anhand von namen problematisch wenn diese selbst ein leerzeichen enthalten
       if (length(input$select_filter_genesets) == 0) {
         if (length(input$select_filter_genesets_threshold) == 0) {
           showNotification("No Genesets selected for filtering.",
@@ -1709,22 +1724,6 @@ GeDi <- function(genesets = NULL,
       showNotification("Successfully filtered the selected Genesets.",
         type = "message"
       )
-
-      # TODO: Does not work correctly currently, box still closes after one filtering round
-      # updateBox(
-      #   "optional_filtering_box",
-      #   action = "update",
-      #   options = list(
-      #     id = "optional_filtering_box",
-      #     width = 12,
-      #     title = "Optional Filtering Step",
-      #     status = "info",
-      #     solidHeader = TRUE,
-      #     h2("Filter your uploaded Genesets"),
-      #     collapsible = TRUE,
-      #     collapsed = FALSE
-      #   )
-      # )
     })
 
     observeEvent(input$download_ppi, {
@@ -1733,7 +1732,8 @@ GeDi <- function(genesets = NULL,
       ))
       if (length(strsplit(input$species, "\\s+")) > 1) {
         showNotification(
-          "It seems like you have selected more than one species. Please go back to the box and select the correct species.",
+          "It seems like you have selected more than one species.
+          Please go back to the box and select the correct species.",
           type = "error"
         )
         return()
@@ -1774,7 +1774,8 @@ GeDi <- function(genesets = NULL,
       if (input$scoringmethod == "" ||
         (is.null(input$scoringmethod))) {
         showNotification(
-          "It seems like you did not select a scoring method. Please select a scoring method on the left.",
+          "It seems like you did not select a scoring method.
+          Please select a scoring method on the left.",
           type = "error"
         )
       }
@@ -1802,7 +1803,8 @@ GeDi <- function(genesets = NULL,
         # TODO: Handle alpha as possible input
         if (is.null(reactive_values$ppi)) {
           showNotification(
-            "It seems like you have not downloaded a PPI matrix. Please return to the Data Upload panel and download the respective PPI.",
+            "It seems like you have not downloaded a PPI matrix.
+            Please return to the Data Upload panel and download the respective PPI.",
             type = "error"
           )
           scores <- NULL
@@ -1820,11 +1822,27 @@ GeDi <- function(genesets = NULL,
         scores <- getJaccardMatrix(reactive_values$genes,
           progress = progress
         )
+      }else if (input$scoringmethod == "GO Similarity"){
+        tryCatch(
+          expr = {
+            scores <- goSimilarity(reactive_values$gs_names,
+                                   progress = progress)
+          },
+          error = function(cond) {
+            showNotification(
+              paste("It seems like there occured the following error: ",
+                    cond, paste = ""),
+              type = "error"
+            )
+            scores <- NULL
+          }
+        )
       }
 
       if (is.null(scores)) {
         showNotification(
-          "It seems like something went wrong while scoring your data. Most likely this is due to the genesets not containg genes.",
+          "It seems like something went wrong while scoring your data.
+          Most likely this is due to the genesets not containg genes.",
           type = "error"
         )
       } else {
@@ -1925,7 +1943,8 @@ GeDi <- function(genesets = NULL,
 
       if (is.null(seeds)) {
         showNotification(
-          "It seems like something went wrong while clustering your data. Most likely this is due to the genesets not containg genes.",
+          "It seems like something went wrong while clustering your data.
+          Most likely this is due to the genesets not containg genes.",
           type = "error"
         )
       } else {
