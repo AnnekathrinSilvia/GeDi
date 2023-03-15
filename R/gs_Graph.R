@@ -249,35 +249,36 @@ buildClusterGraph <- function(cluster,
         V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
         V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
         V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
-      } else {
-        # divergent palette to be used
-        mypal <- rev(scales::alpha(
-          colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.8
-        ))
-        mypal_hover <- rev(scales::alpha(
-          colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.5
-        ))
-        mypal_select <- rev(scales::alpha(
-          colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 1
-        ))
-
-        V(g)$color.background <- map2color(col_var, mypal,
-          symmetric = TRUE,
-          limits = range(na.omit(col_var))
-        )
-        V(g)$color.highlight <- map2color(col_var, mypal_select,
-          symmetric = TRUE,
-          limits = range(na.omit(col_var))
-        )
-        V(g)$color.hover <- map2color(col_var, mypal_hover,
-          symmetric = TRUE,
-          limits = range(na.omit(col_var))
-        )
-
-        V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
-        V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
-        V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
       }
+      # } else {
+      #   # divergent palette to be used
+      #   mypal <- rev(scales::alpha(
+      #     colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.8
+      #   ))
+      #   mypal_hover <- rev(scales::alpha(
+      #     colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.5
+      #   ))
+      #   mypal_select <- rev(scales::alpha(
+      #     colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 1
+      #   ))
+      #
+      #   V(g)$color.background <- map2color(col_var, mypal,
+      #     symmetric = TRUE,
+      #     limits = range(na.omit(col_var))
+      #   )
+      #   V(g)$color.highlight <- map2color(col_var, mypal_select,
+      #     symmetric = TRUE,
+      #     limits = range(na.omit(col_var))
+      #   )
+      #   V(g)$color.hover <- map2color(col_var, mypal_hover,
+      #     symmetric = TRUE,
+      #     limits = range(na.omit(col_var))
+      #   )
+      #
+      #   V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
+      #   V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
+      #   V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
+      # }
     }
   }
 

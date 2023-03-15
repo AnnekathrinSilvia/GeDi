@@ -121,7 +121,7 @@ test_that("checkGenesets", {
   df <- data.frame(Genes = c(1, 2), Geneset = c("a", "b"))
   expect_error(.checkGenesets(df))
   df <- data.frame(
-    Geneset = c(
+    Genesets = c(
       "Cell Cycle",
       "Biological Process",
       "Mitosis"

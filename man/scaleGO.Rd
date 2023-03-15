@@ -6,7 +6,7 @@
 \usage{
 scaleGO(
   scores,
-  genesets,
+  geneset_ids,
   method = "Wang",
   ontology = "BP",
   species = "org.Hs.eg.db"
@@ -15,13 +15,13 @@ scaleGO(
 \arguments{
 \item{scores}{a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise distances of each geneset pair}
 
-\item{genesets}{a list of vectors of genes to score, one vector for each geneset}
-
 \item{method}{the method to calculate the GO similarity see \link{GOSemSim} measure parameter}
 
 \item{ontology}{the ontology of GO to use, see \link{GOSemSim} ont parameter}
 
 \item{species}{the species of your data, indicated as org.XX.eg.db package from Bioconductor}
+
+\item{genesets}{a list of vectors of genes to score, one vector for each geneset}
 }
 \value{
 Scaled Values

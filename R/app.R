@@ -42,6 +42,14 @@ GeDi <- function(genesets = NULL,
 
   usage_mode <- "shiny_mode"
 
+  if(!(is.null(genesets))){
+    genesets <- .checkGenesets(genesets)
+
+  }
+  if(!(is.null(ppi))){
+    ppi <- .checkPPI(ppi)
+  }
+
   # UI definition -----------------------------------------------------------
 
   # dashpage definition -----------------------------------------------------
@@ -349,21 +357,41 @@ GeDi <- function(genesets = NULL,
       right = NULL
     )
   )
-  # server deifnition ---------------------------------------------------------
+  # server definition ---------------------------------------------------------
   gedi_server <- function(input, output, session) {
     # initializing reactives --------------------------------------------------
     reactive_values <- reactiveValues()
-    reactive_values$genesets <- NULL
-    reactive_values$gs_names <- NULL
-    reactive_values$gs_description <- NULL
-    reactive_values$genes <- NULL
+
+    if(!is.null(genesets)){
+      reactive_values$genesets <- genesets
+      reactive_values$gs_names <- genesets$Genesets
+      reactive_values$genes <- getGenes(genesets)
+      columns <- names(genesets)
+      if ("Term" %in% columns) {
+        reactive_values$gs_description <- genesets$Term
+      } else if ("Description" %in% columns) {
+        reactive_values$gs_description <- genesets$Description
+      } else {
+        reactive_values$gs_description <- gs_names
+      }
+    }else{
+      reactive_values$genesets <- NULL
+      reactive_values$gs_names <- NULL
+      reactive_values$gs_description <- NULL
+      reactive_values$genes <- NULL
+    }
+
+    if(!(is.null(ppi))){
+      reactive_values$ppi <- ppi
+    }else{
+      reactive_values$ppi <- NULL
+    }
+
+    reactive_values$alt_names <- FALSE
     reactive_values$species <- NULL
-    reactive_values$ppi <- NULL
     reactive_values$scores <- NULL
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
-    reactive_values$alt_names <- FALSE
-
 
     # panel Welcome ----------------------------------------------------------
     output$ui_panel_welcome <- renderUI({
@@ -1550,7 +1578,7 @@ GeDi <- function(genesets = NULL,
         )
       }
 
-      reactive_values$gs_names <- reactive_values$genesets$Geneset
+      reactive_values$gs_names <- reactive_values$genesets$Genesets
       columns <- names(reactive_values$genesets)
       if ("Term" %in% columns) {
         reactive_values$gs_description <- reactive_values$genesets$Term

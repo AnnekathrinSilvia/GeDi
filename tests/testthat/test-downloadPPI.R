@@ -1,16 +1,13 @@
 test_that("no id", {
-  species <- ""
-  expect_true(is.na(getId(species)))
+  expect_true(is.na(getId("")))
 })
 
 test_that("Homo sapiens ID", {
-  species <- "Homo sapiens"
-  expect_true(getId(species) == "9606")
+  expect_true(getId("Homo sapiens") == "9606")
 })
 
 test_that("Homo Sapiens Misspelled", {
-  species <- "Homo Spasiens"
-  expect_true(is.na(getId(species)))
+  expect_true(is.na(getId("Homo Spasiens")))
 })
 
 

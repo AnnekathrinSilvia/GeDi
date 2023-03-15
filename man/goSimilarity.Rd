@@ -2,29 +2,33 @@
 % Please edit documentation in R/goSimilariy.R
 \name{goSimilarity}
 \alias{goSimilarity}
-\title{Calculate the GO Similarity of all geneset combinations}
+\title{Calculate similarity of GO terms}
 \usage{
 goSimilarity(
-  genesets,
+  geneset_ids,
   method = "Wang",
   ontology = "BP",
   species = "org.Hs.eg.db"
 )
 }
 \arguments{
-\item{genesets}{a list of vectors of genes to score, one vector for each geneset}
+\item{geneset_ids}{\code{list}, a \code{list} of GO identifiers to score}
 
-\item{method}{the method to calculate the GO similarity see \link{GOSemSim} measure parameter}
+\item{method}{character, the method to calculate the GO similarity.
+See \link[GOSemSim:goSim]{GOSemSim::goSim} measure parameter for possibilities.}
 
-\item{ontology}{the ontology of GO to use, see \link{GOSemSim} ont parameter}
+\item{ontology}{character, the ontology to use. See \link[GOSemSim:goSim]{GOSemSim::goSim}
+ont parameter for possibilities.}
 
-\item{species}{the species of your data, indicated as org.XX.eg.db package from Bioconductor}
+\item{species}{character, the species of your data. Indicated as
+org.XX.eg.db package from Bioconductor.}
 }
 \value{
-a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity of each geneset pair
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity of each
+geneset pair.
 }
 \description{
-Calculate the GO Similarity of all geneset combinations
+Calculate the pairwise similarity of GO terms
 }
 \examples{
 genesets <- list()

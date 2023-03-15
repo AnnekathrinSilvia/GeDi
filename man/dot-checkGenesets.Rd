@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{.checkGenesets}
 \alias{.checkGenesets}
-\title{Check if iput genesets have the right format}
+\title{Check if input genesets have the right format}
 \usage{
 .checkGenesets(genesets)
 }

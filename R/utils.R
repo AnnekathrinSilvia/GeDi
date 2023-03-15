@@ -156,8 +156,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 .checkGenesets <- function(genesets) {
   stopifnot(is.data.frame(genesets))
-  stopifnot(any(names(genesets) == "Geneset") & any(names(genesets) == "Genes"))
-  stopifnot(all(is.character(genesets$Geneset)) & all(is.character(unlist(genesets$Genes))))
+  stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
+  stopifnot(all(is.character(genesets$Genesets)) & all(is.character(unlist(genesets$Genes))))
   return(genesets)
 }
 
@@ -170,7 +170,6 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'                the available cores.
 #'
 #' @return The number of cores to use.
-#'
 .getNumberCores <- function(n_cores = NULL) {
   # check the number of cores to use
   available_cores <- parallel::detectCores()

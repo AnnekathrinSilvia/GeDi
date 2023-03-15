@@ -58,9 +58,9 @@ NULL
 NULL
 
 
-#' A sample input RDS file
+#' A sample input RData file
 #'
-#' A sample input RDS file generated from the macrophage dataset.
+#' A sample input RData file generated from the macrophage dataset.
 #'
 #' @details This sample input contains data from the macrophage package found on
 #'          Bioconductor. The exact steps used to generated this file can be
@@ -72,5 +72,79 @@ NULL
 #'             (2018). https://doi.org/10.1038/s41588-018-0046-7
 #'
 #' @name macrophage_topGO_example
+#' @docType data
+NULL
+
+#' A small sample input RData file
+#'
+#' A small sample input RData file generated from the macrophage dataset.
+#'
+#' @details This sample input contains data from the macrophage package found on
+#'          Bioconductor. It is a small version of the
+#'          `macrophage_topGO_example` and only contains the first 50 rows of
+#'          this example. It can be used for fast testing of the application.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name macrophage_topGO_example_small
+#' @docType data
+NULL
+
+#' Sample scores
+#'
+#' A file containing sample distance scores for the
+#' `macrophage_topGO_example_small`.
+#'
+#' @details This sample input contains scores  for the
+#'          `macrophage_topGO_example_small`. Distance scores have been
+#'          calculated using the [GeDi::getJaccardMatrix()] method.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name scores_macrophage_topGO_example_small
+#' @docType data
+NULL
+
+#' Cluster
+#'
+#' A file containing clusters for the `macrophage_topGO_example_small`.
+#'
+#' @details This sample input contains clusters for the
+#'          `macrophage_topGO_example_small`. Clusters have been calculated on
+#'          `scores_macrophage_topGO_example_small` using a similarity
+#'          threshold of 0.3, a membership threshold of 0.5 and a clustering
+#'          threshold of 0.5.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name cluster_macrophage_topGO_example_small
+#' @docType data
+NULL
+
+#' PPI
+#'
+#' A file containing a Prtein-Protein Interaction (PPI) `data.frame` for the
+#' `macrophage_topGO_example_small`.
+#'
+#' @details This sample input contains a PPI for the
+#'          `macrophage_topGO_example_small`. The PPI has been downloaded using
+#'          the functions to download a PPI matrix. Please check out the
+#'          vignette for further information.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name ppi_macrophage_topGO_example_small
 #' @docType data
 NULL
