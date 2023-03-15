@@ -8,7 +8,9 @@ goSimilarity(
   geneset_ids,
   method = "Wang",
   ontology = "BP",
-  species = "org.Hs.eg.db"
+  species = "org.Hs.eg.db",
+  progress = NULL,
+  n_cores = NULL
 )
 }
 \arguments{
