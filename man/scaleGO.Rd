@@ -2,35 +2,48 @@
 % Please edit documentation in R/goSimilariy.R
 \name{scaleGO}
 \alias{scaleGO}
-\title{Scaling computed distances with GO similarity scores}
+\title{Scaling (distance) scores}
 \usage{
 scaleGO(
   scores,
   geneset_ids,
   method = "Wang",
   ontology = "BP",
-  species = "org.Hs.eg.db"
+  species = "org.Hs.eg.db",
+  n_cores = NULL
 )
 }
 \arguments{
-\item{scores}{a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise distances of each geneset pair}
+\item{scores}{a \code{\link[Matrix:Matrix]{Matrix::Matrix()}}, a matrix of (distance) scores for the
+indentifiers in \code{geneset_ids}.}
 
-\item{method}{the method to calculate the GO similarity see \link{GOSemSim} measure parameter}
+\item{geneset_ids}{\code{list}, a \code{list} of GO identifiers to score}
 
-\item{ontology}{the ontology of GO to use, see \link{GOSemSim} ont parameter}
+\item{method}{character, the method to calculate the GO similarity.
+See \link[GOSemSim:goSim]{GOSemSim::goSim} measure parameter for possibilities.}
 
-\item{species}{the species of your data, indicated as org.XX.eg.db package from Bioconductor}
+\item{ontology}{character, the ontology to use. See \link[GOSemSim:goSim]{GOSemSim::goSim}
+ont parameter for possibilities.}
 
-\item{genesets}{a list of vectors of genes to score, one vector for each geneset}
+\item{species}{character, the species of your data. Indicated as
+org.XX.eg.db package from Bioconductor.}
+
+\item{n_cores}{numeric, number of cores to use for the function.
+Defaults to \code{NULL} in which case the function takes half of
+the available cores (see function .detectNumberCores(n_cores)).}
 }
 \value{
 Scaled Values
 }
 \description{
-Scaling computed distances with GO similarity scores
+A method to scale a matrix of distance scores with the GO term similarity
+of the associated genesets.
 }
 \examples{
-genesets <- list()
-scores <- Matrix::Matrix(0.5, 4, 4)
-scaled <- scaleGO(scores, genesets)
+data(scores_macrophage_topGO_example_small, package = "GeDi")
+data(macrophage_topGO_example_small, package = "GeDi")
+go_ids <- macrophage_topGO_example_small$Genesets
+scores_scaled <- scaleGO(scores_macrophage_topGO_example_small,
+                         go_ids,
+                         n_cores = 1)
 }

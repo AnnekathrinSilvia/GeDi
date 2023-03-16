@@ -24,6 +24,13 @@ ont parameter for possibilities.}
 
 \item{species}{character, the species of your data. Indicated as
 org.XX.eg.db package from Bioconductor.}
+
+\item{progress}{\code{\link[shiny:Progress]{shiny::Progress()}} object, optional. To track the progress
+of the function (e.g. in a Shiny app)}
+
+\item{n_cores}{numeric, number of cores to use for the function.
+Defaults to \code{NULL} in which case the function takes half of
+the available cores (see function .detectNumberCores(n_cores)).}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity of each
@@ -33,6 +40,8 @@ geneset pair.
 Calculate the pairwise similarity of GO terms
 }
 \examples{
-genesets <- list()
-gS <- goSimilarity(genesets)
+data(macrophage_topGO_example_small, package = "GeDi")
+go_ids <- macrophage_topGO_example_small$Genesets
+similarity <- goSimilarity(go_ids,
+                           n_cores = 1)
 }

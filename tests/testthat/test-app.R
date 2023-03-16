@@ -16,7 +16,7 @@ test_that("Shiny app is generated with input", {
   expect_type(
     GeDi(
       genesets = macrophage_topGO_example_small,
-      ppi = ppi
+      ppi = ppi_macrophage_topGO_example_small
     ),
     "list"
   )

@@ -63,4 +63,5 @@ Imports:
     ggdendro,
     ComplexHeatmap,
     InteractiveComplexHeatmap,
-    shinyAce
+    shinyAce,
+    org.Hs.eg.db

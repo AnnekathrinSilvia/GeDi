@@ -371,7 +371,7 @@ GeDi <- function(genesets = NULL,
       } else if ("Description" %in% columns) {
         reactive_values$gs_description <- genesets$Description
       } else {
-        reactive_values$gs_description <- gs_names
+        reactive_values$gs_description <- genesets$Genesets
       }
     } else {
       reactive_values$genesets <- NULL
@@ -389,6 +389,7 @@ GeDi <- function(genesets = NULL,
     reactive_values$alt_names <- FALSE
     reactive_values$species <- NULL
     reactive_values$scores <- NULL
+    # TODO: is this reactive value really needed? Maybe for the report?
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
 
@@ -1075,49 +1076,34 @@ GeDi <- function(genesets = NULL,
       ))
 
       tagList(
-        box(
-          id = "clustering_param_box",
-          width = 12,
-          title = "Set the parameters for Clustering",
-          status = "info",
-          solidHeader = TRUE,
-          collapsible = TRUE,
-          collapsed = FALSE,
-          fluidRow(
-            column(
-              width = 6,
-              sliderInput(
-                inputId = "simThreshold",
-                label = "Similarity Threshold",
-                min = 0,
-                max = 1,
-                value = 0.3,
-                step = 0.1
+        box(id = "clustering_selection_box",
+            width = 12,
+            title = "Select the clustering method",
+            status = "info",
+            solidHeader = TRUE,
+            collapsible = TRUE,
+            collapsed = FALSE,
+            fluidRow(
+              column(
+                width = 6,
+                radioButtons(inputId = "select_clustering",
+                             label = "Choose one of the following Clustering methods",
+                             choices = c("Louvain",
+                                         "Markov",
+                                         "Fuzzy",
+                                         "k Nearest Neighbour"))
               ),
-              sliderInput(
-                inputId = "memThreshold",
-                label = "Membership Threshold",
-                min = 0,
-                max = 1,
-                value = 0.5,
-                step = 0.1
-              ),
-              sliderInput(
-                inputId = "clustThreshold",
-                label = "Clustering Threshold",
-                min = 0,
-                max = 1,
-                value = 0.5,
-                step = 0.1
+              column(
+                width = 6,
+                uiOutput("ui_cluster")
               )
             ),
-            column(
-              width = 6,
-              uiOutput("ui_cluster")
-            )
-          ),
-          fluidRow(column(width = 12))
-        ),
+            fluidRow(
+              column(
+                width = 6,
+                uiOutput("ui_parameters_clustering")
+              )
+            )),
         fluidRow(column(
           width = 12,
           bs4Dash::bs4Card(
@@ -1188,6 +1174,100 @@ GeDi <- function(genesets = NULL,
         )
       )
     })
+
+    output$ui_parameters_clustering <- renderUI({
+      if(input$select_clustering == "Louvain"){
+        uiOutput("ui_louvain")
+      }else if(input$select_clustering == "Markov"){
+        uiOutput("ui_markov")
+      } else if(input$select_clustering == "Fuzzy"){
+        uiOutput("ui_fuzzy")
+      }else if(input$select_clustering == "k Nearest Neighbour"){
+        uiOutput("ui_kNN")
+      }
+    })
+
+    output$ui_louvain <- renderUI({
+      fluidRow(
+        h2("Select the clustering threshold for the Louvain clustering."),
+        br(),
+        column(
+          width = 6,
+          sliderInput(inputId = "louvain_threshold",
+                      label = "Select a similarity threshold",
+                      min = 0,
+                      max = 1,
+                      value = 0.3,
+                      step = 0.05)
+        )
+      )
+    })
+
+    output$ui_markov <- renderUI({
+      fluidRow(
+        h2("Select the clustering threshold for the Markov clustering."),
+        br(),
+        column(
+          width = 6,
+          sliderInput(inputId = "markov_threshold",
+                      label = "Select a similarity threshold",
+                      min = 0,
+                      max = 1,
+                      value = 0.3,
+                      step = 0.05)
+        )
+      )
+    })
+
+    output$ui_fuzzy <- renderUI({
+      fluidRow(
+        h2("Select the clustering thresholds for the Fuzzy clustering."),
+        column(
+          width = 6,
+          sliderInput(
+            inputId = "simThreshold",
+            label = "Similarity Threshold",
+            min = 0,
+            max = 1,
+            value = 0.3,
+            step = 0.1
+          ),
+          sliderInput(
+            inputId = "memThreshold",
+            label = "Membership Threshold",
+            min = 0,
+            max = 1,
+            value = 0.5,
+            step = 0.1
+          ),
+          sliderInput(
+            inputId = "clustThreshold",
+            label = "Clustering Threshold",
+            min = 0,
+            max = 1,
+            value = 0.5,
+            step = 0.1
+          )
+        )
+      )
+    })
+
+    output$ui_kNN <- renderUI({
+      fluidRow(
+        h2("Select the clustering threshold for the kNN clustering."),
+        br(),
+        column(
+          width = 6,
+          sliderInput(inputId = "knn_k",
+                      label = "Select a k for the number of neigbours.",
+                      min = 0,
+                      max = length(reactive_values$gs_names),
+                      value = 0,
+                      step = 1)
+        )
+      )
+    })
+
 
     output$cluster_Network <- renderVisNetwork({
       validate(need(
@@ -1929,31 +2009,40 @@ GeDi <- function(genesets = NULL,
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
 
-      progress$set(message = "Finding initial seeds", value = 0)
+      if(input$select_clustering == "Louvain"){
+        progress$set(message = "Start the Louvain Clustering", value = 0)
+        cluster <- louvain_Clustering(reactive_values$scores,
+                                      input$louvain_threshold)
+        progress$inc(0.8, detail = "Finished Louvain clustering")
+      }else if(input$select_clustering == "Fuzzy"){
+        progress$set(message = "Finding initial seeds", value = 0)
 
-      seeds <- seedFinding(
-        reactive_values$scores,
-        input$simThreshold,
-        input$memThreshold
-      )
-
-      progress$inc(0.5, detail = "Found initial seeds. Now clustering the data.")
-
-      cluster <- clustering(seeds, input$clustThreshold)
-
-      progress$inc(0.5, detail = "Finished clustering the data.")
-
-      if (is.null(seeds)) {
-        showNotification(
-          "It seems like something went wrong while clustering your data.
-          Most likely this is due to the genesets not containg genes.",
-          type = "error"
+        seeds <- seedFinding(
+          reactive_values$scores,
+          input$simThreshold,
+          input$memThreshold
         )
-      } else {
-        reactive_values$seeds <- seeds
-        reactive_values$cluster <- cluster
-        bs4Dash::updateBox("clustering_param_box", action = "toggle")
+
+        progress$inc(0.5, detail = "Found initial seeds. Now clustering the data.")
+
+        cluster <- clustering(seeds, input$clustThreshold)
+
+        progress$inc(0.3, detail = "Finished clustering the data.")
+
+        if (is.null(seeds)) {
+          showNotification(
+            "It seems like something went wrong while clustering your data.
+          Most likely this is due to the genesets not containg genes.",
+            type = "error"
+          )
+        }else{
+          reactive_values$seeds <- seeds
+        }
       }
+
+      reactive_values$cluster <- cluster
+      progress$inc(0.2, detail = "Successfully clustered data.")
+      bs4Dash::updateBox("clustering_param_box", action = "toggle")
     })
 
 

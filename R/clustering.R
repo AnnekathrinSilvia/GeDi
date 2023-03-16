@@ -169,6 +169,35 @@ clustering <- function(seeds, threshold) {
   return(seeds)
 }
 
+#' Title
+#'
+#' @param scores
+#' @param threshold
+#'
+#' @return
+#' @export
+#' @importFrom igraph cluster_louvain membership
+#'
+#' @examples
+louvain_Clustering <- function(scores, threshold){
+  adj_matrix <- getAdjacencyMatrix(scores, threshold)
+  graph <- buildGraph(adj_matrix)
+
+  clustering <- cluster_louvain(graph)
+  memberships <- membership(clustering)
+  cluster <- vector(mode = "list", length = max(memberships))
+
+  for(i in 1:length(memberships)){
+    sub_cluster <- memberships[i]
+    cluster[[sub_cluster]] <- c(cluster[[sub_cluster]], i)
+  }
+
+  filter <- sapply(cluster, function(x) length(x) > 1)
+  cluster <- cluster[filter]
+
+  return(cluster)
+}
+
 #' Map each geneset to the cluster it belongs
 #'
 #' Map each geneset to the cluster it belongs and return the information as
