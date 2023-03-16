@@ -125,8 +125,8 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
 #'
 #' @examples
 #' seeds <- list(c(1:5), c(6:10))
-#' cluster <- clustering(seeds, 0.5)
-clustering <- function(seeds, threshold) {
+#' cluster <- fuzzy_clustering(seeds, 0.5)
+fuzzy_clustering <- function(seeds, threshold) {
   # Check if there seeds to merge
   if (length(seeds) <= 1) {
     return(seeds)
@@ -173,18 +173,30 @@ clustering <- function(seeds, threshold) {
 #'
 #' @param scores
 #' @param threshold
+#' @param cluster_method
 #'
 #' @return
 #' @export
 #' @importFrom igraph cluster_louvain membership
+#' @importFrom GeneTonic cluster_markov
 #'
 #' @examples
-louvain_Clustering <- function(scores, threshold){
-  adj_matrix <- getAdjacencyMatrix(scores, threshold)
+clustering <- function(scores,
+                       threshold,
+                       cluster_method = "louvain"){
+  stopifnot(cluster_method == "louvain" || cluster_method == "markov")
+  adj_matrix <- getAdjacencyMatrix(scores,
+                                   threshold)
   graph <- buildGraph(adj_matrix)
 
-  clustering <- cluster_louvain(graph)
-  memberships <- membership(clustering)
+  if(cluster_method == "louvain"){
+    clustering <- cluster_louvain(graph)
+    memberships <- membership(clustering)
+  }else if(cluster_method == "markov"){
+    clustering <- cluster_markov(graph)
+    memberships <- clustering$membership
+  }
+
   cluster <- vector(mode = "list", length = max(memberships))
 
   for(i in 1:length(memberships)){
@@ -197,6 +209,7 @@ louvain_Clustering <- function(scores, threshold){
 
   return(cluster)
 }
+
 
 #' Map each geneset to the cluster it belongs
 #'

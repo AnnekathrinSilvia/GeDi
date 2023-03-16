@@ -2011,11 +2011,19 @@ GeDi <- function(genesets = NULL,
 
       if(input$select_clustering == "Louvain"){
         progress$set(message = "Start the Louvain Clustering", value = 0)
-        cluster <- louvain_Clustering(reactive_values$scores,
-                                      input$louvain_threshold)
+        cluster <- clustering(reactive_values$scores,
+                                      input$louvain_threshold,
+                                      cluster_method = "louvain")
         progress$inc(0.8, detail = "Finished Louvain clustering")
-      }else if(input$select_clustering == "Fuzzy"){
-        progress$set(message = "Finding initial seeds", value = 0)
+      }else if(input$select_clustering == "Markov"){
+        progress$set(message = "Start the Markov Clustering", value = 0)
+        cluster <- clustering(reactive_values$scores,
+                              input$markov_threshold,
+                              cluster_method = "markov")
+        progress$inc(0.8, detail = "Finished Markov clustering")
+      } else if(input$select_clustering == "Fuzzy"){
+        progress$set(message = "Start the fuzzy clustering", value = 0)
+        progress$inc(0.1, detail = "Finding intial seeds")
 
         seeds <- seedFinding(
           reactive_values$scores,
@@ -2023,9 +2031,9 @@ GeDi <- function(genesets = NULL,
           input$memThreshold
         )
 
-        progress$inc(0.5, detail = "Found initial seeds. Now clustering the data.")
+        progress$inc(0.4, detail = "Found initial seeds. Now clustering the data.")
 
-        cluster <- clustering(seeds, input$clustThreshold)
+        cluster <- fuzzy_clustering(seeds, input$clustThreshold)
 
         progress$inc(0.3, detail = "Finished clustering the data.")
 

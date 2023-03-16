@@ -46,13 +46,13 @@ test_that("seedFinding runs correctly", {
 })
 
 test_that("clustering - no seeds", {
-  expect_true(is.null(clustering(NULL, 0.5)))
-  expect_true(length(clustering(list(), 0.5)) == 0)
+  expect_true(is.null(fuzzy_clustering(NULL, 0.5)))
+  expect_true(length(fuzzy_clustering(list(), 0.5)) == 0)
 })
 
 test_that("clustering runs correctly", {
   seeds <- list(c(1:2), c(6:10), c(4:7))
-  cluster <- clustering(seeds, 0.5)
+  cluster <- fuzzy_clustering(seeds, 0.5)
   expect_true(length(cluster) <= length(seeds))
   expect_true(length(cluster) > 0)
   expect_type(cluster, "list")
