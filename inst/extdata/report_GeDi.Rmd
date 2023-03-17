@@ -1,5 +1,5 @@
 ---
-title: "`r paste0('Your report from GeDi')`"
+title: "Your report from GeDi"
 author: "`r paste0('GeDi report (v', utils::packageVersion('GeDi'), ')')`"
 date: "`r Sys.Date()`"
 
@@ -7,7 +7,7 @@ output:
   html_document:
     toc: true
     toc_float: true
-    code_folding: show
+    code_folding: hide
     code_download: true
     number_sections: true
     df_print: kable
@@ -26,113 +26,147 @@ knitr::opts_chunk$set(
 
 
 # Introduction - the input data
-
-<!-- ideas: -->
-
-<!-- - differentiate the content based on batch running vs generated at runtime? -->
-<!-- - print out the values of input$... objects. So one can just repeat them ;) -->
-
-This is an overview on the provided objects:
+In this session of `GeDi` you used the following data:
 
 ```{r echo = TRUE}
-library(GeneTonic)
+library("GeDi")
 ```
 
 
-```{r, eval = F}
-# if (exists("reactive_values$mygenesets")) {
-#   selected_genesets <- reactive_values$mygenesets
-# } else {
-#   selected_genesets <- mygenesets
-# }
-# 
-# if (exists("reactive_values$mygenes")) {
-#   selected_genes <- reactive_values$mygenes
-# } else {
-#   selected_genes <- mygenes
-# }
+```{r inputData}
+DT::datatable(reactive_values$genesets, caption = "The input genesets")
+```
 
-if (usage_mode == "shiny_mode") {
-  selected_genesets <- reactive_values$mygenesets
-  selected_genes <- reactive_values$mygenes
-  
-  
-  # picking from the reactive values
-  dds <- reactive_values$dds
-  res_de <- reactive_values$res_de
-  res_enrich <- reactive_values$res_enrich
-  annotation_obj <- reactive_values$annotation_obj
-  
-  intgroup <- input$exp_condition
-  # checking that a group is provided
-  if (is.null(input$exp_condition)) {
-    # defaults to first column name in the colData
-    intgroup <- colnames(colData(dds))[1]
-  }
-  
-} else if (usage_mode == "batch_mode"){
-  selected_genesets <- mygenesets
-  selected_genes <- mygenes
-  intgroup <- mygroup
+Potentially you specified the species of your data and downloaded a Protein-Protein-Interaction (PPI) matrix. 
+
+```{r inputPPI}
+if(input$species != ""){
+  cat("You specified the species of your data as ", input$species, sep = "")
+}else{
+  cat("It seems like you didn't specify the species of your data.")
 }
 
-selected_genesets
-selected_genes
-intgroup
-```
-
-If provided as a gtl object:
-
-```{r, eval = F}
-if (!is.null(gtl)) {
-  cat(describe_gtl(gtl))
+if(!is.null(reactive_values$ppi)){
+  DT::datatable(reactive_values$ppi, caption = "The downloaded PPI")
+}else{
+  cat("It seems like you did not download a PPI matrix.")
 }
 ```
 
-Otherwise, these are the individual components as provided:
-
-```{r echo = TRUE, eval = F}
-dds
-res_de
-head(res_enrich)
-head(annotation_obj)
-res_enrich <- get_aggrscores(res_enrich, res_de, annotation_obj)
-```
 
 ## Parameter settings 
 
-If running from shiny, it might be relevant to keep track of the parameters currently selected in the app, as they determine the look and content of what is displayed.
+For some of the calculations and visualizations of the app, the selected parameters are important and crucial for the results. This is the current state of the individual parameters.
 
-```{r, eval = F}
-if (usage_mode == "shiny_mode") {
-  input$exp_condition
-  input$n_genesets
-  input$emap_colorby
-  
-  # print(shiny::reactiveValuesToList(input))
-  # print(shiny::reactiveValuesToList(reactive_values))
-} 
+```{r parameters}
+cat("Your parameters of the Scoring panel")
+
+if(!(is.null(input$scoringmethod) || input$scoringmethod == "")){
+  cat(paste("You have selected ", input$scoringmethod, " as the method to calculate the distance scores of your datasets. \nFor the clustering method in the dendrogram, you have selected ", input$cluster_method_dendro, ". \nAnd for threshold for the Scoring Network was set to ", input$similarityScores, ".",   sep = ""))
+}else{
+  cat("It seems like you did not specify a Scoring method and did not score your data.")
+}
+
+
+
+cat("Your parameters of the Clustering panel")
+
+string <- paste("You have selected ", input$select_clustering, " as clustering method. \n", sep = "")
+
+if(input$select_clustering == "Louvain"){
+  string <- paste(string, "The threshold you selected for the Louvain clustering was set to ", input$louvain_threshold , ".", sep = "")
+}else if (input$select_clustering == "Markov"){
+  string <- paste(string, "The threshold you selected for the Markov clustering was set to ", input$markov_threshold , ".",  sep = "")
+}else{
+  string <- paste("The similarity Threshold was set to ", input$simThreshold, ".\nThe membership Threshold was set to ", input$memThreshold, ". \nThe clustering Threshold was set to ", input$clustThreshold, ".", sep = "")
+}
+cat(string)
 ```
 
-# A quick overview on the enrichment results
+# A quick overview on the scoring results
 
-This section reports an interactive enrichment map for the results from the enrichment analysis, as an overview.
+This section shows the visualizations of the Scoring panel.
 
-```{r, eval = F}
+```{r Scoringpanel}
+
+if(is.null(reactive_values$scores)){
+  cat("It seems like you do not have distance scores calculated for your data.")
+}
+
+scoring_heatmap <- distance_heatmap(reactive_values$scores)
+scoring_heatmap
+```
+
+```{r dendro}
+if(!is.null(reactive_values$scores)){
+dendro <- distance_dendro(reactive_values$scores, input$cluster_method_dendro)
+dendro
+}
+```
+
+```{r scoringNetwork}
 library("visNetwork")
-library("magrittr")
-emap_graph <- enrichment_map(
-        res_enrich = res_enrich,
-        res_de = res_de,
-        annotation_obj = annotation_obj,
-        n_gs = 50,
-        overlap_threshold = 0.1,
-        scale_edges_width = 200,
-        color_by = "z_score"
-)
-emap_graph
+if(!is.null(reactive_values$scores)){
+  graph <- reactive_values$scores_graph()
 
-visNetwork::visIgraph(emap_graph) %>%
+visNetwork::visIgraph(graph) %>%
+          visNodes(color = list(
+            background = "#0092AC",
+            highlight = "gold",
+            hover = "gold"
+          )) %>%
+          visEdges(color = list(
+            background = "#0092AC",
+            highlight = "gold",
+            hover = "gold"
+          )) %>%
+          visOptions(
+            highlightNearest = list(
+              enabled = TRUE,
+              degree = 1,
+              hover = TRUE
+            ),
+            nodesIdSelection = TRUE
+          ) %>%
+          visExport(
+            name = "distance_scores_network",
+            type = "png",
+            label = "Save Distance Scores graph"
+          )
+}
+```
+
+
+# A quick overview of the clustering results
+
+```{r clusteringGraph}
+if(!is.null(reactive_values$cluster)){
+  graph <- reactive_values$cluster_graph()
+
+visNetwork::visIgraph(graph) %>%
+          visOptions(
+            highlightNearest = list(
+              enabled = TRUE,
+              degree = 1,
+              hover = TRUE
+            ),
+            nodesIdSelection = TRUE,
+            selectedBy = list(variable = "cluster", multiple = TRUE)
+          ) %>%
+          visExport(
+            name = "cluster_network",
+            type = "png",
+            label = "Save Cluster graph"
+          )
+}
+```
+
+```{r BipartiteGraph}
+if(!is.null(reactive_values$cluster)){
+  graph <- reactive_values$bipartite_graph()
+
+visNetwork::visIgraph(graph) %>%
+        visIgraphLayout(layout = "layout_as_bipartite") %>%
         visOptions(
           highlightNearest = list(
             enabled = TRUE,
@@ -142,81 +176,20 @@ visNetwork::visIgraph(emap_graph) %>%
           nodesIdSelection = TRUE
         ) %>%
         visExport(
-          name = "emap_network",
+          name = "bipartite_network",
           type = "png",
-          label = "Save enrichment map"
+          label = "Save Cluster-Geneset bipartite graph"
         )
-```
-
-
-
-# Content for the selected genes
-
-The following genes were reported as bookmarked in the call to this report, either in batch or in the shiny usage mode.
-
-```{r, eval = F}
-DT::datatable(annotation_obj[annotation_obj$gene_id %in% selected_genes, ])
-```
-
-For each of them, a plot for the expression values is displayed in the content that follows.
-
-```{r, eval = F}
-lapply(selected_genes, function(arg) {
-  GeneTonic::gene_plot(dds,gene = arg,intgroup = intgroup, 
-                       annotation_obj = annotation_obj)})
-```
-
-# Content for the selected genesets
-
-The following genesets were reported as bookmarked in the call to this report, either in batch or in the shiny usage mode.
-
-```{r, eval = F}
-DT::datatable(res_enrich[res_enrich$gs_id %in% selected_genesets, ])
-```
-
-Some general visualization, with a focus on the genesets specified above, is displayed as a result of the following chunk.
-
-```{r, eval = F}
-gs_mds(res_enrich, res_de, annotation_obj, gs_labels = selected_genesets)
-
-gs_volcano(res_enrich, volcano_labels = selected_genesets)
-```
-
-## Geneset content, tabbed! {.tabset .tabset-fade}
-
-Here is a heatmap for each bookmarked set.
-Click on the tabset labels to navigate among each of the elements.
-
-```{r echo = TRUE, results="asis", eval = F}
-vst_data <- DESeq2::vst(dds) # or also have it passed as param
-
-for (gs in selected_genesets) {
-  corresponding_gs_desc <- res_enrich[gs, "gs_description"]
-  cat("### ", corresponding_gs_desc, " {-}\n")
-  
-  gs_heatmap(vst_data, 
-             res_de, 
-             res_enrich, 
-             annotation_obj, 
-             geneset_id = gs, 
-             cluster_columns = TRUE)
-  
-  cat(go_2_html(gs, res_enrich))
-  cat("\n\n")
 }
 ```
 
 
 # About this report
 
-This report has been generated via the `happy_hour()` function from the GeneTonic package.
-
-You can extend and modify the template provided in the package, and provide the location of the custom version as a parameter to the call to `happy_hour()` (specifically, `input_rmd`).
-
 If you use this report in your scientific work, please cite GeneTonic:
 
 ```{r}
-utils::citation("GeneTonic")
+utils::citation("GeDi")
 ```
 
 

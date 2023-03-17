@@ -57,9 +57,9 @@ checkInclusion <- function(seeds) {
 #' Find initial seeds for the clustering. #TODO: Verlinken auf die David publication
 #'
 #' @param distances A [Matrix::Matrix()] of (distance) scores
-#' @param simThreshold Numerical value, a threshold of what is considered a
+#' @param simThreshold numerical, a threshold of what is considered a
 #'                     close relationsship between two elements in distances
-#' @param memThreshold Numerical value, a threshold used to identify members of
+#' @param memThreshold numerical, a threshold used to identify members of
 #'                     a seeds
 #'
 #' @return A `list` of seeds which can be used for clustering
@@ -118,7 +118,7 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
 #' Find clusters from initial seeds according to (#TODO: David publication linken)
 #'
 #' @param seeds A `list` of seeds, e.g. determined by seedFinding
-#' @param threshold Numerical value, threshold for merging seeds
+#' @param threshold numerical, threshold for merging seeds
 #'
 #' @return A `list` of clusters
 #' @export
@@ -171,16 +171,23 @@ fuzzy_clustering <- function(seeds, threshold) {
 
 #' Title
 #'
-#' @param scores
-#' @param threshold
-#' @param cluster_method
+#' @param scores A [Matrix::Matrix()] of (distance) scores
+#' @param threshold numerical, a threshold indicating similar genesets. Genesets
+#'                  with a (distance) score <= threshold will be considered
+#'                  similar.
+#' @param cluster_method character, the clustering method to use. The options
+#'                       are `louvain` and `markov`. Default to `louvain`.
 #'
-#' @return
+#' @return A `list` of clusters
 #' @export
 #' @importFrom igraph cluster_louvain membership
 #' @importFrom GeneTonic cluster_markov
 #'
 #' @examples
+#' m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+#' rownames(m) <- colnames(m) <- c("a", "b", "c", "d", "e",
+#'                                 "f", "g", "h", "i", "j")
+#' cluster <- clustering(m, 0.3, "markov")
 clustering <- function(scores,
                        threshold,
                        cluster_method = "louvain"){

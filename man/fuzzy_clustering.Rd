@@ -9,7 +9,7 @@ fuzzy_clustering(seeds, threshold)
 \arguments{
 \item{seeds}{A \code{list} of seeds, e.g. determined by seedFinding}
 
-\item{threshold}{Numerical value, threshold for merging seeds}
+\item{threshold}{numerical, threshold for merging seeds}
 }
 \value{
 A \code{list} of clusters

@@ -7,8 +7,24 @@
 clustering(scores, threshold, cluster_method = "louvain")
 }
 \arguments{
-\item{cluster_method}{}
+\item{scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
+
+\item{threshold}{numerical, a threshold indicating similar genesets. Genesets
+with a (distance) score <= threshold will be considered
+similar.}
+
+\item{cluster_method}{character, the clustering method to use. The options
+are \code{louvain} and \code{markov}. Default to \code{louvain}.}
+}
+\value{
+A \code{list} of clusters
 }
 \description{
 Title
+}
+\examples{
+m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+rownames(m) <- colnames(m) <- c("a", "b", "c", "d", "e",
+                                "f", "g", "h", "i", "j")
+cluster <- clustering(m, 0.3, "markov")
 }
