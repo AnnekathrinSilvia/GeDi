@@ -217,6 +217,24 @@ clustering <- function(scores,
   return(cluster)
 }
 
+#' Title
+#'
+#' @param scores
+#' @param k
+#'
+#' @return
+#' @export
+#' @import BiocNeighbors
+#'
+#' @examples
+kNN_clustering <- function(scores,
+                           k){
+  kNN <- findKNN(scores, k)
+  kNN <- kNN$index
+  kNN <- lapply(seq_len(nrow(kNN)), function(i) kNN[i,])
+  return(kNN)
+}
+
 
 #' Map each geneset to the cluster it belongs
 #'

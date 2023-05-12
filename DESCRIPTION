@@ -67,4 +67,5 @@ Imports:
     org.Hs.eg.db,
     Rcpp,
     BiocParallel,
-    markdown
+    markdown,
+    BiocNeighbors

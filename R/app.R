@@ -1261,8 +1261,8 @@ GeDi <- function(genesets = NULL,
           width = 6,
           sliderInput(inputId = "knn_k",
                       label = "Select a k for the number of neigbours.",
-                      min = 0,
-                      max = length(reactive_values$gs_names),
+                      min = 1,
+                      max = 0.1 * length(reactive_values$gs_names),
                       value = 0,
                       step = 1)
         )
@@ -2047,6 +2047,11 @@ GeDi <- function(genesets = NULL,
         }else{
           reactive_values$seeds <- seeds
         }
+      }else if(input$select_clustering == "k Nearest Neighbour"){
+        progress$set(message = "Start the kNN Clustering", value = 0)
+        cluster <- kNN_clustering(reactive_values$scores,
+                                  input$knn_k)
+        progress$inc(0.8, detail = "Finished clustering the data.")
       }
 
       reactive_values$cluster <- cluster
