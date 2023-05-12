@@ -5,7 +5,7 @@
 In order to use `GeDi` you will need results from a functional annotation analysis. In this vignette, we will show how to perform an enrichment analysis on differentially expressed (DE) genes of the `r BiocStyle::Biocpkg("macrophage")` dataset. 
 In the first step, we will load the `macrophage` data and generate a `DESeqDataset` as the differential expression analysis will be performed with `r BiocStyle::Biocpkg("DESeq2")`.
 
-```r
+```R
 library("macrophage")
 library("DESeq2")
 

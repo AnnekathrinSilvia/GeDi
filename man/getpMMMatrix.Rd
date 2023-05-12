@@ -37,7 +37,7 @@ Calculate the pMM distance of all combinations of genesets in a given data
 set of genesets.
 }
 \examples{
-genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
 
 ppi <- data.frame(
   Gene1 = c("PDHB", "VARS2"),

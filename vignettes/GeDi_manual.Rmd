@@ -2,7 +2,7 @@
 title: >
  The `GeDi` User's Guide
 author:
-- name: Annekathrin Ludt
+- name: Annekathrin Silvia Nedwed
   affiliation: 
   - Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
   email: anneludt@uni-mainz.de

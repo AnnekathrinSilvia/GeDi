@@ -142,7 +142,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' @import Matrix
 #'
 #' @examples
-#' genes <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
+#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
 #'
 #' ppi <- data.frame(
 #'   Gene1 = c("PDHB", "VARS2"),
@@ -171,6 +171,12 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
     if (!is.null(progress)) {
       progress$inc(1 / l, detail = paste("Scoring geneset number", j))
     }
+
+    # Maybe better to work with BioCParallel then to work with parallel
+    fun <- function(b, a, ppi, maxInteraction){
+      pMM <- pMMlocal(a, b, ppi, maxInteract)
+    }
+
     results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
       b <- genes[[i]]
       pMMlocal(a, b, ppi, maxInteract)
@@ -179,3 +185,4 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
   }
   return(scores)
 }
+

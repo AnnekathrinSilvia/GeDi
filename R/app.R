@@ -341,7 +341,7 @@ GeDi <- function(genesets = NULL,
           column(
             width = 11,
             align = "center",
-            "GeDi is a project developed by Annekathrin Ludt
+            "GeDi is a project developed by Annekathrin Silvia Nedwed
             in the Bioinformatics division of the ",
             tags$a(href = "http://www.unimedizin-mainz.de/imbei", "IMBEI"),
             "- Institute for Medical Biostatistics, Epidemiology and
@@ -412,10 +412,11 @@ GeDi <- function(genesets = NULL,
             label = "Click me!",
             style = .actionButtonStyle
           ),
-          p("you can click on it and it will start some process in the app.
-          We tried to choose the button text wisely so that you can understand
-          what process will be started."),
-          p("Besides buttons, you will also find field where you can type
+          br(),
+          p("you can click on it and it will start a process in the app.
+          We tried to choose the button text wisely so that you can easily understand
+          the process that will be started."),
+          p("Besides buttons, you will also find input fields where you can type
           something like this"),
           textInput(
             inputId = "exampleText",
@@ -441,7 +442,7 @@ GeDi <- function(genesets = NULL,
             value = 50
           ),
           p("We tried to keep the app as simple and self-explanatory as possible.
-          However, if you happen to be stuck at some part, we provide for each
+          However, if you happen to be stuck at some point, we provide for each
           panel of this app a dedicated tour which will explain each element
           of the respective panel in detail. You can access the tours via the
           question mark in the upper right corner, which you will find in each
@@ -456,7 +457,7 @@ GeDi <- function(genesets = NULL,
         width = 12,
         title = "Summary on data generation", status = "info", solidHeader = TRUE,
         collapsible = TRUE, collapsed = TRUE,
-        includeMarkdown(system.file("extdata", "summary_data_generation.md", package = "GeDi"))
+        htmltools::includeMarkdown(system.file("extdata", "summary_data_generation.md", package = "GeDi"))
       )
     })
 
