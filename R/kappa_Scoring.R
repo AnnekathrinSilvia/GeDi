@@ -7,7 +7,6 @@
 #'                  the input data.
 #'
 #' @return The Kappa distance of the two sets.
-#' @import dplyr
 #' @export
 #'
 #' @examples

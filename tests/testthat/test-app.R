@@ -17,7 +17,7 @@ test_that("Shiny app is generated with input", {
 })
 
 # testServer(gedi_server, {
-#   expect_true(is.null(input$uploadgenesetfile))
+#   expect_true(is.null(input$inputgenesetfile))
 #   expect_true(is.null(input$bin_gs_hist[[1]]))
 #   expect_true(is.null(input$bin_gs_hist[[2]]))
 #   expect_true(is.null(input$bindwidth_hist))

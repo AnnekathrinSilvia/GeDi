@@ -88,7 +88,7 @@ Once installed, the package can be loaded and attached to your current workspace
 library("GeDi")
 ```
 
-With the attached package, you can simply start the application by running `GeDi()`. This will launch the application and land you on the Welcome page. Via the Data upload panel you can simply upload your data directly to the application. This will also ensure that your data is in the right input format. Another way to start the applicationis to run:
+With the attached package, you can simply start the application by running `GeDi()`. This will launch the application and land you on the Welcome page. Via the Data Input panel you can simply provide your data directly to the application. This will also ensure that your data is in the right input format. Another way to start the applicationis to run:
 
 ```{r launchapp, eval=FALSE}
 GeDi(
@@ -189,7 +189,7 @@ topgoDE_macrophage_IFNg_vs_naive <-
   )
 ```
 
-As previously mentioned, `Gedi` expects the input to have at least two columns, one named Genesets and one named Genes. While this is not strictly necessary if you upload your data, it is required if you want to start the application with your input as parameters (e.g. `GeDi(genesets = genesets_df)`). In this case, the Genesets column is expected to contain some form of geneset identifiers for each set of the input , while the Genes column is expected to be a comma-separated list of genes belonging to each geneset. 
+As previously mentioned, `Gedi` expects the input to have at least two columns, one named Genesets and one named Genes. While this is not strictly necessary if you provide your data, it is required if you want to start the application with your input as parameters (e.g. `GeDi(genesets = genesets_df)`). In this case, the Genesets column is expected to contain some form of geneset identifiers for each set of the input , while the Genes column is expected to be a comma-separated list of genes belonging to each geneset. 
 
 Hence, we will rename the columns of the resulting `DataFrame` of the enrichment analysis to fit the required format. 
 
@@ -202,7 +202,7 @@ names(topgoDE_macrophage_IFNg_vs_naive)[names(topgoDE_macrophage_IFNg_vs_naive) 
 
 ## All set!
 
-Now we have generated functional annotation results form the `macrophage` dataset and can start exploring the data with `GeDi`. You can either start the application and upload the generated data using the `GeDi()` command. Or, if you followed this vignette, you can start the application directly with the loaded data by running `GeDi(genesets = topgoDE_macrophage_IFNg_vs_naive)`.
+Now we have generated functional annotation results form the `macrophage` dataset and can start exploring the data with `GeDi`. You can either start the application and provide the generated data using the `GeDi()` command. Or, if you followed this vignette, you can start the application directly with the loaded data by running `GeDi(genesets = topgoDE_macrophage_IFNg_vs_naive)`.
 
 
 ```{r dryrun, eval=FALSE}
@@ -252,14 +252,14 @@ The main `GeDi` app is structured in different panels, and each of these is pres
 
 This panel is intended to give an overview on how to use `GeDi`. For this purpose, the panel highlights in detail how to generate the input data for the application. It also explains the expected input format and the different interactive elements that you will find in the remaining panels of the app.  
 
-## The Data Upload panel
+## The Data Input panel
 
-This panel will handle the upload of the data if not provided in the function call. 
+This panel will handle the input of the data if not provided in the function call. 
 
-The panel is divided into boxes which will correspond to the individual steps of the data upload. The individual boxes will appear consecutively once the previous step has been completed successfully. 
+The panel is divided into boxes which will correspond to the individual steps of the data input. The individual boxes will appear consecutively once the previous step has been completed successfully. 
 
-In the first step, you can upload you data via the Browse button. This will open a modal window to your computer storage where you can select the respective file with your input data. Once the data has successfully been read in, you can have a look at you data via the Data Preview box on the right. 
-During the data upload, the application will check if your input contains the columns Genesets and Genes. If these columns are not found, the application will show a small error message in the lower right corner and show two drop down menus in which you can select the correct columns of your data. 
+In the first step, you can provide you data via the Browse button. This will open a modal window to your computer storage where you can select the respective file with your input data. Once the data has successfully been read in, you can have a look at you data via the Data Preview box on the right. 
+During this step, the application will check if your input contains the columns Genesets and Genes. If these columns are not found, the application will show a small error message in the lower right corner and show two drop down menus in which you can select the correct columns of your data. 
 
 This panel has as its main component an interactive bipartite graph illustrating the relationship between genesets and genes that belong to them.
 One of the relevant parameters for this output is the number of gene sets to be displayed, adjustable from the widget in the control panel on the right.
@@ -488,12 +488,12 @@ res_enrich <- enrichKEGG(genes,
 )
 ```
 
-We can now use the results of the enrichment in `GeDi`. For this, we can either save the results and upload them to a running instance of `GeDi` or we can provided it directly as an input to the app. 
+We can now use the results of the enrichment in `GeDi`. For this, we can either save the results and provide them to a running instance of `GeDi` or we can provided it directly as an input to the app. 
 
 ```{r GeDi_Kegg, eval = F}
 saveRDS(res_enrich@result, "macrophage_KEGG_example.RDS")
 
-# start an instance of GeDi and upload the macrophage_KEGG_example.RDS file
+# start an instance of GeDi and provide the macrophage_KEGG_example.RDS file
 GeDi()
 
 # start GeDi directly with the data loaded
@@ -517,7 +517,7 @@ Now we can use the results in the same manner as for the KEGG pathway analysis.
 ```{r GeDi_Reactome, eval = F}
 saveRDS(reactome@result, "macrophage_Reactome_example.RDS")
 
-# start an instance of GeDi and upload the macrophage_KEGG_example.RDS file
+# start an instance of GeDi and provide the macrophage_KEGG_example.RDS file
 GeDi()
 
 # start GeDi directly with the data loaded

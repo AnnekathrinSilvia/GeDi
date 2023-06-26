@@ -13,7 +13,6 @@
 #'
 #' @return The interaction score of the two given genesets.
 #' @export
-#' @import dplyr
 #'
 #' @examples
 #' a <- c("PDHB", "VARS2", "IARS2")

@@ -2,7 +2,7 @@
 % Please edit documentation in R/clustering.R
 \name{clustering}
 \alias{clustering}
-\title{Title}
+\title{Cluster genesets usign Louvain or Markov clustering.}
 \usage{
 clustering(scores, threshold, cluster_method = "louvain")
 }
@@ -20,7 +20,7 @@ are \code{louvain} and \code{markov}. Default to \code{louvain}.}
 A \code{list} of clusters
 }
 \description{
-Title
+Cluster the geneset using either Louvain or Markov clustering.
 }
 \examples{
 m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)

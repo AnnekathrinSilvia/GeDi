@@ -48,7 +48,7 @@ getAdjacencyMatrix <- function(distanceMatrix,
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
 #'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
-#' @import igraph
+#' @importFrom igraph graph_from_adjacency_matrix V
 #' @export
 #'
 #' @examples
@@ -59,7 +59,7 @@ getAdjacencyMatrix <- function(distanceMatrix,
 #' rownames(adj) <- colnames(adj) <- geneset_names
 #' graph <- buildGraph(adj)
 buildGraph <- function(adjMatrix) {
-  g <- igraph::graph_from_adjacency_matrix(
+  g <- graph_from_adjacency_matrix(
     adjMatrix,
     mode = "undirected",
     add.colnames = NULL,

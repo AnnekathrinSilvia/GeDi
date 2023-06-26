@@ -2,13 +2,24 @@
 % Please edit documentation in R/clustering.R
 \name{kNN_clustering}
 \alias{kNN_clustering}
-\title{Title}
+\title{Caculate clusters based on kNN clustering}
 \usage{
 kNN_clustering(scores, k)
 }
 \arguments{
-\item{k}{}
+\item{scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
+
+\item{k}{numerical, the number of neighbors that should be searched for}
+}
+\value{
+A \code{list} of clusters
 }
 \description{
-Title
+Calculate a clustering of the data using the kNN approach
+}
+\examples{
+scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
+                                "f", "g", "h", "i", "j")
+cluster <- kNN_clustering(scores, k = 3)
 }

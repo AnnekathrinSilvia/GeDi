@@ -169,7 +169,9 @@ fuzzy_clustering <- function(seeds, threshold) {
   return(seeds)
 }
 
-#' Title
+#' Cluster genesets usign Louvain or Markov clustering.
+#'
+#' Cluster the geneset using either Louvain or Markov clustering.
 #'
 #' @param scores A [Matrix::Matrix()] of (distance) scores
 #' @param threshold numerical, a threshold indicating similar genesets. Genesets
@@ -217,20 +219,29 @@ clustering <- function(scores,
   return(cluster)
 }
 
-#' Title
+#' Caculate clusters based on kNN clustering
 #'
-#' @param scores
-#' @param k
+#' Calculate a clustering of the data using the kNN approach
 #'
-#' @return
+#' @param scores A [Matrix::Matrix()] of (distance) scores
+#' @param k numerical, the number of neighbors that should be searched for
+#'
+#' @return A `list` of clusters
 #' @export
 #' @import BiocNeighbors
 #'
 #' @examples
+#' scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+#' rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
+#'                                 "f", "g", "h", "i", "j")
+#' cluster <- kNN_clustering(scores, k = 3)
 kNN_clustering <- function(scores,
                            k){
+  # find k nearest neighbors for each geneset in the data
   kNN <- findKNN(scores, k)
+  # extract for each geneset the list of neighbors
   kNN <- kNN$index
+  # select the first neighbor as cluster for each geneset
   kNN <- lapply(seq_len(nrow(kNN)), function(i) kNN[i,])
   return(kNN)
 }

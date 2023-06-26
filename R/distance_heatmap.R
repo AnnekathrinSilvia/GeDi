@@ -8,7 +8,7 @@
 #'                    of `distance_scores`. Defaults to 50.
 #'
 #' @return A plot returned by the [ComplexHeatmap::Heatmap()] function
-#' @import ComplexHeatmap
+#' @importFrom ComplexHeatmap Heatmap
 #' @export
 #'
 #' @examples
@@ -46,9 +46,10 @@ distance_heatmap <- function(distance_scores,
 
   # set cut labels for plot annotation
   rownames(distance_scores) <- colnames(distance_scores) <- labels
-  p <- ComplexHeatmap::Heatmap(as.matrix(distance_scores),
+  p <- Heatmap(as.matrix(distance_scores),
     name = "Distance Scores"
   )
 
   return(p)
 }
+

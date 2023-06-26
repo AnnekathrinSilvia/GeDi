@@ -11,16 +11,14 @@
 #' @export
 #' @import visNetwork
 #' @import shiny
-#' @import plotly
 #' @import shinyBS
 #' @import fontawesome
-#' @import bs4Dash
+#' @importFrom bs4Dash box bs4DashPage bs4DashNavbar bs4DashBrand bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4DashBody bs4DashControlbar bs4DashFooter bs4TabItems bs4TabItem renderbs4InfoBox updateBox bs4Card
+#' @importFrom plotly renderPlotly plotlyOutput
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.delim data
 #' @importFrom shinycssloaders withSpinner
-#' @importFrom igraph V degree delete_vertices
-#' @importFrom ComplexHeatmap draw
-#' @importFrom InteractiveComplexHeatmap InteractiveComplexHeatmapWidget
+#' @importFrom igraph V degree delete_vertices get.edgelist
 #'
 #'
 #' @examples
@@ -112,7 +110,7 @@ GeDi <- function(genesets = NULL,
           )
         )
       ),
-      title = bs4Dash::bs4DashBrand(
+      title = bs4DashBrand(
         title = HTML("<small>GeDi</small>"),
         href = "https://github.com/AnnekathrinSilvia/GeDi",
       ),
@@ -141,8 +139,8 @@ GeDi <- function(genesets = NULL,
           icon = icon("house")
         ),
         bs4SidebarMenuItem(
-          "Data Upload",
-          tabName = "tab_data_upload",
+          "Data Input",
+          tabName = "tab_data_input",
           icon = icon("square-share-nodes")
         ),
         bs4SidebarMenuItem(
@@ -225,9 +223,9 @@ GeDi <- function(genesets = NULL,
             uiOutput("ui_panel_welcome")
           )
         ),
-        # ui panel data upload -----------------------------------------------
+        # ui panel data input -----------------------------------------------
         bs4TabItem(
-          tabName = "tab_data_upload",
+          tabName = "tab_data_input",
           tagList(
             fluidRow(
               column(width = 11),
@@ -235,13 +233,13 @@ GeDi <- function(genesets = NULL,
                 width = 1,
                 br(),
                 actionButton(
-                  "tour_data_upload",
+                  "tour_data_input",
                   label = "",
                   icon = icon("circle-question"),
                   style = .tourButtonStyle
                 ),
                 shinyBS::bsTooltip(
-                  id = "tour_data_upload",
+                  id = "tour_data_input",
                   title = "Click me to start a tour of this section!",
                   placement = "top",
                   trigger = "hover",
@@ -250,7 +248,7 @@ GeDi <- function(genesets = NULL,
                 style = "float:right"
               )
             ),
-            uiOutput("ui_panel_data_upload"),
+            uiOutput("ui_panel_data_input"),
             uiOutput("ui_filter_data"),
             uiOutput("ui_panel_specify_species"),
             uiOutput("ui_panel_download_ppi")
@@ -319,14 +317,14 @@ GeDi <- function(genesets = NULL,
       )
     ),
     # controlbar definition ------------------------------------------------
-    controlbar = bs4Dash::bs4DashControlbar(
+    controlbar = bs4DashControlbar(
       collapsed = TRUE,
       icon = icon("gears"),
       uiOutput("ui_controlbar")
     ),
 
     # footer definition -------------------------------------------------------
-    footer = bs4Dash::bs4DashFooter(
+    footer = bs4DashFooter(
       left =
         fluidRow(
           column(
@@ -461,21 +459,21 @@ GeDi <- function(genesets = NULL,
       )
     })
 
-    # panel Data Upload ------------------------------------------------------
-    output$ui_panel_data_upload <- renderUI({
+    # panel Data Input ------------------------------------------------------
+    output$ui_panel_data_input <- renderUI({
       tagList(
         box(
           width = 12,
           title = "Step 1",
           status = "danger",
           solidHeader = TRUE,
-          h2("Upload your Genesets input data"),
+          h2("Provide your Genesets as input data"),
           fluidRow(
             column(
               width = 6,
               fileInput(
-                inputId = "uploadgenesetfile",
-                label = "Upload a geneset file",
+                inputId = "inputgenesetfile",
+                label = "Input a geneset file",
                 accept = c(
                   "text/csv",
                   "text/comma-separated-values",
@@ -524,15 +522,15 @@ GeDi <- function(genesets = NULL,
     })
 
     readGenesetsTxt <- reactive({
-      if (is.null(input$uploadgenesetfile)) {
+      if (is.null(input$inputgenesetfile)) {
         return(NULL)
       }
 
       guessed_sep <-
-        .sepguesser(input$uploadgenesetfile$datapath)
+        .sepguesser(input$inputgenesetfile$datapath)
       genesets <-
         utils::read.delim(
-          input$uploadgenesetfile$datapath,
+          input$inputgenesetfile$datapath,
           header = TRUE,
           as.is = TRUE,
           sep = guessed_sep,
@@ -587,7 +585,7 @@ GeDi <- function(genesets = NULL,
         !(
           is.null(reactive_values$genesets)
         ),
-        message = "Please upload a text file via the button on the left."
+        message = "Please provide input data via the button on the left."
       ))
 
       DT::datatable(reactive_values$genesets,
@@ -608,7 +606,7 @@ GeDi <- function(genesets = NULL,
           title = "Optional Filtering Step",
           status = "info",
           solidHeader = TRUE,
-          h2("Filter your uploaded Genesets"),
+          h2("Filter your provided Genesets"),
           collapsible = TRUE,
           collapsed = TRUE,
           fluidRow(
@@ -833,7 +831,7 @@ GeDi <- function(genesets = NULL,
           !(is.null(
             reactive_values$genesets
           )) & !(is.null(reactive_values$genes)) & !(is.null(reactive_values$gs_names)),
-          message = "Please upload your data first before proceeding."
+          message = "Please provide your data first before proceeding."
         )
       )
       tagList(
@@ -959,11 +957,10 @@ GeDi <- function(genesets = NULL,
                 )
               ),
               column(
-                width = 9,
+                width = 10,
                 withSpinner(
                   visNetworkOutput("scores_Network",
-                    width = "800px",
-                    height = "800px"
+                     height = "800px"
                   )
                 )
               )
@@ -1025,7 +1022,7 @@ GeDi <- function(genesets = NULL,
     })
 
     output$scores_Network <- renderVisNetwork({
-      if (!any(igraph::get.edgelist(reactive_values$scores_graph()) != 0)) {
+      if (!any(get.edgelist(reactive_values$scores_graph()) != 0)) {
         showNotification(
           "Please select a larger distance threshold as currently no nodes are connected and the graph cannot be properly rendered.",
           type = "warning"
@@ -1107,7 +1104,7 @@ GeDi <- function(genesets = NULL,
             )),
         fluidRow(column(
           width = 12,
-          bs4Dash::bs4Card(
+          bs4Card(
             id = "tabcard_cluster",
             title = "Geneset Cluster Graphs",
             elevation = 1,
@@ -1141,7 +1138,7 @@ GeDi <- function(genesets = NULL,
           )
         )),
         fluidRow(
-          bs4Dash::bs4Card(
+          bs4Card(
             width = 12,
             id = "card_clustering",
             title = "Clustering graph summaries",
@@ -1280,7 +1277,7 @@ GeDi <- function(genesets = NULL,
 
       graph <- reactive_values$cluster_graph()
 
-      if (!any(igraph::get.edgelist(graph) != 0)) {
+      if (!any(get.edgelist(graph) != 0)) {
         showNotification(
           "It seems like you don't have any clusters. Please adapt the similarity Threshold above and re-run the Clustering.",
           type = "warning"
@@ -1463,7 +1460,7 @@ GeDi <- function(genesets = NULL,
       tagList(fluidRow(
         column(
           width = 6,
-          bs4InfoBoxOutput("infobox_book_genes",
+          bs4Dash::bs4InfoBoxOutput("infobox_book_genes",
             width = 6
           ),
           h5("Bookmarked genes"),
@@ -1475,7 +1472,7 @@ GeDi <- function(genesets = NULL,
             icon = icon("trash"),
             style = .actionButtonStyle
           ),
-          bs4Dash::box(
+          box(
             title = "Manually add genes to bookmarks",
             collapsible = TRUE,
             collapsed = TRUE,
@@ -1499,7 +1496,7 @@ GeDi <- function(genesets = NULL,
             ),
             actionButton(
               "load_bookmarked_genes",
-              label = "Upload genes",
+              label = "Input genes",
               icon = icon("upload"),
               style = .actionButtonStyle
             )
@@ -1507,7 +1504,7 @@ GeDi <- function(genesets = NULL,
         ),
         column(
           width = 6,
-          bs4InfoBoxOutput("infobox_book_genesets",
+          bs4Dash::bs4InfoBoxOutput("infobox_book_genesets",
             width = 6
           ),
           h5("Bookmarked genesets"),
@@ -1523,7 +1520,7 @@ GeDi <- function(genesets = NULL,
             icon = icon("trash"),
             style = .actionButtonStyle
           ),
-          bs4Dash::box(
+          box(
             title = "Manually add genesets to bookmarks",
             collapsible = TRUE,
             collapsed = TRUE,
@@ -1548,7 +1545,7 @@ GeDi <- function(genesets = NULL,
             ),
             actionButton(
               "load_bookmarked_genesets",
-              label = "Upload genesets",
+              label = "Input genesets",
               icon = icon("upload"),
               style = .actionButtonStyle
             )
@@ -1558,7 +1555,7 @@ GeDi <- function(genesets = NULL,
     })
 
     output$infobox_book_genes <- renderbs4InfoBox({
-      bs4InfoBox(
+      bs4Dash::bs4InfoBox(
         title = "Bookmarked genes",
         value = length(reactive_values$genes),
         icon = icon("bookmark"),
@@ -1570,7 +1567,7 @@ GeDi <- function(genesets = NULL,
     })
 
     output$infobox_book_genesets <- renderbs4InfoBox({
-      bs4InfoBox(
+      bs4Dash::bs4InfoBox(
         title = "Bookmarked genesets",
         value = length(reactive_values$genes),
         icon = icon("bookmark"),
@@ -1651,25 +1648,25 @@ GeDi <- function(genesets = NULL,
 
     # Observers ------------------------------------------------------------------
 
-    # Data Upload Panel ----------------------------------------------------------
-    observeEvent(input$uploadgenesetfile, {
+    # Data Input Panel ----------------------------------------------------------
+    observeEvent(input$inputgenesetfile, {
       filename <-
-        unlist(strsplit(input$uploadgenesetfile$datapath, ".", fixed = TRUE))
+        unlist(strsplit(input$inputgenesetfile$datapath, ".", fixed = TRUE))
       format <- tail(filename, n = 1)
 
       if (format == "RDS") {
         reactive_values$genesets <-
-          readRDS(input$uploadgenesetfile$datapath)
+          readRDS(input$inputgenesetfile$datapath)
       } else if (format == "txt") {
         reactive_values$genesets <- readGenesetsTxt()
       } else if (format == "xlsx") {
         reactive_values$genesets <-
-          readxl::read_excel(input$uploadgenesetfile$datapath)
+          readxl::read_excel(input$inputgenesetfile$datapath)
       } else {
         showNotification(
           "It seems like your input file has not the right format.
           Please check the Welcome panel for the right input format and
-          upload your data again.",
+          provide your data again.",
           type = "error"
         )
       }
@@ -1690,7 +1687,7 @@ GeDi <- function(genesets = NULL,
         },
         error = function(cond) {
           showNotification(
-            "It seems like your data does not have a column named 'Genes'. Please check your data and try to upload it again.",
+            "It seems like your data does not have a column named 'Genes'. Please check your data and try to input it again.",
             type = "error"
           )
           reactive_values$alt_names <- TRUE
@@ -1719,7 +1716,7 @@ GeDi <- function(genesets = NULL,
         "Genes"
 
       showNotification(
-        "Successfully selected your columns and uploaded your data.
+        "Successfully selected your columns and read your data.
         We renamed the columns to 'Genesets' and 'Genes'.
         You can now proceed.",
         type = "message"
@@ -1884,7 +1881,7 @@ GeDi <- function(genesets = NULL,
         if (is.null(reactive_values$ppi)) {
           showNotification(
             "It seems like you have not downloaded a PPI matrix.
-            Please return to the Data Upload panel and download the respective PPI.",
+            Please return to the Data Input panel and download the respective PPI.",
             type = "error"
           )
           scores <- NULL
@@ -2056,7 +2053,7 @@ GeDi <- function(genesets = NULL,
 
       reactive_values$cluster <- cluster
       progress$inc(0.2, detail = "Successfully clustered data.")
-      bs4Dash::updateBox("clustering_param_box", action = "toggle")
+      updateBox("clustering_selection_box", action = "toggle")
     })
 
 
@@ -2075,10 +2072,10 @@ GeDi <- function(genesets = NULL,
       introjs(session, options = list(steps = tour))
     })
 
-    observeEvent(input$tour_data_upload, {
+    observeEvent(input$tour_data_input, {
       tour <- utils::read.delim(
         system.file("extdata",
-          "intro_data_upload.txt",
+          "intro_data_input.txt",
           package = "GeDi"
         ),
         sep = ";",

@@ -115,13 +115,6 @@ jobs:
           arguments: '--no-check-bioc-views --no-check-bioc-help'
           error-on: 'error'
 
-      # - name: Upload check results
-      #   if: failure()
-      #   uses: actions/upload-artifact@master
-      #   with:
-      #     name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-      #     path: check
-
       - name: Show testthat output
         if: always()
         run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true

@@ -5,7 +5,6 @@
 #' @param a,b character vector, set of gene identifiers.
 #'
 #' @return The Jaccard distance of the two sets.
-#' @import dplyr
 #' @export
 #'
 #' @examples
