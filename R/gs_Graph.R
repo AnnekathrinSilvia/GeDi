@@ -512,9 +512,9 @@ getBipartiteGraph <- function(cluster,
   df <- data.frame(
     nodes,
     degree,
-    betweenness,
+    round(betweenness, 2),
     centrality,
-    clustering_coef,
+    round(clustering_coef, 2),
     genesets
   )
 

@@ -65,7 +65,6 @@ Imports:
     InteractiveComplexHeatmap,
     shinyAce,
     org.Hs.eg.db,
-    Rcpp,
-    BiocParallel,
-    markdown,
-    BiocNeighbors
+    BiocNeighbors,
+    tm,
+    wordcloud2
