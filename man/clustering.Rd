@@ -2,7 +2,7 @@
 % Please edit documentation in R/clustering.R
 \name{clustering}
 \alias{clustering}
-\title{Cluster genesets usign Louvain or Markov clustering.}
+\title{Cluster genesets using Louvain or Markov clustering.}
 \usage{
 clustering(scores, threshold, cluster_method = "louvain")
 }

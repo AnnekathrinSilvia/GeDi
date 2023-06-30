@@ -20,7 +20,7 @@ goSimilarity(
 See \link[GOSemSim:goSim]{GOSemSim::goSim} measure parameter for possibilities.}
 
 \item{ontology}{character, the ontology to use. See \link[GOSemSim:goSim]{GOSemSim::goSim}
-ont parameter for possibilities.}
+\code{ont} parameter for possibilities.}
 
 \item{species}{character, the species of your data. Indicated as
 org.XX.eg.db package from Bioconductor.}

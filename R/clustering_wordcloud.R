@@ -1,15 +1,24 @@
-#' Title
+#' Show the enriched terms as wordcloud
 #'
-#' @param genesets_df
-#' @param cluster
+#' Show the terms of the genesets descriptions as wordcloud of enriched terms
 #'
-#' @return
+#' @param genesets_df `data.frame`, a `data.frame` of the input data, containing
+#'                    the genesets, genes and a description of the individual
+#'                    genesets that can be used for the wordcloud. If no
+#'                    description or term is included in the data, the rownames
+#'                    will be used.
+#'
+#' @return a `list` of parameters which can be used to generate a wordcloud
 #' @export
 #' @import tm
 #' @importFrom wordcloud2 wordcloud2
 #' @importFrom RColorBrewer brewer.pal
 #'
 #' @examples
+#' data(macrophage_topGO_example,
+#'      package = "GeDi",
+#'      envir = environment())
+#' wordcloud <- enrichmentWordcloud(macrophage_topGO_example)
 enrichmentWordcloud <- function(genesets_df){
   if("Term" %in% names(genesets_df)){
     terms <- genesets_df$Term
@@ -18,7 +27,6 @@ enrichmentWordcloud <- function(genesets_df){
   }else{
     terms <- rownames(genesets_df)
   }
-  print(terms)
 
   corpus <- Corpus(VectorSource(terms))
   corpus <- tm_map(corpus, removeWords, stopwords("english"))
@@ -28,7 +36,6 @@ enrichmentWordcloud <- function(genesets_df){
   dtm <- as.matrix(TermDocumentMatrix(corpus))
   v <- sort(rowSums(dtm),decreasing=TRUE)
   d <- data.frame(word = names(v),freq=v)
-  print(d)
 
   set.seed(42)
   w <- wordcloud2(d,

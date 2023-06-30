@@ -10,7 +10,7 @@ seedFinding(distances, simThreshold, memThreshold)
 \item{distances}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
 
 \item{simThreshold}{numerical, a threshold of what is considered a
-close relationsship between two elements in distances}
+close relationship between two elements in distances}
 
 \item{memThreshold}{numerical, a threshold used to identify members of
 a seeds}

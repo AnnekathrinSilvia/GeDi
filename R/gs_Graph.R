@@ -52,7 +52,6 @@ getAdjacencyMatrix <- function(distanceMatrix,
 #' @export
 #'
 #' @examples
-#'
 #' adj <- Matrix::Matrix(0, 100, 100)
 #' adj[c(80:100), c(80:100)] <- 1
 #' geneset_names <- as.character(stats::runif(100, min = 0, max = 1))

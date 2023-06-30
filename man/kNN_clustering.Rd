@@ -2,7 +2,7 @@
 % Please edit documentation in R/clustering.R
 \name{kNN_clustering}
 \alias{kNN_clustering}
-\title{Caculate clusters based on kNN clustering}
+\title{Calculate clusters based on kNN clustering}
 \usage{
 kNN_clustering(scores, k)
 }

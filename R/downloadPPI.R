@@ -28,7 +28,6 @@ getId <- function(species, version = "11.5") {
   return(species_id)
 }
 
-
 #' Get the STRING entry of a species
 #'
 #' Get the respective [STRINGdb] object of your species of interest
@@ -110,10 +109,10 @@ getPPI <- function(genes, string_db, anno_df) {
   scores <- string_db$get_interactions(string_ids)
   colnames(scores) <- c("Gene1", "Gene2", "combined_score")
 
+  # extract smallest and largest value to normalize all scores to the (0, 1)
+  # interval
   max <- max(scores$combined_score, -Inf)
   min <- min(scores$combined_score, Inf)
-
-  # normalize the interaction scores to (0, 1)
   scores$combined_score <-
     round((scores$combined_score - min) / (max - min), 2)
 

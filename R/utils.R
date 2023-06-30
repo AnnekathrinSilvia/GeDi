@@ -38,7 +38,7 @@ getGenes <- function(genesets, gene_name = NULL) {
     stopifnot(any(names(genesets) == "Genes"))
   }
 
-  # check in whcih column the genes are
+  # check in which column the genes are
   if (!is.null(gene_name)) {
     genesList <- genesets[, gene_name]
   } else {
@@ -161,9 +161,8 @@ getGenes <- function(genesets, gene_name = NULL) {
   return(genesets)
 }
 
-#' Determine the number of cores touse for a function
-#'
 #' Determine the number of cores to use for a function
+#'
 #'
 #' @param n_cores numeric, number of cores to use for the function.
 #'                Defaults to `Null` in which case the function takes half of

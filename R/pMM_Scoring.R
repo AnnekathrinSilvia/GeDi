@@ -50,9 +50,6 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
   }
 
   # calculate sums of interacting genes
-  # sumInt <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% int), ]$combined_score)
-  # sumOnlyB <- sum(ppi[which(ppi$Gene1 %in% onlya & ppi$Gene2 %in% onlyb), ]$combined_score)
-
   sumInt <- sum(ppi[ppi$Gene1 %in% onlya & ppi$Gene2 %in% int, "combined_score"])
   sumOnlyB <- sum(ppi[ppi$Gene1 %in% onlya & ppi$Gene2 %in% onlyb, "combined_score"])
 
@@ -169,11 +166,6 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
     a <- genes[[j]]
     if (!is.null(progress)) {
       progress$inc(1 / l, detail = paste("Scoring geneset number", j))
-    }
-
-    # Maybe better to work with BioCParallel then to work with parallel
-    fun <- function(b, a, ppi, maxInteraction){
-      pMM <- pMMlocal(a, b, ppi, maxInteract)
     }
 
     results[[j]] <- parallel::mclapply((j + 1):l, function(i) {

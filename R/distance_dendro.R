@@ -20,9 +20,15 @@
 #' dendro <- distance_dendro(distance_scores, cluster_method = "single")
 distance_dendro <- function(distance_scores,
                             cluster_method = "average") {
+  # check if distance scores are valid
   stopifnot(length(distance_scores) > 0)
+
+  # calculate the distance between the distance scores and cluster on that
+  # information.
   dist <- dist(t(distance_scores))
   hc <- hclust(dist, cluster_method)
+
+  # plot dendrogram
   p <- ggdendrogram(hc, rotate = FALSE, size = 2)
 
   return(p)

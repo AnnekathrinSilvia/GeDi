@@ -2,13 +2,26 @@
 % Please edit documentation in R/clustering_wordcloud.R
 \name{enrichmentWordcloud}
 \alias{enrichmentWordcloud}
-\title{Title}
+\title{Show the enriched terms as wordcloud}
 \usage{
 enrichmentWordcloud(genesets_df)
 }
 \arguments{
-\item{cluster}{}
+\item{genesets_df}{\code{data.frame}, a \code{data.frame} of the input data, containing
+the genesets, genes and a description of the individual
+genesets that can be used for the wordcloud. If no
+description or term is included in the data, the rownames
+will be used.}
+}
+\value{
+a \code{list} of parameters which can be used to generate a wordcloud
 }
 \description{
-Title
+Show the terms of the genesets descriptions as wordcloud of enriched terms
+}
+\examples{
+data(macrophage_topGO_example,
+     package = "GeDi",
+     envir = environment())
+wordcloud <- enrichmentWordcloud(macrophage_topGO_example)
 }

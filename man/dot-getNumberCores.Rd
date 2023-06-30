@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{.getNumberCores}
 \alias{.getNumberCores}
-\title{Determine the number of cores touse for a function}
+\title{Determine the number of cores to use for a function}
 \usage{
 .getNumberCores(n_cores = NULL)
 }

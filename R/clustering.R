@@ -6,7 +6,6 @@
 #'
 #' @return A `list` of unique sets
 #' @export
-#' @importFrom rje is.subset
 #'
 #' @examples
 #' seeds <- list(c(1:5), c(2:5), c(6:10))
@@ -33,9 +32,9 @@ checkInclusion <- function(seeds) {
 
       # check if either s1 or s2 is a subset of the other, if so add to the
       # list of sets to remove
-      if (rje::is.subset(s1, s2)) {
+      if (setequal(intersect(s1, s2), s1)) {
         remove <- c(remove, i)
-      } else if (rje::is.subset(s2, s1)) {
+      } else if (setequal(intersect(s2, s1), s2)) {
         remove <- c(remove, j)
       }
     }
@@ -58,7 +57,7 @@ checkInclusion <- function(seeds) {
 #'
 #' @param distances A [Matrix::Matrix()] of (distance) scores
 #' @param simThreshold numerical, a threshold of what is considered a
-#'                     close relationsship between two elements in distances
+#'                     close relationship between two elements in distances
 #' @param memThreshold numerical, a threshold used to identify members of
 #'                     a seeds
 #'
@@ -169,7 +168,7 @@ fuzzy_clustering <- function(seeds, threshold) {
   return(seeds)
 }
 
-#' Cluster genesets usign Louvain or Markov clustering.
+#' Cluster genesets using Louvain or Markov clustering.
 #'
 #' Cluster the geneset using either Louvain or Markov clustering.
 #'
@@ -194,10 +193,12 @@ clustering <- function(scores,
                        threshold,
                        cluster_method = "louvain"){
   stopifnot(cluster_method == "louvain" || cluster_method == "markov")
+  # get adjacency matrix of the data and build a graph
   adj_matrix <- getAdjacencyMatrix(scores,
                                    threshold)
   graph <- buildGraph(adj_matrix)
 
+  # run louvain or markov clustering
   if(cluster_method == "louvain"){
     clustering <- cluster_louvain(graph)
     memberships <- membership(clustering)
@@ -206,20 +207,23 @@ clustering <- function(scores,
     memberships <- clustering$membership
   }
 
+  # extract the cluster memeberships of each genesets
   cluster <- vector(mode = "list", length = max(memberships))
 
+  # tranform the mapping of geneset -> cluster to a cluster-> genesets mapping
   for(i in 1:length(memberships)){
     sub_cluster <- memberships[i]
     cluster[[sub_cluster]] <- c(cluster[[sub_cluster]], i)
   }
 
+  # remove all singletons
   filter <- sapply(cluster, function(x) length(x) > 1)
   cluster <- cluster[filter]
 
   return(cluster)
 }
 
-#' Caculate clusters based on kNN clustering
+#' Calculate clusters based on kNN clustering
 #'
 #' Calculate a clustering of the data using the kNN approach
 #'
@@ -256,7 +260,6 @@ kNN_clustering <- function(scores,
 #' @param gs_names A vector of geneset names
 #'
 #' @return A `data.frame` mapping each geneset to the cluster(s) it belongs to
-#'
 .getClusterDatatable <- function(cluster, gs_names) {
   # check if geneset names are given
   stopifnot(length(gs_names) > 0)
