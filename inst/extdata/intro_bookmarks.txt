@@ -1,0 +1,9 @@
+element;intro
+#welcome;Welcome to the interactive tour for <code>GeDi</code>!<br>You will get to know the different components of the <code>GeDi</code> user interface, and learn the basic usage mechanisms by doing.<br><code>GeDi</code> can help you determine the geneset distances in you data and hence help you identify larger themes and pathways of your data.<br>This introductory tour is best viewed if the app is full-screen. Click on the <code>'Next'</code> button to proceed with the interactive tour of the <b>Welcome</b> panel. If you click outside of the highlighted area, you will interrupt the tour, but you can resume it anytime by re-clicking on the tour button.
+#Step1;The tour will take you through the relevant elements of the UI. You can start the tour in each section by clicking on the dedicated button.
+#tour_welcome; For the Welcome page, you can (re)start it with this button, and each tab will have a similar one, consistently placed in the upper right section of the page.
+#Exiting;You can at any time exit this guided introduction by clicking outside of the highlighted portion.
+#ddbtn_docs;A dropdown button for the Documentation is displayed here, and you can click on that to show its components. You can for example find a link to the vignette for the <code>GeDi</code> package, in case you want to consult it while running the app.
+#ddbtn_info;The same is possible with the dropdown button for more Info on <code>GeDi</code>.These buttons report the session information from which you are running <code>GeDi</code> (which you should report in case of issues or bugs), the appropriate citation if you use <code>GeDi</code> in your work, as well as information on how to contact the <code>GeDi</code> development team.
+#sidebar; You can navigate to the content of the different panels by clicking on the respective panel in this sidebar.
+#Thanks;Thank you for taking the <b>Welcome</b> tour of <code>GeDi</code>!

@@ -56,6 +56,13 @@ GeDi <- function(genesets = NULL,
     # navbar definition -------------------------------------------------------
     header = bs4DashNavbar(
       tagList(tags$code(tags$h3("GeDi"))),
+      actionButton(
+        "bookmarker",
+        label = "Bookmark",
+        icon = icon("heart"),
+        style = .actionButtonStyle,
+        class = "ml-5"
+      ),
       tags$span(style = "display:inline-block; width: 30%"),
       tagList(
         shinyWidgets::dropdownButton(
@@ -111,7 +118,7 @@ GeDi <- function(genesets = NULL,
         )
       ),
       title = bs4DashBrand(title = HTML("<small>GeDi</small>"),
-                           href = "https://github.com/AnnekathrinSilvia/GeDi",),
+                           href = "https://github.com/AnnekathrinSilvia/GeDi", ),
       skin = "dark",
       status = "gray-dark",
       border = FALSE,
@@ -132,6 +139,7 @@ GeDi <- function(genesets = NULL,
       elevation = 1,
       opacity = 0.8,
       bs4SidebarMenu(
+        id = "tabs",
         bs4SidebarMenuItem("Welcome!",
                            tabName = "tab_welcome",
                            icon = icon("house")),
@@ -374,6 +382,10 @@ GeDi <- function(genesets = NULL,
     # TODO: is this reactive value really needed? Maybe for the report?
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
+
+    # bookmarks
+    reactive_values$bookmarked_genesets <- NULL
+    reactive_values$bookmarked_cluster <- NULL
 
     # panel Welcome ----------------------------------------------------------
     output$ui_panel_welcome <- renderUI({
@@ -1099,21 +1111,18 @@ GeDi <- function(genesets = NULL,
                        fluidRow(
                          column(
                            width = 2,
-                           selectInput("cluster_nb",
-                                       "Select a cluster",
-                                       choices = c(1:length(reactive_values$cluster)),
-                                       selected = 1)
-                         ),
-                         column(
-                           width = 12,
-                           withSpinner(
-                             wordcloud2::wordcloud2Output(
-                               "enrichment_wordcloud_cluster"
-                             )
+                           selectInput(
+                             "cluster_nb",
+                             "Select a cluster",
+                             choices = c(1:length(reactive_values$cluster)),
+                             selected = 1
                            )
-                         )
-                       )
-                       )
+                         ),
+                         column(width = 12,
+                                withSpinner(
+                                  wordcloud2::wordcloud2Output("enrichment_wordcloud_cluster")
+                                ))
+                       ))
             )
           )
         )),
@@ -1343,11 +1352,11 @@ GeDi <- function(genesets = NULL,
 
     output$dt_cluster <- DT::renderDataTable({
       validate(
-        need(!(is.null(
-          reactive_values$cluster
-        )),
-        message = "It seems like the data has not yet been clustered. Please
-        cluster your data first with the box above.")
+        need(
+          !(is.null(reactive_values$cluster)),
+          message = "It seems like the data has not yet been clustered. Please
+        cluster your data first with the box above."
+        )
       )
       dt_cluster <- .getClusterDatatable(reactive_values$cluster,
                                          reactive_values$gs_names)
@@ -1355,20 +1364,21 @@ GeDi <- function(genesets = NULL,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
-    output$enrichment_wordcloud_cluster <- wordcloud2::renderWordcloud2({
-      validate(
-        need(!(is.null(
-          reactive_values$cluster
-        )),
-        message = "It seems like the data has not yet been clustered. Please
-        cluster your data first with the box above.")
-      )
-      cluster <- as.numeric(input$cluster_nb)
-      genesets <- reactive_values$cluster[[cluster]]
-      genesets_df <- reactive_values$genesets[genesets, ]
+    output$enrichment_wordcloud_cluster <-
+      wordcloud2::renderWordcloud2({
+        validate(
+          need(
+            !(is.null(reactive_values$cluster)),
+            message = "It seems like the data has not yet been clustered. Please
+        cluster your data first with the box above."
+          )
+        )
+        cluster <- as.numeric(input$cluster_nb)
+        genesets <- reactive_values$cluster[[cluster]]
+        genesets_df <- reactive_values$genesets[genesets,]
 
-      enrichmentWordcloud(genesets_df)
-    })
+        enrichmentWordcloud(genesets_df)
+      })
 
     # controlbar --------------------------------------------------------------
 
@@ -1409,6 +1419,11 @@ GeDi <- function(genesets = NULL,
 
     # Report panel -------------------------------------------------------------
     output$ui_panel_report <- renderUI({
+      validate(need(!(
+        is.null(reactive_values$genesets)
+      ),
+      message = "Please provide input data via the Data input panel."))
+
       tagList(fluidRow(column(width = 11),
                        column(
                          width = 1,
@@ -1444,49 +1459,6 @@ GeDi <- function(genesets = NULL,
       tagList(fluidRow(
         column(
           width = 6,
-          bs4Dash::bs4InfoBoxOutput("infobox_book_genes",
-                                    width = 6),
-          h5("Bookmarked genes"),
-          DT::dataTableOutput("bookmarks_genes"),
-          downloadButton("btn_export_genes", label = "", class = "biocdlbutton"),
-          actionButton(
-            "btn_reset_genes",
-            label = "",
-            icon = icon("trash"),
-            style = .actionButtonStyle
-          ),
-          box(
-            title = "Manually add genes to bookmarks",
-            collapsible = TRUE,
-            collapsed = TRUE,
-            id = "box_bm_genes",
-            width = 12,
-            shinyAce::aceEditor(
-              "editor_bookmarked_genes",
-              theme = "solarized_light",
-              height = "200px",
-              readOnly = FALSE,
-              wordWrap = TRUE,
-              placeholder = paste(
-                c(
-                  "Enter some gene identifiers or gene names, ",
-                  "as they are provided in the `gene_id` and ",
-                  "`gene_name` columns of the annotation object. ",
-                  "For example:"
-                ),
-                collapse = "\n"
-              )
-            ),
-            actionButton(
-              "load_bookmarked_genes",
-              label = "Input genes",
-              icon = icon("upload"),
-              style = .actionButtonStyle
-            )
-          )
-        ),
-        column(
-          width = 6,
           bs4Dash::bs4InfoBoxOutput("infobox_book_genesets",
                                     width = 6),
           h5("Bookmarked genesets"),
@@ -1501,57 +1473,92 @@ GeDi <- function(genesets = NULL,
             label = "",
             icon = icon("trash"),
             style = .actionButtonStyle
-          ),
-          box(
-            title = "Manually add genesets to bookmarks",
-            collapsible = TRUE,
-            collapsed = TRUE,
-            id = "box_bm_genesets",
-            width = 12,
-            shinyAce::aceEditor(
-              "editor_bookmarked_genesets",
-              theme = "solarized_light",
-              height = "200px",
-              readOnly = FALSE,
-              wordWrap = TRUE,
-              placeholder = paste(
-                c(
-                  "Enter some geneset identifiers, as they are ",
-                  "provided in the `gs_id` column of the ",
-                  "res_enrich object. You can also use the ",
-                  "values in the `gs_description` field. ",
-                  "For example:"
-                ),
-                collapse = "\n"
-              )
-            ),
-            actionButton(
-              "load_bookmarked_genesets",
-              label = "Input genesets",
-              icon = icon("upload"),
-              style = .actionButtonStyle
-            )
           )
+          # box(
+          #   title = "Manually add genesets to bookmarks",
+          #   collapsible = TRUE,
+          #   collapsed = TRUE,
+          #   id = "box_bm_genesets",
+          #   width = 12,
+          #   shinyAce::aceEditor(
+          #     "editor_bookmarked_genesets",
+          #     theme = "solarized_light",
+          #     height = "200px",
+          #     readOnly = FALSE,
+          #     wordWrap = TRUE,
+          #     placeholder = paste(
+          #       c(
+          #         "Enter some geneset identifiers or gene names, ",
+          #         "as they are provided in the `gene_id` and ",
+          #         "`gene_name` columns of the annotation object. ",
+          #         "For example:"
+          #       ),
+          #       collapse = "\n"
+          #     )
+          #   ),
+          #   actionButton(
+          #     "load_bookmarked_genesets",
+          #     label = "Input genesets",
+          #     icon = icon("upload"),
+          #     style = .actionButtonStyle
+          #   )
+          # )
+        ),
+        column(
+          width = 6,
+          bs4Dash::bs4InfoBoxOutput("infobox_book_cluster",
+                                    width = 6),
+          h5("Bookmarked cluster"),
+          DT::dataTableOutput("bookmarks_cluster"),
+          downloadButton(
+            "btn_export_cluster",
+            label = "",
+            class = "biocdlbutton"
+          ),
+          actionButton(
+            "btn_reset_cluster",
+            label = "",
+            icon = icon("trash"),
+            style = .actionButtonStyle
+          )
+          # box(
+          #   title = "Manually add cluster to bookmarks",
+          #   collapsible = TRUE,
+          #   collapsed = TRUE,
+          #   id = "box_bm_cluster",
+          #   width = 12,
+          #   shinyAce::aceEditor(
+          #     "editor_bookmarked_cluster",
+          #     theme = "solarized_light",
+          #     height = "200px",
+          #     readOnly = FALSE,
+          #     wordWrap = TRUE,
+          #     placeholder = paste(
+          #       c(
+          #         "Enter some cluster identifiers, as they are ",
+          #         "provided in the `gs_id` column of the ",
+          #         "res_enrich object. You can also use the ",
+          #         "values in the `gs_description` field. ",
+          #         "For example:"
+          #       ),
+          #       collapse = "\n"
+          #     )
+          #   ),
+          #   actionButton(
+          #     "load_bookmarked_cluster",
+          #     label = "Input cluster",
+          #     icon = icon("upload"),
+          #     style = .actionButtonStyle
+          #   )
+          # )
         )
       ))
-    })
-
-    output$infobox_book_genes <- renderbs4InfoBox({
-      bs4Dash::bs4InfoBox(
-        title = "Bookmarked genes",
-        value = length(reactive_values$genes),
-        icon = icon("bookmark"),
-        iconElevation = 3,
-        color = "info",
-        fill = TRUE,
-        width = 12
-      )
     })
 
     output$infobox_book_genesets <- renderbs4InfoBox({
       bs4Dash::bs4InfoBox(
         title = "Bookmarked genesets",
-        value = length(reactive_values$genes),
+        value = nrow(reactive_values$bookmarked_genesets),
         icon = icon("bookmark"),
         iconElevation = 3,
         color = "success",
@@ -1560,40 +1567,54 @@ GeDi <- function(genesets = NULL,
       )
     })
 
-    output$bookmarks_genes <- DT::renderDataTable({
-      DT::datatable(reactive_values$genesets, rownames = FALSE)
-    })
-    output$bookmarks_genesets <- DT::renderDataTable({
-      DT::datatable(reactive_values$genesets, rownames = FALSE)
+    output$infobox_book_cluster <- renderbs4InfoBox({
+      bs4Dash::bs4InfoBox(
+        title = "Bookmarked cluster",
+        value = nrow(reactive_values$bookmarked_cluster),
+        icon = icon("bookmark"),
+        iconElevation = 3,
+        color = "info",
+        fill = TRUE,
+        width = 12
+      )
     })
 
-    output$btn_export_genes <- downloadHandler(
-      filename = function() {
-        paste0("GeneTonicBookmarks_genes_",
-               gsub(" ", "_", gsub(
-                 "-", "", gsub(":", "-", as.character(Sys.time()))
-               )),
-               ".txt")
-      },
-      content = function(file) {
-        writeLines(text = reactive_values$mygenes,
-                   con = file)
-      }
-    )
+    output$bookmarks_genesets <- DT::renderDataTable({
+      DT::datatable(reactive_values$bookmarked_genesets, rownames = FALSE)
+    })
+
+    output$bookmarks_cluster <- DT::renderDataTable({
+      DT::datatable(reactive_values$bookmarked_cluster, rownames = FALSE)
+    })
 
     output$btn_export_genesets <- downloadHandler(
       filename = function() {
-        paste0("GeneTonicBookmarks_genesets_",
+        paste0("GeDi_bookmarked_genesets_",
                gsub(" ", "_", gsub(
                  "-", "", gsub(":", "-", as.character(Sys.time()))
                )),
                ".txt")
       },
       content = function(file) {
-        writeLines(text = reactive_values$mygenesets,
+        writeLines(text = reactive_values$bookmarked_genesets,
                    con = file)
       }
     )
+
+    output$btn_export_cluster <- downloadHandler(
+      filename = function() {
+        paste0("GeDi_bookmarked_cluster_",
+               gsub(" ", "_", gsub(
+                 "-", "", gsub(":", "-", as.character(Sys.time()))
+               )),
+               ".txt")
+      },
+      content = function(file) {
+        writeLines(text = reactive_values$bookmarked_cluster,
+                   con = file)
+      }
+    )
+
 
     output$start_report <- downloadHandler(
       filename = paste0(
@@ -1742,7 +1763,7 @@ GeDi <- function(genesets = NULL,
           threshold <- as.numeric(input$select_filter_genesets_threshold)
           data <- .buildHistogramData(reactive_values$genes,
                                       reactive_values$gs_names)
-          remove <- data[data$Size >= threshold,]$Geneset
+          remove <- data[data$Size >= threshold, ]$Geneset
           if (length(remove) == 0) {
             showNotification(
               paste(
@@ -2017,6 +2038,124 @@ GeDi <- function(genesets = NULL,
     })
 
 
+
+    # Report panel ----------------------------------------------------------
+
+    observeEvent(input$bookmarker, {
+      if (input$tabs == "tab_welcome" |
+          input$tabs == "tab_data_input" | input$tabs == "tab_scores") {
+        showNotification("Welcome to GeDi!")
+      } else if (input$tabs == "tab_graph") {
+        if (input$tabsetpanel_cluster == "Geneset Graph") {
+          g <- reactive_values$cluster_graph()
+          cur_sel <- input$cluster_Network_selected
+          if(cur_sel == ""){
+            showNotification("Select a node in the network to bookmark it", type = "warning")
+          }else{
+            cur_node <- match(cur_sel, V(g)$name)
+            cur_sel_term <- reactive_values$gs_description[cur_node]
+            cur_sel_merged <- c("Geneset_id" = cur_sel, "Geneset_description" = cur_sel_term)
+            if (cur_sel %in% reactive_values$bookmarked_genesets) {
+              showNotification(
+                sprintf(
+                  "The selected gene set %s is already in the set of the bookmarked genesets.",
+                  cur_sel
+                ),
+                type = "default"
+              )
+            } else {
+              reactive_values$bookmarked_genesets <-
+                unique(rbind(reactive_values$bookmarked_genesets, cur_sel_merged))
+              showNotification(
+                sprintf(
+                  "Added %s to the bookmarked genesets. The list contains now %d elements",
+                  cur_sel,
+                  nrow(reactive_values$bookmarked_genesets)
+                ),
+                type = "message"
+              )
+            }
+          }
+        }
+        else if (input$tabsetpanel_cluster == "Cluster-Geneset Bipartite Graph") {
+          g <- reactive_values$bipartite_graph()
+          cur_sel <- input$cluster_geneset_bipartite_Network_selected
+          cur_node <- match(cur_sel, V(g)$name)
+          cur_nodetype <- V(g)$nodeType[cur_node]
+
+          if (cur_sel == "") {
+            showNotification("Select a node in the network to bookmark it", type = "warning")
+          } else {
+            if (cur_nodetype == "Geneset") {
+              cur_sel_term <- reactive_values$gs_description[cur_node]
+              cur_sel_merged <- c("Geneset_id" = cur_sel, "Geneset_description" = cur_sel_term)
+              if (cur_sel %in% reactive_values$bookmarked_genesets) {
+                showNotification(
+                  sprintf(
+                    "The selected gene set %s is already in the set of the bookmarked genesets.",
+                    cur_sel
+                  ),
+                  type = "default"
+                )
+              } else {
+                reactive_values$bookmarked_genesets <-
+                  unique(rbind(reactive_values$bookmarked_genesets, cur_sel_merged))
+                showNotification(
+                  sprintf(
+                    "Added %s to the bookmarked genesets. The list contains now %d elements",
+                    cur_sel,
+                    nrow(reactive_values$bookmarked_genesets)
+                  ),
+                  type = "message"
+                )
+              }
+            } else if (cur_nodetype == "Cluster") {
+              cluster_nb <- as.numeric(unlist(strsplit(cur_sel, " "))[[2]])
+              cur_sel_cluster <- reactive_values$cluster[[cluster_nb]]
+              cur_sel_cluster_member <- reactive_values$gs_names[cur_sel_cluster]
+              cur_sel_cluster_term <- reactive_values$gs_description[cur_sel_cluster]
+              cur_cluster <- c("Cluster" = cur_sel,
+                               "Cluster_Members" = paste(cur_sel_cluster_member, collapse = ", "),
+                               "Cluster_Member_Describtion" = paste(cur_sel_cluster_term, collapse = ", "))
+              if (cur_sel %in% reactive_values$bookmarked_cluster) {
+                showNotification(
+                  sprintf(
+                    "The selected cluster %sis already in the set of the bookmarked cluster.",
+                    cur_sel
+                  ),
+                  type = "default"
+                )
+              } else {
+                reactive_values$bookmarked_cluster <-
+                  unique(rbind(reactive_values$bookmarked_cluster, cur_cluster))
+                showNotification(
+                  sprintf(
+                    "Added %s to the bookmarked cluster. The list contains now %d elements",
+                    cur_sel,
+                    nrow(reactive_values$bookmarked_cluster)
+                  ),
+                  type = "message"
+                )
+              }
+            }
+          }
+        }
+      }
+      else if (input$gt_tabs == "tab_bookmarks") {
+        showNotification("You are already in the Bookmarks tab...")
+      }
+    })
+
+    observeEvent(input$btn_reset_genesets, {
+      reactive_values$bookmarked_genesets <- c()
+      showNotification("Resetting list of bookmarked genesets...")
+    })
+
+    observeEvent(input$btn_reset_cluster, {
+      reactive_values$bookmarked_cluster <- c()
+      showNotification("Resetting list of bookmarked cluster...")
+    })
+
     # Tour Observers -------------------------------------------------------------
     observeEvent(input$tour_welcome, {
       tour <- utils::read.delim(
@@ -2071,6 +2210,19 @@ GeDi <- function(genesets = NULL,
       introjs(session, options = list(steps = tour))
     })
 
+    observeEvent(input$tour_bookmarks, {
+      tour <- utils::read.delim(
+        system.file("extdata",
+                    "intro_bookmarks.txt",
+                    package = "GeDi"),
+        sep = ";",
+        stringsAsFactors = FALSE,
+        row.names = NULL,
+        quote = ""
+      )
+      introjs(session, options = list(steps = tour))
+    })
+
 
     # Buttons Navbar Observers -------------------------------------------------
     observeEvent(input$btn_first_help, {
@@ -2083,7 +2235,7 @@ GeDi <- function(genesets = NULL,
           easyClose = TRUE,
           tagList(includeMarkdown(
             system.file("extdata", "GeDi101.md", package = "GeDi")
-          ),)
+          ), )
         )
       )
     })

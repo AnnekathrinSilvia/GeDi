@@ -52,7 +52,6 @@ Imports:
     fontawesome,
     grDevices,
     parallel,
-    rje,
     stats,
     ggplot2,
     plotly,
