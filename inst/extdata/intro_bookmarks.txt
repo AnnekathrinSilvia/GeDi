@@ -1,9 +1,13 @@
 element;intro
-#welcome;Welcome to the interactive tour for <code>GeDi</code>!<br>You will get to know the different components of the <code>GeDi</code> user interface, and learn the basic usage mechanisms by doing.<br><code>GeDi</code> can help you determine the geneset distances in you data and hence help you identify larger themes and pathways of your data.<br>This introductory tour is best viewed if the app is full-screen. Click on the <code>'Next'</code> button to proceed with the interactive tour of the <b>Welcome</b> panel. If you click outside of the highlighted area, you will interrupt the tour, but you can resume it anytime by re-clicking on the tour button.
-#Step1;The tour will take you through the relevant elements of the UI. You can start the tour in each section by clicking on the dedicated button.
-#tour_welcome; For the Welcome page, you can (re)start it with this button, and each tab will have a similar one, consistently placed in the upper right section of the page.
-#Exiting;You can at any time exit this guided introduction by clicking outside of the highlighted portion.
-#ddbtn_docs;A dropdown button for the Documentation is displayed here, and you can click on that to show its components. You can for example find a link to the vignette for the <code>GeDi</code> package, in case you want to consult it while running the app.
-#ddbtn_info;The same is possible with the dropdown button for more Info on <code>GeDi</code>.These buttons report the session information from which you are running <code>GeDi</code> (which you should report in case of issues or bugs), the appropriate citation if you use <code>GeDi</code> in your work, as well as information on how to contact the <code>GeDi</code> development team.
-#sidebar; You can navigate to the content of the different panels by clicking on the respective panel in this sidebar.
-#Thanks;Thank you for taking the <b>Welcome</b> tour of <code>GeDi</code>!
+#welcome;Welcome to the <b>Report</b> tour for <code>GeDi</code>.
+#Step1;The tour will take you through the relevant elements of the UI. You can start the tour in each section by clicking on the dedicated button. You can (re)start the tour any time by clicking the dedicated button. The guided introduction can be exited any time by clicking outside of the highlighted area.
+#tab_report; In this tab you will see your bookmarked genesets and cluster. You will also be able to generate a full report with a selected set of visualizations and summaries of your data that you've explored through the app. The report will also highlight the insights on your bookmarked features.
+#infobox_book_genesets; This little box will summarize how many genesets you've bookmarked, ...
+#infobox_book_cluster; while this box summarizes the number of bookmarked cluster.
+#bookmarks_genesets; There is also a table showing some information on the bookmarked genesets, such as the id and a small description, ...
+#bookmarks_cluster; as well as a table for the bookmarked cluster, which shows the cluster number, ids of the members of the cluster and a summary of the descriptions of the cluster member.
+#btn_export_cluster; You can directly download your bookmarked features via this respective button.
+#btn_reset_cluster; If you want to reset your selection of bookmarked features, you can achieve this via this button for each of the tables.
+#start_report; Lastly, via this button you can start the generation of the reort. Please note that this step can take a little while. The report is an excellent summary of your data that can readily be shared with collaboration partners as it is provided conveniently as a HTML document.
+#sidebar; Once you have successfully downloaded your bookmarked features or generated your report, you can go back to the different panels to explore your data further.
+#Thanks;Thank you for taking the <b>Report</b> tour of <code>GeDi</code>!

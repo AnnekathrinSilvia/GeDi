@@ -2141,8 +2141,9 @@ GeDi <- function(genesets = NULL,
           }
         }
       }
-      else if (input$gt_tabs == "tab_bookmarks") {
-        showNotification("You are already in the Bookmarks tab...")
+      else if (input$tabs == "tab_report") {
+        showNotification("You are already in the Report tab where you can see
+                         your bookmarked genesets and cluster.")
       }
     })
 
