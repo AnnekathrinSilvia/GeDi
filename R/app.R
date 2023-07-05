@@ -130,7 +130,7 @@ GeDi <- function(genesets = NULL,
     sidebar = bs4DashSidebar(
       id = "sidebar",
       title = HTML("<small>GeDi</small>"),
-      # src = "GeneTonic/GeneTonic.png",
+      src = "GeDi/GeDi.png",
       skin = "dark",
       status = "info",
       brandColor = NULL,
@@ -326,7 +326,7 @@ GeDi <- function(genesets = NULL,
                                  a(
                                    href = "https://github.com/AnnekathrinSilvia/GeDi",
                                    target = "_blank",
-                                   img(src = "GeDi/GeneTonic.png", height = "50px")
+                                   img(src = "GeDi/GeDi.png", height = "50px")
                                  )
                                ),
                                column(
