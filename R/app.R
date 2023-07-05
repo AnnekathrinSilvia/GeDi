@@ -52,7 +52,7 @@ GeDi <- function(genesets = NULL,
   # dashpage definition -----------------------------------------------------
   gedi_ui <- bs4DashPage(
     title = "GeDi",
-    dark = NULL,
+    dark = FALSE,
     # navbar definition -------------------------------------------------------
     header = bs4DashNavbar(
       tagList(tags$code(tags$h3("GeDi"))),
@@ -119,8 +119,8 @@ GeDi <- function(genesets = NULL,
       ),
       title = bs4DashBrand(title = HTML("<small>GeDi</small>"),
                            href = "https://github.com/AnnekathrinSilvia/GeDi", ),
-      skin = "dark",
-      status = "gray-dark",
+      skin = "light",
+      #status = "gray-dark",
       border = FALSE,
       controlbarIcon = icon("gears"),
       fixed = TRUE
@@ -131,10 +131,10 @@ GeDi <- function(genesets = NULL,
       id = "sidebar",
       title = HTML("<small>GeDi</small>"),
       src = "GeDi/GeDi.png",
-      skin = "dark",
+      skin = "light",
       status = "info",
       brandColor = NULL,
-      # url = "https://bioconductor.org/packages/GeneTonic",
+      url = "https://bioconductor.org/packages/GeneTonic",
       collapsed = TRUE,
       elevation = 1,
       opacity = 0.8,
@@ -218,7 +218,7 @@ GeDi <- function(genesets = NULL,
                                   "tour_welcome",
                                   label = "",
                                   icon = icon("circle-question"),
-                                  style = .tourButtonStyle
+                                  style = .actionButtonStyle
                                 )
                               )),
                      uiOutput("ui_panel_welcome")
@@ -236,7 +236,7 @@ GeDi <- function(genesets = NULL,
                   "tour_data_input",
                   label = "",
                   icon = icon("circle-question"),
-                  style = .tourButtonStyle
+                  style = .actionButtonStyle
                 ),
                 shinyBS::bsTooltip(
                   id = "tour_data_input",
@@ -266,7 +266,7 @@ GeDi <- function(genesets = NULL,
                            "tour_scoring",
                            label = "",
                            icon = icon("circle-question"),
-                           style = .tourButtonStyle
+                           style = .actionButtonStyle
                          ),
                          shinyBS::bsTooltip(
                            id = "tour_scoring",
@@ -292,7 +292,7 @@ GeDi <- function(genesets = NULL,
                            "tour_graph",
                            label = "",
                            icon = icon("circle-question"),
-                           style = .tourButtonStyle
+                           style = .actionButtonStyle
                          ),
                          shinyBS::bsTooltip(
                            id = "tour_graph",
@@ -597,6 +597,8 @@ GeDi <- function(genesets = NULL,
       ),
       message = "Please provide input data via the button on the left."))
 
+      # colour <- .dataTableColour(input$theme_switch)
+      # print(colour)
       DT::datatable(reactive_values$genesets,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
@@ -1431,7 +1433,7 @@ GeDi <- function(genesets = NULL,
                            "tour_bookmarks",
                            label = "",
                            icon = icon("question-circle"),
-                           style = .tourButtonStyle
+                           style = .actionButtonStyle
                          )
                        )),
               fluidRow(column(width = 12,
@@ -1680,6 +1682,7 @@ GeDi <- function(genesets = NULL,
       tryCatch(
         expr = {
           reactive_values$genes <- getGenes(reactive_values$genesets)
+          reactive_values$genesets$Genes <- sapply(reactive_values$genesets$Genes, function(x) gsub("/", ",", x))
         },
         error = function(cond) {
           showNotification(
@@ -1708,6 +1711,8 @@ GeDi <- function(genesets = NULL,
         "Genesets"
       names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genes] <-
         "Genes"
+
+      reactive_values$genesets$Genes <- sapply(reactive_values$genesets$Genes, function(x) gsub("/", ",", x))
 
       showNotification(
         "Successfully selected your columns and read your data.
@@ -2273,6 +2278,20 @@ GeDi <- function(genesets = NULL,
           }))
         )
       )
+    })
+
+    observeEvent(input$theme_switch, {
+      if(input$theme_switch == 1){
+        showNotification(
+          "You are now in dark mode.",
+          type = "message"
+        )
+      }else{
+        showNotification(
+          "You are now in light mode.",
+          type = "message"
+        )
+      }
     })
   }
   shinyApp(ui = gedi_ui, server = gedi_server)

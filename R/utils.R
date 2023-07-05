@@ -183,7 +183,22 @@ getGenes <- function(genesets, gene_name = NULL) {
   return(n_cores)
 }
 
+# Shiny resource paths ----------------------------------------------------
+
+.onLoad <- function(libname, pkgname) {
+  # Create link to logo
+  shiny::addResourcePath("GeDi", system.file("www", package = "GeDi"))
+}
+
 .actionButtonStyle <-
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
-.tourButtonStyle <-
-  "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+#.tourButtonStyle <- "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
+
+
+.dataTableColour <- function(dark_mode){
+  if(dark_mode){
+    return("#FFFFFF")
+  }else{
+    return("#000000")
+  }
+}
