@@ -1,16 +1,14 @@
 <div align="center">
-<img src="GeneTonic/GeneTonic.png" alt="" width="150" />
+<img src="GeDi/GeDi.png" alt="" width="150" />
 </div>
 
-`GeneTonic` is a Bioconductor package whose aim is to analyze and integrate the results from Differential Expression analysis and functional enrichment analysis.
+[`GeDi`](https://github.com/AnnekathrinSilvia/GeDi) is a Bioconductor package containing a Shiny application designed for analyzing functional annotation analysis results. It offers an interactive interface to explore and gain insights into datasets, providing various graphs and tables to effectively mine the data. Its main focus is on GEneset DIstances (therefore the name GeDi), using distance measurements and clustering approaches to identify patterns and themes within enriched genesets. This reduction in data size simplifies interpretation and hypothesis generation for future analyses.
 
-This package provides a Shiny application that aims to combine at different levels the existing pieces of the transcriptome data and results, in a way that makes it easier to generate insightful observations and hypothesis - combining the benefits of interactivity and reproducibility, e.g. by capturing the features and gene sets of interest highlighted during the live session, and creating an HTML report as an artifact where text, code, and output coexist.
-
-`GeneTonic` is developed by Federico Marini (https://github.com/federicomarini).
+[`GeDi`](https://github.com/AnnekathrinSilvia/GeDi) is developed by Annekathrin Silvia Nedwed (https://github.com/AnnekathrinSilvia).
 
 ## Code
 
-All the code for `GeneTonic` is available on<a href="https://github.com/federicomarini/GeneTonic" target="_blank">GitHub</a>.
+All the code for `GeDi` is available on<a href="https://github.com/AnnekathrinSilvia/GeDi" target="_blank">GitHub</a>.
 
 If you have some suggestions on new features, or would like to contribute to the development, please reach out there by opening an issue and/or composing a pull request.
 
@@ -18,7 +16,7 @@ If you have some suggestions on new features, or would like to contribute to the
 
 ## Citation info
 
-If you use `GeneTonic` for your analysis, please cite it as here below:
+If you use `GeDi` for your analysis, please cite it as here below:
 
-`> utils::citation("GeneTonic")`
+`> utils::citation("GeDi")`
 

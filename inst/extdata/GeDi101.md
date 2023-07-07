@@ -1,19 +1,15 @@
 ## What is `GeDi`?
 
-`GeneTonic` is a Bioconductor package whose aim is to analyze and integrate the results from Differential Expression analysis and functional enrichment analysis, together with the original expression matrix.
-
-As a distinctive trait, this app combines the ease and beauty of interactive analysis with the technical robustness and the practicality of generating a reproducible report.
+`GeDi` is a Bioconductor package containing a Shiny application designed for analyzing functional annotation analysis results. It offers an interactive interface to explore and gain insights into datasets, providing various graphs and tables to effectively mine the data. Its main focus is on GEneset DIstances (therefore the name GeDi), using distance measurements and clustering approaches to identify patterns and themes within enriched genesets. This reduction in data size simplifies interpretation and hypothesis generation for future analyses.
 
 ## What do I need to use `GeDi`?
 
-Four main ingredients are required:
+In order to use `GeDi` you need the results of an functional annotation analysis like the ones calculated with the Bioconductor packages [`topGO`](https://bioconductor.org/packages/release/bioc/html/topGO.html) or [`clusterProfiler`](https://bioconductor.org/packages/release/bioc/html/clusterProfiler.html).
 
-1. `dds`: a `DESeqDataSet` object, the main component in the `DESeq2` framework, which extends the widely adopted `SummarizedExperiment` class. This object will store the information related to the expression matrix.
+The results can be provided to GeDi in various different formats such as a data.frame saved in an RDS file, a text file or in a comma-separated file. One important requirement is that your data contains at least two columns: 
 
-2. `res_de`: a `DESeqResults` object, the results of Differential Expression analysis, computed on the `dds` object above. This extends the `S4Vectors::DataFrame` class.
+* Genesets: The column Genesets should contain any kind of (ideally unique) identifiers for the individual sets.
 
-3. `res_enrich`: a `data.frame`, containing the results of the enrichment analysis, generally computed on the basis of the DE results and the expression matrix. The `GeneTonic` main functions require some specific columns to be present, specified in the package documentation. Common formats (e.g. from `pcaExplorer::topGOtable` or from `ClusterProfiler`) are supported with conversion functions.
+* Genes: The column Genes should contain for each geneset a list of genes which are associated with this geneset.
 
-4. `annotation_obj`: the annotation `data.frame`, composed at least of two columns, `gene_id`, with a set of unambiguous identifiers (e.g. ENSEMBL ids) corresponding to the row names of the `dds` object, and `gene_name`, containing e.g. HGNC-based gene symbols. 
-
-For more detail on these and more aspects (getting to know the user interface, using the functions in a normal R session), please consult the vignette, and try out the tours for each tab in a running instance of the app (e.g. the demo available at http://shiny.imbei.uni-mainz.de:3838/GeneTonic)
+For a more detailed view of an example data set, please navigate to the `Data Input` panel and click the `Load the demo data` button followed by the inspection of the `Geneset preview`. This will show you a table of an example data set, which contains the necessary columns as well as additional information. You can also use this example data to explore and get familiar with the app. 

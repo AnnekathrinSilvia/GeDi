@@ -118,7 +118,7 @@ GeDi <- function(genesets = NULL,
         )
       ),
       title = bs4DashBrand(title = HTML("<small>GeDi</small>"),
-                           href = "https://github.com/AnnekathrinSilvia/GeDi", ),
+                           href = "https://github.com/AnnekathrinSilvia/GeDi",),
       skin = "light",
       #status = "gray-dark",
       border = FALSE,
@@ -311,11 +311,11 @@ GeDi <- function(genesets = NULL,
       )
     ),
     # controlbar definition ------------------------------------------------
-    controlbar = bs4DashControlbar(
-      collapsed = TRUE,
-      icon = icon("gears"),
-      uiOutput("ui_controlbar")
-    ),
+    # controlbar = bs4DashControlbar(
+    #   collapsed = TRUE,
+    #   icon = icon("gears"),
+    #   uiOutput("ui_controlbar")
+    # ),
 
     # footer definition -------------------------------------------------------
     footer = bs4DashFooter(left =
@@ -921,11 +921,24 @@ GeDi <- function(genesets = NULL,
             htmlOutput("scores_heatmap")
           ),
           tabPanel(title = "Distance Scores Dendrogram",
-                   withSpinner(
-                     plotlyOutput("scores_dendro",
-                                  height = "800px",
-                                  width = "1000px")
-                   )),
+                   fluidRow(
+                     column(width = 2,
+                            selectInput(
+                              inputId = "cluster_method_dendro",
+                              label = "Select a clustering method for the Dendrogram",
+                              choices = c("average", "single", "complete",
+                                          "median", "centroid"),
+                              selected = "average",
+                              multiple = FALSE
+                            )),
+                     column(width = 10,
+                            withSpinner(
+                              plotlyOutput("scores_dendro",
+                                           height = "800px",
+                                           width = "1000px")
+                            ))
+                   )
+                   ),
           tabPanel(title = "Distance Scores Graph",
                    fluidRow(
                      column(
@@ -1096,10 +1109,28 @@ GeDi <- function(genesets = NULL,
               selected = "Geneset Graph",
               side = "right",
               tabPanel(title = "Geneset Graph",
-                       withSpinner(
-                         visNetworkOutput("cluster_Network",
-                                          height = "700px",
-                                          width = "100%")
+                       fluidRow(
+                         column(
+                           width = 2,
+                           selectInput(
+                             inputId = "graphColoring",
+                             label = "Color the graph by",
+                             choices = if (!(is.null(reactive_values$genesets))) {
+                                   c(NULL, colnames(
+                                     dplyr::select_if(reactive_values$genesets, is.numeric)
+                                   ))
+                                 } else {
+                                   c(NULL)
+                                 },
+                             multiple = FALSE
+                           )
+                         ),
+                         column(width = 10,
+                                withSpinner(
+                                  visNetworkOutput("cluster_Network",
+                                                   height = "700px",
+                                                   width = "100%")
+                                ))
                        )),
               tabPanel(title = "Cluster-Geneset Bipartite Graph",
                        withSpinner(
@@ -1377,55 +1408,51 @@ GeDi <- function(genesets = NULL,
         )
         cluster <- as.numeric(input$cluster_nb)
         genesets <- reactive_values$cluster[[cluster]]
-        genesets_df <- reactive_values$genesets[genesets,]
+        genesets_df <- reactive_values$genesets[genesets, ]
 
         enrichmentWordcloud(genesets_df)
       })
 
     # controlbar --------------------------------------------------------------
 
-    output$ui_controlbar <- renderUI({
-      tagList(
-        selectInput(
-          inputId = "cluster_method_dendro",
-          label = "Select a clustering method for the Dendrogram",
-          choices = c("average", "single", "complete",
-                      "median", "centroid"),
-          selected = "average",
-          multiple = FALSE
-        ),
-        numericInput(
-          inputId = "n_genesets",
-          label = "Number of genesets",
-          value = 15,
-          min = 1,
-          max = 100
-        ),
-        selectInput(
-          "graphColoring",
-          label = "Color the nodes by: ",
-          choices = if (!(is.null(reactive_values$genesets))) {
-            c(NULL, colnames(
-              dplyr::select_if(reactive_values$genesets, is.numeric)
-            ))
-          } else {
-            c(NULL)
-          },
-          selected = NULL,
-          multiple = FALSE
-        )
-      )
-    })
-    outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
+    # output$ui_controlbar <- renderUI({
+    #   tagList(
+    #     # selectInput(
+    #     #   inputId = "cluster_method_dendro",
+    #     #   label = "Select a clustering method for the Dendrogram",
+    #     #   choices = c("average", "single", "complete",
+    #     #               "median", "centroid"),
+    #     #   selected = "average",
+    #     #   multiple = FALSE
+    #     # ),
+    #     numericInput(
+    #       inputId = "n_genesets",
+    #       label = "Number of genesets",
+    #       value = 15,
+    #       min = 1,
+    #       max = 100
+    #     )
+    #     #,
+    #     # selectInput(
+    #     #   "graphColoring",
+    #     #   label = "Color the nodes by: ",
+    #     #   choices = if (!(is.null(reactive_values$genesets))) {
+    #     #     c(NULL, colnames(
+    #     #       dplyr::select_if(reactive_values$genesets, is.numeric)
+    #     #     ))
+    #     #   } else {
+    #     #     c(NULL)
+    #     #   },
+    #     #   selected = NULL,
+    #     #   multiple = FALSE
+    #     # )
+    #   )
+    # })
+    # outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
 
 
     # Report panel -------------------------------------------------------------
     output$ui_panel_report <- renderUI({
-      validate(need(!(
-        is.null(reactive_values$genesets)
-      ),
-      message = "Please provide input data via the Data input panel."))
-
       tagList(fluidRow(column(width = 11),
                        column(
                          width = 1,
@@ -1668,25 +1695,30 @@ GeDi <- function(genesets = NULL,
         )
       }
 
-      reactive_values$gs_names <- reactive_values$genesets$Genesets
-      columns <- names(reactive_values$genesets)
-      if ("Term" %in% columns) {
-        reactive_values$gs_description <- reactive_values$genesets$Term
-      } else if ("Description" %in% columns) {
-        reactive_values$gs_description <-
-          reactive_values$genesets$Description
-      } else {
-        reactive_values$gs_description <- reactive_values$gs_names
-      }
-
       tryCatch(
         expr = {
-          reactive_values$genes <- getGenes(reactive_values$genesets)
-          reactive_values$genesets$Genes <- sapply(reactive_values$genesets$Genes, function(x) gsub("/", ",", x))
+          columns <- names(reactive_values$genesets)
+          stopifnot(any(columns) == "Genesets")
+          reactive_values$gs_names <-
+            reactive_values$genesets$Genesets
+          if ("Term" %in% columns) {
+            reactive_values$gs_description <- reactive_values$genesets$Term
+          } else if ("Description" %in% columns) {
+            reactive_values$gs_description <-
+              reactive_values$genesets$Description
+          } else {
+            reactive_values$gs_description <- reactive_values$gs_names
+          }
+
+          reactive_values$genes <-
+            getGenes(reactive_values$genesets)
+          reactive_values$genesets$Genes <-
+            sapply(reactive_values$genesets$Genes, function(x)
+              gsub("/", ",", x))
         },
         error = function(cond) {
           showNotification(
-            "It seems like your data does not have a column named 'Genes'. Please check your data and try to input it again.",
+            "It seems like your data does not have a columns named 'Genesets' and 'Genes'. Please check your data and try to input it again.",
             type = "error"
           )
           reactive_values$alt_names <- TRUE
@@ -1712,7 +1744,9 @@ GeDi <- function(genesets = NULL,
       names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genes] <-
         "Genes"
 
-      reactive_values$genesets$Genes <- sapply(reactive_values$genesets$Genes, function(x) gsub("/", ",", x))
+      reactive_values$genesets$Genes <-
+        sapply(reactive_values$genesets$Genes, function(x)
+          gsub("/", ",", x))
 
       showNotification(
         "Successfully selected your columns and read your data.
@@ -1720,6 +1754,7 @@ GeDi <- function(genesets = NULL,
         You can now proceed.",
         type = "message"
       )
+      reactive_values$alt_names <- FALSE
     })
 
     observeEvent(input$btn_loaddemo, {
@@ -1768,7 +1803,7 @@ GeDi <- function(genesets = NULL,
           threshold <- as.numeric(input$select_filter_genesets_threshold)
           data <- .buildHistogramData(reactive_values$genes,
                                       reactive_values$gs_names)
-          remove <- data[data$Size >= threshold, ]$Geneset
+          remove <- data[data$Size >= threshold,]$Geneset
           if (length(remove) == 0) {
             showNotification(
               paste(
@@ -2048,18 +2083,21 @@ GeDi <- function(genesets = NULL,
 
     observeEvent(input$bookmarker, {
       if (input$tabs == "tab_welcome" |
-          input$tabs == "tab_data_input" | input$tabs == "tab_scores") {
+          input$tabs == "tab_data_input" |
+          input$tabs == "tab_scores") {
         showNotification("Welcome to GeDi!")
       } else if (input$tabs == "tab_graph") {
         if (input$tabsetpanel_cluster == "Geneset Graph") {
           g <- reactive_values$cluster_graph()
           cur_sel <- input$cluster_Network_selected
-          if(cur_sel == ""){
+          if (cur_sel == "") {
             showNotification("Select a node in the network to bookmark it", type = "warning")
-          }else{
+          } else{
             cur_node <- match(cur_sel, V(g)$name)
             cur_sel_term <- reactive_values$gs_description[cur_node]
-            cur_sel_merged <- c("Geneset_id" = cur_sel, "Geneset_description" = cur_sel_term)
+            cur_sel_merged <-
+              c("Geneset_id" = cur_sel,
+                "Geneset_description" = cur_sel_term)
             if (cur_sel %in% reactive_values$bookmarked_genesets) {
               showNotification(
                 sprintf(
@@ -2070,7 +2108,10 @@ GeDi <- function(genesets = NULL,
               )
             } else {
               reactive_values$bookmarked_genesets <-
-                unique(rbind(reactive_values$bookmarked_genesets, cur_sel_merged))
+                unique(rbind(
+                  reactive_values$bookmarked_genesets,
+                  cur_sel_merged
+                ))
               showNotification(
                 sprintf(
                   "Added %s to the bookmarked genesets. The list contains now %d elements",
@@ -2084,7 +2125,8 @@ GeDi <- function(genesets = NULL,
         }
         else if (input$tabsetpanel_cluster == "Cluster-Geneset Bipartite Graph") {
           g <- reactive_values$bipartite_graph()
-          cur_sel <- input$cluster_geneset_bipartite_Network_selected
+          cur_sel <-
+            input$cluster_geneset_bipartite_Network_selected
           cur_node <- match(cur_sel, V(g)$name)
           cur_nodetype <- V(g)$nodeType[cur_node]
 
@@ -2093,7 +2135,9 @@ GeDi <- function(genesets = NULL,
           } else {
             if (cur_nodetype == "Geneset") {
               cur_sel_term <- reactive_values$gs_description[cur_node]
-              cur_sel_merged <- c("Geneset_id" = cur_sel, "Geneset_description" = cur_sel_term)
+              cur_sel_merged <-
+                c("Geneset_id" = cur_sel,
+                  "Geneset_description" = cur_sel_term)
               if (cur_sel %in% reactive_values$bookmarked_genesets) {
                 showNotification(
                   sprintf(
@@ -2104,7 +2148,10 @@ GeDi <- function(genesets = NULL,
                 )
               } else {
                 reactive_values$bookmarked_genesets <-
-                  unique(rbind(reactive_values$bookmarked_genesets, cur_sel_merged))
+                  unique(rbind(
+                    reactive_values$bookmarked_genesets,
+                    cur_sel_merged
+                  ))
                 showNotification(
                   sprintf(
                     "Added %s to the bookmarked genesets. The list contains now %d elements",
@@ -2116,12 +2163,17 @@ GeDi <- function(genesets = NULL,
               }
             } else if (cur_nodetype == "Cluster") {
               cluster_nb <- as.numeric(unlist(strsplit(cur_sel, " "))[[2]])
-              cur_sel_cluster <- reactive_values$cluster[[cluster_nb]]
-              cur_sel_cluster_member <- reactive_values$gs_names[cur_sel_cluster]
-              cur_sel_cluster_term <- reactive_values$gs_description[cur_sel_cluster]
-              cur_cluster <- c("Cluster" = cur_sel,
-                               "Cluster_Members" = paste(cur_sel_cluster_member, collapse = ", "),
-                               "Cluster_Member_Describtion" = paste(cur_sel_cluster_term, collapse = ", "))
+              cur_sel_cluster <-
+                reactive_values$cluster[[cluster_nb]]
+              cur_sel_cluster_member <-
+                reactive_values$gs_names[cur_sel_cluster]
+              cur_sel_cluster_term <-
+                reactive_values$gs_description[cur_sel_cluster]
+              cur_cluster <- c(
+                "Cluster" = cur_sel,
+                "Cluster_Members" = paste(cur_sel_cluster_member, collapse = ", "),
+                "Cluster_Member_Describtion" = paste(cur_sel_cluster_term, collapse = ", ")
+              )
               if (cur_sel %in% reactive_values$bookmarked_cluster) {
                 showNotification(
                   sprintf(
@@ -2132,7 +2184,10 @@ GeDi <- function(genesets = NULL,
                 )
               } else {
                 reactive_values$bookmarked_cluster <-
-                  unique(rbind(reactive_values$bookmarked_cluster, cur_cluster))
+                  unique(rbind(
+                    reactive_values$bookmarked_cluster,
+                    cur_cluster
+                  ))
                 showNotification(
                   sprintf(
                     "Added %s to the bookmarked cluster. The list contains now %d elements",
@@ -2147,8 +2202,10 @@ GeDi <- function(genesets = NULL,
         }
       }
       else if (input$tabs == "tab_report") {
-        showNotification("You are already in the Report tab where you can see
-                         your bookmarked genesets and cluster.")
+        showNotification(
+          "You are already in the Report tab where you can see
+                         your bookmarked genesets and cluster."
+        )
       }
     })
 
@@ -2241,7 +2298,7 @@ GeDi <- function(genesets = NULL,
           easyClose = TRUE,
           tagList(includeMarkdown(
             system.file("extdata", "GeDi101.md", package = "GeDi")
-          ), )
+          ),)
         )
       )
     })
@@ -2274,23 +2331,19 @@ GeDi <- function(genesets = NULL,
             system.file("extdata", "about.md", package = "GeDi")
           ),
           renderPrint({
-            utils::citation("GeneTonic")
+            utils::citation("GeDi")
           }))
         )
       )
     })
 
     observeEvent(input$theme_switch, {
-      if(input$theme_switch == 1){
-        showNotification(
-          "You are now in dark mode.",
-          type = "message"
-        )
-      }else{
-        showNotification(
-          "You are now in light mode.",
-          type = "message"
-        )
+      if (input$theme_switch == 1) {
+        showNotification("You are now in dark mode.",
+                         type = "message")
+      } else{
+        showNotification("You are now in light mode.",
+                         type = "message")
       }
     })
   }
