@@ -1744,7 +1744,13 @@ GeDi <- function(genesets = NULL,
       reactive_values$genes <- getGenes(reactive_values$genesets,
                                         input$alt_name_genes)
 
-      if (!any(c("Term", "Description") %in% names(reactive_values$genesets))) {
+      columns <- names(reactive_values$genesets)
+      if ("Term" %in% columns) {
+        reactive_values$gs_description <- reactive_values$genesets$Term
+      } else if ("Description" %in% columns) {
+        reactive_values$gs_description <-
+          reactive_values$genesets$Description
+      } else {
         reactive_values$gs_description <- reactive_values$gs_names
       }
 
@@ -2181,7 +2187,7 @@ GeDi <- function(genesets = NULL,
               cur_cluster <- c(
                 "Cluster" = cur_sel,
                 "Cluster_Members" = paste(cur_sel_cluster_member, collapse = ", "),
-                "Cluster_Member_Describtion" = paste(cur_sel_cluster_term, collapse = ", ")
+                "Cluster_Member_Description" = paste(cur_sel_cluster_term, collapse = ", ")
               )
               if (cur_sel %in% reactive_values$bookmarked_cluster) {
                 showNotification(
