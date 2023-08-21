@@ -8,7 +8,7 @@
 
 ## Code
 
-All the code for `GeDi` is available on<a href="https://github.com/AnnekathrinSilvia/GeDi" target="_blank">GitHub</a>.
+All the code for `GeDi` is available on <a href="https://github.com/AnnekathrinSilvia/GeDi" target="_blank">GitHub</a>.
 
 If you have some suggestions on new features, or would like to contribute to the development, please reach out there by opening an issue and/or composing a pull request.
 
