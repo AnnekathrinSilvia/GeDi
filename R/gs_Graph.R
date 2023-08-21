@@ -70,6 +70,8 @@ buildGraph <- function(adjMatrix) {
   ids <- which(names(V(g)) %in% gs_names)
 
   # TODO: check which type of identifiers the data has and provide the respective links
+  # for kegg pathways add https://www.genome.jp/dbget-bin/www_bget?pathway:hsa04668 where the last part is the geneset identifier
+  # reactome: https://reactome.org/content/detail/R-HSA-9012999
   V(g)$title[ids] <- paste0(
     "<h4>",
     sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",

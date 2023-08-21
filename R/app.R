@@ -1673,6 +1673,7 @@ GeDi <- function(genesets = NULL,
     # Observers ------------------------------------------------------------------
 
     # Data Input Panel ----------------------------------------------------------
+    # TODO: reset the scoring matrix and everything when loading new data
     observeEvent(input$inputgenesetfile, {
       filename <-
         unlist(strsplit(input$inputgenesetfile$datapath, ".", fixed = TRUE))
@@ -1724,8 +1725,16 @@ GeDi <- function(genesets = NULL,
           reactive_values$alt_names <- TRUE
           reactive_values$gs_names <- NULL
           reactive_values$genes <- NULL
+
         }
       )
+      # reset all reactive_values in case data has already been loaded before
+      reactive_values$ppi <- NULL
+      reactive_values$scores <- NULL
+      reactive_values$seeds <- NULL
+      reactive_values$cluster <- NULL
+      reactive_values$bookmarked_genesets <- NULL
+      reactive_values$bookmarked_cluster <- NULL
     })
 
     observeEvent(input$alt_names_start, {
@@ -2085,7 +2094,7 @@ GeDi <- function(genesets = NULL,
       if (input$tabs == "tab_welcome" |
           input$tabs == "tab_data_input" |
           input$tabs == "tab_scores") {
-        showNotification("Welcome to GeDi!")
+        showNotification("Welcome to GeDi! There is nothing to Bookmark here.")
       } else if (input$tabs == "tab_graph") {
         if (input$tabsetpanel_cluster == "Geneset Graph") {
           g <- reactive_values$cluster_graph()
