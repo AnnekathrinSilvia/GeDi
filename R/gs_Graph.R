@@ -69,14 +69,32 @@ buildGraph <- function(adjMatrix) {
   gs_names <- rownames(adjMatrix)
   ids <- which(names(V(g)) %in% gs_names)
 
-  # TODO: check which type of identifiers the data has and provide the respective links
-  # for kegg pathways add https://www.genome.jp/dbget-bin/www_bget?pathway:hsa04668 where the last part is the geneset identifier
-  # reactome: https://reactome.org/content/detail/R-HSA-9012999
-  V(g)$title[ids] <- paste0(
-    "<h4>",
-    sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
-    V(g)$name[ids], "<br><br>"
-  )
+  # check which type of database we are dealing with
+  if(all(sapply(gs_names, function(x) substr(x, 1, 2) == "GO"))){
+    V(g)$title[ids] <- paste0(
+      "<h4>",
+      sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
+      V(g)$name[ids], "<br><br>"
+    )
+  }else if(all(sapply(gs_names, function(x) substr(x, 1, 2) == "R-"))){
+    V(g)$title[ids] <- paste0(
+      "<h4>",
+      sprintf('<a href="http://reactome.org/content/detail/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
+      V(g)$name[ids], "<br><br>"
+    )
+  }else{
+    V(g)$title[ids] <- paste0(
+      "<h4>",
+      sprintf('<a href="https://www.genome.jp/dbget-bin/www_bget?pathway:%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
+      V(g)$name[ids], "<br><br>"
+    )
+  }
+
+  # V(g)$title[ids] <- paste0(
+  #   "<h4>",
+  #   sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>', gs_names[ids], gs_names[ids]), "</h4><br>",
+  #   V(g)$name[ids], "<br><br>"
+  # )
 
   return(g)
 }
