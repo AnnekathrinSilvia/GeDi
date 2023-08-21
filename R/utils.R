@@ -73,7 +73,7 @@ getGenes <- function(genesets, gene_name = NULL) {
 .findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")) {
   sephits_min <-
     sapply(sepList, function(x) {
-      min(str_count(stringList, x))
+      sum(str_count(stringList, x))
     }) # minimal number of separators on all lines
   sep <- sepList[which.max(sephits_min)]
 
