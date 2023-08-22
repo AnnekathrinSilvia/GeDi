@@ -94,8 +94,8 @@ test_that(".getNumberCores returns correct number", {
 })
 
 test_that(".sepGuesser returns correct separator", {
-  sep <- .sepguesser(system.file("extdata", "intro_data_input.txt", package = "GeDi"))
-  expect_equal(sep, ";")
+  sep <- .sepguesser(system.file("extdata", "intro_data_scoring.txt", package = "GeDi"))
+  expect_equal(sep, ",")
 })
 
 test_that("checkPPI", {

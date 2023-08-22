@@ -8,6 +8,6 @@ element;intro
 #bookmarks_cluster; as well as a table for the bookmarked cluster, which shows the cluster number, ids of the members of the cluster and a summary of the descriptions of the cluster member.
 #btn_export_cluster; You can directly download your bookmarked features via this respective button.
 #btn_reset_cluster; If you want to reset your selection of bookmarked features, you can achieve this via this button for each of the tables.
-#start_report; Lastly, via this button you can start the generation of the reort. Please note that this step can take a little while. The report is an excellent summary of your data that can readily be shared with collaboration partners as it is provided conveniently as a HTML document.
+#start_report; Lastly, via this button you can start the generation of the report. Please note that this step can take a little while. The report is an excellent summary of your data that can readily be shared with collaboration partners as it is provided conveniently as a HTML document.
 #sidebar; Once you have successfully downloaded your bookmarked features or generated your report, you can go back to the different panels to explore your data further.
 #Thanks;Thank you for taking the <b>Report</b> tour of <code>GeDi</code>!

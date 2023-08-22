@@ -154,7 +154,7 @@ GeDi <- function(genesets = NULL,
           icon = icon("diagram-project")
         ),
         bs4SidebarMenuItem(
-          "Graph",
+          "Clustering Graph",
           tabName = "tab_graph",
           icon = icon("square-share-nodes")
         ),
@@ -2352,15 +2352,15 @@ GeDi <- function(genesets = NULL,
       )
     })
 
-    observeEvent(input$theme_switch, {
-      if (input$theme_switch == 1) {
-        showNotification("You are now in dark mode.",
-                         type = "message")
-      } else{
-        showNotification("You are now in light mode.",
-                         type = "message")
-      }
-    })
+    # observeEvent(input$theme_switch, {
+    #   if (input$theme_switch == 1) {
+    #     showNotification("You are now in dark mode.",
+    #                      type = "message")
+    #   } else{
+    #     showNotification("You are now in light mode.",
+    #                      type = "message")
+    #   }
+    # })
   }
   shinyApp(ui = gedi_ui, server = gedi_server)
 }
