@@ -2,7 +2,7 @@
 #'
 #' Create a histogram plot to plot geneset names / identifiers againts their size.
 #'
-#' @param genesets a `list`, A `list` of genesets where is genesets is represented
+#' @param genesets a `list`, A `list` of genesets where each genesets is represented
 #'                 by `list` of genes.
 #' @param gs_names character vector, Name / identifier of the genesets in
 #'                 `genesets`
@@ -55,7 +55,7 @@ gs_histogram <- function(genesets,
 #' Prepare the data for the \code{gs_histogram()} by generating a `data.frame`
 #' which maps geneset names / identifiers to the size of their size.
 #'
-#' @param genesets a `list`, A `list` of genesets where is genesets is represented
+#' @param genesets a `list`, A `list` of genesets where each genesets is represented
 #'              by `list` of genes.
 #' @param gs_names character vector, Name / identifier of the genesets in
 #'                 `genesets`

@@ -3,16 +3,16 @@
 #' Split a long string of space separated genes into a `list` of individual
 #' genes.
 #'
-#' @param genesets `data.frame`, a `data.frame` with at least two columns.
+#' @param genesets a `data.frame`, A `data.frame` with at least two columns.
 #'                 One should be called `Geneset`, containing the
 #'                 names/identifiers of the genesets in the data. The second
 #'                 column should be called `Genes` and contains one string of
 #'                 the genes contained in each geneset.
-#' @param gene_name character, alternative name for the column containing the
+#' @param gene_name a character, Alternative name for the column containing the
 #'                  genes in `genesets`. If not given, the column is expected to
 #'                  be called `Genes`.
 #'
-#' @return `list`, containing for each geneset in the `Geneset` column a
+#' @return A `list` containing for each geneset in the `Geneset` column a
 #'         `list` of the included genes.
 #' @export
 #'
@@ -31,27 +31,32 @@
 #' )
 #' genes <- getGenes(df)
 getGenes <- function(genesets, gene_name = NULL) {
+  # If there are no genesets, return NULL
   if (length(genesets) == 0) {
     return(NULL)
   }
+
+  # If gene_name is not provided, ensure that a "Genes" column exists
   if (is.null(gene_name)) {
     stopifnot(any(names(genesets) == "Genes"))
   }
 
-  # check in which column the genes are
+  # Determine in which column the gene information is stored
   if (!is.null(gene_name)) {
     genesList <- genesets[, gene_name]
   } else {
     genesList <- genesets$Genes
   }
 
-  # guess on the separator in the genes
+  # Guess the separator used in the gene lists
   sep <- .findSeparator(genesList)
-  # separate large string of genes into list of individual genes
+
+  # Split large strings of genes into individual gene lists
   genes <- lapply(1:nrow(genesets), function(i) {
     toupper(strsplit(genesList[i], sep)[[1]])
   })
 
+  # Return the list of extracted gene sets
   return(genes)
 }
 
@@ -65,6 +70,10 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' @param sepList `list`, containing the candidates for being identified as
 #'                 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.
 #'
+#' @references
+#' See https://github.com/federicomarini/ideal for details on the original
+#' implementation.
+#'
 #' @return character, corresponding to the guessed separator. One of ","
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
@@ -74,7 +83,7 @@ getGenes <- function(genesets, gene_name = NULL) {
   sephits_min <-
     sapply(sepList, function(x) {
       sum(str_count(stringList, x))
-    }) # minimal number of separators on all lines
+    })
   sep <- sepList[which.max(sephits_min)]
 
   return(sep)
@@ -85,16 +94,21 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' This function tries to guess which separator was used in a text delimited
 #' file.
 #'
-#' @param file character, location of a file to read data from.
-#' @param sep_list `list`, containing the candidates for being identified as
+#' @param file a character, location of a file to read data from.
+#' @param sep_list a `list`, containing the candidates for being identified as
 #'                 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.
 #'
-#' @return character, corresponding to the guessed separator. One of ","
+#' @references
+#' See https://github.com/federicomarini/ideal for details on the original
+#' implementation.
+#'
+#' @return A character, corresponding to the guessed separator. One of ","
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
 .sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
   rl <- readLines(file, warn = FALSE)
-  rl <- rl[rl != ""] # allow last line to be empty
+  # Allow last line to be empty
+  rl <- rl[rl != ""]
   sep <- .findSeparator(rl, sep_list)
   return(sep)
 }
@@ -103,83 +117,120 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' Filter a preselected list of genesets from a `data.frame` of genesets
 #'
-#' @param remove `list`, a `list` of geneset identifiers to be removed from
-#'               `df_genesets`
-#' @param df_genesets `data.frame`, a `data.frame` of the genesets.
+#' @param remove a `list`, A list of geneset names to be removed
+#' @param df_genesets `data.frame`, A Data frame of genesets.
 #'
-#' @return A `data.frame` of the input data without the genesets listed in
-#'         `remove`.
+#' @return A `data.frame` containing information about filtered genesets
 .filterGenesets <- function(remove,
                             df_genesets) {
-  # get genesets to remove
+  # Get genesets to remove
   if (length(remove) > 0) {
+    # Split the remove vector
     genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
     df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
   }
 
+  # Initialize a list to store results
   results <- list()
-  # return information of the data.frame without the genesets in removed
+  # Store the data frame without the removed genesets
   results[[1]] <- df_genesets
+
+  # Store the names of the remaining genesets
   results[[2]] <- df_genesets$Geneset
+
+  # Extract gene information for the remaining genesets
   genes <- getGenes(df_genesets)
   results[[3]] <- genes
 
-
+  # Rename the elements in the results list
   names(results) <- c("Geneset", "gs_names", "Genes")
+
+  # Return the filtered geneset information
   return(results)
 }
 
-#' Check if PPI has right format
+#' Check PPI format
 #'
 #' Check if the Protein-Protein-interaction (PPI) has the expected format for
 #' this app
 #'
-#' @param ppi A PPI object
+#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data frame.
+#'            The object is expected to have three columns, `Gene1` and `Gene2`
+#'            which specify the gene names of the interacting proteins in no
+#'            particular order (symmetric interaction) and a column
+#'            `combined_score` which is a numerical value of the strength of
+#'            the interaction.
 #'
-#' @return A `data.frame` of the input `ppi` with the expected column names
+#' @return A validated and formatted PPI data frame.
 #'
 .checkPPI <- function(ppi) {
+  # Check if ppi is a data frame
   stopifnot(is.data.frame(ppi))
+
+  # Check if ppi has the correct number of columns
   stopifnot(ncol(ppi) == 3)
+
+  # Check if Gene1 and Gene2 columns are character type
   stopifnot(all(is.character(ppi[, 1])) & all(is.character(ppi[, 2])))
+
+  # Check if combined_score column is numeric
   stopifnot(all(is.numeric(ppi[, 3])))
 
+  # Rename columns to expected names
   colnames(ppi) <- c("Gene1", "Gene2", "combined_score")
+
+  # Return the validated and formatted PPI data frame
   return(ppi)
 }
 
-#' Check if input genesets have the right format
+#' Check genesets format
 #'
-#' Check if the input genesets have the expected format of the app
+#' Check if the input genesets have the expected format for this app
 #'
-#' @param genesets A object of geneset input data
+#' @param genesets a `list`, A `list` of genesets where each genesets is represented
+#'                 by `list` of genes.
+#'
+#' @return A validated and formatted genesets data frame.
 #'
 .checkGenesets <- function(genesets) {
+  # Check if genesets is a data frame
   stopifnot(is.data.frame(genesets))
+
+  # Check if genesets has the required columns
   stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
+
+  # Check if Genesets and Genes columns are character type
   stopifnot(all(is.character(genesets$Genesets)) & all(is.character(unlist(genesets$Genes))))
+
+  # Return the validated and formatted genesets data frame
   return(genesets)
 }
 
 #' Determine the number of cores to use for a function
 #'
+#' Determine the number of CPU cores the scoring functions should use when
+#' computing the distance scores.
 #'
 #' @param n_cores numeric, number of cores to use for the function.
 #'                Defaults to `Null` in which case the function takes half of
 #'                the available cores.
 #'
-#' @return The number of cores to use.
+#' @return Number of CPU cores to be used.
 .getNumberCores <- function(n_cores = NULL) {
-  # check the number of cores to use
+  # Check the number of available CPU cores
   available_cores <- parallel::detectCores()
+
+  # If n_cores is not provided, set it to half of available_cores (minimum 1)
   if (is.null(n_cores)) {
     n_cores <- max(round(available_cores / 2), 1)
   } else {
+    # If n_cores exceeds available_cores, adjust n_cores to available_cores - 1
     if (n_cores > available_cores) {
       n_cores <- available_cores - 1
     }
   }
 
+  # Return the determined number of CPU cores
   return(n_cores)
 }
 
@@ -194,11 +245,3 @@ getGenes <- function(genesets, gene_name = NULL) {
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
 #.tourButtonStyle <- "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
 
-
-.dataTableColour <- function(dark_mode){
-  if(dark_mode){
-    return("#FFFFFF")
-  }else{
-    return("#000000")
-  }
-}

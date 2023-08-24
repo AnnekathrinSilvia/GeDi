@@ -597,8 +597,6 @@ GeDi <- function(genesets = NULL,
       ),
       message = "Please provide input data via the button on the left."))
 
-      # colour <- .dataTableColour(input$theme_switch)
-      # print(colour)
       DT::datatable(reactive_values$genesets,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
