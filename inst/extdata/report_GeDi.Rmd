@@ -184,6 +184,15 @@ visNetwork::visIgraph(graph) %>%
 ```
 
 
+```{r enrichmentcloud, eval = F, echo = F}
+if(!is.null(reactive_values$cluster)){
+        cluster <- as.numeric(input$cluster_nb)
+        genesets <- reactive_values$cluster[[cluster]]
+        genesets_df <- reactive_values$genesets[genesets, ]
+        enrichmentWordcloud(genesets_df)
+}
+```
+
 # About this report
 
 If you use this report in your scientific work, please cite GeneTonic:

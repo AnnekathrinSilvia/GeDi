@@ -1,41 +1,39 @@
-#' Get ID of a species
+#' Get NCBI ID
 #'
 #' Get the NCBI ID of a species
 #'
 #' @param species character, the species of your input data
 #' @param version character, the version of STRING you want to use, defaults to
-#'                11.5, the current version of STRING
+#'                the current version of STRING
 #'
-#' @return a character of the NCBI ID of `species`
+#' @return A character of the NCBI ID of `species`
 #' @export
 #'
 #' @examples
 #' species <- "Homo sapiens"
 #' id <- getId(species = species)
-getId <- function(species, version = "11.5") {
-  # download available species from STRING
-  url_species <- sprintf(
-    "https://stringdb-static.org/download/species.v%s.txt",
-    version
-  )
+getId <- function(species, version = "12.0") {
+  # Download available species information from STRING
+  url_species <- sprintf("https://stringdb-static.org/download/species.v%s.txt",
+                         version)
+  # Read species data from URL
   df_species <- read.delim(url(url_species))
 
-  # get species ID of respective organism
-  species_id <- df_species$X.taxon_id[
-    match(species, df_species$official_name_NCBI)
-  ]
+  # Get the species ID of the respective organism
+  species_id <- df_species$X.taxon_id[match(species, df_species$official_name_NCBI)]
 
+  # Return the species ID
   return(species_id)
 }
 
-#' Get the STRING entry of a species
+#' Get the STRING db entry of a species
 #'
 #' Get the respective [STRINGdb] object of your species of interest
 #'
 #' @param species numeric, the NCBI ID of the species of interest
-#' @param version character, the STRINGdb version to use, defaults to 11.5
-#'                (current version)
-#' @param score_threshold numeric, a score threshold to cut the retrieved
+#' @param version character, The STRINGdb version to use, defaults to the
+#'                current version
+#' @param score_threshold numeric, A score threshold to cut the retrieved
 #'                        interactions, defaults to 0 (all interactions)
 #'
 #' @return a [STRINGdb] object `species`
@@ -46,8 +44,9 @@ getId <- function(species, version = "11.5") {
 #' species <- getId(species = "Homo sapiens")
 #' string_db <- getStringDB(as.numeric(species))
 getStringDB <- function(species,
-                        version = "11.5",
+                        version = "12.0",
                         score_threshold = 0.00) {
+  # Create and return a new STRINGdb object with specified parameters
   return(
     STRINGdb$new(
       version = version,
@@ -82,41 +81,41 @@ getAnnotation <- function(stringdb) {
 #' Download the Protein-Protein Interaction (PPI) information of a [STRINGdb]
 #' object
 #'
-#' @param genes list, a list of genes to download the respective protein-protein
+#' @param genes a `list`, A `list` of genes to download the respective protein-protein
 #'              interaction information
 #' @param string_db A [STRINGdb] object, the species of the object should match
-#'                  the species of `genes`
-#' @param anno_df A annotation `data.frame` mapping [STRINGdb] ids to gene
-#'                names, e.g. downloaded with [GeDi::getAnnotation()]
+#'                  the species of `genes`.
+#' @param anno_df An annotation `data.frame` mapping [STRINGdb] ids to gene
+#'                names, e.g. downloaded with \code{GeDi::getAnnotation()}
 #'
 #' @return A `data.frame` of Protein-Protein interactions
 #' @export
 #' @importFrom dplyr distinct
 #' @import STRINGdb
 #' @examples
-#'
 #' genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
 #' string_db <- getStringDB(9606)
 #' string_db
 #' anno_df <- getAnnotation(string_db)
 #' ppi <- getPPI(genes, string_db, anno_df)
 getPPI <- function(genes, string_db, anno_df) {
+  # Convert input list to vector
   genes <- unlist(genes)
 
-  # match gene names to STRINGdb ids
+  # Match gene names to STRINGdb IDs
   string_ids <- anno_df$STRING_id[match(genes, anno_df$alias)]
-  # get interaction scores of genes
+
+  # Get interaction scores of genes from the STRING database
   scores <- string_db$get_interactions(string_ids)
   colnames(scores) <- c("Gene1", "Gene2", "combined_score")
 
-  # extract smallest and largest value to normalize all scores to the (0, 1)
-  # interval
-  max <- max(scores$combined_score, -Inf)
+  # Normalize interaction scores to the (0, 1) interval
+  max <- max(scores$combined_score,-Inf)
   min <- min(scores$combined_score, Inf)
   scores$combined_score <-
     round((scores$combined_score - min) / (max - min), 2)
 
-  # filter the final data frame as interactions are symmetric
+  # Filter the data frame to ensure interactions are unique
   gene_names_to <-
     anno_df$alias[match(scores$Gene2, anno_df$STRING_id)]
   gene_names_from <-
@@ -135,10 +134,11 @@ getPPI <- function(genes, string_db, anno_df) {
       combined_score = scores$combined_score
     )
 
-  # build up final data frame of unique interactions
+  # Build up the final data frame of unique interactions
   scores <- distinct(scores)
   df <- distinct(df)
 
+  # Return the final data frame of interactions and scores
   scores <- rbind(scores, df)
   return(scores)
 }

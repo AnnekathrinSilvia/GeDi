@@ -1,88 +1,96 @@
-#' Generate a histogram of geneset size
+#' Create a histogram plot for gene set sizes
 #'
-#' Generate a histogram on the size of genesets (i.e. the number of genes
-#' associated with the geneset)
+#' Create a histogram plot to plot geneset names / identifiers againts their size.
 #'
-#' @param genes `list`, a `list` of `list` of genes which belong to the genesets
-#'               in gs_names
-#' @param gs_names character vector, names/identifiers of genesets
-#' @param start numeric, at which number to start the x-axis. Defaults to NULL
-#'              meaning the x-axis starts at 0.
-#' @param end numeric, at which number to end the x-axis. Defaults to NULL,
-#'        meaning the size of the largest geneset is the end.
-#' @param binwidth numeric, size of the individual bins. Defaults to 5.
-#' @param color character, color to use for the bars of the histogram.
-#'              Defaults to #0092AC.
+#' @param genesets a `list`, A `list` of genesets where is genesets is represented
+#'                 by `list` of genes.
+#' @param gs_names character vector, Name / identifier of the genesets in
+#'                 `genesets`
+#' @param start numeric, Optional, describes the minimum gene set size to
+#'              include. Defaults to 0.
+#' @param end numeric, Optional, describes the maximum gene set size to include.
+#'            Defaults to 0.
+#' @param binwidth numeric, Width of histogram bins. Defaults to 5.
+#' @param color character, Fill color for histogram bars. Defaults to #0092AC.
 #'
-#' @return A `ggplot2` histogram with the distribution of the size of the
-#'         genesets, i.e. number of genes in the genesets.
+#' @returnA [ggplot2::ggplot()] plot object.
 #'
 #' @export
 #' @import ggplot2
 #'
 #' @examples
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-#' genes <- list(
+#' genesets <- list(
 #'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
 #'   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
 #'   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
 #'   c("AHI1", "ALMS1")
 #' )
 #'
-#' p <- gs_histogram(genes, gs_names)
-gs_histogram <- function(genes,
+#' p <- gs_histogram(genesets, gs_names)
+gs_histogram <- function(genesets,
                          gs_names,
                          start = NULL,
                          end = NULL,
                          binwidth = 5,
                          color = "#0092AC") {
-  # set up data.frame for histogram
-  stopifnot(length(genes) > 0)
-  n_genes <- .buildHistogramData(genes, gs_names, start, end)
+  # Check if there are gene sets provided
+  stopifnot(length(genesets) > 0)
 
-  # set up histogram plot
+  # Build a data frame containing gene set sizes
+  n_genes <- .buildHistogramData(genesets, gs_names, start, end)
+
+  # Create a histogram plot using ggplot2
   p <- ggplot(n_genes, aes(x = Size)) +
     geom_histogram(binwidth = binwidth, fill = color) +
     theme_bw()
 
+  # Return the histogram plot object
   return(p)
 }
 
 
-#' Generate a data.frame of histogram data
+#' Prepare data for \code{gs_histogram()}.
 #'
-#' Generate a data.frame for a histogram which maps a geneset identifier to the
-#' size of the geneset.
+#' Prepare the data for the \code{gs_histogram()} by generating a `data.frame`
+#' which maps geneset names / identifiers to the size of their size.
 #'
-#' @param genes `list`, a `list` of `list` of genes which belong to the genesets
-#'              in gs_names
-#' @param gs_names character vector, names/identifiers of genesets
-#' @param start numeric, at which number to start the x-axis. Defaults to NULL
-#'              meaning the x-axis starts at 0.
-#' @param end numeric, at which number to end the x-axis. Defaults to NULL,
-#'        meaning the size of the largest geneset is the end.
+#' @param genesets a `list`, A `list` of genesets where is genesets is represented
+#'              by `list` of genes.
+#' @param gs_names character vector, Name / identifier of the genesets in
+#'                 `genesets`
+#' @param start numeric, Optional, describes the minimum gene set size to
+#'              include. Defaults to 0.
+#' @param end numeric, Optional, describes the maximum gene set size to include.
+#'            Defaults to 0.
 #'
-#' @return A `data.frame` which maps each geneset to its size (i.e. number of
-#'         genes in the genesets). Ff start and/or end are given, only those
-#'         genesets whose size is larger/smaller than start/end are returned.
+#' @return A `data.frame` mapping geneset names to sizes
 #'
-.buildHistogramData <- function(genes,
+.buildHistogramData <- function(genesets,
                                 gs_names,
-                                start = NULL,
-                                end = NULL) {
-  # get size of each geneset
-  n_genes <- sapply(genes, length)
-  # build up data.frame
+                                start = 0,
+                                end = 0) {
+  # Get the size of each gene set
+  n_genes <- sapply(genesets, length)
+
+  # Create a data frame to store geneset sizes
   n_genes <- as.data.frame(n_genes)
   colnames(n_genes) <- "Size"
-  stopifnot(length(gs_names) == length(genes))
+
+  # Check if the number of geneset names matches the number of genesets
+  stopifnot(length(gs_names) == length(genesets))
+
+  # Add geneset names to the data frame
   n_genes$Geneset <- gs_names
 
-  # filter only for those between start and end (if given)
+  # Filter genesets based on the specified start and end sizes (if provided)
   if (!is.null(start) && !is.null(end)) {
     n_genes <- n_genes[(n_genes$Size >= start & n_genes$Size <= end), ]
   }
+
+  # Reorder columns to have geneset names first
   n_genes <- n_genes[, c(2, 1)]
 
+  # Return the final data frame
   return(n_genes)
 }
