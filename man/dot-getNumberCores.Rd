@@ -12,8 +12,9 @@ Defaults to \code{Null} in which case the function takes half of
 the available cores.}
 }
 \value{
-The number of cores to use.
+Number of CPU cores to be used.
 }
 \description{
-Determine the number of cores to use for a function
+Determine the number of CPU cores the scoring functions should use when
+computing the distance scores.
 }

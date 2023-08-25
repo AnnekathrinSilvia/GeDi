@@ -7,30 +7,29 @@
 getpMMMatrix(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
 }
 \arguments{
-\item{genes}{\code{list}, a \code{list} of genesets (each geneset is represented by
-a \code{list} of the corresponding genes).}
+\item{ppi}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
+The object is expected to have three columns, \code{Gene1} and \code{Gene2}
+which specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 
-\item{ppi}{\code{data.frame}, a \code{data.frame} object which contains the
-Protein-Protein interactions information. The object is expected
-to have three columns, \code{Gene1} and \code{Gene2} which specify the gene
-names of the interacting proteins in no particular order
-(symmetric interaction) and a column \code{combined_score} which is a
-numerical value of the strength of the interaction.}
+\item{alpha}{numeric, Scaling factor for controlling the influence of the
+interaction score. Defaults to 1.}
 
-\item{alpha}{numeric, scaling factor in (0, 1) which indicates how much the
-Protein-Protein interactions are weighted into the final score.
-Defaults to 1.}
+\item{progress}{a \code{\link[shiny:Progress]{shiny::Progress()}} object, Optional progress bar object
+to track the progress of the function (e.g. in a Shiny app).}
 
-\item{progress}{\code{\link[shiny:Progress]{shiny::Progress()}} object, optional. To track the progress
-of the function (e.g. in a Shiny app)}
+\item{n_cores}{numeric, Optional number of CPU cores to use for parallel
+processing. Defaults to \code{NULL} in which case the function
+takes half of the available cores (see
+\code{.detectNumberCores()} function).}
 
-\item{n_cores}{numeric, number of cores to use for the function.
-Defaults to \code{NULL} in which case the function takes half of
-the available cores (see function .detectNumberCores(n_cores)).}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
+by \code{list} of genes.}
 }
 \value{
-A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise pMM distance of each
-geneset pair.
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with pMM distance rounded to 2 decimal places.
 }
 \description{
 Calculate the pMM distance of all combinations of genesets in a given data
@@ -46,4 +45,8 @@ ppi <- data.frame(
 )
 
 pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
+}
+\references{
+See https://doi.org/10.1186/s12864-019-5738-6 for details on the original
+implementation.
 }

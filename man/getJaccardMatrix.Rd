@@ -7,21 +7,20 @@
 getJaccardMatrix(genesets, progress = NULL, n_cores = NULL)
 }
 \arguments{
-\item{genesets}{\code{list}, a \code{list} of genesets (each geneset is represented
-by a \code{list} of the corresponding genes).}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
+by \code{list} of genes.}
 
-\item{progress}{\code{\link[shiny:Progress]{shiny::Progress()}} object, optional. To track the progress
-of the function (e.g. in a Shiny app).}
+\item{progress}{a \code{\link[shiny:Progress]{shiny::Progress()}} object, Optional progress bar object
+to track the progress of the function (e.g. in a Shiny app).}
 
-\item{n_cores}{numeric, number of cores to use for the function.
-Defaults to \code{NULL} in which case the function takes half of
-the available cores (see function .detectNumberCores(n_cores)).}
+\item{n_cores}{numeric, Optional number of CPU cores to use for parallel
+processing. Defaults to \code{NULL} in which case the function
+takes half of the available cores (see
+\code{.detectNumberCores()} function).}
 }
 \value{
-A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise Jaccard distance of each
-geneset pair. The matrix is symmetrical with values between 0 and 1,
-where 0 indicates the smallest distance (identical genesets) and
-1 indicates two disjoint sets.
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with Jaccard distance rounded to 2 decimal
+places.
 }
 \description{
 Calculate the Jaccard distance of all combinations of genesets in a given data

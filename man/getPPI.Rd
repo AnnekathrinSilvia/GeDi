@@ -7,14 +7,14 @@
 getPPI(genes, string_db, anno_df)
 }
 \arguments{
-\item{genes}{list, a list of genes to download the respective protein-protein
+\item{genes}{a \code{list}, A \code{list} of genes to download the respective protein-protein
 interaction information}
 
 \item{string_db}{A \link{STRINGdb} object, the species of the object should match
-the species of \code{genes}}
+the species of \code{genes}.}
 
-\item{anno_df}{A annotation \code{data.frame} mapping \link{STRINGdb} ids to gene
-names, e.g. downloaded with \code{\link[=getAnnotation]{getAnnotation()}}}
+\item{anno_df}{An annotation \code{data.frame} mapping \link{STRINGdb} ids to gene
+names, e.g. downloaded with \code{GeDi::getAnnotation()}}
 }
 \value{
 A \code{data.frame} of Protein-Protein interactions
@@ -24,7 +24,6 @@ Download the Protein-Protein Interaction (PPI) information of a \link{STRINGdb}
 object
 }
 \examples{
-
 genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
 string_db <- getStringDB(9606)
 string_db

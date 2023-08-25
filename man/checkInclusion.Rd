@@ -7,13 +7,14 @@
 checkInclusion(seeds)
 }
 \arguments{
-\item{seeds}{A \code{list} of sets of numerical values}
+\item{seeds}{A \code{list} of sets}
 }
 \value{
 A \code{list} of unique sets
 }
 \description{
-Check if every set is unique and there are no subset included in larger sets
+Remove subsets from a given list of sets, i.e. remove sets which are
+completely contained in any other larger set in the list.
 }
 \examples{
 seeds <- list(c(1:5), c(2:5), c(6:10))

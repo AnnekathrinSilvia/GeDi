@@ -2,28 +2,27 @@
 % Please edit documentation in R/gs_histogram.R
 \name{.buildHistogramData}
 \alias{.buildHistogramData}
-\title{Generate a data.frame of histogram data}
+\title{Prepare data for \code{gs_histogram()}.}
 \usage{
-.buildHistogramData(genes, gs_names, start = NULL, end = NULL)
+.buildHistogramData(genesets, gs_names, start = 0, end = 0)
 }
 \arguments{
-\item{genes}{\code{list}, a \code{list} of \code{list} of genes which belong to the genesets
-in gs_names}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
+by \code{list} of genes.}
 
-\item{gs_names}{character vector, names/identifiers of genesets}
+\item{gs_names}{character vector, Name / identifier of the genesets in
+\code{genesets}}
 
-\item{start}{numeric, at which number to start the x-axis. Defaults to NULL
-meaning the x-axis starts at 0.}
+\item{start}{numeric, Optional, describes the minimum gene set size to
+include. Defaults to 0.}
 
-\item{end}{numeric, at which number to end the x-axis. Defaults to NULL,
-meaning the size of the largest geneset is the end.}
+\item{end}{numeric, Optional, describes the maximum gene set size to include.
+Defaults to 0.}
 }
 \value{
-A \code{data.frame} which maps each geneset to its size (i.e. number of
-genes in the genesets). Ff start and/or end are given, only those
-genesets whose size is larger/smaller than start/end are returned.
+A \code{data.frame} mapping geneset names to sizes
 }
 \description{
-Generate a data.frame for a histogram which maps a geneset identifier to the
-size of the geneset.
+Prepare the data for the \code{gs_histogram()} by generating a \code{data.frame}
+which maps geneset names / identifiers to the size of their size.
 }

@@ -2,25 +2,27 @@
 % Please edit documentation in R/clustering.R
 \name{clustering}
 \alias{clustering}
-\title{Cluster genesets using Louvain or Markov clustering.}
+\title{Cluster genesets.}
 \usage{
 clustering(scores, threshold, cluster_method = "louvain")
 }
 \arguments{
 \item{scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
 
-\item{threshold}{numerical, a threshold indicating similar genesets. Genesets
-with a (distance) score <= threshold will be considered
+\item{threshold}{numerical, A threshold used to determine which genesets are
+considered similar. Genesets are considered similar if
+(distance) score <= threhold.
 similar.}
 
 \item{cluster_method}{character, the clustering method to use. The options
-are \code{louvain} and \code{markov}. Default to \code{louvain}.}
+are \code{louvain} and \code{markov}. Defaults to \code{louvain}.}
 }
 \value{
 A \code{list} of clusters
 }
 \description{
-Cluster the geneset using either Louvain or Markov clustering.
+This function performs clustering on a set of scores using either the Louvain
+or Markov method.
 }
 \examples{
 m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)

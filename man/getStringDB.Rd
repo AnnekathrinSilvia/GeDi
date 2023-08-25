@@ -2,17 +2,17 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getStringDB}
 \alias{getStringDB}
-\title{Get the STRING entry of a species}
+\title{Get the STRING db entry of a species}
 \usage{
 getStringDB(species, version = "11.5", score_threshold = 0)
 }
 \arguments{
 \item{species}{numeric, the NCBI ID of the species of interest}
 
-\item{version}{character, the STRINGdb version to use, defaults to 11.5
-(current version)}
+\item{version}{character, The STRINGdb version to use, defaults to the
+current version}
 
-\item{score_threshold}{numeric, a score threshold to cut the retrieved
+\item{score_threshold}{numeric, A score threshold to cut the retrieved
 interactions, defaults to 0 (all interactions)}
 }
 \value{

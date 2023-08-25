@@ -7,14 +7,12 @@
 .filterGenesets(remove, df_genesets)
 }
 \arguments{
-\item{remove}{\code{list}, a \code{list} of geneset identifiers to be removed from
-\code{df_genesets}}
+\item{remove}{a \code{list}, A list of geneset names to be removed}
 
-\item{df_genesets}{\code{data.frame}, a \code{data.frame} of the genesets.}
+\item{df_genesets}{\code{data.frame}, A Data frame of genesets.}
 }
 \value{
-A \code{data.frame} of the input data without the genesets listed in
-\code{remove}.
+A \code{data.frame} containing information about filtered genesets
 }
 \description{
 Filter a preselected list of genesets from a \code{data.frame} of genesets

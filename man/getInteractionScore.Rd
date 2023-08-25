@@ -9,20 +9,21 @@ getInteractionScore(a, b, ppi, maxInteract)
 \arguments{
 \item{a, b}{character vector, set of gene identifiers.}
 
-\item{ppi}{\code{data.frame}, a \code{data.frame} object which contains the
-Protein-Protein interactions information. The object is expected
-to have three columns, \code{Gene1} and \code{Gene2} which specify the gene
-names of the interacting proteins in no particular order
-(symmetric interaction) and a column \code{combined_score} which is a
-numerical value of the strength of the interaction.}
+\item{ppi}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
+The object is expected to have three columns, \code{Gene1} and \code{Gene2}
+which specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 
-\item{maxInteract}{numeric, largest value of \code{ppi}.}
+\item{maxInteract}{numeric, Maximum interaction value in the PPI.}
 }
 \value{
-The interaction score of the two given genesets.
+Interaction score between the two gene sets.
 }
 \description{
-The function calculates the interaction score for two given genesets.
+The function calculates an interaction score between two sets of genes based
+on a protein-protein interaction network.
 }
 \examples{
 a <- c("PDHB", "VARS2", "IARS2")
@@ -36,4 +37,8 @@ ppi <- data.frame(
 maxInteract <- max(ppi$combined_score)
 
 interaction <- getInteractionScore(a, b, ppi, maxInteract)
+}
+\references{
+See https://doi.org/10.1186/s12864-019-5738-6 for details on the original
+implementation.
 }

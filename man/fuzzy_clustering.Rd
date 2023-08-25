@@ -7,17 +7,22 @@
 fuzzy_clustering(seeds, threshold)
 }
 \arguments{
-\item{seeds}{A \code{list} of seeds, e.g. determined by seedFinding}
+\item{seeds}{A \code{list} of seeds, e.g. determined by \code{GeDi::seedFinding()}
+function}
 
-\item{threshold}{numerical, threshold for merging seeds}
+\item{threshold}{numerical, A threshold for merging seeds}
 }
 \value{
 A \code{list} of clusters
 }
 \description{
-Find clusters from initial seeds according to (#TODO: David publication linken)
+Merge the initially determined seeds to clusters.
 }
 \examples{
 seeds <- list(c(1:5), c(6:10))
 cluster <- fuzzy_clustering(seeds, 0.5)
+}
+\references{
+See https://david.ncifcrf.gov/helps/functional_classification.html#clustering
+for details on the original implementation
 }

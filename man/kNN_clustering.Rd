@@ -9,13 +9,14 @@ kNN_clustering(scores, k)
 \arguments{
 \item{scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
 
-\item{k}{numerical, the number of neighbors that should be searched for}
+\item{k}{numerical, the number of neighbors}
 }
 \value{
 A \code{list} of clusters
 }
 \description{
-Calculate a clustering of the data using the kNN approach
+This function performs k-Nearest Neighbors (kNN) clustering on a set of
+scores.
 }
 \examples{
 scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)

@@ -13,10 +13,10 @@ calculateKappa(a, b, all_genes)
 the input data.}
 }
 \value{
-The Kappa distance of the two sets.
+The Kappa distance of the sets.
 }
 \description{
-Calculate the Kappa distance for two given genesets.
+Calculate the Kappa distance between two genesets.
 }
 \examples{
 a <- c("PDHB", "VARS2")

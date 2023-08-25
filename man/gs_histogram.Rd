@@ -2,10 +2,10 @@
 % Please edit documentation in R/gs_histogram.R
 \name{gs_histogram}
 \alias{gs_histogram}
-\title{Generate a histogram of geneset size}
+\title{Create a histogram plot for gene set sizes}
 \usage{
 gs_histogram(
-  genes,
+  genesets,
   gs_names,
   start = NULL,
   end = NULL,
@@ -14,38 +14,36 @@ gs_histogram(
 )
 }
 \arguments{
-\item{genes}{\code{list}, a \code{list} of \code{list} of genes which belong to the genesets
-in gs_names}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
+by \code{list} of genes.}
 
-\item{gs_names}{character vector, names/identifiers of genesets}
+\item{gs_names}{character vector, Name / identifier of the genesets in
+\code{genesets}}
 
-\item{start}{numeric, at which number to start the x-axis. Defaults to NULL
-meaning the x-axis starts at 0.}
+\item{start}{numeric, Optional, describes the minimum gene set size to
+include. Defaults to 0.}
 
-\item{end}{numeric, at which number to end the x-axis. Defaults to NULL,
-meaning the size of the largest geneset is the end.}
+\item{end}{numeric, Optional, describes the maximum gene set size to include.
+Defaults to 0.}
 
-\item{binwidth}{numeric, size of the individual bins. Defaults to 5.}
+\item{binwidth}{numeric, Width of histogram bins. Defaults to 5.}
 
-\item{color}{character, color to use for the bars of the histogram.
-Defaults to #0092AC.}
+\item{color}{character, Fill color for histogram bars. Defaults to #0092AC.}
 }
 \value{
-A \code{ggplot2} histogram with the distribution of the size of the
-genesets, i.e. number of genes in the genesets.
+A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot object.
 }
 \description{
-Generate a histogram on the size of genesets (i.e. the number of genes
-associated with the geneset)
+Create a histogram plot to plot geneset names / identifiers againts their size.
 }
 \examples{
 gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-genes <- list(
+genesets <- list(
   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
   c("AHI1", "ALMS1")
 )
 
-p <- gs_histogram(genes, gs_names)
+p <- gs_histogram(genesets, gs_names)
 }

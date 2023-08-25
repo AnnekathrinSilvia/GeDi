@@ -15,7 +15,7 @@ scaleGO(
 }
 \arguments{
 \item{scores}{a \code{\link[Matrix:Matrix]{Matrix::Matrix()}}, a matrix of (distance) scores for the
-indentifiers in \code{geneset_ids}.}
+identifiers in \code{geneset_ids}.}
 
 \item{geneset_ids}{\code{list}, a \code{list} of GO identifiers to score}
 
@@ -30,10 +30,10 @@ org.XX.eg.db package from Bioconductor.}
 
 \item{n_cores}{numeric, number of cores to use for the function.
 Defaults to \code{NULL} in which case the function takes half of
-the available cores (see function .detectNumberCores(n_cores)).}
+the available cores (see \code{.detectNumberCores()}).}
 }
 \value{
-Scaled Values
+A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of scaled values.
 }
 \description{
 A method to scale a matrix of distance scores with the GO term similarity

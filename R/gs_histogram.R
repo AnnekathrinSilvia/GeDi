@@ -13,7 +13,7 @@
 #' @param binwidth numeric, Width of histogram bins. Defaults to 5.
 #' @param color character, Fill color for histogram bars. Defaults to #0092AC.
 #'
-#' @returnA [ggplot2::ggplot()] plot object.
+#' @return A [ggplot2::ggplot()] plot object.
 #'
 #' @export
 #' @import ggplot2

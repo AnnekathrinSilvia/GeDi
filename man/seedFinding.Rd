@@ -9,19 +9,26 @@ seedFinding(distances, simThreshold, memThreshold)
 \arguments{
 \item{distances}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
 
-\item{simThreshold}{numerical, a threshold of what is considered a
-close relationship between two elements in distances}
+\item{simThreshold}{numerical, A threshold to determine which genesets are
+considered close (i.e. have a distance <= simThreshold)
+in the \code{distances} matrix.}
 
-\item{memThreshold}{numerical, a threshold used to identify members of
-a seeds}
+\item{memThreshold}{numerical, A threshold used to ensure that enough members
+of a potential seed set are close/similar to each other.
+Only if this condition is met, the set is considered a
+seed.}
 }
 \value{
 A \code{list} of seeds which can be used for clustering
 }
 \description{
-Find initial seeds for the clustering. #TODO: Verlinken auf die David publication
+Determine initial seeds for the clustering from the distance score matrix.
 }
 \examples{
 m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 seeds <- seedFinding(distances = m, simThreshold = 0.3, memThreshold = 0.5)
+}
+\references{
+See https://david.ncifcrf.gov/helps/functional_classification.html#clustering
+for details on the original implementation
 }

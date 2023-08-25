@@ -12,10 +12,11 @@
 #' @examples
 #' species <- "Homo sapiens"
 #' id <- getId(species = species)
-getId <- function(species, version = "12.0") {
+getId <- function(species, version = "11.5") {
   # Download available species information from STRING
   url_species <- sprintf("https://stringdb-static.org/download/species.v%s.txt",
                          version)
+
   # Read species data from URL
   df_species <- read.delim(url(url_species))
 
@@ -44,7 +45,7 @@ getId <- function(species, version = "12.0") {
 #' species <- getId(species = "Homo sapiens")
 #' string_db <- getStringDB(as.numeric(species))
 getStringDB <- function(species,
-                        version = "12.0",
+                        version = "11.5",
                         score_threshold = 0.00) {
   # Create and return a new STRINGdb object with specified parameters
   return(

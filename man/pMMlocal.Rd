@@ -9,21 +9,20 @@ pMMlocal(a, b, ppi, maxInteract, alpha = 1)
 \arguments{
 \item{a, b}{character vector, set of gene identifiers.}
 
-\item{ppi}{\code{data.frame}, a \code{data.frame} object which contains the
-Protein-Protein interactions information. The object is expected
-to have three columns, \code{Gene1} and \code{Gene2} which specify the gene
-names of the interacting proteins in no particular order
-(symmetric interaction) and a column \code{combined_score} which is a
-numerical value of the strength of the interaction.}
+\item{ppi}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
+The object is expected to have three columns, \code{Gene1} and \code{Gene2}
+which specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 
-\item{maxInteract}{numeric, largest value of \code{ppi}.}
+\item{maxInteract}{numeric, Maximum interaction value in the PPI.}
 
-\item{alpha}{numeric, scaling factor in (0, 1) which indicates how much the
-Protein-Protein interactions are weighted into the final score.
-Defaults to 1.}
+\item{alpha}{numeric, Scaling factor for controlling the influence of the
+interaction score. Defaults to 1.}
 }
 \value{
-The pMM distance for two sets.
+The pMMlocal score between the two gene sets.
 }
 \description{
 Calculate the local pMM distance of two genesets.
@@ -40,4 +39,8 @@ ppi <- data.frame(
 maxInteract <- max(ppi$combined_score)
 
 pMM_score <- pMMlocal(a, b, ppi, maxInteract)
+}
+\references{
+See https://doi.org/10.1186/s12864-019-5738-6 for details on the original
+implementation.
 }

@@ -2,15 +2,20 @@
 % Please edit documentation in R/utils.R
 \name{.checkPPI}
 \alias{.checkPPI}
-\title{Check if PPI has right format}
+\title{Check PPI format}
 \usage{
 .checkPPI(ppi)
 }
 \arguments{
-\item{ppi}{A PPI object}
+\item{ppi}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
+The object is expected to have three columns, \code{Gene1} and \code{Gene2}
+which specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 }
 \value{
-A \code{data.frame} of the input \code{ppi} with the expected column names
+A validated and formatted PPI data frame.
 }
 \description{
 Check if the Protein-Protein-interaction (PPI) has the expected format for

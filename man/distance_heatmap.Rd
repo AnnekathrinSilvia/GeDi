@@ -2,7 +2,7 @@
 % Please edit documentation in R/distance_heatmap.R
 \name{distance_heatmap}
 \alias{distance_heatmap}
-\title{Plot a heatmap on the distance scores of the genesets}
+\title{Plot a heatmap}
 \usage{
 distance_heatmap(distance_scores, chars_limit = 50)
 }
@@ -10,11 +10,13 @@ distance_heatmap(distance_scores, chars_limit = 50)
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores for each
 pairwise combination of genesets.}
 
-\item{chars_limit}{Numeric value, how many characters of the geneset names
-of \code{distance_scores}. Defaults to 50.}
+\item{chars_limit}{Numeric value, Indicates how many characters of the
+row and column names of \code{distance_scores} should be
+plotted. Defaults to 50 and prevents crowded axises due to
+long names.}
 }
 \value{
-A plot returned by the \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}} function
+A \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}} plot object.
 }
 \description{
 Plot a heatmap of a matrix of (distance) scores of the input genesets

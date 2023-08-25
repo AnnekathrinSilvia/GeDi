@@ -7,17 +7,21 @@
 .sepguesser(file, sep_list = c(",", "\\t", ";", " ", "/"))
 }
 \arguments{
-\item{file}{character, location of a file to read data from.}
+\item{file}{a character, location of a file to read data from.}
 
-\item{sep_list}{\code{list}, containing the candidates for being identified as
+\item{sep_list}{a \code{list}, containing the candidates for being identified as
 separators. Defaults to \code{c(",", "\t", ";"," ", "/")}.}
 }
 \value{
-character, corresponding to the guessed separator. One of ","
+A character, corresponding to the guessed separator. One of ","
 (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 (backslash).
 }
 \description{
 This function tries to guess which separator was used in a text delimited
 file.
+}
+\references{
+See https://github.com/federicomarini/ideal for details on the original
+implementation.
 }

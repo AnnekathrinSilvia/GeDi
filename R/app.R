@@ -2085,9 +2085,17 @@ GeDi <- function(genesets = NULL,
         progress$inc(0.8, detail = "Finished clustering the data.")
       }
 
-      reactive_values$cluster <- cluster
-      progress$inc(0.2, detail = "Successfully clustered data.")
-      updateBox("clustering_selection_box", action = "toggle")
+      if (is.null(cluster)) {
+        showNotification(
+          "It seems like something went wrong while clustering your data.
+          Most likely this is due to an error in the scoring.",
+          type = "error"
+        )
+      } else{
+        reactive_values$cluster <- cluster
+        progress$inc(0.2, detail = "Successfully clustered data.")
+        updateBox("clustering_selection_box", action = "toggle")
+      }
     })
 
 

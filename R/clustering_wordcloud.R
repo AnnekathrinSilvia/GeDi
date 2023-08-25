@@ -15,7 +15,7 @@
 #'
 #' @return A [wordcloud2::wordcloud2()] plot object
 #' @export
-#' @importFrom tm Corpus VectorSource removeWords removePunctuation stripWhitespace tm_map
+#' @importFrom tm VCorpus VectorSource removeWords removePunctuation stripWhitespace stopwords TermDocumentMatrix tm_map
 #' @importFrom wordcloud2 wordcloud2
 #' @importFrom RColorBrewer brewer.pal
 #'
@@ -25,6 +25,9 @@
 #'      envir = environment())
 #' wordcloud <- enrichmentWordcloud(macrophage_topGO_example)
 enrichmentWordcloud <- function(genesets_df) {
+  # Check if genesets are provided
+  stopifnot(!is.null(genesets_df))
+
   # Check if there is a column named Term to use as terms for the wordcloud
   if ("Term" %in% names(genesets_df)) {
     terms <- genesets_df$Term
@@ -39,7 +42,7 @@ enrichmentWordcloud <- function(genesets_df) {
   }
 
   # Create a text corpus from the selected terms
-  corpus <- Corpus(VectorSource(terms))
+  corpus <- VCorpus(VectorSource(terms))
 
   # Preprocess the text corpus by removing English stopwords, punctuation, and whitespace
   corpus <- tm_map(corpus, removeWords, stopwords("english"))

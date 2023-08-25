@@ -21,3 +21,7 @@ character, corresponding to the guessed separator. One of ","
 This function tries to guess which separator was used in a list of delimited
 strings.
 }
+\references{
+See https://github.com/federicomarini/ideal for details on the original
+implementation.
+}

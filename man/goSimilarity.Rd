@@ -30,7 +30,7 @@ of the function (e.g. in a Shiny app)}
 
 \item{n_cores}{numeric, number of cores to use for the function.
 Defaults to \code{NULL} in which case the function takes half of
-the available cores (see function .detectNumberCores(n_cores)).}
+the available cores (see \code{.detectNumberCores()}).}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity of each

@@ -2,7 +2,7 @@
 % Please edit documentation in R/downloadPPI.R
 \name{getId}
 \alias{getId}
-\title{Get ID of a species}
+\title{Get NCBI ID}
 \usage{
 getId(species, version = "11.5")
 }
@@ -10,10 +10,10 @@ getId(species, version = "11.5")
 \item{species}{character, the species of your input data}
 
 \item{version}{character, the version of STRING you want to use, defaults to
-11.5, the current version of STRING}
+the current version of STRING}
 }
 \value{
-a character of the NCBI ID of \code{species}
+A character of the NCBI ID of \code{species}
 }
 \description{
 Get the NCBI ID of a species

@@ -12,6 +12,9 @@
 #' seeds <- list(c(1:5), c(2:5), c(6:10))
 #' s <- checkInclusion(seeds)
 checkInclusion <- function(seeds) {
+  # Remove all empty seeds from the list
+  seeds <- seeds[lengths(seeds) != 0]
+
   # Create a list to store the indices of sets to be removed (i.e. subsets of
   # other sets)
   remove <- c()
@@ -34,9 +37,9 @@ checkInclusion <- function(seeds) {
       s2 <- seeds[[j]]
 
       # Check if s1 is a subset of s2 or vice versa, if so, mark for removal
-      if (setequal(intersect(s1, s2), s1)) {
+      if (setequal(intersect(s1, s2), s1) || length(s1) == 0) {
         remove <- c(remove, i)
-      } else if (setequal(intersect(s2, s1), s2)) {
+      } else if (setequal(intersect(s2, s1), s2) || length(s2) == 0) {
         remove <- c(remove, j)
       }
     }
@@ -226,6 +229,7 @@ clustering <- function(scores, threshold, cluster_method = "louvain") {
 
   # Obtain adjacency matrix based on the distance scores and build a graph
   adj_matrix <- getAdjacencyMatrix(scores, threshold)
+  stopifnot(!is.null(adj_matrix))
   graph <- buildGraph(adj_matrix)
 
   # Run Louvain or Markov clustering based on the chosen method
@@ -274,6 +278,10 @@ clustering <- function(scores, threshold, cluster_method = "louvain") {
 #' cluster <- kNN_clustering(scores, k = 3)
 kNN_clustering <- function(scores,
                            k) {
+  # Check if there are any distance scores, if not, return NULL
+  if (is.null(scores) || length(scores) == 0) {
+    return(NULL)
+  }
   # Find k nearest neighbors for each geneset in the data
   kNN <- findKNN(scores, k)
   # Extract the list of neighbors for each geneset

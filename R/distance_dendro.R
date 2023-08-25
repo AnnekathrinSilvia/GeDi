@@ -18,19 +18,20 @@
 #' distance_scores <- Matrix::Matrix(0.5, 20, 20)
 #' distance_scores[c(11:15), c(2:6)] <- 0.2
 #' dendro <- distance_dendro(distance_scores, cluster_method = "single")
-distance_dendro <- function(distance_scores, cluster_method = "average") {
-  # Check if distance scores are provided
-  stopifnot(length(distance_scores) > 0)
+distance_dendro <-
+  function(distance_scores, cluster_method = "average") {
+    # Check if distance scores are provided
+    stopifnot(length(distance_scores) > 0 &&
+                (!is.null(distance_scores)))
 
-  # Calculate the distance between the distance scores and perform
-  # hierarchical clustering
-  dist <- dist(t(distance_scores))
-  hc <- hclust(dist, cluster_method)
+    # Calculate the distance between the distance scores and perform
+    # hierarchical clustering
+    dist <- dist(t(distance_scores))
+    hc <- hclust(dist, cluster_method)
 
-  # Create and plot the dendrogram
-  p <- ggdendrogram(hc, rotate = FALSE, size = 2)
+    # Create and plot the dendrogram
+    p <- ggdendrogram(hc, rotate = FALSE, size = 2)
 
-  # Return the dendrogram plot
-  return(p)
-}
-
+    # Return the dendrogram plot
+    return(p)
+  }

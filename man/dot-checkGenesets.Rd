@@ -2,13 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{.checkGenesets}
 \alias{.checkGenesets}
-\title{Check if input genesets have the right format}
+\title{Check genesets format}
 \usage{
 .checkGenesets(genesets)
 }
 \arguments{
-\item{genesets}{A object of geneset input data}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
+by \code{list} of genes.}
+}
+\value{
+A validated and formatted genesets data frame.
 }
 \description{
-Check if the input genesets have the expected format of the app
+Check if the input genesets have the expected format for this app
 }

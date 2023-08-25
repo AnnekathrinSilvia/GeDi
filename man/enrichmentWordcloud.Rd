@@ -2,22 +2,27 @@
 % Please edit documentation in R/clustering_wordcloud.R
 \name{enrichmentWordcloud}
 \alias{enrichmentWordcloud}
-\title{Show the enriched terms as wordcloud}
+\title{Visualize the results of an enrichment analysis as word cloud}
 \usage{
 enrichmentWordcloud(genesets_df)
 }
 \arguments{
-\item{genesets_df}{\code{data.frame}, a \code{data.frame} of the input data, containing
-the genesets, genes and a description of the individual
-genesets that can be used for the wordcloud. If no
-description or term is included in the data, the rownames
-will be used.}
+\item{genesets_df}{A \code{data.frame} object of an enrichment analysis results.
+This object should follow the input requirements of
+\code{GeDi()}, check out the vignette for further details.
+Besides the specified required columns, the object should
+ideally include a column with a short geneset description
+which is used for the word cloud. If no such column is
+available, the row names of the \code{data.frame} are used for
+the word cloud.}
 }
 \value{
-a \code{list} of parameters which can be used to generate a wordcloud
+A \code{\link[wordcloud2:wordcloud2]{wordcloud2::wordcloud2()}} plot object
 }
 \description{
-Show the terms of the genesets descriptions as wordcloud of enriched terms
+Visualize the results of an enrichment analysis as a word cloud. The word
+cloud highlights the most frequent terms associated with the description of
+the genesets in the enrichment analysis.
 }
 \examples{
 data(macrophage_topGO_example,

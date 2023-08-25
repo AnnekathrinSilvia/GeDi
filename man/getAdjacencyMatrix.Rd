@@ -24,6 +24,8 @@ threshold.
 }
 \examples{
 m <- Matrix::Matrix(stats::runif(1000, 0, 1), 100, 100)
+geneset_names <- as.character(stats::runif(100, min = 0, max = 1))
+rownames(m) <- colnames(m) <- geneset_names
 threshold <- 0.3
 adj <- getAdjacencyMatrix(m, threshold)
 }

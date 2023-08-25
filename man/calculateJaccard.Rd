@@ -10,10 +10,10 @@ calculateJaccard(a, b)
 \item{a, b}{character vector, set of gene identifiers.}
 }
 \value{
-The Jaccard distance of the two sets.
+The Jaccard distance of the sets.
 }
 \description{
-Calculate the Jaccard distance for two given genesets.
+Calculate the Jaccard distance between two genesets.
 }
 \examples{
 a <- c("PDHB", "VARS2")
