@@ -206,6 +206,39 @@ getGenes <- function(genesets, gene_name = NULL) {
   return(genesets)
 }
 
+#' Check distance scores format
+#'
+#' Check if the provided distance scores have the expected format for this app
+#'
+#' @param genesets a `list`, A `list` of genesets where each genesets is represented
+#'                 by `list` of genes.
+#' @param distance_scores A [Matrix::Matrix()] or [Matrix::dgCMatrix()] object,
+#'                        A matrix with numerical (distance) scores.
+#'
+#' @return A validated and formatted distance_scores [Matrix::dgCMatrix()].
+#'
+#' @examples
+.checkScores <- function(genesets, distance_scores){
+  # Check if the distance_scores matrix is square
+  stopifnot(nrow(distance_scores) == ncol(distance_scores))
+
+  # Check if the number of rows in genesets matches the number of rows
+  # in distance_scores
+  stopifnot(nrow(genesets) == nrow(distance_scores))
+
+  # Check if all values in the distance_scores matrix are numeric
+  stopifnot(all(is.numeric(distance_scores@x)))
+
+  # Check if row names and column names in distance_scores are the same
+  stopifnot(rownames(distance_scores) == colnames(distance_scores))
+  # Check if row names in distance_scores match the Genesets column in the
+  # genesets data frame
+  stopifnot(rownames(distance_scores) == genesets$Genesets)
+
+  # Return the validated and formatted distance_scores matrix
+  return(distance_scores)
+}
+
 #' Determine the number of cores to use for a function
 #'
 #' Determine the number of CPU cores the scoring functions should use when

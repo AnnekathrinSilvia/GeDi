@@ -5,6 +5,7 @@
 #'
 #' @param genesets a dataframe of genesets containing the columns: genesets (the names / ids of the sets) and genes (the genes included in the genesets)
 #' @param ppi a Protein-Protein interaction matrix
+#' @param distance_scores a Matrix of calculated distance scores for the genesets in `genesets`
 #' @param alpha a scaling factor in between 0 and 1
 #'
 #' @return A Shiny app object is returned
@@ -34,6 +35,7 @@
 #'
 GeDi <- function(genesets = NULL,
                  ppi = NULL,
+                 distance_scores = NULL,
                  alpha = 1) {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
   on.exit(options(oopt))
@@ -45,6 +47,9 @@ GeDi <- function(genesets = NULL,
   }
   if (!(is.null(ppi))) {
     ppi <- .checkPPI(ppi)
+  }
+  if(!(is.null(distance_scores))){
+    distance_scores <- .checkScores(genesets, distance_scores)
   }
 
   # UI definition -----------------------------------------------------------
