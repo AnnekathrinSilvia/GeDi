@@ -132,7 +132,7 @@ NULL
 
 #' PPI
 #'
-#' A file containing a Prtein-Protein Interaction (PPI) `data.frame` for the
+#' A file containing a Protein-Protein Interaction (PPI) `data.frame` for the
 #' `macrophage_topGO_example_small`.
 #'
 #' @details This sample input contains a PPI for the
@@ -146,5 +146,24 @@ NULL
 #'             (2018). https://doi.org/10.1038/s41588-018-0046-7
 #'
 #' @name ppi_macrophage_topGO_example_small
+#' @docType data
+NULL
+
+
+#' DESeq results
+#'
+#' A file containing a `DESeqResults` for the
+#' `macrophage_topGO_example`.
+#'
+#' @details This sample input contains a `DESeqResults` for the
+#'          `macrophage_topGO_examplel`. The object has been generated using the
+#'          `DESeq` function.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name res_macrophage_IFNg_vs_naive
 #' @docType data
 NULL

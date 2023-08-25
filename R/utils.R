@@ -212,12 +212,11 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @param genesets a `list`, A `list` of genesets where each genesets is represented
 #'                 by `list` of genes.
-#' @param distance_scores A [Matrix::Matrix()] or [Matrix::dgCMatrix()] object,
+#' @param distance_scores A [Matrix::Matrix()] or  object,
 #'                        A matrix with numerical (distance) scores.
 #'
-#' @return A validated and formatted distance_scores [Matrix::dgCMatrix()].
+#' @return A validated and formatted distance_scores [Matrix::Matrix()].
 #'
-#' @examples
 .checkScores <- function(genesets, distance_scores){
   # Check if the distance_scores matrix is square
   stopifnot(nrow(distance_scores) == ncol(distance_scores))

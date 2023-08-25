@@ -5,7 +5,7 @@
 \alias{ppi_macrophage_topGO_example_small}
 \title{PPI}
 \description{
-A file containing a Prtein-Protein Interaction (PPI) \code{data.frame} for the
+A file containing a Protein-Protein Interaction (PPI) \code{data.frame} for the
 \code{macrophage_topGO_example_small}.
 }
 \details{
