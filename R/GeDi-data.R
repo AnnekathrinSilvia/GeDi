@@ -167,3 +167,39 @@ NULL
 #' @name res_macrophage_IFNg_vs_naive
 #' @docType data
 NULL
+
+#' A sample input RData file
+#'
+#' A sample input RData file generated from the macrophage dataset.
+#'
+#' @details This sample input contains data from the macrophage package found on
+#'          Bioconductor. The exact steps used to generated this file can be
+#'          found in the package vignette. The used database for the enrichment
+#'          was the Reactome database.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name macrophage_Reactome_example
+#' @docType data
+NULL
+
+#' A sample input RData file
+#'
+#' A sample input RData file generated from the macrophage dataset.
+#'
+#' @details This sample input contains data from the macrophage package found on
+#'          Bioconductor. The exact steps used to generated this file can be
+#'          found in the package vignette. The used database for the enrichment
+#'          was the KEGG database.
+#'
+#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
+#'             genetic effects on chromatin and gene expression indicate a role
+#'             for enhancer priming in immune response. Nat Genet 50, 424–431
+#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
+#'
+#' @name macrophage_KEGG_example
+#' @docType data
+NULL

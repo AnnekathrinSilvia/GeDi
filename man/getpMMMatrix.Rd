@@ -4,9 +4,12 @@
 \alias{getpMMMatrix}
 \title{Calculate the pMM distance}
 \usage{
-getpMMMatrix(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
+getpMMMatrix(genesets, ppi, alpha = 1, progress = NULL, n_cores = NULL)
 }
 \arguments{
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
+by \code{list} of genes.}
+
 \item{ppi}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
 The object is expected to have three columns, \code{Gene1} and \code{Gene2}
 which specify the gene names of the interacting proteins in no
@@ -24,9 +27,6 @@ to track the progress of the function (e.g. in a Shiny app).}
 processing. Defaults to \code{NULL} in which case the function
 takes half of the available cores (see
 \code{.detectNumberCores()} function).}
-
-\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
-by \code{list} of genes.}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with pMM distance rounded to 2 decimal places.
@@ -36,7 +36,7 @@ Calculate the pMM distance of all combinations of genesets in a given data
 set of genesets.
 }
 \examples{
-genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
+genesets <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
 
 ppi <- data.frame(
   Gene1 = c("PDHB", "VARS2"),
@@ -44,7 +44,7 @@ ppi <- data.frame(
   combined_score = c(0.5, 0.2)
 )
 
-pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
+pMM <- getpMMMatrix(genesets, ppi, n_cores = 1)
 }
 \references{
 See https://doi.org/10.1186/s12864-019-5738-6 for details on the original

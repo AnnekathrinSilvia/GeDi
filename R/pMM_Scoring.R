@@ -164,7 +164,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' @import Matrix
 #'
 #' @examples
-#' genes <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
+#' genesets <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
 #'
 #' ppi <- data.frame(
 #'   Gene1 = c("PDHB", "VARS2"),
@@ -172,10 +172,10 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'   combined_score = c(0.5, 0.2)
 #' )
 #'
-#' pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
-getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL) {
+#' pMM <- getpMMMatrix(genesets, ppi, n_cores = 1)
+getpMMMatrix <- function(genesets, ppi, alpha = 1, progress = NULL, n_cores = NULL) {
   # Get the number of genesets
-  l <- length(genes)
+  l <- length(genesets)
 
   # If there are no genesets, return NULL
   if (l == 0) {
@@ -198,7 +198,7 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
 
   # Calculate pMM distances for each pair of genesets
   for (j in 1:(l - 1)) {
-    a <- genes[[j]]
+    a <- genesets[[j]]
     # Update the progress bar if provided
     if (!is.null(progress)) {
       progress$inc(1 / l, detail = paste("Scoring geneset number", j))
@@ -206,7 +206,7 @@ getpMMMatrix <- function(genes, ppi, alpha = 1, progress = NULL, n_cores = NULL)
 
     # Parallelly calculate pMM distances for pairs using pMMlocal function
     results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
-      b <- genes[[i]]
+      b <- genesets[[i]]
       pMMlocal(a, b, ppi, maxInteract)
     }, mc.cores = n_cores)
     # Fill the upper and lower triangular sections of the matrix with results

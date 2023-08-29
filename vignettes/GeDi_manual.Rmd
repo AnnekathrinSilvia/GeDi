@@ -103,7 +103,8 @@ GeDi(
 )
 ```
 
-where 
+where
+
 - `geneset_df` is a `DataFrame` of your input data and contains at least one column named Genesets containing the geneset identifiers and one column named Genes which contains a comma seperated list of genes belonging to the respective geneset
 - `ppi_df` is a `DataFrame` containing protein protein interactions scores with the columns from, to and combined_score
 - `distance_scores_df` is a sparse `Matrix` containing the distance scores of the genesets in your data.
@@ -308,14 +309,17 @@ Furthermore, you can begin using `GeDi` with preprocessed example data based on 
 Upon successfully loading either your own data or the example data, two additional boxes will be displayed.
 
 <b>Optional Filtering Step</b>: Filter generic genesets
+
 The first new box is an <b>Optional Filtering Step</b>. While not mandatory for data exploration, this step can significantly enhance downstream processing runtime. In this step, you have the option to filter genesets in your data. Filtering out large and generic genesets can improve result interpretation. Alternatively, you can filter out genesets exceeding a certain size. 
 
 The box displays a histogram illustrating geneset sizes and provides input fields for filtering. The left input field lets you select individual genesets by their identifiers in the "Genesets" column of your input. The right input field allows you to set a threshold "x" for filtering genesets with a size greater than or equal to "x."
 
 <b>Step 2</b>: Species Selection
+
 A second box labeled <b>Step 2</b> will open. Here, you can select the species associated with your data. This selection is vital for the <b>PMM score</b> in GeDi, which relies on a <b>Protein-Protein Interaction (PPI)</b> matrix. This matrix captures protein interaction strength, enhancing distance scores with biological context. To download this information, you must specify your data's species. Clicking the input field opens a dropdown with preselected species. If your species is included, choose it. If not, type it manually. If uncertain, follow the link on the right to the STRING database to verify species details and PPI availability.
 
 <b>Step 3</b>: PPI Matrix Download
+
 After species selection, a third box named <b>Step 3</b> will appear. In this step, you can download the PPI matrix. This process may take some time, with a progress bar in the lower right corner keeping you informed. Once downloaded, you can preview the PPI matrix in the <b>PPI Preview</b> box on the right.  As you see there, the PPI is build up of three columns: <b>Gene1</b> and <b>Gene2</b> which contain the gene symbols of the corresponding interacting proteins and a column <b>combined_score</b> which reflects the confidence of the interaction. The score is based on the number of known interactions between two proteins normalized to the (0, 1) interval through <math display="block"><mi>combined_score</mi><mo>=</mo><mfrac><mrow><mi>#interactions</mi><mo>-</mo><mi>min</mi></mrow> <mrow><mi>max</mi><mo>-</mo><mi>min</mi></mrow></mfrac></math> where <b>min</b> and <b>max</b> are the number of fewest and most interactions respectively.
 
 The last two steps are optional, as the PPI matrix is required for only one score. You can already begin exploring your data even without completing these steps.
@@ -326,206 +330,75 @@ Upon finishing the necessary steps in this panel, you can proceed to the <b>Dist
 This panel primarily handles the computation of distance scores for your input data. Similar to the previous panel, this one is also divided into two separate boxes.
 
 **Calculating Distance Scores**
+
 The upper box, labeled <b>Calculate distance scores for your genesets</b>, allows you to choose from different distance scores for computation. Here are the available options:
 
-* **PMM Score**: This score integrates protein-protein interaction (PPI) data into the Meet-Min distance. The PPI-weighted Meet-Min (<b>PMM</b>) score is defined as <math display="block"><mi>PMM</mi><mo>=</mo><mi>min(PMM(A->B)</mi><mo>,</mo><mi>PMM(B->A))</mi></math>, where <math display="block"><mi>PMM(X->Y)</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>|X</mi><mo>&#8745</mo><mn>Y|</mn></mrow><mrow><mn>min(|X|</mn><mo>,</mo><mi>|Y|)</mi></mrow></mfrac><mi><mo>-</mo></mi><mfrac><mrow><mi>&#945</mi></mrow><mrow><mn>min(|X|</mn><mo>,</mo><mi>|Y|)</mi></mrow></mfrac><mrow><mi>&#8721 <sub>x&#8946X-Y</sub></mi><mfrac><mrow><mi>w &#8721 <sub>y&#8946X&#8745Y</sub>PPI(x, y)</mi><mo>+</mo><mi>&#8721 <sub>y&#8946Y-X</sub>PPI(x, y)</mi></mrow><mrow><mn>max(PPI)</mn><mi>(w|X&#8745Y| + |Y - X|)</mi></mrow></mfrac></mrow></math>, and <math display="block"><mi>w</mi><mo>=</mo><mrow><mfrac><mrow><mi>min(|X|, |Y|)</mi></mrow><mrow><mn>|X|</mn><mo>+</mo><mi>|Y|</mi></mrow></mfrac></mrow></math>. <mi>&#945</mi> is a scaling factor between 0 and 1. The PPI matrix can be downloaded from the <b>Data Input</b> panel. More details can be found in the paper by Yoon et al.
+* **PMM Score**: This score integrates protein-protein interaction (PPI) data into the Meet-Min distance. The PPI-weighted Meet-Min (<b>PMM</b>) score is defined as <math display="block"><mi>PMM</mi><mo>=</mo><mi>min(PMM(A->B)</mi><mo>,</mo><mi>PMM(B->A))</mi></math>, where <math display="block"><mi>PMM(X->Y)</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>|X</mi><mo>&cap;</mo><mn>Y|</mn></mrow><mrow><mn>min(|X|</mn><mo>,</mo><mi>|Y|)</mi></mrow></mfrac><mi><mo>-</mo></mi><mfrac><mrow><mi>	&alpha;</mi></mrow><mrow><mn>min(|X|</mn><mo>,</mo><mi>|Y|)</mi></mrow></mfrac><mrow><mi>&sum; <sub>x&isin;X-Y</sub></mi><mfrac><mrow><mi>w&sum;<sub>y&isin;X&cap;Y</sub>PPI(x, y)</mi><mo>+</mo><mi>&sum; <sub>y&cup;Y-X</sub>PPI(x, y)</mi></mrow><mrow><mn>max(PPI)</mn><mi>(w|X&cap;Y| + |Y - X|)</mi></mrow></mfrac></mrow></math>, and <math display="block"><mi>w</mi><mo>=</mo><mrow><mfrac><mrow><mi>min(|X|, |Y|)</mi></mrow><mrow><mn>|X|</mn><mo>+</mo><mi>|Y|</mi></mrow></mfrac></mrow></math>. <mi>&alpha;</mi> is a scaling factor between 0 and 1. The PPI matrix can be downloaded from the <b>Data Input</b> panel. More details can be found in the paper by Yoon et al.
 
-* **Kappa Score**: The <b>Kappa</b> distance is a set-based metric based on observed and expected agreement rates between two genesets. It is defined as <math display="block"><mi>Kappa</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>O</mi><mo>-</mo><mn>E</mn></mrow><mrow><mn>1</mn><mo>-</mo><mi>E</mi></mrow></mfrac></math>, where <math display="block"><mi>O</mi><mo>=</mo><mfrac><mrow><mi>|A&#8745B|</mi><mo>+</mo><mn>|(A&#8746B)<sup>c</sup>|</mn></mrow><mrow><mi>U</mi></mrow></mfrac></math> and <math display="block"><mi>E</mi><mo>=</mo><mfrac><mrow><mi>|A||B|</mi><mo>+</mo><mn>|A<sup>c</sup>||B<sup>c</sup>|</mn></mrow><mrow><mi>U<sup>2</sup></mi></mrow></mfrac></math> and U is the set of all unique genes in the data. In this application the Kappa distance is additionally normalized to the (0, 1) interval to make it comparable to the remaining distance metrics.
+* **Kappa Score**: The <b>Kappa</b> distance is a set-based metric based on observed and expected agreement rates between two genesets. It is defined as <math display="block"><mi>Kappa</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>O</mi><mo>-</mo><mn>E</mn></mrow><mrow><mn>1</mn><mo>-</mo><mi>E</mi></mrow></mfrac></math>, where <math display="block"><mi>O</mi><mo>=</mo><mfrac><mrow><mi>|A&cap;B|</mi><mo>+</mo><mn>|(A&cup;B)<sup>c</sup>|</mn></mrow><mrow><mi>U</mi></mrow></mfrac></math> and <math display="block"><mi>E</mi><mo>=</mo><mfrac><mrow><mi>|A||B|</mi><mo>+</mo><mn>|A<sup>c</sup>||B<sup>c</sup>|</mn></mrow><mrow><mi>U<sup>2</sup></mi></mrow></mfrac></math> and U is the set of all unique genes in the data. In this application the Kappa distance is additionally normalized to the (0, 1) interval to make it comparable to the remaining distance metrics.
 
-* **Jaccard Score**: The <b>Jaccard</b> distance uses the Jaccard coefficient, which is transformed into a distance metric by subtracting it from 1. It is defined as <math display="block"><mi>Jaccard</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>|A</mi><mo>&#8745</mo><mn>B|</mn></mrow><mrow><mn>|A</mn><mo>&#8746</mo><mi>B|</mi></mrow></mfrac></math>.
+* **Jaccard Score**: The <b>Jaccard</b> distance uses the Jaccard coefficient, which is transformed into a distance metric by subtracting it from 1. It is defined as <math display="block"><mi>Jaccard</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>|A</mi><mo>&cap;</mo><mn>B|</mn></mrow><mrow><mn>|A</mn><mo>&cup;</mo><mi>B|</mi></mrow></mfrac></math>.
 
-* **Meet-Min Score**: The <b>Meet-Min</b> (MM) distance transforms the overlap coefficient into a distance measure by subtracting it from 1.The overlap coefficient is a similarity measure which is defined as <math display="block"><mi>OC</mi><mo>=</mo><mfrac><mrow><mi>|A</mi><mo>&#8745</mo><mn>B|</mn></mrow><mrow><mn>min(|A|</mn><mo>,</mo><mi>|B|)</mi></mrow></mfrac></math>. In order to transform this measure of similarity into a measure of distance, the overlap coefficient is substracted from 1, resulting in the calculation of the Meet-Min (MM) distance as <math display="block"><mi>MM</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>|A</mi><mo>&#8745</mo><mn>B|</mn></mrow><mrow><mn>min(|A|</mn><mo>,</mo><mi>|B|)</mi></mrow></mfrac></math>. As a solely set based measurement, the Meet-Min distance only takes the composition of the genesets into account but not the underlying biological information inherent in the genesets.
+* **Meet-Min Score**: The <b>Meet-Min</b> (MM) distance transforms the overlap coefficient into a distance measure by subtracting it from 1.The overlap coefficient is a similarity measure which is defined as <math display="block"><mi>OC</mi><mo>=</mo><mfrac><mrow><mi>|A</mi><mo>&cap;</mo><mn>B|</mn></mrow><mrow><mn>min(|A|</mn><mo>,</mo><mi>|B|)</mi></mrow></mfrac></math>. In order to transform this measure of similarity into a measure of distance, the overlap coefficient is substracted from 1, resulting in the calculation of the Meet-Min (MM) distance as <math display="block"><mi>MM</mi><mo>=</mo><mi>1</mi><mo>-</mo><mfrac><mrow><mi>|A</mi><mo>&cap;</mo><mn>B|</mn></mrow><mrow><mn>min(|A|</mn><mo>,</mo><mi>|B|)</mi></mrow></mfrac></math>. As a solely set based measurement, the Meet-Min distance only takes the composition of the genesets into account but not the underlying biological information inherent in the genesets.
 
 Each score has its strengths and limitations, so it's essential to select one that aligns well with your data. Once you choose a score, the <b>Score the Genesets</b> button appears on the right, allowing you to initiate the scoring process. Keep in mind that this step might take some time, especially for larger datasets. Look for the progress bar in the lower right corner for updates on the scoring status.
 
 After the scoring is complete, you can explore various visualizations of your data in the <b>Geneset Distance Scores</b> box.
 
 **Distance Scores Visualizations**
-**Distance Scores Heatmap**: The first visualization is a heatmap of distance scores. You need to initiate the heatmap calculation by clicking the <b>Calculate Distance Score Heatmap</b> button. After computation, you can interact with the heatmap. Hovering over it displays the involved genesets and calculated scores. You can also zoom in by selecting an area. To reset the zoomed view, click outside the heatmap area.
 
-**Distance Scores Dendrogram**: The second visualization is a dendrogram of individual distance scores. The dendrogram is generated using hierarchical clustering, grouping the most similar genesets. The dropdown menu on the left allows you to select different combination methods, affecting the resulting dendrogram.
+* **Distance Scores Heatmap**: The first visualization is a heatmap of distance scores. You need to initiate the heatmap calculation by clicking the <b>Calculate Distance Score Heatmap</b> button. After computation, you can interact with the heatmap. Hovering over it displays the involved genesets and calculated scores. You can also zoom in by selecting an area. To reset the zoomed view, click outside the heatmap area.
 
-**Distance Scores Graph**: The last visualization is a graph representation of distance scores. Genesets with scores below a certain threshold are connected by edges. The default threshold is 0.3, adjustable via the slider on the left. The graph is interactive, allowing you to hover or click on nodes to highlight connected nodes. Additional information about genesets is displayed upon selection. Clicking on a geneset ID in the text field links to a relevant database for more information. You can also search for specific genesets using the input on the left. After selection, the geneset is highlighted in the graph. The <b>Graph metrics</b> box contains various metrics for the graph, such as degree, betweenness, harmonic centrality, clustering coefficient, and input data. This table provides insights into data and distance scores.
+* **Distance Scores Dendrogram**: The second visualization is a dendrogram of individual distance scores. The dendrogram is generated using hierarchical clustering, grouping the most similar genesets. The dropdown menu on the left allows you to select different combination methods, affecting the resulting dendrogram.
+
+* **Distance Scores Graph**: The last visualization is a graph representation of distance scores. Genesets with scores below a certain threshold are connected by edges. The default threshold is 0.3, adjustable via the slider on the left. The graph is interactive, allowing you to hover or click on nodes to highlight connected nodes. Additional information about genesets is displayed upon selection. Clicking on a geneset ID in the text field links to a relevant database for more information. You can also search for specific genesets using the input on the left. After selection, the geneset is highlighted in the graph. The <b>Graph metrics</b> box contains various metrics for the graph, such as degree, betweenness, harmonic centrality, clustering coefficient, and input data. This table provides insights into data and distance scores.
+
+**Bookmarking from the this panel:** 
+
+While navigating the distance scores of genesets within this section, users may stumble upon intriguing genesets and interactions that pique their interest and warrant deeper exploration. To facilitate the preservation of such genesets for later investigation, you can make use of the <b>Bookmark</b> button located in the Navbar. Clicking this button will add the selected geneset to the list of bookmarked genesets within the <b>Report</b> panel. The app will also offer guidance on the bookmarking process through informative messages displayed in the lower right corner.
 
 Once you've explored the distance scores, you can proceed to the <b>Clustering graph</b> panel.
 
 ## The Clustering Graph panel
 
+This panel primarily handles the computation of the clusters of similar genesets in your input data. Similar to the previous panel, this one is also divided into two separate boxes.
 
-This panel has as its main component an interactive bipartite graph illustrating the relationship between genesets and genes that belong to them.
-One of the relevant parameters for this output is the number of gene sets to be displayed, adjustable from the widget in the control panel on the right.
+**Choosing a Clustering algorithm**
 
-Such a representation is particularly useful to see overlap between terms, and grasp the way how different genes may play a concerting role in different processes.
+The upper box, labeled <b>Select the clustering method</b>, allows you to choose from different distance scores for computation. Here are the available options:
 
-The color and shape of the nodes depend on the entity they are related to:
+* **Louvain**: The Louvain algorithm is widely used in biological network analysis. It aims to partition nodes in a graph into clusters in a way that maximizes the modularity metric, which measures the strength of connections within clusters compared to connections between clusters. This means that nodes in the same cluster should be similar to each other than to nodes outside of the cluster. The resulting cluster should facilitate the interpretation of the data and group similar genesets together. Via the slider at the lower left corner of the box, you can select a similarity threshold to define at which distance score genesets are considered to be similar.  
 
-- genes are shown as ellipses, colored with a palette diverging from a neutral color to red (log2FC > 0) or to blue (log2FC < 0)
-- gene sets are enclosed in gold boxes
+* **Markov**: The Markov algorithm is also widely used in biological network analysis. It aims to identify tightly interconnected regions in graphs. The regions often correspond to communities or clusters in the graph. Via the slider at the lower left corner of the box, you can select a similarity threshold to define at which distance score genesets are considered to be similar. 
 
-The interactivity in this graph is essential for zooming, panning, and selecting its nodes.
-The node selection, in particular, triggers a drill-down exploration, which populates a box on the right side, either with a signature heatmap (for a gene set), or with an expression plot, split by the experimental covariates of interest (for a gene) - this behavior can be controlled by the "Group/color by" selectize widget in the control sidebar.
-In both cases, some HTML content is also generated, with buttons linking to external databases where to retrieve additional information (e.g. ENSEMBL, NCBI, AmiGO, ...).
+* **Fuzzy clustering**: The Fuzzy Clustering algorithm is computational method for partitioning data points into clusters based on their similarity while allowing for data points to belong to multiple clusters with varying degrees of membership. It is based on different steps and different thresholds. The first threshold to set is the <b>Similarity threshold</b> which determines if two genesets have enough similarity to potentially be clustered together. Secondly, there is the <b>Membership threshold</b> which determines how many members of a potential cluster need to have a close relationship (i.e. distance score <= similarity threshold) for the cluster to persist. Lastely, there is the <b>Clustering threshold</b> which determines if two cluster will be merged. Clusters are merged if their percentage of overlap => Clustering threshold. All threshold can be set via sliders. 
 
-A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
+* **kNN**: The k nearest neighbour clustering algorithm clusters nodes together with their k nearest neighbours, where k is a user defined parameter. The parameter k can be set via the slider. 
 
-**Bookmarking from the Gene-Geneset panel:** When clicking on the Bookmark button while in this tab, it is possible to add to the shortlisted items of interest both genes and gene sets.
-To do so, while one of the nodes is selected, click on the button with the mouse - or alternatively, click on the Left Ctrl button of your keyboard.
-A notification will be triggered, informing the status of the bookmarked elements.
+Once you choose a method, you can start the cluster calculation via the <b>Cluster the Genesets</b> button on the right. Keep in mind that this step might take some time, especially for larger datasets. Look for the progress bar in the lower right corner for updates on the scoring status.
 
-## The Enrichment Map panel
+Once the clusters are calculated, you can explore various visualizations of your data in the <b>Geneset Cluster Graphs</b> box.
 
-This panel, similar to the Gene-Geneset tab, has again an interactive graph of a subset of the gene sets (you can control again the number of included sets from the control sidebar).
-This is also called an enrichment map - it is also possible to generate them in tools such as Cytoscape.
-In this case, the genesets are directly connected by an edge, where the thickness encodes the degree of similarity (e.g. in terms of overlap) between them; sets below a similarity threshold are not displayed for the sake of better clarity.
+**Cluster Visualizations**
 
-The size of the node encodes the information of the number of genes detected as Differentially Expressed (from the column `gs_de_count`), while the color is representative of the computed Z score for each set.
-This value is computed as $z = \frac{(upgenes - downgenes)}{\sqrt{(upgenes + downgenes)}}$ and is indicative of the expression changes of the genes assigned to a particular set.
-Please, keep in mind that methods based on overrepresentation analysis only do not account for the topology that might be behind the set of interacting features (i.e. an upregulated gene involved in inhibition of a pathway would still be counted as a positive element in the equation above).
+* **Geneset Graph**: In the <b>Geneset Graph</b>, the individual clusters will be visualized as a graph. The nodes are individual genesets and edges are drawn between genesets which belong to the same cluster. You can select and highlight individual nodes by using the <b>Select by id</b> functionality on the left or you can highlight all nodes of a cluster by selecting the respective cluster via the <b>Select by cluster</b> option. In this graph, only genesets belonging to at least one cluster will be shown, so please do not be suprised if you cannot find a specific geneset of your input data. In order to provide additional information in the <b>Geneset Graph</b>, the option to color the nodes by specific parameters of your input data is provided. You can select one oof the available options via the <b>Color the graph by</b> drop down menu. The menu will be depending on the information given together with your input data. If your input data only contains geneset ids and genes, this option will not provide additional value. However, if your data contains more information on the genesets, you can select from those. You can also interact with the shown network, by relocating individual nodes of the network. For this simply select one of the nodes, hold the left button of your mouse and drag the node to a place of your choice. With this you can change the placement of individual nodes and cluster. This is especially helpful in cluttered graphs and crowded areas of the network
 
-The `z_score` and `aggr_score` (in the simplest form, a mean of the log2FoldChange values for all the genes of a set) can be easily computed with the `get_aggrscores()`, which appends these scores for each gene set to the original `res_enrich` data frame.
+* **Cluster-Geneset Bipartite Graph**: The <b>Cluster-Geneset Bipartite Graph</b> is a bipartite visualization of the clusters. Here, the nodes are clusters and genesets and edges are drawn between cluster nodes and their repsective geneset members . Upon hovering over the nodes, you will also get additional information about the data. For the cluster nodes, the members of the respective cluster will be listed, while for the geneset nodes the respective genes belonging to the genesets will be shown.
 
-The interactive flavor in this tab permits a quick exploration of the signature heatmaps for the genesets of interest by simply clicking on a node; this also triggers the display of some HTML content, if related to a Gene Ontology term.
+* **Cluster Enrichment Terms Word Cloud**: The <b>Cluster Enrichment Terms Word Cloud</b> will visualise the most commonly used terms for each cluster. This visualization is especially valuable if your data also contains a small description of the genesets besides the required input data. Via the <b>Select a cluster</b> dropdown menu, you can specify the cluster. You can also hover over the enrichment map and select individual terms to see how many times the term appeared in the description of the genesets in this cluster.
+#card_clustering; The cluster information is also summarized in a table-like format in the <b>Clustering graph summaries</b> box. The table will show each geneset and the cluster the respective geneset belongs to. The table also has a search function, so you can easily look for a geneset of interest.
 
-A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
+## The Report panel
 
-In the section below the interactive enrichment map, the functionality for the _distillation_ of gene sets into meta-genesets is provided.  
-In brief, a community detection algorithm is run on the graph underlying the enrichment map, and the additional information extracted is rendered as a table, linked to a meta-geneset box to display the expression signature for all its member genes.
+Within this section, users can gain a comprehensive overview of the items they have bookmarked for further investigation. On the left side, there are bookmarked genesets, while on the right side, there are bookmarked clusters.
 
-**Bookmarking from the Enrichment Map panel:** If the user clicks on the Bookmark button while in this tab, it will add the selected node to the shortlist of genesets, visible later in the Bookmarks panel.
-The Left Ctrl button of your keyboard can again be used for this purpose, and this will trigger a notification in the lower right part of the screen.
+In the midst of an interactive exploration session, it can sometimes be challenging to recall the exact details of each point of interest.
 
-## The Overview panel
+Directly beneath the interactive DT::datatable displays, there are options to individually download the content of each table by clicking on the corresponding button. Furthermore, a distinct button is provided to initiate the generation of an information-rich report. This report will concentrate on all the selected elements of interest.
 
-This panel presents to the user a series of summary plots, based on the outputs of `enhance_table()` and `gs_volcano()`, aiming to provide a mean to summarize the most relevant genesets in the `res_enrich` object.
-The number of displayed (or labeled, according to each function) genesets can be as usual controlled by the widget in the right sidebar.
+The report generation employs a predefined template report, which is included as part of the r BiocStyle::Biocpkg("GeDi") package. This template accesses the input elements and reactive values associated with the bookmarks.
 
-We avoid (re)rendering all plots at once by placing them as content of different tabs in a `bs4TabCard` container - this allows the user to navigate in a more agile way to the desired output elements.
-
-Interactive versions of the plots are returned via calls to `ggplotly`.
-
-A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
-
-## The GSViz panel
-
-This panel, similarly to the Overview panel, presents a variety of plots visualizing the gene sets - and their mutual relationships, or their behavior across samples.
-This includes, for example:
-
-- a genesets by sample heatmap (via `gs_scores()` and `gs_scoresheat()`),  with a score for each matrix element corresponding to the sum of the standardized expression values of its components
-- a genesets-gene Sankey diagram (via `gs_alluvial()`, aliased to `gs_sankey()`), to represent the N:N membership relationships
-- a summary heatmap (via `gs_summary_heat()`) to display the memberships and at the same time the expression change of each gene set member
-- a multi-dimensional scaling (MDS) plot, based on `gs_mds()`, to provide a 2d visualization of the distance among genesets (based on a similarity measure e.g. their overlap or other criteria, such as their semantic similarity)
-- a compact summary of `res_enrich`, via `gs_summary_overview()`, where aggregated scores and significance can be displayed on the same plot - for this, there are functions to compare different `res_enrich` objects (`gs_summary_overview()`, `gs_summary_overview_pair()`)
-- alternative visual representation of the `res_enrich` objects, based on `gs_radar()` (equivalent to `gs_spider()`) and `gs_dendro()`
-
-As in many other panels, the control over the number of genesets displayed is tweaked with the widget in the right sidebar, "Number of genesets".
-
-A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
-
-## The Bookmarks panel
-
-In this panel, the user can obtain a complete overview on the bookmarked features of interest, both genes (left side) and genesets (right side). 
-
-During a live exploration session, it might be tricky to recall the exact aspect of each point of interest. 
-
-Below the interactive `DT::datatable` objects, the content of each table can also be separately downloaded by clicking on the respective button.
-Moreover, there is a button (with the cocktail icon <i class="fa fa-cocktail"></i>) that triggers the generation of a content-rich report which will focus on all the shortlisted elements.
-This leverages a template report delivered as a part of `r BiocStyle::Biocpkg("GeneTonic")`, which accesses the input elements and the reactive values for the bookmarks, based on the `happy_hour()` function.
-
-If a user already knows a set of features and geneset of interest, it is also possible to practically call `happy_hour()` directly from the command line (see the example in the chunk below).
-Please keep in mind that the identifiers to be used should match the values used as row names of the `dds` object and as `gs_id` column of the original `res_enrich` input.
-
-This report will serve as a useful means to generate a permanent and reproducible analysis output, that can be further stored or shared.
-
-Ideally, each live session with `GeneTonic` could terminate with a call to `happy_hour()` - admittedly, an aperitivo should start with that, and not end - please accept our apologies :) .
-
-A demonstration of how to use this panel effectively is provided by the tour, triggered by clicking on the question circle button (<i class="fa fa-question-circle"></i>) button in the upper right corner of the tab.
-
-In this panel, an export button to a `SummarizedExperiment` object to be provided as input to the `r BiocStyle::Biocpkg("iSEE")` package has been added in version >= 1.2.0. 
-This enables further and fine-grained visualization options in the `iSEE` framework -  if the flavors of `GeneTonic` are not yet what you would want, you might find an excellent venue there.
-
-# Using the `GeneTonic` functions {#functions}
-
-The `r BiocStyle::Biocpkg("GeneTonic")` package provides, apart from the main app where to perform the analysis in an interactive way, a number of functions which can be used also as standalone components for a workflow.
-
-This sections contains some showcase examples on how to use them.
-
-## Overview functions: genes and gene sets
-
-Summarize the top genesets by displaying the logFC of each set's components - and transform the `ggplot` output into a `plotly` visualization, where tooltips can deliver additional information:
-
-Display the relationship between genesets and genes that belong to them (useful e.g. to see overlap between terms):
-
-Display a bipartite graph where genesets and genes are included, and make it interactive:
-
-## Summary representations
-
-Plot an enrichment map of the enrichment results, where you can choose with `n_gs` the number of top genesets to be displayed, and specify in `gs_ids` the gene set identifiers - these will be merged together for each function's context:
-
-Expanding on the enrichment map, the distilled content of the `res_enrich` can be represented as enhanced tables and interactive graphs, depicting the membership of the respective meta-genesets
-
-
-Another possibility to summarize the result of enrichment is by applying fuzzy clustering on it to detect groups of related genesets, with the peculiarity that a geneset can belong to different clusters - this reflects the original implementation of DAVID [@Huang2009].  
-The `gs_fuzzyclustering()` function returns a table with additional columns, related to the cluster id and the status for the geneset in that cluster ("Representative" or "Member", where the Representative geneset is the one with lowest p-value in that cluster).
-
-
-Display a volcano plot for genesets, plotting significance (y-axis) versus Z score (x-axis), with color and size encoding some geneset features:
-
-
-Plot a dendrogram of the enrichment results (or a subset thereof), using node color, node size, and branch color to encode relevant geneset features (and their groups):
-
-Produce a MultiDimensional Scaling plot of the genesets in the enrichment results:
-
-
-Obtain a simple overview of enrichment results, showing e.g. significance and direction of change (`z_score`)
-
-
-Plot a summary heatmap of genes vs genesets, encoding the logFC of genes and representing the overlap among genesets:
-
-
-Recalling that you can also use a `gtl` list object as input, a similar call would be:
-
-
-
-Plot a heatmap on the geneset scores, computed sample-wise via `gs_scores` so that the geneset members compose a Z score that gets summarized: 
-
-
-## Reporting
-
-Enjoy a fully fledged `happy_hour` by running offline the analysis contained in the report, included in the `r BiocStyle::Biocpkg("GeneTonic")` package.
-
-
-Again, if used with the `gtl` object, the call would look like this:
-
-
-The functionality is also the same activated in the Bookmarks section of the interactive app.
-Here you can choose a number of genesets (`mygenesets`) and genes (`mygenes`), specifying their identifiers, and obtain in batch a number of summary representations focused on these elements.
-
-Advanced users can also provide a custom RMarkdown file, and to guarantee it works in the context of `happy_hour`, we recommend to inspect the template available here:
-
-
-## Comparison between sets
-
-While `GeneTonic` works currently with a single `res_enrich` object, there are some functions that allow a visual comparison between two different enrichment results (the functions are displaying a shuffled instance of the single `res_enrich`):
-
-In particular, the `gs_horizon` function tries to group the different genesets based on their relative enrichment across conditions, similar to a representation of [@Dutertre2019] (e.g. Fig. 5G).
-Thanks to Charlotte Soneson for providing a compact working implementation of this!
-
-## Miscellaneous functions
-
-Extract results and sort them (filtering by FDR) with `deseqresult2df`, select one top-ranking gene, extract its expression values and plot them, and display some buttons to link to external databases:
-
-
-Plot a signature heatmap for a gene set, where a matrix of genes times samples for the set members is extracted, plus generate some HTML code to summarize the information of a Gene Ontology term:
-
-
-Plot a signature volcano plot for a gene set, with the genes of the geneset highlighted in color and the remaining genes shown shaded in the background: 
-
-
-Some functions are just to ensure that the input objects are conform with the format expected by `GeneTonic`:
-
-
-As an internal check, one can see if all required arguments are fine for running `GeneTonic` by running `checkup_GeneTonic`:
-
+The generated report serves as a valuable tool for creating a permanent and reproducible analysis output. This output can be easily stored or shared for future reference.
 
 
 # Additional Information {#additionalinfo}
@@ -550,9 +423,14 @@ As a basis we will again use the data of the `r BiocStyle::Biocpkg("macrophage")
 However, before we can use the `enrichKEGG` function from the `r BiocStyle::Biocpkg("clusterProfiler")` package, we have to amp the ENSEMBL ids of the data to Entrez ids. For this, we will up the first use the `r BiocStyle::Biocpkg("biomaRt")` package to generate a mapping of ENSEMBL to Entrez.
 
 ```{r}
+# Load the "biomaRt" package to access the BioMart database
 library("biomaRt")
+
+# Set up a connection to the ENSEMBL BioMart database for human genes
 mart <-
   useMart(biomart = "ENSEMBL_MART_ENSEMBL", dataset = "hsapiens_gene_ensembl")
+
+# Retrieve gene annotations using the BioMart database
 anns <- getBM(
   attributes = c(
     "ensembl_gene_id",
@@ -564,38 +442,47 @@ anns <- getBM(
   values = rownames(dds_macrophage),
   mart = mart
 )
+
+# Match the retrieved annotations to the genes in dds_macrophage
 anns <- anns[match(rownames(dds_macrophage), anns[, 1]), ]
 ```
 
 Next, we map the differentially expressed genes to get the right identifiers and run the `enrichKEGG` function. We set the organism to human and the p-value cutoff to 5%.
 
 ```{r enrichKegg}
+# Load the "clusterProfiler" package for functional enrichment analysis
 library("clusterProfiler")
+
+# Retrieve Entrez gene IDs from the annotations data frame based on matching 
+# Ensembl gene IDs from the DE results
 genes <- anns$entrezgene_id[match(rownames(res_macrophage_IFNg_vs_naive), anns$ensembl_gene_id)]
 
+# Perform KEGG pathway enrichment analysis using the retrieved gene IDs
 res_enrich <- enrichKEGG(genes,
   organism = "hsa",
   pvalueCutoff = 0.05
 )
 ```
 
-We can now use the results of the enrichment in `GeDi`. For this, we can either save the results and provide them to a running instance of `GeDi` or we can provided it directly as an input to the app. 
+We can now use the results of the enrichment in `GeDi`. For this, we directly start the app with the loaded data. If you have not computed the data following this workflow, you can beforehand load it from the available data in this package.  
 
 ```{r GeDi_Kegg, eval = F}
-saveRDS(res_enrich@result, "macrophage_KEGG_example.RDS")
+# Load the "macrophage_KEGG_example" dataset from the "GeDi" package
+data("macrophage_KEGG_example", package = "GeDi")
 
-# start an instance of GeDi and provide the macrophage_KEGG_example.RDS file
-GeDi()
-
-# start GeDi directly with the data loaded
-GeDi(genesets = res_enrich@result)
+# Start the GeDi app with the loaded data
+# The "genesets" parameter is set to the loaded "macrophage_KEGG_example" dataset
+GeDi(genesets = macrophage_KEGG_example)
 ```
 
 In a similar manner we can use the Reactome database for the functional annotation. Here, we use the 
 `r BiocStyle::Biocpkg("ReactomePA")` package and the differentially expressed genes. 
 
 ```{r enrichReactome}
+# Load the "ReactomePA" package for pathway enrichment analysis
 library("ReactomePA")
+
+# Perform pathway enrichment analysis using the "enrichPathway" function
 reactome <- enrichPathway(genes,
   organism = "human",
   pvalueCutoff = 0.05,
@@ -606,13 +493,12 @@ reactome <- enrichPathway(genes,
 Now we can use the results in the same manner as for the KEGG pathway analysis. 
 
 ```{r GeDi_Reactome, eval = F}
-saveRDS(reactome@result, "macrophage_Reactome_example.RDS")
+# Load the "macrophage_Reactome_example" dataset from the "GeDi" package
+data("macrophage_Reactome_example", package = "GeDi")
 
-# start an instance of GeDi and provide the macrophage_KEGG_example.RDS file
-GeDi()
-
-# start GeDi directly with the data loaded
-GeDi(genesets = reactome@result)
+# Start the GeDi app with the loaded data
+# The "genesets" parameter is set to the loaded "macrophage_Reactome_example" dataset
+GeDi(genesets = macrophage_Reactome_example)
 ```
 
 
@@ -625,19 +511,8 @@ This can help you pinpoint what packages might be causing the issue.
 
 **Q: I am using a different service/software for generating the results of functional enrichment analysis. How do I plug this into `GeneTonic`?**
 
-A: You can set up a small conversion function, on the line of `shake_topGOtableResult` and `shake_enrichResult` (*use the source, Luke* to see how you can build your own), or request such a function - make sure to specify the formatting specifications of your tool of choice (e.g. DAVID, g:Profiler, or commercial solutions such as Ingenuity Pathway Analysis).  
-As of Bioconductor release 3.12 (version >= 1.2.0 for `r BiocStyle::Biocpkg("GeneTonic")`), shaker functions are available for these tools:
+A: You can use nearly any result of a functional enrichment analysis in `r BiocStyle::Biocpkg("GeDi")` as long as the results are trassnformed in a way that they fit the input requirements. Please check out the <b>Welcome</b> page to see the specification of the input requirements. 
 
-- `DAVID` (https://david.ncifcrf.gov/), with the result exported in text format
-- `topGO` (available in the `r BiocStyle::Biocpkg("topGO")` package), as in the wrapper function provided by `r BiocStyle::Biocpkg("pcaExplorer")`, `pcaExplorer::topGOtable()`
-- `Enrichr` (https://amp.pharm.mssm.edu/Enrichr/), either from text format or from a call via the `r BiocStyle::CRANpkg("enrichr")` package
-- `fgsea`, taking the output of the workflow from the `r BiocStyle::Biocpkg("fgsea")` package
-- `g:Profiler` (https://biit.cs.ut.ee/gprofiler/), either from text file format or with the output of `gost()` in `r BiocStyle::CRANpkg("gprofiler2")`
-- `clusterProfiler`, providing `enrichResult` objects, commonly returned by `enrichGO()` from `r BiocStyle::Biocpkg("clusterProfiler")` or `enrichPathway()` from `r BiocStyle::Biocpkg("ReactomePA")`
-
-**Q: I'd like to try `GeneTonic` but I could not install it/I just want a quick peek into it. What can I do for this?**
-
-A: We set up an instance of `GeneTonic` running on the `macrophage` dataset at this address: http://shiny.imbei.uni-mainz.de:3838/GeneTonic.
 
 # Session Info {- .smaller}
 
