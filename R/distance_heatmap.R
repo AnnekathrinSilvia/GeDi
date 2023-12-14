@@ -17,8 +17,8 @@
 #' distance_scores <- Matrix::Matrix(0.5, 20, 20)
 #' distance_scores[c(11:15), c(2:6)] <- 0.2
 #' rownames(distance_scores) <- colnames(distance_scores) <- as.character(c(1:20))
-#' p <- distance_heatmap(distance_scores)
-distance_heatmap <- function(distance_scores, chars_limit = 50) {
+#' p <- distanceHeatmap(distance_scores)
+distanceHeatmap <- function(distance_scores, chars_limit = 50) {
   # Check if distance scores are provided
   stopifnot(!is.null(distance_scores))
 

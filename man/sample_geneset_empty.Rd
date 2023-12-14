@@ -3,11 +3,11 @@
 \docType{data}
 \name{sample_geneset_empty}
 \alias{sample_geneset_empty}
-\title{An empty input textfile}
+\title{An empty input text file}
 \description{
-An empty input textfile to test the application
+An empty input text file to test the application
 }
 \details{
-This sample input textfile is empty and used for testing the
+This sample input text file is empty and used for testing the
 application.
 }

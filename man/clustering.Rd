@@ -11,7 +11,7 @@ clustering(scores, threshold, cluster_method = "louvain")
 
 \item{threshold}{numerical, A threshold used to determine which genesets are
 considered similar. Genesets are considered similar if
-(distance) score <= threhold.
+(distance) score <= threshold.
 similar.}
 
 \item{cluster_method}{character, the clustering method to use. The options

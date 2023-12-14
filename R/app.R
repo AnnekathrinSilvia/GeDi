@@ -694,7 +694,7 @@ GeDi <- function(genesets = NULL,
     })
 
     output$histogram_initial_data <- renderPlot({
-      gs_histogram(
+      gsHistogram(
         reactive_values$genes,
         reactive_values$gs_names,
         start = input$bins_gs_hist[1],
@@ -996,14 +996,14 @@ GeDi <- function(genesets = NULL,
       )),
       message = "Please compute the distances between the genesets first in the above box"))
       res <-
-        ComplexHeatmap::draw(distance_heatmap(reactive_values$scores,
+        ComplexHeatmap::draw(distanceHeatmap(reactive_values$scores,
                                               chars_limit = 20))
       return(res)
     })
 
 
     output$scores_dendro <- renderPlotly({
-      distance_dendro(reactive_values$scores,
+      distanceDendro(reactive_values$scores,
                       input$cluster_method_dendro)
     })
 
@@ -2068,7 +2068,7 @@ GeDi <- function(genesets = NULL,
 
         progress$inc(0.4, detail = "Found initial seeds. Now clustering the data.")
 
-        cluster <- fuzzy_clustering(seeds, input$clustThreshold)
+        cluster <- fuzzyClustering(seeds, input$clustThreshold)
 
         progress$inc(0.3, detail = "Finished clustering the data.")
 

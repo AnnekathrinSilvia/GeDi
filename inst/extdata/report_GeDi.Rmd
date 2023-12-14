@@ -93,13 +93,13 @@ if(is.null(reactive_values$scores)){
   cat("It seems like you do not have distance scores calculated for your data.")
 }
 
-scoring_heatmap <- distance_heatmap(reactive_values$scores)
+scoring_heatmap <- distanceHeatmap(reactive_values$scores)
 scoring_heatmap
 ```
 
 ```{r dendro}
 if(!is.null(reactive_values$scores)){
-dendro <- distance_dendro(reactive_values$scores, input$cluster_method_dendro)
+dendro <- distanceDendro(reactive_values$scores, input$cluster_method_dendro)
 dendro
 }
 ```

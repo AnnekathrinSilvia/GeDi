@@ -20,6 +20,6 @@ geneset.
 }
 \description{
 Generate a \code{data.frame} of the graph metrics degree, betweenness,
-harmonic centrality and clustering coeficient for each node
+harmonic centrality and clustering coefficient for each node
 in a given graph.
 }

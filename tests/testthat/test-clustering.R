@@ -84,15 +84,15 @@ test_that("seedFinding runs correctly", {
   expect_type(seeds, "list")
 })
 
-test_that("fuzzy_clustering - no seeds", {
-  expect_true(is.null(fuzzy_clustering(NULL, 0.5)))
-  expect_true(length(fuzzy_clustering(list(), 0.5)) == 0)
+test_that("fuzzyClustering - no seeds", {
+  expect_true(is.null(fuzzyClustering(NULL, 0.5)))
+  expect_true(length(fuzzyClustering(list(), 0.5)) == 0)
 })
 
-test_that("fuzzy_clustering runs correctly", {
+test_that("fuzzyClustering runs correctly", {
   # Only one seed
   seeds <- list(c(1:2))
-  cluster <- fuzzy_clustering(seeds, 0.5)
+  cluster <- fuzzyClustering(seeds, 0.5)
   expect_true(length(cluster) == length(seeds))
   expect_true(length(cluster) == 1)
   expect_type(cluster, "list")
@@ -100,14 +100,14 @@ test_that("fuzzy_clustering runs correctly", {
 
   # several seeds
   seeds <- list(c(1:2), c(6:10), c(4:7))
-  cluster <- fuzzy_clustering(seeds, 0.5)
+  cluster <- fuzzyClustering(seeds, 0.5)
   expect_true(length(cluster) <= length(seeds))
   expect_true(length(cluster) > 0)
   expect_type(cluster, "list")
 
   # several seeds resulting in one cluster
   seeds <- list(c(1:6), c(3:6), c(4:6))
-  cluster <- fuzzy_clustering(seeds, 0.5)
+  cluster <- fuzzyClustering(seeds, 0.5)
   expect_true(length(cluster) <= length(seeds))
   expect_true(length(cluster) == 1)
   expect_type(cluster, "list")

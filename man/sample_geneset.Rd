@@ -3,12 +3,12 @@
 \docType{data}
 \name{sample_geneset}
 \alias{sample_geneset}
-\title{A sample input textfile}
+\title{A sample input text file}
 \description{
-A sample input textfile taken from the GSCluster package
+A sample input text file taken from the GScluster package
 }
 \details{
-This sample input textfile contains data from the GSCluster package.
+This sample input text file contains data from the GScluster package.
 It is identical to the sample_geneset.txt file found on the Github
 page of the package.
 }

@@ -17,8 +17,8 @@
 #' @examples
 #' distance_scores <- Matrix::Matrix(0.5, 20, 20)
 #' distance_scores[c(11:15), c(2:6)] <- 0.2
-#' dendro <- distance_dendro(distance_scores, cluster_method = "single")
-distance_dendro <-
+#' dendro <- distanceDendro(distance_scores, cluster_method = "single")
+distanceDendro <-
   function(distance_scores, cluster_method = "average") {
     # Check if distance scores are provided
     stopifnot(length(distance_scores) > 0 &&

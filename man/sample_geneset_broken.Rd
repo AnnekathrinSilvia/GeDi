@@ -3,11 +3,11 @@
 \docType{data}
 \name{sample_geneset_broken}
 \alias{sample_geneset_broken}
-\title{A broken input textfile}
+\title{A broken input text file}
 \description{
-A broken input textfile to test the application
+A broken input text file to test the application
 }
 \details{
-This sample input textfile is broken and used for testing the
+This sample input text file is broken and used for testing the
 application.
 }

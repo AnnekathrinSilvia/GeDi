@@ -3,16 +3,16 @@
 \docType{data}
 \name{sample_geneset_small}
 \alias{sample_geneset_small}
-\title{A small sample input textfile}
+\title{A small sample input text file}
 \description{
-A sample input textfile taken from the GSCluster package, which is reduced
+A sample input text file taken from the GScluster package, which is reduced
 to a smaller number of entries for faster testing of the application.
 }
 \details{
-This sample input textfile contains data from the GSCluster package.
+This sample input text file contains data from the GScluster package.
 It was taken from the sample_geneset.txt file found on the Github
 page of the package and then reduced to a smaller amount of entries
-for faster testing of the applcation.
+for faster testing of the application.
 }
 \references{
 Yoon, S., Kim, J., Kim, SK. et al. GScluster: network-weighted

@@ -1,19 +1,19 @@
-test_that("distance_dendro-no scores", {
-  expect_error(distance_dendro(NULL))
-  expect_error(distance_dendro(list()))
+test_that("distanceDendro-no scores", {
+  expect_error(distanceDendro(NULL))
+  expect_error(distanceDendro(list()))
 })
 
-test_that("distance_dendro runs correctly", {
+test_that("distanceDendro runs correctly", {
   data(scores_macrophage_topGO_example_small, package = "GeDi")
-  dendro <- distance_dendro(scores_macrophage_topGO_example_small,
+  dendro <- distanceDendro(scores_macrophage_topGO_example_small,
     cluster_method = "single"
   )
   expect_type(dendro, "list")
-  dendro <- distance_dendro(scores_macrophage_topGO_example_small,
+  dendro <- distanceDendro(scores_macrophage_topGO_example_small,
     cluster_method = "average"
   )
   expect_type(dendro, "list")
-  expect_error(distance_dendro(scores_macrophage_topGO_example_small,
+  expect_error(distanceDendro(scores_macrophage_topGO_example_small,
     cluster_method = "test"
   ))
 })

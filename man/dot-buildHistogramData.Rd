@@ -2,7 +2,7 @@
 % Please edit documentation in R/gs_histogram.R
 \name{.buildHistogramData}
 \alias{.buildHistogramData}
-\title{Prepare data for \code{gs_histogram()}.}
+\title{Prepare data for \code{gsHistogram()}.}
 \usage{
 .buildHistogramData(genesets, gs_names, start = 0, end = 0)
 }
@@ -23,6 +23,6 @@ Defaults to 0.}
 A \code{data.frame} mapping geneset names to sizes
 }
 \description{
-Prepare the data for the \code{gs_histogram()} by generating a \code{data.frame}
+Prepare the data for the \code{gsHistogram()} by generating a \code{data.frame}
 which maps geneset names / identifiers to the size of their size.
 }

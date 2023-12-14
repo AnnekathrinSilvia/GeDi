@@ -150,8 +150,8 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
 #'
 #' @examples
 #' seeds <- list(c(1:5), c(6:10))
-#' cluster <- fuzzy_clustering(seeds, 0.5)
-fuzzy_clustering <- function(seeds, threshold) {
+#' cluster <- fuzzyClustering(seeds, 0.5)
+fuzzyClustering <- function(seeds, threshold) {
   # Check if there are at least two seeds to merge
   # If not, return the original seeds
   if (length(seeds) <= 1) {

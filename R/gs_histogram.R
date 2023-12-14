@@ -27,8 +27,8 @@
 #'   c("AHI1", "ALMS1")
 #' )
 #'
-#' p <- gs_histogram(genesets, gs_names)
-gs_histogram <- function(genesets,
+#' p <- gsHistogram(genesets, gs_names)
+gsHistogram <- function(genesets,
                          gs_names,
                          start = NULL,
                          end = NULL,
@@ -50,9 +50,9 @@ gs_histogram <- function(genesets,
 }
 
 
-#' Prepare data for \code{gs_histogram()}.
+#' Prepare data for \code{gsHistogram()}.
 #'
-#' Prepare the data for the \code{gs_histogram()} by generating a `data.frame`
+#' Prepare the data for the \code{gsHistogram()} by generating a `data.frame`
 #' which maps geneset names / identifiers to the size of their size.
 #'
 #' @param genesets a `list`, A `list` of genesets where each genesets is represented
