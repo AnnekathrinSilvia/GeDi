@@ -39,7 +39,7 @@ getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   n_cores <- .getNumberCores(n_cores)
 
   # Calculate Meet-Min distance for each pair of gene sets
-  for (j in 1:(l - 1)) {
+  for (j in seq_len((l - 1))) {
     a <- genesets[[j]]
     # Update the progress bar if provided
     if (!is.null(progress)) {

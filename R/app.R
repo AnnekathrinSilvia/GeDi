@@ -604,7 +604,7 @@ GeDi <- function(genesets = NULL,
 
       DT::datatable(reactive_values$genesets,
                     options = list(scrollX = TRUE, scrollY = "400px"),
-                    rownames = F)
+                    rownames = FALSE)
     })
 
     output$ui_filter_data <- renderUI({
@@ -634,9 +634,9 @@ GeDi <- function(genesets = NULL,
                 inputId = "bins_gs_hist",
                 label = "Select the bins for the histogram",
                 min = 0,
-                max = max(sapply(reactive_values$genes, length)),
+                max = max(vapply(reactive_values$genes, length, numeric(1))),
                 value = c(0, max(
-                  sapply(reactive_values$genes, length)
+                  vapply(reactive_values$genes, length, numeric(1))
                 ))
               )
             ),
@@ -657,7 +657,7 @@ GeDi <- function(genesets = NULL,
               "histogram_initial_data",
               brush = brushOpts(
                 "plot_brush",
-                resetOnNew = T,
+                resetOnNew = TRUE,
                 direction = "x"
               )
             )
@@ -828,7 +828,7 @@ GeDi <- function(genesets = NULL,
       )
       DT::datatable(reactive_values$ppi,
                     options = list(scrollX = TRUE, scrollY = "400px"),
-                    rownames = F)
+                    rownames = FALSE)
     })
 
     # panel Scores ----------------------------------------------------
@@ -1719,8 +1719,8 @@ GeDi <- function(genesets = NULL,
           reactive_values$genes <-
             getGenes(reactive_values$genesets)
           reactive_values$genesets$Genes <-
-            sapply(reactive_values$genesets$Genes, function(x)
-              gsub("/", ",", x))
+            vapply(reactive_values$genesets$Genes, function(x)
+              gsub("/", ",", x), character(1))
         },
         error = function(cond) {
           showNotification(
@@ -1765,8 +1765,8 @@ GeDi <- function(genesets = NULL,
         "Genes"
 
       reactive_values$genesets$Genes <-
-        sapply(reactive_values$genesets$Genes, function(x)
-          gsub("/", ",", x))
+        vapply(reactive_values$genesets$Genes, function(x)
+          gsub("/", ",", x), character(1))
 
       showNotification(
         "Successfully selected your columns and read your data.
@@ -1931,13 +1931,9 @@ GeDi <- function(genesets = NULL,
           )
           scores <- NULL
         } else {
-          start_time <- Sys.time()
-
           scores <- getpMMMatrix(reactive_values$genes,
                                  reactive_values$ppi,
                                  progress = progress)
-          end_time <- Sys.time()
-          print(end_time - start_time)
         }
       } else if (input$scoringmethod == "Jaccard") {
         scores <- getJaccardMatrix(reactive_values$genes,

@@ -71,7 +71,7 @@ gs_histogram <- function(genesets,
                                 start = 0,
                                 end = 0) {
   # Get the size of each gene set
-  n_genes <- sapply(genesets, length)
+  n_genes <- vapply(genesets, length, numeric(1))
 
   # Create a data frame to store geneset sizes
   n_genes <- as.data.frame(n_genes)

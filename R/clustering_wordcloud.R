@@ -56,9 +56,6 @@ enrichmentWordcloud <- function(genesets_df) {
   v <- sort(rowSums(dtm), decreasing = TRUE)
   d <- data.frame(word = names(v), freq = v)
 
-  # Set a fixed random seed for reproducibility
-  set.seed(42)
-
   # Generate a word cloud using the wordcloud2 package
   w <- wordcloud2(d,
                   size = 0.5,

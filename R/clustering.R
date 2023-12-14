@@ -29,7 +29,7 @@ checkInclusion <- function(seeds) {
   l <- length(seeds)
 
   # Iterate over all sets to compare them for inclusion
-  for (i in 1:(l - 1)) {
+  for (i in seq_len((l - 1))) {
     # Current set
     s1 <- seeds[[i]]
     # Iterate over the remaining sets to compare them with the current set
@@ -251,7 +251,7 @@ clustering <- function(scores, threshold, cluster_method = "louvain") {
   }
 
   # Remove all singleton clusters (clusters with only one geneset)
-  filter <- sapply(cluster, function(x) length(x) > 1)
+  filter <- vapply(cluster, function(x) length(x) > 1, logical(1))
   cluster <- cluster[filter]
 
   # Return the final cluster mapping

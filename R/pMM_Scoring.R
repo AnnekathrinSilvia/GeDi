@@ -197,7 +197,7 @@ getpMMMatrix <- function(genesets, ppi, alpha = 1, progress = NULL, n_cores = NU
   results <- list()
 
   # Calculate pMM distances for each pair of genesets
-  for (j in 1:(l - 1)) {
+  for (j in seq_len((l - 1))) {
     a <- genesets[[j]]
     # Update the progress bar if provided
     if (!is.null(progress)) {

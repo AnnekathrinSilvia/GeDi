@@ -100,7 +100,7 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   results <- list()
 
   # Calculate Kappa distance for each pair of genesets
-  for (j in 1:(l - 1)) {
+  for (j in seq_len((l - 1))) {
     a <- genesets[[j]]
     # Update the progress bar if provided
     if (!is.null(progress)) {
@@ -124,7 +124,7 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
 
   # Update the matrix with normalized values
   results <- list()
-  for (j in 1:(l - 1)) {
+  for (j in seq_len((l - 1))) {
     results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
       return(1 - ((k[j, i] - min) / (max - min)))
     }, mc.cores = n_cores)

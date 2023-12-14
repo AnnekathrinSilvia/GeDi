@@ -36,7 +36,7 @@ goSimilarity <- function(geneset_ids,
             is not installed" = system.file(package = species) != "")
 
    # Check if all geneset ids are GO identifiers
-  go_ids <- all(sapply(geneset_ids, function(x) substr(x, 1, 2) == "GO"))
+  go_ids <- all(vapply(geneset_ids, function(x) substr(x, 1, 2) == "GO"), logical(1))
   stopifnot("Not all geneset ids are GO identifiers.
             This score only works on GO identifiers" = go_ids)
 
@@ -57,7 +57,7 @@ goSimilarity <- function(geneset_ids,
   n_cores <- .getNumberCores(n_cores)
 
   # Calculate the GO similarity for each pair of genesets
-  for (g in 1:(l - 1)) {
+  for (g in seq_len((l - 1))) {
     a <- geneset_ids[[g]]
     if (!is.null(progress)) {
       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
@@ -122,7 +122,7 @@ scaleGO <- function(scores,
   scores_go <- goSimilarity(geneset_ids, method, ontology, species, n_cores = n_cores)
 
   # Scale interaction scores with GO similarity scores
-  for (i in 1:(l - 1)) {
+  for (i in seq_len((l - 1))) {
     for (j in (i + 1):l) {
       scaled[i, j] <- scaled[j, i] <- scores[i, j] * scores_go[i, j]
      }

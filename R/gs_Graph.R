@@ -77,7 +77,7 @@ buildGraph <- function(adjMatrix) {
     mode = "undirected",
     add.colnames = NULL,
     add.rownames = NA,
-    diag = F
+    diag = FALSE
   )
 
   # Get geneset names from row names of adjacency matrix
@@ -86,8 +86,8 @@ buildGraph <- function(adjMatrix) {
   ids <- which(names(V(g)) %in% gs_names)
 
   # Customize node titles based on the type of database (GO, Reactome, or other)
-  if (all(sapply(gs_names, function(x)
-    substr(x, 1, 2) == "GO"))) {
+  if (all(vapply(gs_names, function(x)
+    substr(x, 1, 2) == "GO", logical(1)))) {
     V(g)$title[ids] <- paste0(
       "<h4>",
       sprintf(
@@ -99,8 +99,8 @@ buildGraph <- function(adjMatrix) {
       V(g)$name[ids],
       "<br><br>"
     )
-  } else if (all(sapply(gs_names, function(x)
-    substr(x, 1, 2) == "R-"))) {
+  } else if (all(vapply(gs_names, function(x)
+    substr(x, 1, 2) == "R-"), list(1))) {
     V(g)$title[ids] <- paste0(
       "<h4>",
       sprintf(

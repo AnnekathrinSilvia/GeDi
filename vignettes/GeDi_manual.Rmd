@@ -466,7 +466,7 @@ res_enrich <- enrichKEGG(genes,
 
 We can now use the results of the enrichment in `GeDi`. For this, we directly start the app with the loaded data. If you have not computed the data following this workflow, you can beforehand load it from the available data in this package.  
 
-```{r GeDi_Kegg, eval = F}
+```{r GeDi_Kegg, eval = FALSE}
 # Load the "macrophage_KEGG_example" dataset from the "GeDi" package
 data("macrophage_KEGG_example", package = "GeDi")
 
@@ -492,7 +492,7 @@ reactome <- enrichPathway(genes,
 
 Now we can use the results in the same manner as for the KEGG pathway analysis. 
 
-```{r GeDi_Reactome, eval = F}
+```{r GeDi_Reactome, eval = FALSE}
 # Load the "macrophage_Reactome_example" dataset from the "GeDi" package
 data("macrophage_Reactome_example", package = "GeDi")
 

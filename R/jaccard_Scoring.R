@@ -72,7 +72,7 @@ getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   n_cores <- .getNumberCores(n_cores)
 
   # Calculate the Jaccard distance for each pair of gene sets
-  for (k in 1:(l - 1)) {
+  for (k in seq_len((l - 1))) {
     a <- genesets[[k]]
     # Update the progress bar if provided
     if (!is.null(progress)) {
