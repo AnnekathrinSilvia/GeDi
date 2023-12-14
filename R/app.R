@@ -57,7 +57,7 @@ GeDi <- function(genesets = NULL,
   # dashpage definition -----------------------------------------------------
   gedi_ui <- bs4DashPage(
     title = "GeDi",
-    dark = FALSE,
+    dark = NULL,
     # navbar definition -------------------------------------------------------
     header = bs4DashNavbar(
       tagList(tags$code(tags$h3("GeDi"))),
@@ -897,7 +897,7 @@ GeDi <- function(genesets = NULL,
            this operation may take some time",
           br(),
           actionButton("score_data",
-                       label = "Score the Genesets",
+                       label = "Compute the distances between genesets",
                        style = .actionButtonStyle)
         )
       )
@@ -907,7 +907,7 @@ GeDi <- function(genesets = NULL,
       validate(need(!(is.null(
         reactive_values$scores
       )),
-      message = "Please score your genesets first in the above box"))
+      message = "Please compute the distances between the genesets first in the above box"))
       fluidRow(column(
         width = 12,
         bs4Dash::tabsetPanel(
@@ -994,7 +994,7 @@ GeDi <- function(genesets = NULL,
       validate(need(!(is.null(
         reactive_values$scores
       )),
-      message = "Please score your genesets first in the above box"))
+      message = "Please compute the distances between the genesets first in the above box"))
       res <-
         ComplexHeatmap::draw(distance_heatmap(reactive_values$scores,
                                               chars_limit = 20))
@@ -1309,7 +1309,7 @@ GeDi <- function(genesets = NULL,
       validate(need(!(is.null(
         reactive_values$cluster
       )),
-      message = "Please cluster you genesets first in the above box"))
+      message = "Please cluster the genesets first in the above box"))
 
       graph <- reactive_values$cluster_graph()
 
@@ -2041,8 +2041,8 @@ GeDi <- function(genesets = NULL,
     observeEvent(input$cluster_data, {
       if (is.null(reactive_values$scores)) {
         showNotification(
-          "It seems like you did not score your Genesets yet. Please go back to
-          the Scores panel and select a score of your choice.",
+          "It seems like you did not compute the distances between the genesets yet. Please go back to
+          the Distance Scores panel and select a score of your choice.",
           type = "error"
         )
       }
