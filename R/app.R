@@ -603,7 +603,8 @@ GeDi <- function(genesets = NULL,
       message = "Please provide input data via the button on the left."))
 
       DT::datatable(reactive_values$genesets,
-                    options = list(scrollX = TRUE, scrollY = "400px"))
+                    options = list(scrollX = TRUE, scrollY = "400px"),
+                    rownames = F)
     })
 
     output$ui_filter_data <- renderUI({
@@ -826,7 +827,8 @@ GeDi <- function(genesets = NULL,
         message = "Please download a Protein-Protein Interaction (PPI) matrix via the button on the left.")
       )
       DT::datatable(reactive_values$ppi,
-                    options = list(scrollX = TRUE, scrollY = "400px"))
+                    options = list(scrollX = TRUE, scrollY = "400px"),
+                    rownames = F)
     })
 
     # panel Scores ----------------------------------------------------
