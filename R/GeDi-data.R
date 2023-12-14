@@ -1,8 +1,8 @@
-#' A sample input textfile
+#' A sample input text file
 #'
-#' A sample input textfile taken from the GSCluster package
+#' A sample input text file taken from the GScluster package
 #'
-#' @details This sample input textfile contains data from the GSCluster package.
+#' @details This sample input text file contains data from the GScluster package.
 #'          It is identical to the sample_geneset.txt file found on the Github
 #'          page of the package.
 #'
@@ -15,11 +15,11 @@
 NULL
 
 
-#' An empty input textfile
+#' An empty input text file
 #'
-#' An empty input textfile to test the application
+#' An empty input text file to test the application
 #'
-#' @details This sample input textfile is empty and used for testing the
+#' @details This sample input text file is empty and used for testing the
 #'          application.
 #'
 #' @name sample_geneset_empty
@@ -27,11 +27,11 @@ NULL
 NULL
 
 
-#' A broken input textfile
+#' A broken input text file
 #'
-#' A broken input textfile to test the application
+#' A broken input text file to test the application
 #'
-#' @details This sample input textfile is broken and used for testing the
+#' @details This sample input text file is broken and used for testing the
 #'          application.
 #'
 #' @name sample_geneset_broken
@@ -39,15 +39,15 @@ NULL
 NULL
 
 
-#' A small sample input textfile
+#' A small sample input text file
 #'
-#' A sample input textfile taken from the GSCluster package, which is reduced
+#' A sample input text file taken from the GScluster package, which is reduced
 #' to a smaller number of entries for faster testing of the application.
 #'
-#' @details This sample input textfile contains data from the GSCluster package.
+#' @details This sample input text file contains data from the GScluster package.
 #'          It was taken from the sample_geneset.txt file found on the Github
 #'          page of the package and then reduced to a smaller amount of entries
-#'          for faster testing of the applcation.
+#'          for faster testing of the application.
 #'
 #' @references Yoon, S., Kim, J., Kim, SK. et al. GScluster: network-weighted
 #'             gene-set clustering analysis. BMC Genomics 20, 352 (2019).

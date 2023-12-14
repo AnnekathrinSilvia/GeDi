@@ -6,7 +6,7 @@ Authors@R:
     person("Annekathrin", "Nedwed", , "anneludt@uni-mainz.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2475-4945"))
 Description: The package provides different distances measurements 
-    to calculate the difference between genestes. Based on these scores
+    to calculate the difference between genesets. Based on these scores
     the genesets are clustered and visualized as graph. This is all
     presented in an interactive Shiny application for easy usage.
 License: MIT + file LICENSE

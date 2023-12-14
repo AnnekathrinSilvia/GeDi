@@ -105,7 +105,7 @@ GeDi(
 
 where
 
-- `geneset_df` is a `DataFrame` of your input data and contains at least one column named Genesets containing the geneset identifiers and one column named Genes which contains a comma seperated list of genes belonging to the respective geneset
+- `geneset_df` is a `DataFrame` of your input data and contains at least one column named Genesets containing the geneset identifiers and one column named Genes which contains a comma separated list of genes belonging to the respective geneset
 - `ppi_df` is a `DataFrame` containing protein protein interactions scores with the columns from, to and combined_score
 - `distance_scores_df` is a sparse `Matrix` containing the distance scores of the genesets in your data.
 
@@ -304,7 +304,7 @@ This panel will manage data input in case it's not provided within the function 
 
 In the first box labeled <b>Step 1</b>, you can provide your data by using the <b>Browse</b> button. Clicking this button will open a modal window that allows you to select the relevant file from your computer storage. After successfully reading the data, you can view a preview of it using the <b>Data Preview</b> box on the right. During this step, the application verifies whether your input contains the "Genesets" and "Genes" columns. If these columns are missing, a small error message will appear in the lower right corner. Also two drop-down menus will appear in the box. These enable you to select the correct columns from your data and update the the input, so that the correct columns are selected.
 
-Furthermore, you can begin using `GeDi` with preprocessed example data based on the `r BiocStyle::Biocpkg("macrophage")` data. Simply click the <b>Load demo data</b> button to load the example data's enrichment results. You can also explore these results through the <b>Data preview</b> box on the right.
+Furthermore, you can begin using `GeDi` with preprocessed example data based on the `r BiocStyle::Biocpkg("macrophage")` data. Simply click the <b>Load demo data</b> button to load the enrichment results of the example data. You can also explore these results through the <b>Data preview</b> box on the right.
 
 Upon successfully loading either your own data or the example data, two additional boxes will be displayed.
 
@@ -371,7 +371,7 @@ The upper box, labeled <b>Select the clustering method</b>, allows you to choose
 
 * **Markov**: The Markov algorithm is also widely used in biological network analysis. It aims to identify tightly interconnected regions in graphs. The regions often correspond to communities or clusters in the graph. Via the slider at the lower left corner of the box, you can select a similarity threshold to define at which distance score genesets are considered to be similar. 
 
-* **Fuzzy clustering**: The Fuzzy Clustering algorithm is computational method for partitioning data points into clusters based on their similarity while allowing for data points to belong to multiple clusters with varying degrees of membership. It is based on different steps and different thresholds. The first threshold to set is the <b>Similarity threshold</b> which determines if two genesets have enough similarity to potentially be clustered together. Secondly, there is the <b>Membership threshold</b> which determines how many members of a potential cluster need to have a close relationship (i.e. distance score <= similarity threshold) for the cluster to persist. Lastely, there is the <b>Clustering threshold</b> which determines if two cluster will be merged. Clusters are merged if their percentage of overlap => Clustering threshold. All threshold can be set via sliders. 
+* **Fuzzy clustering**: The Fuzzy Clustering algorithm is computational method for partitioning data points into clusters based on their similarity while allowing for data points to belong to multiple clusters with varying degrees of membership. It is based on different steps and different thresholds. The first threshold to set is the <b>Similarity threshold</b> which determines if two genesets have enough similarity to potentially be clustered together. Secondly, there is the <b>Membership threshold</b> which determines how many members of a potential cluster need to have a close relationship (i.e. distance score <= similarity threshold) for the cluster to persist. Lastly, there is the <b>Clustering threshold</b> which determines if two cluster will be merged. Clusters are merged if their percentage of overlap => Clustering threshold. All threshold can be set via sliders. 
 
 * **kNN**: The k nearest neighbour clustering algorithm clusters nodes together with their k nearest neighbours, where k is a user defined parameter. The parameter k can be set via the slider. 
 
@@ -381,11 +381,11 @@ Once the clusters are calculated, you can explore various visualizations of your
 
 **Cluster Visualizations**
 
-* **Geneset Graph**: In the <b>Geneset Graph</b>, the individual clusters will be visualized as a graph. The nodes are individual genesets and edges are drawn between genesets which belong to the same cluster. You can select and highlight individual nodes by using the <b>Select by id</b> functionality on the left or you can highlight all nodes of a cluster by selecting the respective cluster via the <b>Select by cluster</b> option. In this graph, only genesets belonging to at least one cluster will be shown, so please do not be suprised if you cannot find a specific geneset of your input data. In order to provide additional information in the <b>Geneset Graph</b>, the option to color the nodes by specific parameters of your input data is provided. You can select one oof the available options via the <b>Color the graph by</b> drop down menu. The menu will be depending on the information given together with your input data. If your input data only contains geneset ids and genes, this option will not provide additional value. However, if your data contains more information on the genesets, you can select from those. You can also interact with the shown network, by relocating individual nodes of the network. For this simply select one of the nodes, hold the left button of your mouse and drag the node to a place of your choice. With this you can change the placement of individual nodes and cluster. This is especially helpful in cluttered graphs and crowded areas of the network
+* **Geneset Graph**: In the <b>Geneset Graph</b>, the individual clusters will be visualized as a graph. The nodes are individual genesets and edges are drawn between genesets which belong to the same cluster. You can select and highlight individual nodes by using the <b>Select by id</b> functionality on the left or you can highlight all nodes of a cluster by selecting the respective cluster via the <b>Select by cluster</b> option. In this graph, only genesets belonging to at least one cluster will be shown, so please do not be surprised if you cannot find a specific geneset of your input data. In order to provide additional information in the <b>Geneset Graph</b>, the option to color the nodes by specific parameters of your input data is provided. You can select one of the available options via the <b>Color the graph by</b> drop down menu. The menu will be depending on the information given together with your input data. If your input data only contains geneset ids and genes, this option will not provide additional value. However, if your data contains more information on the genesets, you can select from those. You can also interact with the shown network, by relocating individual nodes of the network. For this simply select one of the nodes, hold the left button of your mouse and drag the node to a place of your choice. With this you can change the placement of individual nodes and cluster. This is especially helpful in cluttered graphs and crowded areas of the network
 
 * **Cluster-Geneset Bipartite Graph**: The <b>Cluster-Geneset Bipartite Graph</b> is a bipartite visualization of the clusters. Here, the nodes are clusters and genesets and edges are drawn between cluster nodes and their repsective geneset members . Upon hovering over the nodes, you will also get additional information about the data. For the cluster nodes, the members of the respective cluster will be listed, while for the geneset nodes the respective genes belonging to the genesets will be shown.
 
-* **Cluster Enrichment Terms Word Cloud**: The <b>Cluster Enrichment Terms Word Cloud</b> will visualise the most commonly used terms for each cluster. This visualization is especially valuable if your data also contains a small description of the genesets besides the required input data. Via the <b>Select a cluster</b> dropdown menu, you can specify the cluster. You can also hover over the enrichment map and select individual terms to see how many times the term appeared in the description of the genesets in this cluster.
+* **Cluster Enrichment Terms Word Cloud**: The <b>Cluster Enrichment Terms Word Cloud</b> will visualize the most commonly used terms for each cluster. This visualization is especially valuable if your data also contains a small description of the genesets besides the required input data. Via the <b>Select a cluster</b> dropdown menu, you can specify the cluster. You can also hover over the enrichment map and select individual terms to see how many times the term appeared in the description of the genesets in this cluster.
 #card_clustering; The cluster information is also summarized in a table-like format in the <b>Clustering graph summaries</b> box. The table will show each geneset and the cluster the respective geneset belongs to. The table also has a search function, so you can easily look for a geneset of interest.
 
 ## The Report panel
@@ -394,7 +394,7 @@ Within this section, users can gain a comprehensive overview of the items they h
 
 In the midst of an interactive exploration session, it can sometimes be challenging to recall the exact details of each point of interest.
 
-Directly beneath the interactive DT::datatable displays, there are options to individually download the content of each table by clicking on the corresponding button. Furthermore, a distinct button is provided to initiate the generation of an information-rich report. This report will concentrate on all the selected elements of interest.
+Directly beneath the interactive `DT::datatable` displays, there are options to individually download the content of each table by clicking on the corresponding button. Furthermore, a distinct button is provided to initiate the generation of an information-rich report. This report will concentrate on all the selected elements of interest.
 
 The report generation employs a predefined template report, which is included as part of the r BiocStyle::Biocpkg("GeDi") package. This template accesses the input elements and reactive values associated with the bookmarks.
 
@@ -511,7 +511,7 @@ This can help you pinpoint what packages might be causing the issue.
 
 **Q: I am using a different service/software for generating the results of functional enrichment analysis. How do I plug this into `GeneTonic`?**
 
-A: You can use nearly any result of a functional enrichment analysis in `r BiocStyle::Biocpkg("GeDi")` as long as the results are trassnformed in a way that they fit the input requirements. Please check out the <b>Welcome</b> page to see the specification of the input requirements. 
+A: You can use nearly any result of a functional enrichment analysis in `r BiocStyle::Biocpkg("GeDi")` as long as the results are transformed in a way that they fit the input requirements. Please check out the <b>Welcome</b> page to see the specification of the input requirements. 
 
 
 # Session Info {- .smaller}

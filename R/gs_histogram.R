@@ -1,6 +1,6 @@
 #' Create a histogram plot for gene set sizes
 #'
-#' Create a histogram plot to plot geneset names / identifiers againts their size.
+#' Create a histogram plot to plot geneset names / identifiers against their size.
 #'
 #' @param genesets a `list`, A `list` of genesets where each genesets is represented
 #'                 by `list` of genes.

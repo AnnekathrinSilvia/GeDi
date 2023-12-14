@@ -6,7 +6,7 @@
 #'                        pairwise combination of genesets.
 #' @param chars_limit Numeric value, Indicates how many characters of the
 #'                    row and column names of `distance_scores` should be
-#'                    plotted. Defaults to 50 and prevents crowded axises due to
+#'                    plotted. Defaults to 50 and prevents crowded axes due to
 #'                    long names.
 #'
 #' @return A [ComplexHeatmap::Heatmap()] plot object.

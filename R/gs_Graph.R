@@ -560,7 +560,7 @@ getBipartiteGraph <- function(cluster,
 #' Generate a `data.frame` of graph metrics
 #'
 #' Generate a `data.frame` of the graph metrics degree, betweenness,
-#' harmonic centrality and clustering coeficient for each node
+#' harmonic centrality and clustering coefficient for each node
 #' in a given graph.
 #'
 #' @param g A [igraph] graph object

@@ -208,7 +208,7 @@ fuzzy_clustering <- function(seeds, threshold) {
 #' @param scores A [Matrix::Matrix()] of (distance) scores
 #' @param threshold numerical, A threshold used to determine which genesets are
 #'                  considered similar. Genesets are considered similar if
-#'                  (distance) score <= threhold.
+#'                  (distance) score <= threshold.
 #'                  similar.
 #' @param cluster_method character, the clustering method to use. The options
 #'                       are `louvain` and `markov`. Defaults to `louvain`.
