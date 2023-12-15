@@ -426,7 +426,7 @@ GeDi <- function(genesets = NULL,
           p(
             "In these boxes you generally have to provide some information.
           In most cases, you will see that once you click inside the box, a
-          dropdown menu will appear with suggestions for the specific field to
+          drop-down menu will appear with suggestions for the specific field to
           provide you with an idea of what is expected."
           ),
           p(
