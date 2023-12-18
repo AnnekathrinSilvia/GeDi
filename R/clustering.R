@@ -302,9 +302,10 @@ kNN_clustering <- function(scores,
 #'
 #' @param cluster A `list` of clusters
 #' @param gs_names A vector of geneset names
+#' @param gs_description A vector of descriptions for each geneset
 #'
 #' @return A `data.frame` mapping each geneset to the cluster(s) it belongs to
-.getClusterDatatable <- function(cluster, gs_names) {
+.getClusterDatatable <- function(cluster, gs_names, gs_description) {
   # Check if geneset names are given
   stopifnot(length(gs_names) > 0)
   n_gs <- length(gs_names)
@@ -346,6 +347,8 @@ kNN_clustering <- function(scores,
   })
 
   df$Cluster <- cluster
+  df$Description <- gs_description
+  df <- df[, c(2, 1)]
   rownames(df) <- gs_names
 
   # Return the final cluster datatable

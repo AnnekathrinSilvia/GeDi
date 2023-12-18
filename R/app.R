@@ -1383,7 +1383,7 @@ GeDi <- function(genesets = NULL,
       g <- buildClusterGraph(
         reactive_values$cluster,
         reactive_values$genesets,
-        reactive_values$gs_names,
+        reactive_values$gs_description,
         input$graphColoring
       )
       return(g)
@@ -1441,7 +1441,8 @@ GeDi <- function(genesets = NULL,
         )
       )
       dt_cluster <- .getClusterDatatable(reactive_values$cluster,
-                                         reactive_values$gs_names)
+                                         reactive_values$gs_names,
+                                         reactive_values$gs_description)
       DT::datatable(dt_cluster,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
