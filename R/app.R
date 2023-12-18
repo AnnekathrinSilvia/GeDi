@@ -495,8 +495,6 @@ GeDi <- function(genesets = NULL,
                   "text/comma-separated-values",
                   "text/tab-separated-values",
                   "text/plain",
-                  ".csv",
-                  ".tsv",
                   ".RDS",
                   ".xslx"
                 ),
@@ -814,7 +812,34 @@ GeDi <- function(genesets = NULL,
                 DT::dataTableOutput("dt_ppi")
               ))
             )
-          ))
+          )),
+          fluidRow(column(
+            width = 6,
+            "Or you can upload an already saved Protein-Protein interaction matrix from your machine.",
+            br(),
+            p(),
+            fileInput(
+              inputId = "inputppi",
+              label = "Upload a PPI matrix",
+              accept = c(
+                "text/csv",
+                "text/comma-separated-values",
+                "text/tab-separated-values",
+                "text/plain",
+                ".csv",
+                ".tsv",
+                ".RDS",
+                ".xslx"
+              ),
+              multiple = FALSE
+            )
+          )),
+          fluidRow(
+            column(
+              width = 12,
+              uiOutput("ui_save_PPI")
+            )
+          )
         )
       )
     })
@@ -829,6 +854,25 @@ GeDi <- function(genesets = NULL,
       DT::datatable(reactive_values$ppi,
                     options = list(scrollX = TRUE, scrollY = "400px"),
                     rownames = FALSE)
+    })
+
+    output$ui_save_PPI <- renderUI({
+      if (is.null(reactive_values$ppi)) {
+        return(NULL)
+      }
+      fluidRow(column(
+        width = 12,
+        "In order to avoid lengthy downloads of the PPI matrix in the future,
+        you can also now download the PPI matrix and save it to you machine.",
+        br(),
+        p(),
+        downloadButton(
+          "save_ppi",
+          label = "Save PPI matrix",
+          icon = icon("download"),
+          style = .actionButtonStyle
+        )
+      ))
     })
 
     # panel Scores ----------------------------------------------------
@@ -1678,7 +1722,6 @@ GeDi <- function(genesets = NULL,
     # Observers ------------------------------------------------------------------
 
     # Data Input Panel ----------------------------------------------------------
-    # TODO: reset the scoring matrix and everything when loading new data
     observeEvent(input$inputgenesetfile, {
       filename <-
         unlist(strsplit(input$inputgenesetfile$datapath, ".", fixed = TRUE))
@@ -1890,6 +1933,43 @@ GeDi <- function(genesets = NULL,
                                     anno_df = anno_df)
       progress$inc(4 / 12, detail = "Successfully downloaded PPI")
     })
+
+    observeEvent(input$inputppi, {
+      filename <-
+        unlist(strsplit(input$inputppi$datapath, ".", fixed = TRUE))
+      format <- tail(filename, n = 1)
+
+      if (format == "RDS") {
+        ppi <-
+          readRDS(input$inputppi$datapath)
+      } else {
+        showNotification(
+          "It seems like your input file has not the right format.
+          Please check the Welcome panel for the right input format and
+          provide your data again.",
+          type = "error"
+        )
+      }
+
+      reactive_values$ppi <- .checkPPI(ppi)
+
+      # reset all reactive_values in case data has already been loaded before
+      reactive_values$scores <- NULL
+      reactive_values$seeds <- NULL
+      reactive_values$cluster <- NULL
+      reactive_values$bookmarked_genesets <- NULL
+      reactive_values$bookmarked_cluster <- NULL
+    })
+
+    output$save_ppi <- downloadHandler(
+      filename = function() {
+        paste(input$species, "_PPI.RDS", sep = "")
+      },
+      content = function(file) {
+        saveRDS(reactive_values$ppi, file)
+      }
+    )
+
 
     # Scoring panel --------------------------------------------------------------
     observeEvent(input$score_data, {
