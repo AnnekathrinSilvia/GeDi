@@ -78,11 +78,10 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
 #'
-#' @importFrom stringr str_count
 .findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")) {
   sephits_min <-
     vapply(sepList, function(x) {
-      sum(str_count(stringList, x))
+      sum(vapply(stringList, function(y) nchar(y) - nchar(gsub(x, '', y)), numeric(1)))
     }, numeric(1))
   sep <- sepList[which.max(sephits_min)]
 

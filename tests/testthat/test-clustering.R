@@ -144,8 +144,8 @@ test_that("kNN clustering - no distance scores", {
   expect_true(is.null(kNN_clustering(NULL, 3)))
 })
 
-test_that("clustering works correctly", {
-  knn <- kNN_clustering(distances, 5)
+test_that("kNN clustering works correctly", {
+  knn <- kNN_clustering(distances, 3)
   expect_true(length(knn) > 0 )
 })
 

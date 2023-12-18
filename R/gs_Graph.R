@@ -100,7 +100,7 @@ buildGraph <- function(adjMatrix) {
       "<br><br>"
     )
   } else if (all(vapply(gs_names, function(x)
-    substr(x, 1, 2) == "R-"), list(1))) {
+    substr(x, 1, 2) == "R-", logical(1)))) {
     V(g)$title[ids] <- paste0(
       "<h4>",
       sprintf(

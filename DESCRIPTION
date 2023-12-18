@@ -47,7 +47,6 @@ Imports:
     STRINGdb,
     igraph,
     visNetwork,
-    stringr,
     shinycssloaders,
     fontawesome,
     grDevices,

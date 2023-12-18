@@ -94,7 +94,7 @@ test_that(".getNumberCores returns correct number", {
 })
 
 test_that(".sepGuesser returns correct separator", {
-  sep <- .sepguesser(system.file("extdata", "intro_data_scoring.txt", package = "GeDi"))
+  sep <- .sepguesser(system.file("extdata", "sample_geneset.txt", package = "GeDi"))
   expect_equal(sep, ",")
 })
 

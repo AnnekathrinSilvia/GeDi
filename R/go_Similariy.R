@@ -36,7 +36,7 @@ goSimilarity <- function(geneset_ids,
             is not installed" = system.file(package = species) != "")
 
    # Check if all geneset ids are GO identifiers
-  go_ids <- all(vapply(geneset_ids, function(x) substr(x, 1, 2) == "GO"), logical(1))
+  go_ids <- all(vapply(geneset_ids, function(x) substr(x, 1, 2) == "GO",  logical(1)))
   stopifnot("Not all geneset ids are GO identifiers.
             This score only works on GO identifiers" = go_ids)
 
