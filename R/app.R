@@ -858,7 +858,7 @@ GeDi <- function(genesets = NULL,
               radioButtons(
                 inputId = "scoringmethod",
                 label = "Select the scoring method for your data",
-                choices = c("PMM", "Kappa", "Jaccard", "Meet-Min", "GO Similarity"),
+                choices = c("PMM", "Kappa", "Jaccard", "Meet-Min", "Sorensen-Dice", "GO Similarity"),
                 selected = character(0)
               )
             ),
@@ -1938,6 +1938,9 @@ GeDi <- function(genesets = NULL,
       } else if (input$scoringmethod == "Jaccard") {
         scores <- getJaccardMatrix(reactive_values$genes,
                                    progress = progress)
+      } else if (input$scoringmethod == "Sorensen-Dice"){
+        scores <- getSorensenDiceMatrix(reactive_values$genes,
+                                        progress = progress)
       } else if (input$scoringmethod == "GO Similarity") {
         tryCatch(
           expr = {
