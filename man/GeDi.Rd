@@ -4,12 +4,12 @@
 \alias{GeDi}
 \title{GeDi main function}
 \usage{
-GeDi(genesets = NULL, ppi = NULL, distance_scores = NULL, alpha = 1)
+GeDi(genesets = NULL, ppi_df = NULL, distance_scores = NULL, alpha = 1)
 }
 \arguments{
 \item{genesets}{a dataframe of genesets containing the columns: genesets (the names / ids of the sets) and genes (the genes included in the genesets)}
 
-\item{ppi}{a Protein-Protein interaction matrix}
+\item{ppi_df}{a Protein-Protein interaction matrix}
 
 \item{distance_scores}{a Matrix of calculated distance scores for the genesets in \code{genesets}}
 

@@ -155,9 +155,10 @@ test_that("getClusterDataTable - no geneset names", {
 
 test_that("getClusterDatatable runs correctly", {
   geneset_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
-  df <- .getClusterDatatable(list(), geneset_names)
+  description <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+  df <- .getClusterDatatable(list(), geneset_names, description)
   expect_type(df, "list")
   expect_true(nrow(df) == 9)
   cluster <- list(c(1:5), c(5:8))
-  expect_type(.getClusterDatatable(cluster, geneset_names), "list")
+  expect_type(.getClusterDatatable(cluster, geneset_names, description), "list")
 })

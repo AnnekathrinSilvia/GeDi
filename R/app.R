@@ -4,7 +4,7 @@
 #' also some with the example data not only with some to see the data structure
 #'
 #' @param genesets a dataframe of genesets containing the columns: genesets (the names / ids of the sets) and genes (the genes included in the genesets)
-#' @param ppi a Protein-Protein interaction matrix
+#' @param ppi_df a Protein-Protein interaction matrix
 #' @param distance_scores a Matrix of calculated distance scores for the genesets in `genesets`
 #' @param alpha a scaling factor in between 0 and 1
 #'
@@ -34,7 +34,7 @@
 #' }
 #'
 GeDi <- function(genesets = NULL,
-                 ppi = NULL,
+                 ppi_df = NULL,
                  distance_scores = NULL,
                  alpha = 1) {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
@@ -45,8 +45,8 @@ GeDi <- function(genesets = NULL,
   if (!(is.null(genesets))) {
     genesets <- .checkGenesets(genesets)
   }
-  if (!(is.null(ppi))) {
-    ppi <- .checkPPI(ppi)
+  if (!(is.null(ppi_df))) {
+    ppi <- .checkPPI(ppi_df)
   }
   if(!(is.null(distance_scores))){
     distance_scores <- .checkScores(genesets, distance_scores)
@@ -375,15 +375,21 @@ GeDi <- function(genesets = NULL,
       reactive_values$genes <- NULL
     }
 
-    if (!(is.null(ppi))) {
-      reactive_values$ppi <- ppi
+    if (!(is.null(ppi_df))) {
+      reactive_values$ppi <- ppi_df
     } else {
       reactive_values$ppi <- NULL
     }
 
     reactive_values$alt_names <- FALSE
     reactive_values$species <- NULL
-    reactive_values$scores <- NULL
+
+    if (!(is.null(distance_scores))) {
+      reactive_values$scores <- distance_scores
+    } else {
+      reactive_values$scores <- NULL
+    }
+
     # TODO: is this reactive value really needed? Maybe for the report?
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
@@ -1847,7 +1853,7 @@ GeDi <- function(genesets = NULL,
 
     observeEvent(input$plot_brush, {
       df <- .buildHistogramData(
-        genes = reactive_values$genes,
+        genesets = reactive_values$genes,
         gs_names = reactive_values$gs_names,
         start = input$bins_gs_hist[1],
         end = input$bins_gs_hist[2]
