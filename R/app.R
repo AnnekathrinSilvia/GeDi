@@ -151,21 +151,21 @@ GeDi <- function(genesets = NULL,
         bs4SidebarMenuItem(
           "Data Input",
           tabName = "tab_data_input",
-          icon = icon("square-share-nodes")
+          icon = icon("database")
         ),
         bs4SidebarMenuItem(
           "Distance Scores",
           tabName = "tab_scores",
-          icon = icon("diagram-project")
+          icon = icon("table")
         ),
         bs4SidebarMenuItem(
           "Clustering Graph",
           tabName = "tab_graph",
-          icon = icon("square-share-nodes")
+          icon = icon("circle-nodes")
         ),
         bs4SidebarMenuItem("Report",
                            tabName = "tab_report",
-                           icon = icon("file"))
+                           icon = icon("file-lines"))
       )
     ),
 
@@ -201,6 +201,11 @@ GeDi <- function(genesets = NULL,
           ".biocdlbutton{background-color:#0092AC;} .biocdlbutton{color: #ffffff;}"
         )
       ),
+      tags$head(
+        tags$style(
+          "#shiny-modal img { max-width: 100%; }"
+          )
+        ),
       tags$script(
         HTML(
           "$(function(){
@@ -512,6 +517,15 @@ GeDi <- function(genesets = NULL,
                 "btn_loaddemo",
                 "Load the demo data",
                 icon = icon("play-circle"),
+                class = "btn btn-info",
+                style = .actionButtonStyle
+              ),
+              br(),
+              "..and here you can have a look at how the data should be structured",
+              actionButton(
+                "btn_showDataStructure",
+                "Have a look at the data structure",
+                icon = icon("magnifying-glass"),
                 class = "btn btn-info",
                 style = .actionButtonStyle
               ),
@@ -902,6 +916,9 @@ GeDi <- function(genesets = NULL,
           collapsible = TRUE,
           collapsed = FALSE,
           h2("Select the distance score"),
+          "Please check out the tour of this panel if you
+          want to know more about the individual scores",
+          p(),
           fluidRow(
             column(
               width = 6,
@@ -1849,6 +1866,18 @@ GeDi <- function(genesets = NULL,
       reactive_values$genes <- getGenes(reactive_values$genesets)
 
       progress$inc(1 / 3, detail = "Successfully loaded demo data")
+    })
+
+    observeEvent(input$btn_showDataStructure, {
+      showModal(modalDialog(
+        title = "Data structure of the Input Data",
+        "This is an example of the required structure for the input data",
+        HTML('<img src="GeDi/DataExample.png">'),
+        "The data should contain two columns, 'Genesets' and 'Genes', which are tab-seprated.",
+        "The list of genes for each genesets should be comma-, tab- or backslash-separated.",
+        easyClose = TRUE,
+        footer = NULL
+      ))
     })
 
     observeEvent(input$plot_brush, {
