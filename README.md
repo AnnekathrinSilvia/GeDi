@@ -15,8 +15,8 @@ status](https://github.com/AnnekathrinSilvia/GeDi/workflows/R-CMD-check/badge.sv
 [![](https://img.shields.io/github/last-commit/AnnekathrinSilvia/GeDi.svg)](https://github.com/AnnekathrinSilvia/GeDi/commits/devel)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
-[![Codecov.io coverage
-status](https://codecov.io/github/AnnekathrinSilvia/GeDi/coverage.svg?branch=devel)](https://codecov.io/github/AnnekathrinSilvia/GeDi)
+[![CodeCov.io codecov
+status](https://codecov.io/github/AnnekathrinSilvia/GeDi/graph/badge.svg?token=P9EIHCS40R)](https://codecov.io/github/AnnekathrinSilvia/GeDi)
 <!-- badges: end -->
 
 The goal of GeDi is to …
