@@ -1,7 +1,7 @@
 Package: GeDi
 Title: Defining and visualizing the distances between different genesets
 Version: 0.1.0
-Date: 2022-01-11
+Date: 20224-01-31
 Authors@R: 
     person("Annekathrin", "Nedwed", , "anneludt@uni-mainz.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2475-4945"))
@@ -9,30 +9,8 @@ Description: The package provides different distances measurements
     to calculate the difference between genesets. Based on these scores
     the genesets are clustered and visualized as graph. This is all
     presented in an interactive Shiny application for easy usage.
-License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
 Depends:
     R (>= 3.5.0)
-Suggests: 
-    knitr,
-    rmarkdown,
-    testthat (>= 3.0.0),
-    ideal,
-    DESeq2,
-    htmltools,
-    pcaExplorer,
-    AnnotationDbi,
-    macrophage,
-    topGO,
-    biomaRt,
-    ReactomePA,
-    clusterProfiler
-Config/testthat/edition: 3
-URL: https://github.com/AnnekathrinSilvia/GeDi
-BugReports: https://github.com/AnnekathrinSilvia/GeDi/issues
-VignetteBuilder: knitr
 Imports: 
     GOSemSim,
     Matrix,
@@ -65,4 +43,32 @@ Imports:
     org.Hs.eg.db,
     BiocNeighbors,
     tm,
-    wordcloud2
+    wordcloud2,
+    RCy3
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    ideal,
+    DESeq2,
+    htmltools,
+    pcaExplorer,
+    AnnotationDbi,
+    macrophage,
+    topGO,
+    biomaRt,
+    ReactomePA,
+    clusterProfiler,
+    BiocStyle
+License: MIT + file LICENSE
+Encoding: UTF-8
+VignetteBuilder: knitr
+URL: https://github.com/AnnekathrinSilvia/GeDi
+BugReports: https://github.com/AnnekathrinSilvia/GeDi/issues
+RoxygenNote: 7.3.1
+Roxygen: list(markdown = TRUE)
+Config/testthat/edition: 3
+biocViews: 
+    GUI, FunctionalAnnotation, GeneSetEnrichment, Software, Transcription, RNASeq, 
+    Visualization, Clustering, Pathways, ReportWriting, GO, KEGG, 
+    Reactome, ShinyApps

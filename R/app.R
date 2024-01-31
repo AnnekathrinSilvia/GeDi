@@ -513,6 +513,7 @@ GeDi <- function(genesets = NULL,
               ),
               br(),
               "... or you can also ",
+              br(),
               actionButton(
                 "btn_loaddemo",
                 "Load the demo data",
@@ -1033,7 +1034,14 @@ GeDi <- function(genesets = NULL,
                            placeholder = "",
                            maxItems = "1"
                          )
-                       )
+                       ),
+                       downloadButton(
+                         "save_distance_score_graph",
+                         label = "Save graph in Cytoscape format",
+                         icon = icon("download"),
+                         style = .actionButtonStyle
+                       ),
+
                      ),
                      column(width = 10,
                             withSpinner(
@@ -1130,6 +1138,20 @@ GeDi <- function(genesets = NULL,
                     rownames = FALSE,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
+
+    output$save_distance_score_graph <- downloadHandler(
+    #   filename = function() {
+    #   paste0("GeDi_distance_scores_graph_cytoscape_",
+    #          gsub(" ", "_", gsub(
+    #            "-", "", gsub(":", "-", as.character(Sys.time()))
+    #          )),
+    #          ".csv")
+    # }
+      filename <- "test.csv",
+    content = function(file) {
+      write.csv(file = file, x = RCX::fromIgraph(reactive_values$scores_graph()))
+    }
+    )
 
     # panel Graph ------------------------------------------------------
 
