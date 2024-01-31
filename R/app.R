@@ -1149,7 +1149,7 @@ GeDi <- function(genesets = NULL,
     # }
       filename <- "test.csv",
     content = function(file) {
-      write.csv(file = file, x = RCX::fromIgraph(reactive_values$scores_graph()))
+      utils::write.csv(file = file, x = reactive_values$scores_graph())
     }
     )
 

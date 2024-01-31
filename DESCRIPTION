@@ -39,17 +39,13 @@ Imports:
     ggdendro,
     ComplexHeatmap,
     InteractiveComplexHeatmap,
-    shinyAce,
-    org.Hs.eg.db,
     BiocNeighbors,
     tm,
-    wordcloud2,
-    RCy3
+    wordcloud2
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
-    ideal,
     DESeq2,
     htmltools,
     pcaExplorer,
@@ -59,7 +55,8 @@ Suggests:
     biomaRt,
     ReactomePA,
     clusterProfiler,
-    BiocStyle
+    BiocStyle,
+    org.Hs.eg.db
 License: MIT + file LICENSE
 Encoding: UTF-8
 VignetteBuilder: knitr
