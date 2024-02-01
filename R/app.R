@@ -373,6 +373,12 @@ GeDi <- function(genesets = NULL,
       } else {
         reactive_values$gs_description <- genesets$Genesets
       }
+      if(any(duplicated(reactive_values$gs_description))){
+        duplicates_ids <- which(duplicated(reactive_values$gs_description))
+        duplicates <- reactive_values$gs_description[duplicates_ids]
+        duplicates <- paste(duplicates, "1", sep = "_")
+        reactive_values$gs_description[duplicates_ids] <- duplicates
+      }
     } else {
       reactive_values$genesets <- NULL
       reactive_values$gs_names <- NULL
@@ -1094,7 +1100,9 @@ GeDi <- function(genesets = NULL,
       }
       adj <- getAdjacencyMatrix(reactive_values$scores,
                                 input$similarityScores)
-      g <- buildGraph(adj)
+      g <- buildGraph(adj,
+                      reactive_values$genesets,
+                      reactive_values$gs_description)
       return(g)
     })
 
@@ -1428,8 +1436,9 @@ GeDi <- function(genesets = NULL,
       g <- buildClusterGraph(
         reactive_values$cluster,
         reactive_values$genesets,
-        reactive_values$gs_description,
-        input$graphColoring
+        reactive_values$gs_names,
+        input$graphColoring,
+        reactive_values$gs_description
       )
       return(g)
     })
@@ -1804,6 +1813,12 @@ GeDi <- function(genesets = NULL,
           } else {
             reactive_values$gs_description <- reactive_values$gs_names
           }
+          if(any(duplicated(reactive_values$gs_description))){
+            duplicates_ids <- which(duplicated(reactive_values$gs_description))
+            duplicates <- reactive_values$gs_description[duplicates_ids]
+            duplicates <- paste(duplicates, "1", sep = "_")
+            reactive_values$gs_description[duplicates_ids] <- duplicates
+          }
 
           reactive_values$genes <-
             getGenes(reactive_values$genesets)
@@ -1846,6 +1861,13 @@ GeDi <- function(genesets = NULL,
           reactive_values$genesets$Description
       } else {
         reactive_values$gs_description <- reactive_values$gs_names
+      }
+
+      if(any(duplicated(reactive_values$gs_description))){
+        duplicates_ids <- which(duplicated(reactive_values$gs_description))
+        duplicates <- reactive_values$gs_description[duplicates_ids]
+        duplicates <- paste(duplicates, "1", sep = "_")
+        reactive_values$gs_description[duplicates_ids] <- duplicates
       }
 
       names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genesets] <-

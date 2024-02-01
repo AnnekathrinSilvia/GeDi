@@ -1,7 +1,7 @@
 data(scores_macrophage_topGO_example_small, package = "GeDi")
 data(cluster_macrophage_topGO_example_small, package = "GeDi")
-gs_names <- rownames(scores_macrophage_topGO_example_small)
 data(macrophage_topGO_example_small, package = "GeDi")
+gs_names <- macrophage_topGO_example_small$Genesets
 genes <- getGenes(macrophage_topGO_example_small)
 
 test_that("getAdjacencyMatrix - No distance scores", {
@@ -84,7 +84,7 @@ test_that("buildClusterGraph - no cluster", {
   graph <- buildClusterGraph(
     cluster,
     macrophage_topGO_example_small,
-    genes
+    gs_names
   )
   expect_type(graph, "list")
   expect_equal(gorder(graph), 0)
@@ -92,24 +92,28 @@ test_that("buildClusterGraph - no cluster", {
 })
 
 test_that("buildClusterGraph coloring", {
-  expect_error(buildClusterGraph(cluster_macrophage_topGO_example_small,
+  expect_error(buildClusterGraph(
+    cluster_macrophage_topGO_example_small,
     macrophage_topGO_example_small,
     gs_names,
     color_by = "test_column"
   ))
 
-  graph <- buildClusterGraph(cluster_macrophage_topGO_example_small,
+  graph <- buildClusterGraph(
+    cluster_macrophage_topGO_example_small,
     macrophage_topGO_example_small,
     gs_names,
     color_by = "Annotated"
   )
 
-  graph <- buildClusterGraph(cluster_macrophage_topGO_example_small,
+  graph <- buildClusterGraph(
+    cluster_macrophage_topGO_example_small,
     macrophage_topGO_example_small,
     gs_names,
     color_by = "p.value_elim"
   )
-  graph <- buildClusterGraph(cluster_macrophage_topGO_example_small,
+  graph <- buildClusterGraph(
+    cluster_macrophage_topGO_example_small,
     macrophage_topGO_example_small,
     gs_names,
     color_by = "Significant"
@@ -121,7 +125,7 @@ test_that("buildClusterGraph works correctly", {
   graph <- buildClusterGraph(
     cluster_macrophage_topGO_example_small,
     macrophage_topGO_example_small,
-    genes
+    gs_names
   )
   expect_type(graph, "list")
 })

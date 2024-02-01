@@ -57,6 +57,12 @@ getAdjacencyMatrix <- function(distanceMatrix,
 #' @param adjMatrix A [Matrix::Matrix()] indicating for which pair of nodes an
 #'                  edge should be added; 1 indicating an edge, 0 indicating no
 #'                  edge.
+#' @param geneset_df  `data.frame`, a `data.frame` of genesets with at least two
+#'                   columns, one called `Genesets` containing geneset
+#'                   identifiers and one called `Genes` containing a list of
+#'                   genes belonging to the individual genesets.
+#' @param gs_names  vector, a vector of geneset descriptions/names, e.g. the
+#'                 `Term` / `Description` column of `geneset_df`.
 #'
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
@@ -70,7 +76,7 @@ getAdjacencyMatrix <- function(distanceMatrix,
 #' geneset_names <- as.character(stats::runif(100, min = 0, max = 1))
 #' rownames(adj) <- colnames(adj) <- geneset_names
 #' graph <- buildGraph(adj)
-buildGraph <- function(adjMatrix) {
+buildGraph <- function(adjMatrix, geneset_df = NULL, gs_names = NULL) {
   # Build an undirected graph from the adjacency matrix
   g <- graph_from_adjacency_matrix(
     adjMatrix,
@@ -81,50 +87,12 @@ buildGraph <- function(adjMatrix) {
   )
 
   # Get geneset names from row names of adjacency matrix
-  gs_names <- rownames(adjMatrix)
+  gs_ids <- rownames(adjMatrix)
   # Get indices of nodes that match geneset names
-  ids <- which(names(V(g)) %in% gs_names)
+  ids <- which(names(V(g)) %in% gs_ids)
 
-  # Customize node titles based on the type of database (GO, Reactome, or other)
-  if (all(vapply(gs_names, function(x)
-    substr(x, 1, 2) == "GO", logical(1)))) {
-    V(g)$title[ids] <- paste0(
-      "<h4>",
-      sprintf(
-        '<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>',
-        gs_names[ids],
-        gs_names[ids]
-      ),
-      "</h4><br>",
-      V(g)$name[ids],
-      "<br><br>"
-    )
-  } else if (all(vapply(gs_names, function(x)
-    substr(x, 1, 2) == "R-", logical(1)))) {
-    V(g)$title[ids] <- paste0(
-      "<h4>",
-      sprintf(
-        '<a href="http://reactome.org/content/detail/%s" target="_blank">%s</a>',
-        gs_names[ids],
-        gs_names[ids]
-      ),
-      "</h4><br>",
-      V(g)$name[ids],
-      "<br><br>"
-    )
-  } else{
-    V(g)$title[ids] <- paste0(
-      "<h4>",
-      sprintf(
-        '<a href="https://www.genome.jp/dbget-bin/www_bget?pathway:%s" target="_blank">%s</a>',
-        gs_names[ids],
-        gs_names[ids]
-      ),
-      "</h4><br>",
-      V(g)$name[ids],
-      "<br><br>"
-    )
-  }
+  #Add node titles
+  V(g)$title[ids] <- getGraphTitle(geneset_df, ids, gs_ids, gs_names)
 
   # Return the customized graph
   return(g)
@@ -194,12 +162,14 @@ getClusterAdjacencyMatrix <- function(cluster,
 #'                   columns, one called `Genesets` containing geneset
 #'                   identifiers and one called `Genes` containing a list of
 #'                   genes belonging to the individual genesets.
-#' @param gs_names vector, a vector of geneset identifiers, e.g. the `Genesets`
+#' @param gs_ids  vector, a vector of geneset identifiers, e.g. the `Genesets`
 #'                 column of `geneset_df`.
 #' @param color_by character, a column name of `geneset_df` which is used
 #'                 to color the nodes of the resulting graph. The column should
 #'                 ideally contain a numeric measurement. Defaults to NULL and
 #'                 nodes will remain uncolored.
+#' @param gs_names vector, a vector of geneset descriptions/names, e.g. the
+#'                 `Term` / `Description` column of `geneset_df`.
 #'
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
@@ -218,6 +188,7 @@ getClusterAdjacencyMatrix <- function(cluster,
 #'   c("AHI1", "ALMS1")
 #' )
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' gs_ids <- c(1:9)
 #' geneset_df <- data.frame(
 #'   Genesets = gs_names,
 #'   value = rep(1, 9)
@@ -226,13 +197,19 @@ getClusterAdjacencyMatrix <- function(cluster,
 #' graph <- buildClusterGraph(
 #'   cluster = cluster,
 #'   geneset_df = geneset_df,
-#'   gs_names = gs_names,
-#'   color_by = "value"
+#'   gs_ids = gs_ids,
+#'   color_by = "value",
+#'   gs_names = gs_names
 #' )
 buildClusterGraph <- function(cluster,
                               geneset_df,
-                              gs_names,
-                              color_by = NULL) {
+                              gs_ids,
+                              color_by = NULL,
+                              gs_names = NULL) {
+  if(is.null(gs_names)){
+    gs_names <- gs_ids
+  }
+
   # Get adjacency matrix representing genesets belonging to the same cluster
   adj <- getClusterAdjacencyMatrix(cluster,
                                    gs_names)
@@ -264,47 +241,8 @@ buildClusterGraph <- function(cluster,
     }
   }
 
-  # Construct HTML-based title for each node using input information from geneset_df
-  transposed_df <- as.data.frame(t(geneset_df))
-  title <- list()
-  names_rows <- rownames(transposed_df)
 
-  for (i in 1:ncol(transposed_df)) {
-    node_title <- "<!DOCTYPE html> <html> <head> <style>
-      table {font-family: arial, sans-serif; font-size: 10px; border-collapse: collapse;width: 100%;} td,
-      th { border: 1px solid #dddddd; text-align: center; padding: 5px;}
-      tr:nth-child(even) {background-color: #dddddd;}
-      </style> </head> <body>
-      <table>"
-    for (j in 1:nrow(transposed_df)) {
-      text <- gsub(",", " ", transposed_df[j, i])
-      text <- gsub("(.{101,}?)\\s", "\\1<br>", text)
-      node_title <- paste0(node_title,
-                           " <tr>",
-                           "<td>",
-                           names_rows[j],
-                           "</td>",
-                           "<td>",
-                           text,
-                           "</td>",
-                           "</tr> ")
-    }
-    node_title <- paste0(node_title, "</table> </body> </html>")
-    title[[i]] <- node_title
-  }
-
-  # Set node titles using geneset names, corresponding links, and constructed HTML titles
-  V(g)$title[ids] <- paste0(
-    "<h4>",
-    sprintf(
-      '<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>',
-      gs_names[ids],
-      gs_names[ids]
-    ),
-    "</h4><br>",
-    title[ids],
-    "<br><br>"
-  )
+  V(g)$title[ids] <- getGraphTitle(geneset_df, ids, gs_ids, gs_names)
 
   # Remove nodes without any connections (degree equals 0)
   no_cluster <- V(g)[degree(g) == 0]
@@ -615,4 +553,133 @@ getBipartiteGraph <- function(cluster,
 
   # Return the computed metrics data frame
   return(df)
+}
+
+#' Build up the node title
+#'
+#' Build up the title for the graph nodes to display the available information
+#' of each geneset.
+#'
+#' @param geneset_df  A `data.frame` of genesets with a column `Genesets` containing
+#'                    geneset identifiers and a column `Genes` containing the
+#'                    genes belonging to each geneset
+#' @param node_ids  vector, a vector of ids of the nodes in the graph for
+#'                  which the node title should be build.
+#' @param gs_ids  vector, a vector of geneset identifiers, e.g. the `Genesets`
+#'                column of `geneset_df`.
+#' @param gs_names  vector, a vector of geneset descriptions/names, e.g. the
+#'                 `Term` / `Description` column of `geneset_df`.
+#'
+#' @return  A `list` of titles for a graph with nodes given by `node_ids`.
+#' @export
+#'
+#' @examples
+#' genes <- list(
+#'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'   c("AHI1", "ALMS1")
+#' )
+#' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' geneset_df <- data.frame(
+#'   Genesets = gs_names,
+#'   value = rep(1, 9)
+#' )
+#' geneset_df$Genes <- genes
+#' graph <- getGraphTitle(
+#'   geneset_df = geneset_df,
+#'   node_ids = c(1:9),
+#'   gs_ids = c(1:9),
+#'   gs_names = gs_names
+#' )
+#'
+getGraphTitle <- function(geneset_df = NULL, node_ids, gs_ids, gs_names = NULL){
+  if(!is.null(geneset_df)){
+    # Construct HTML-based title for each node using input information from geneset_df
+    transposed_df <- as.data.frame(t(geneset_df))
+    title <- list()
+    names_rows <- rownames(transposed_df)
+
+    for (i in 1:ncol(transposed_df)) {
+      node_title <- "<!DOCTYPE html> <html> <head> <style>
+      table {font-family: arial, sans-serif; font-size: 10px; border-collapse: collapse;width: 100%;} td,
+      th { border: 1px solid #dddddd; text-align: center; padding: 5px;}
+      tr:nth-child(even) {background-color: #dddddd;}
+      </style> </head> <body>
+      <table>"
+      for (j in 1:nrow(transposed_df)) {
+        text <- gsub(",", " ", transposed_df[j, i])
+        text <- gsub("(.{101,}?)\\s", "\\1<br>", text)
+        node_title <- paste0(node_title,
+                             " <tr>",
+                             "<td>",
+                             names_rows[j],
+                             "</td>",
+                             "<td>",
+                             text,
+                             "</td>",
+                             "</tr> ")
+      }
+      node_title <- paste0(node_title, "</table> </body> </html>")
+      title[[i]] <- node_title
+    }
+  }else{
+    title <- list()
+    title[node_ids] <- ""
+  }
+
+
+  if(is.null(gs_names)){
+    gs_names <- gs_ids
+  }
+
+  titles <- list()
+  # Customize node titles based on the type of database (GO, Reactome, or other)
+    if (all(vapply(gs_ids, function(x)
+      substr(x, 1, 2) == "GO", logical(1)))) {
+      titles[node_ids] <- paste0(
+        "<h4>",
+        sprintf(
+          '<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank">%s</a>',
+          gs_ids[node_ids],
+          gs_ids[node_ids]
+        ),
+        " - ",
+        gs_names[node_ids],
+        "</h4><br>",
+        title[node_ids],
+        "<br><br>"
+      )
+    } else if (all(vapply(gs_ids, function(x)
+      substr(x, 1, 2) == "R-", logical(1)))) {
+      titles[node_ids] <- paste0(
+        "<h4>",
+        sprintf(
+          '<a href="http://reactome.org/content/detail/%s" target="_blank">%s</a>',
+          gs_ids[node_ids],
+          gs_ids[node_ids]
+        ),
+        " - ",
+        gs_names[node_ids],
+        "</h4><br>",
+        title[node_ids],
+        "<br><br>"
+      )
+    } else{
+      titles[node_ids] <- paste0(
+        "<h4>",
+        sprintf(
+          '<a href="https://www.genome.jp/dbget-bin/www_bget?pathway:%s" target="_blank">%s</a>',
+          gs_ids[node_ids],
+          gs_ids[node_ids]
+        ),
+        " - ",
+        gs_names[node_ids],
+        "</h4><br>",
+        title[node_ids],
+        "<br><br>"
+      )
+    }
+
+  return(titles)
 }

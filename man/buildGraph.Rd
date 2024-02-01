@@ -4,12 +4,20 @@
 \alias{buildGraph}
 \title{Construct a graph}
 \usage{
-buildGraph(adjMatrix)
+buildGraph(adjMatrix, geneset_df = NULL, gs_names = NULL)
 }
 \arguments{
 \item{adjMatrix}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} indicating for which pair of nodes an
 edge should be added; 1 indicating an edge, 0 indicating no
 edge.}
+
+\item{geneset_df}{\code{data.frame}, a \code{data.frame} of genesets with at least two
+columns, one called \code{Genesets} containing geneset
+identifiers and one called \code{Genes} containing a list of
+genes belonging to the individual genesets.}
+
+\item{gs_names}{vector, a vector of geneset descriptions/names, e.g. the
+\code{Term} / \code{Description} column of \code{geneset_df}.}
 }
 \value{
 An \code{igraph} object to be further manipulated or processed/plotted

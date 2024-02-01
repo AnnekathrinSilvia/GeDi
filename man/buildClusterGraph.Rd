@@ -4,7 +4,13 @@
 \alias{buildClusterGraph}
 \title{Build a cluster graph}
 \usage{
-buildClusterGraph(cluster, geneset_df, gs_names, color_by = NULL)
+buildClusterGraph(
+  cluster,
+  geneset_df,
+  gs_ids,
+  color_by = NULL,
+  gs_names = NULL
+)
 }
 \arguments{
 \item{cluster}{list, a \code{list} of clusters, where each cluster member is
@@ -15,13 +21,16 @@ columns, one called \code{Genesets} containing geneset
 identifiers and one called \code{Genes} containing a list of
 genes belonging to the individual genesets.}
 
-\item{gs_names}{vector, a vector of geneset identifiers, e.g. the \code{Genesets}
+\item{gs_ids}{vector, a vector of geneset identifiers, e.g. the \code{Genesets}
 column of \code{geneset_df}.}
 
 \item{color_by}{character, a column name of \code{geneset_df} which is used
 to color the nodes of the resulting graph. The column should
 ideally contain a numeric measurement. Defaults to NULL and
 nodes will remain uncolored.}
+
+\item{gs_names}{vector, a vector of geneset descriptions/names, e.g. the
+\code{Term} / \code{Description} column of \code{geneset_df}.}
 }
 \value{
 An \code{igraph} object to be further manipulated or processed/plotted
@@ -41,6 +50,7 @@ genes <- list(
   c("AHI1", "ALMS1")
 )
 gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+gs_ids <- c(1:9)
 geneset_df <- data.frame(
   Genesets = gs_names,
   value = rep(1, 9)
@@ -49,7 +59,8 @@ geneset_df$Genes <- genes
 graph <- buildClusterGraph(
   cluster = cluster,
   geneset_df = geneset_df,
-  gs_names = gs_names,
-  color_by = "value"
+  gs_ids = gs_ids,
+  color_by = "value",
+  gs_names = gs_names
 )
 }
