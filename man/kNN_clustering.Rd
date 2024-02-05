@@ -19,8 +19,17 @@ This function performs k-Nearest Neighbors (kNN) clustering on a set of
 scores.
 }
 \examples{
+## Mock example showing how the data should look like
 scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
                                 "f", "g", "h", "i", "j")
 cluster <- kNN_clustering(scores, k = 3)
+
+## Example using the data available in the package
+data(scores_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+
+kNN <- kNN_clustering(scores_macrophage_topGO_example_small,
+                        k = 5)
 }

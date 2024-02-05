@@ -2,7 +2,7 @@ data(macrophage_topGO_example,
      package = "GeDi",
      envir = environment())
 
-test_that("No genesets are provided", {
+test_that("No rownames are provided", {
   expect_error(enrichmentWordcloud(NULL))
 })
 

@@ -25,8 +25,17 @@ This function performs clustering on a set of scores using either the Louvain
 or Markov method.
 }
 \examples{
+## Mock example showing how the data should look like
 m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 rownames(m) <- colnames(m) <- c("a", "b", "c", "d", "e",
                                 "f", "g", "h", "i", "j")
 cluster <- clustering(m, 0.3, "markov")
+
+## Example using the data available in the package
+data(scores_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+
+clustering <- clustering(scores_macrophage_topGO_example_small,
+                        threshold = 0.5)
 }

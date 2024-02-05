@@ -17,6 +17,18 @@ Remove subsets from a given list of sets, i.e. remove sets which are
 completely contained in any other larger set in the list.
 }
 \examples{
+## Mock example showing how the data should look like
+
 seeds <- list(c(1:5), c(2:5), c(6:10))
 s <- checkInclusion(seeds)
+
+## Example using the data available in the package
+data(scores_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+
+seeds <- seedFinding(scores_macrophage_topGO_example_small,
+                     simThreshold = 0.3,
+                     memThreshold = 0.5)
+seeds <- checkInclusion(seeds)
 }

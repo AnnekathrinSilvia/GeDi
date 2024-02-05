@@ -19,8 +19,20 @@ A \code{list} of clusters
 Merge the initially determined seeds to clusters.
 }
 \examples{
+## Mock example showing how the data should look like
+
 seeds <- list(c(1:5), c(6:10))
 cluster <- fuzzyClustering(seeds, 0.5)
+
+## Example using the data available in the package
+data(scores_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+
+seeds <- seedFinding(scores_macrophage_topGO_example_small,
+                     simThreshold = 0.3,
+                     memThreshold = 0.5)
+cluster <- fuzzyClustering(seeds, threshold = 0.5)
 }
 \references{
 See https://david.ncifcrf.gov/helps/functional_classification.html#clustering

@@ -25,8 +25,19 @@ A \code{list} of seeds which can be used for clustering
 Determine initial seeds for the clustering from the distance score matrix.
 }
 \examples{
+## Mock example showing how the data should look like
+
 m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 seeds <- seedFinding(distances = m, simThreshold = 0.3, memThreshold = 0.5)
+
+## Example using the data available in the package
+data(scores_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+
+seeds <- seedFinding(scores_macrophage_topGO_example_small,
+                     simThreshold = 0.3,
+                     memThreshold = 0.5)
 }
 \references{
 See https://david.ncifcrf.gov/helps/functional_classification.html#clustering

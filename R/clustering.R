@@ -9,8 +9,20 @@
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
+#'
 #' seeds <- list(c(1:5), c(2:5), c(6:10))
 #' s <- checkInclusion(seeds)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#' seeds <- seedFinding(scores_macrophage_topGO_example_small,
+#'                      simThreshold = 0.3,
+#'                      memThreshold = 0.5)
+#' seeds <- checkInclusion(seeds)
 checkInclusion <- function(seeds) {
   # Remove all empty seeds from the list
   seeds <- seeds[lengths(seeds) != 0]
@@ -80,8 +92,19 @@ checkInclusion <- function(seeds) {
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
+#'
 #' m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 #' seeds <- seedFinding(distances = m, simThreshold = 0.3, memThreshold = 0.5)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#' seeds <- seedFinding(scores_macrophage_topGO_example_small,
+#'                      simThreshold = 0.3,
+#'                      memThreshold = 0.5)
 seedFinding <- function(distances, simThreshold, memThreshold) {
   # Check if there are any distance scores, if not, return NULL
   if (is.null(distances) || length(distances) == 0) {
@@ -149,8 +172,20 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
+#'
 #' seeds <- list(c(1:5), c(6:10))
 #' cluster <- fuzzyClustering(seeds, 0.5)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#' seeds <- seedFinding(scores_macrophage_topGO_example_small,
+#'                      simThreshold = 0.3,
+#'                      memThreshold = 0.5)
+#' cluster <- fuzzyClustering(seeds, threshold = 0.5)
 fuzzyClustering <- function(seeds, threshold) {
   # Check if there are at least two seeds to merge
   # If not, return the original seeds
@@ -219,10 +254,19 @@ fuzzyClustering <- function(seeds, threshold) {
 #' @importFrom GeneTonic cluster_markov
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 #' rownames(m) <- colnames(m) <- c("a", "b", "c", "d", "e",
 #'                                 "f", "g", "h", "i", "j")
 #' cluster <- clustering(m, 0.3, "markov")
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#'clustering <- clustering(scores_macrophage_topGO_example_small,
+#'                         threshold = 0.5)
 clustering <- function(scores, threshold, cluster_method = "louvain") {
   # Check if the cluster_method is valid (only "louvain" or "markov" allowed)
   stopifnot(cluster_method == "louvain" || cluster_method == "markov")
@@ -272,10 +316,19 @@ clustering <- function(scores, threshold, cluster_method = "louvain") {
 #' @import BiocNeighbors
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 #' rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
 #'                                 "f", "g", "h", "i", "j")
 #' cluster <- kNN_clustering(scores, k = 3)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#'kNN <- kNN_clustering(scores_macrophage_topGO_example_small,
+#'                         k = 5)
 kNN_clustering <- function(scores,
                            k) {
   # Check if there are any distance scores, if not, return NULL
