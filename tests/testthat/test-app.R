@@ -1,5 +1,6 @@
 data(macrophage_topGO_example_small, package = "GeDi")
 data(ppi_macrophage_topGO_example_small, package = "GeDi")
+data(scores_macrophage_topGO_example_small, package = "GeDi")
 library("GeDi")
 
 test_that("Shiny app is generated", {

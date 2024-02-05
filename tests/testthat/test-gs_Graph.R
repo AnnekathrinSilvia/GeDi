@@ -4,9 +4,9 @@ data(macrophage_topGO_example_small, package = "GeDi")
 gs_names <- macrophage_topGO_example_small$Genesets
 data(macrophage_Reactome_example, package = "GeDi")
 data(macrophage_KEGG_example, package = "GeDi")
-gs_names_reactome <- macrophage_Reactome_example$geneID
+gs_names_reactome <- macrophage_Reactome_example$ID
 gs_names_reactome <- gs_names_reactome[1:nrow(scores_macrophage_topGO_example_small)]
-gs_names_kegg <- macrophage_KEGG_example$geneID
+gs_names_kegg <- macrophage_KEGG_example$ID
 gs_names_kegg <- gs_names_kegg[1:nrow(scores_macrophage_topGO_example_small)]
 genes <- getGenes(macrophage_topGO_example_small)
 
