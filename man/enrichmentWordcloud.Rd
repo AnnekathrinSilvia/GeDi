@@ -25,6 +25,37 @@ cloud highlights the most frequent terms associated with the description of
 the genesets in the enrichment analysis.
 }
 \examples{
+## Mock example showing how the data should look like
+
+## If no "Term" or "Description" column is available,
+## the rownames of the data frame will be used.
+geneset_df <- data.frame(
+              Genesets = c("GO:0002503", "GO:0045087", "GO:0019886"),
+              Genes = c("B2M, HLA-DMA, HLA-DMB",
+                        "ACOD1, ADAM8, AIM2",
+                        "B2M, CD74, CTSS")
+)
+rownames(geneset_df) <- geneset_df$Genesets
+
+wordcloud <- enrichmentWordcloud(geneset_df)
+
+## With available "Term" column.
+geneset_df <- data.frame(
+              Genesets = c("GO:0002503", "GO:0045087", "GO:0019886"),
+              Genes = c("B2M, HLA-DMA, HLA-DMB",
+                        "ACOD1, ADAM8, AIM2",
+                        "B2M, CD74, CTSS"),
+              Term = c("peptide antigen assembly with MHC class II protein complex",
+                       "innate immune response",
+                       "antigen processing and presentation of exogenous
+                       peptide antigen via MHC class II")
+)
+
+wordcloud <- enrichmentWordcloud(geneset_df)
+
+
+## Example using the data available in the package
+
 data(macrophage_topGO_example,
      package = "GeDi",
      envir = environment())
