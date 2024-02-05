@@ -15,9 +15,19 @@
 #' @importFrom stats dist hclust
 #'
 #' @examples
+#'
+#' #' ## Mock example showing how the data should look like
+#'
 #' distance_scores <- Matrix::Matrix(0.5, 20, 20)
 #' distance_scores[c(11:15), c(2:6)] <- 0.2
 #' dendro <- distanceDendro(distance_scores, cluster_method = "single")
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' dendro <- distanceDendro(scores_macrophage_topGO_example_small,
+#'                         cluster_method = "average")
 distanceDendro <-
   function(distance_scores, cluster_method = "average") {
     # Check if distance scores are provided
