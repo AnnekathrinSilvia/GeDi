@@ -3,17 +3,18 @@ data(ppi_macrophage_topGO_example_small, package = "GeDi")
 library("GeDi")
 
 test_that("Shiny app is generated", {
-  app <- GeDi()
-  expect_s3_class(app, "shiny.appobj")
+  expect_s3_class(GeDi(), "shiny.appobj")
 })
 
 test_that("Shiny app is generated with input", {
-  app <- GeDi(genesets = macrophage_topGO_example_small)
-  expect_s3_class(app, "shiny.appobj")
+  expect_s3_class(GeDi(genesets = macrophage_topGO_example_small), "shiny.appobj")
 
-  app <- GeDi(genesets = macrophage_topGO_example_small,
-              ppi = ppi_macrophage_topGO_example_small)
-  expect_s3_class(app, "shiny.appobj")
+  expect_s3_class(GeDi(genesets = macrophage_topGO_example_small,
+                       ppi = ppi_macrophage_topGO_example_small), "shiny.appobj")
+
+  expect_s3_class(GeDi(genesets = macrophage_topGO_example_small,
+                       ppi = ppi_macrophage_topGO_example_small,
+                       distance_scores = scores_macrophage_topGO_example_small), "shiny.appobj")
 })
 
 # testServer(gedi_server, {
