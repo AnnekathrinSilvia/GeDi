@@ -14,13 +14,22 @@
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
+#'
 #' distance_scores <- Matrix::Matrix(0.5, 20, 20)
 #' distance_scores[c(11:15), c(2:6)] <- 0.2
 #' rownames(distance_scores) <- colnames(distance_scores) <- as.character(c(1:20))
 #' p <- distanceHeatmap(distance_scores)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' p <- distanceHeatmap(scores_macrophage_topGO_example_small)
 distanceHeatmap <- function(distance_scores, chars_limit = 50) {
   # Check if distance scores are provided
   stopifnot(!is.null(distance_scores))
+  stopifnot(chars_limit >= 0)
 
   # Cut the labels to the specified character limit
   labels <- substr(as.character(rownames(distance_scores)), 1, chars_limit)

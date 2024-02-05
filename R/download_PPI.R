@@ -12,6 +12,9 @@
 #' @examples
 #' species <- "Homo sapiens"
 #' id <- getId(species = species)
+#'
+#' species <- "Mus musculus"
+#' id <- getId(species = species)
 getId <- function(species, version = "11.5") {
   # Download available species information from STRING
   url_species <- sprintf("https://stringdb-static.org/download/species.v%s.txt",
@@ -37,7 +40,7 @@ getId <- function(species, version = "11.5") {
 #' @param score_threshold numeric, A score threshold to cut the retrieved
 #'                        interactions, defaults to 0 (all interactions)
 #'
-#' @return a [STRINGdb] object `species`
+#' @return a [STRINGdb] object of `species`
 #' @export
 #'
 #' @import STRINGdb
@@ -94,10 +97,22 @@ getAnnotation <- function(stringdb) {
 #' @importFrom dplyr distinct
 #' @import STRINGdb
 #' @examples
+#' ## Mock example showing how the data should look like
+#'
 #' genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
 #' string_db <- getStringDB(9606)
 #' string_db
 #' anno_df <- getAnnotation(string_db)
+#' ppi <- getPPI(genes, string_db, anno_df)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' string_db <- getStringDB(9606)
+#' string_db
+#' anno_df <- getAnnotation(string_db)
+#' genes <- GeDi::getGenesmacrophage_topGO_example_small
 #' ppi <- getPPI(genes, string_db, anno_df)
 getPPI <- function(genes, string_db, anno_df) {
   # Convert input list to vector

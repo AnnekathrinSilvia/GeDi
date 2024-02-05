@@ -13,4 +13,8 @@ test_that("Character limitation works correctly", {
     chars_limit = 5
   )
   expect_type(p, "S4")
+
+  expect_error(distanceHeatmap(scores_macrophage_topGO_example_small,
+                               chars_limit = -1
+  ))
 })

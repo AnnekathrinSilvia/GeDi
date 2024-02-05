@@ -22,8 +22,16 @@ A \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}} plot object.
 Plot a heatmap of a matrix of (distance) scores of the input genesets
 }
 \examples{
+#' ## Mock example showing how the data should look like
+
 distance_scores <- Matrix::Matrix(0.5, 20, 20)
 distance_scores[c(11:15), c(2:6)] <- 0.2
 rownames(distance_scores) <- colnames(distance_scores) <- as.character(c(1:20))
 p <- distanceHeatmap(distance_scores)
+
+## Example using the data available in the package
+data(scores_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+p <- distanceHeatmap(scores_macrophage_topGO_example_small)
 }

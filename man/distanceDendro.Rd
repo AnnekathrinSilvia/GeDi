@@ -23,7 +23,7 @@ Plot a dendrogram of a matrix of (distance) scores.
 }
 \examples{
 
-#' ## Mock example showing how the data should look like
+## Mock example showing how the data should look like
 
 distance_scores <- Matrix::Matrix(0.5, 20, 20)
 distance_scores[c(11:15), c(2:6)] <- 0.2
