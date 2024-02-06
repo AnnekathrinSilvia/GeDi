@@ -19,8 +19,19 @@
 #'         geneset pair.
 #' @export
 #' @importFrom GOSemSim godata goSim
+#' @importFrom Matrix Matrix
 #'
 #' @examples
+#'
+#'
+#' ## Mock example showing how the data should look like
+#' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
+#'             "GO:0002250", "GO:0001916", "GO:0019885")
+#'
+#' similarity <- goSimilarity(go_ids,
+#'                            n_cores = 1)
+#'
+#' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small, package = "GeDi")
 #' go_ids <- macrophage_topGO_example_small$Genesets
 #' similarity <- goSimilarity(go_ids,
@@ -96,6 +107,15 @@ goSimilarity <- function(geneset_ids,
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
+#' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
+#'             "GO:0002250", "GO:0001916", "GO:0019885")
+#' scores <- Matrix::Matrix(stats::runif(36, min = 0, max = 1), 6, 6)
+#' similarity <- scaleGO(scores,
+#'                       go_ids,
+#'                       n_cores = 1)
+#'
+#' ## Example using the data available in the package
 #' data(scores_macrophage_topGO_example_small, package = "GeDi")
 #' data(macrophage_topGO_example_small, package = "GeDi")
 #' go_ids <- macrophage_topGO_example_small$Genesets
