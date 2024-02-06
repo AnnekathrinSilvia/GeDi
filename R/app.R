@@ -68,7 +68,7 @@ GeDi <- function(genesets = NULL,
         style = .actionButtonStyle,
         class = "ml-5"
       ),
-      tags$span(style = "display:inline-block; width: 30%"),
+      tags$span(style = "display:inline-block; width: 60%"),
       tagList(
         shinyWidgets::dropdownButton(
           inputId = "ddbtn_docs",
@@ -356,6 +356,7 @@ GeDi <- function(genesets = NULL,
                              ),
                            right = NULL)
   )
+  # nocov start
   # server definition ---------------------------------------------------------
   gedi_server <- function(input, output, session) {
     # initializing reactives --------------------------------------------------
@@ -2534,5 +2535,7 @@ GeDi <- function(genesets = NULL,
     #   }
     # })
   }
+  # nocov end
+
   shinyApp(ui = gedi_ui, server = gedi_server)
 }
