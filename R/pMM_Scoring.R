@@ -161,6 +161,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom Matrix Matrix
 #'
 #' @examples
 #' genesets <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
@@ -185,7 +186,7 @@ getpMMMatrix <- function(genesets, ppi, alpha = 1, progress = NULL, n_cores = NU
   stopifnot(!is.null(ppi))
 
   # Initialize an empty matrix for storing pMM distances
-  scores <- Matrix::Matrix(0, l, l)
+  scores <- Matrix(0, l, l)
   # Get the maximum interaction score in the PPI network
   maxInteract <- max(ppi$combined_score)
 

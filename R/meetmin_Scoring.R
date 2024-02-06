@@ -16,6 +16,7 @@
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom Matrix Matrix
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -30,7 +31,7 @@ getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   }
 
   # Initialize an empty matrix for storing Meet-Min distances
-  m <- Matrix::Matrix(0, l, l)
+  m <- Matrix(0, l, l)
 
   # Initialize a list for storing intermediate results
   results <- list()

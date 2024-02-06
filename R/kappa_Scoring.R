@@ -74,6 +74,7 @@ calculateKappa <- function(a, b, all_genes) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom Matrix Matrix
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -88,7 +89,7 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   }
 
   # Initialize an empty matrix for storing Kappa distances
-  k <- Matrix::Matrix(0, l, l)
+  k <- Matrix(0, l, l)
 
   # Get the unique genes present across all gene sets
   unique_genes <- unique(unlist(genesets))

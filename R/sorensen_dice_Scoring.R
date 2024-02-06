@@ -49,6 +49,7 @@ calculateSorensenDice <- function(a, b) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom Matrix Matrix
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))

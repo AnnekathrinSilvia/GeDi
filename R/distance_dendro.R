@@ -13,6 +13,7 @@
 #' @export
 #' @importFrom ggdendro ggdendrogram
 #' @importFrom stats dist hclust
+#' @import Matrix
 #'
 #' @examples
 #'
