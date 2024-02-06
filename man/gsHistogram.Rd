@@ -37,6 +37,7 @@ A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot object.
 Create a histogram plot to plot geneset names / identifiers against their size.
 }
 \examples{
+## Mock example showing how the data should look like
 gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
 genesets <- list(
   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
@@ -46,4 +47,11 @@ genesets <- list(
 )
 
 p <- gsHistogram(genesets, gs_names)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+genes <- GeDi::getGenes(macrophage_topGO_example_small)
+p <- gsHistogram(genes, macrophage_topGO_example_small$Genesets)
 }

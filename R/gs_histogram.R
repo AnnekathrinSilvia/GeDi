@@ -19,6 +19,7 @@
 #' @import ggplot2
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
 #' genesets <- list(
 #'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
@@ -28,6 +29,13 @@
 #' )
 #'
 #' p <- gsHistogram(genesets, gs_names)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' p <- gsHistogram(genes, macrophage_topGO_example_small$Genesets)
 gsHistogram <- function(genesets,
                          gs_names,
                          start = NULL,
@@ -38,7 +46,7 @@ gsHistogram <- function(genesets,
   stopifnot(length(genesets) > 0)
 
   # Build a data frame containing gene set sizes
-  n_genes <- .buildHistogramData(genesets, gs_names, start, end)
+  n_genes <- buildHistogramData(genesets, gs_names, start, end)
 
   # Create a histogram plot using ggplot2
   p <- ggplot(n_genes, aes(x = Size)) +
@@ -64,9 +72,28 @@ gsHistogram <- function(genesets,
 #' @param end numeric, Optional, describes the maximum gene set size to include.
 #'            Defaults to 0.
 #'
+#' @export
 #' @return A `data.frame` mapping geneset names to sizes
 #'
-.buildHistogramData <- function(genesets,
+#' @examples
+#' ## Mock example showing how the data should look like
+#' gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+#' genesets <- list(
+#'   c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
+#'   c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+#'   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
+#'   c("AHI1", "ALMS1")
+#' )
+#'
+#' p <- buildHistogramData(genesets, gs_names)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' p <- buildHistogramData(genes, macrophage_topGO_example_small$Genesets)
+buildHistogramData <- function(genesets,
                                 gs_names,
                                 start = 0,
                                 end = 0) {

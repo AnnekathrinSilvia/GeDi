@@ -27,6 +27,14 @@ Calculate the Kappa distance of all combinations of genesets in a given data
 set of genesets. The Kappa distance is normalized to the (0, 1) interval.
 }
 \examples{
+#' ## Mock example showing how the data should look like
 genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 m <- getKappaMatrix(genesets, n_cores = 1)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+genes <- GeDi::getGenes(macrophage_topGO_example_small)
+kappa <-getKappaMatrix(genes, n_cores = 1)
 }

@@ -19,8 +19,16 @@
 #' @importFrom Matrix Matrix
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 #' m <- getMeetMinMatrix(genesets, n_cores = 1)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' mm <- getMeetMinMatrix(genes, n_cores = 1)
 getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   # Get the number of genesets
   l <- length(genesets)

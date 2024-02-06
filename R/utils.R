@@ -17,6 +17,7 @@
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' df <- data.frame(
 #'   Geneset = c(
 #'     "Cell Cycle",
@@ -30,6 +31,12 @@
 #'   )
 #' )
 #' genes <- getGenes(df)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' genes <- getGenes(macrophage_topGO_example_small)
 getGenes <- function(genesets, gene_name = NULL) {
   # If there are no genesets, return NULL
   if (length(genesets) == 0) {

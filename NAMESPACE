@@ -3,6 +3,7 @@
 export(GeDi)
 export(buildClusterGraph)
 export(buildGraph)
+export(buildHistogramData)
 export(calculateJaccard)
 export(calculateKappa)
 export(calculateSorensenDice)

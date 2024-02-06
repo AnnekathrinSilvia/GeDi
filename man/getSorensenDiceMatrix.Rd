@@ -27,6 +27,14 @@ Calculate the Sorensen-Dice distance of all combinations of genesets in a given 
 set of genesets.
 }
 \examples{
+## Mock example showing how the data should look like
 genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
 m <- getSorensenDiceMatrix(genesets, n_cores = 1)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+genes <- GeDi::getGenes(macrophage_topGO_example_small)
+sd_matrix <- getSorensenDiceMatrix(genes, n_cores = 1)
 }

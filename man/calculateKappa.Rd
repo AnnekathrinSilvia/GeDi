@@ -19,8 +19,16 @@ The Kappa distance of the sets.
 Calculate the Kappa distance between two genesets.
 }
 \examples{
+## Mock example showing how the data should look like
 a <- c("PDHB", "VARS2")
 b <- c("IARS2", "PDHA1")
 all_genes <- c("PDHB", "VARS2", "IARS2", "PDHA1")
 c <- calculateKappa(a, b, all_genes)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+genes <- GeDi::getGenes(macrophage_topGO_example_small)
+c <- calculateKappa(genes[1], genes[2], unique(genes))
 }

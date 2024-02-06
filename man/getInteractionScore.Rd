@@ -26,6 +26,7 @@ The function calculates an interaction score between two sets of genes based
 on a protein-protein interaction network.
 }
 \examples{
+## Mock example showing how the data should look like
 a <- c("PDHB", "VARS2", "IARS2")
 b <- c("IARS2", "PDHA1")
 
@@ -37,6 +38,18 @@ ppi <- data.frame(
 maxInteract <- max(ppi$combined_score)
 
 interaction <- getInteractionScore(a, b, ppi, maxInteract)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+genes <- GeDi::getGenes(macrophage_topGO_example_small)
+data(ppi_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+maxInteract <- max(ppi_macrophage_topGO_example_small$combined_score)
+
+interaction <- getInteractionScore(genes[1], genes[2], ppi, maxInteract)
 }
 \references{
 See https://doi.org/10.1186/s12864-019-5738-6 for details on the original

@@ -20,6 +20,7 @@
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' a <- c("PDHB", "VARS2", "IARS2")
 #' b <- c("IARS2", "PDHA1")
 #'
@@ -31,6 +32,18 @@
 #' maxInteract <- max(ppi$combined_score)
 #'
 #' interaction <- getInteractionScore(a, b, ppi, maxInteract)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' data(ppi_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' maxInteract <- max(ppi_macrophage_topGO_example_small$combined_score)
+#'
+#' interaction <- getInteractionScore(genes[1], genes[2], ppi, maxInteract)
 getInteractionScore <- function(a, b, ppi, maxInteract) {
   # Get the size of sets a and b
   len_a <- length(a)
@@ -93,6 +106,7 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' @export
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' a <- c("PDHB", "VARS2")
 #' b <- c("IARS2", "PDHA1")
 #'
@@ -104,6 +118,18 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' maxInteract <- max(ppi$combined_score)
 #'
 #' pMM_score <- pMMlocal(a, b, ppi, maxInteract)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' data(ppi_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' maxInteract <- max(ppi_macrophage_topGO_example_small$combined_score)
+#'
+#' pMMlocal <- pMMlocal(genes[1], genes[2], ppi, maxInteract)
 pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
   # Get the minimum size of sets a and b
   z <- min(length(a), length(b))
@@ -164,6 +190,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' @importFrom Matrix Matrix
 #'
 #' @examples
+#' ## Mock example showing how the data should look like
 #' genesets <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
 #'
 #' ppi <- data.frame(
@@ -173,6 +200,17 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' )
 #'
 #' pMM <- getpMMMatrix(genesets, ppi, n_cores = 1)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' data(ppi_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#' pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
 getpMMMatrix <- function(genesets, ppi, alpha = 1, progress = NULL, n_cores = NULL) {
   # Get the number of genesets
   l <- length(genesets)

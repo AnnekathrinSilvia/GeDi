@@ -1926,7 +1926,7 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$plot_brush, {
-      df <- .buildHistogramData(
+      df <- buildHistogramData(
         genesets = reactive_values$genes,
         gs_names = reactive_values$gs_names,
         start = input$bins_gs_hist[1],
@@ -1945,7 +1945,7 @@ GeDi <- function(genesets = NULL,
                            type = "message")
         } else {
           threshold <- as.numeric(input$select_filter_genesets_threshold)
-          data <- .buildHistogramData(reactive_values$genes,
+          data <- buildHistogramData(reactive_values$genes,
                                       reactive_values$gs_names)
           remove <- data[data$Size >= threshold,]$Geneset
           if (length(remove) == 0) {

@@ -36,6 +36,7 @@ Calculate the pMM distance of all combinations of genesets in a given data
 set of genesets.
 }
 \examples{
+## Mock example showing how the data should look like
 genesets <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
 
 ppi <- data.frame(
@@ -45,6 +46,17 @@ ppi <- data.frame(
 )
 
 pMM <- getpMMMatrix(genesets, ppi, n_cores = 1)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+genes <- GeDi::getGenes(macrophage_topGO_example_small)
+data(ppi_macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+
+pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
 }
 \references{
 See https://doi.org/10.1186/s12864-019-5738-6 for details on the original
