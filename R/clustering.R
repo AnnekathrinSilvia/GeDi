@@ -313,7 +313,7 @@ clustering <- function(scores, threshold, cluster_method = "louvain") {
 #'
 #' @return A `list` of clusters
 #' @export
-#' @import BiocNeighbors
+#' @importFrom BiocNeighbors findKNN
 #'
 #' @examples
 #' ## Mock example showing how the data should look like

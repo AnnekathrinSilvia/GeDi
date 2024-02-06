@@ -48,7 +48,7 @@ calculateJaccard <- function(a, b) {
 #' @return A [Matrix::Matrix()] with Jaccard distance rounded to 2 decimal
 #'         places.
 #' @export
-#' @import parallel
+#' @importFrom parallel mclapply
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -79,7 +79,7 @@ getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
     }
     # Parallelly calculate Jaccard distances for pairs
-    results[[k]] <- parallel::mclapply((k + 1):l, function(i) {
+    results[[k]] <- mclapply((k + 1):l, function(i) {
       b <- genesets[[i]]
       calculateJaccard(a, b)
     }, mc.cores = n_cores)

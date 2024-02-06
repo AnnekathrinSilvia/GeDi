@@ -73,7 +73,7 @@ calculateKappa <- function(a, b, all_genes) {
 #' @return A [Matrix::Matrix()] with Kappa distance rounded to 2 decimal
 #'         places.
 #' @export
-#' @import parallel
+#' @importFrom parallel mclapply
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -107,7 +107,7 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
     }
     # Parallelly calculate Kappa distances for pairs
-    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
+    results[[j]] <- mclapply((j + 1):l, function(i) {
       b <- genesets[[i]]
       calculateKappa(a, b, unique_genes)
     }, mc.cores = n_cores)

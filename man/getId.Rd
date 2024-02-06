@@ -21,4 +21,7 @@ Get the NCBI ID of a species
 \examples{
 species <- "Homo sapiens"
 id <- getId(species = species)
+
+species <- "Mus musculus"
+id <- getId(species = species)
 }

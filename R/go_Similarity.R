@@ -18,7 +18,7 @@
 #' @return A [Matrix::Matrix()] with the pairwise GO similarity of each
 #'         geneset pair.
 #' @export
-#' @import GOSemSim
+#' @importFrom GOSemSim godata goSim
 #'
 #' @examples
 #' data(macrophage_topGO_example_small, package = "GeDi")
@@ -94,7 +94,6 @@ goSimilarity <- function(geneset_ids,
 #'
 #' @return A [Matrix::Matrix()] of scaled values.
 #' @export
-#' @import GOSemSim
 #'
 #' @examples
 #' data(scores_macrophage_topGO_example_small, package = "GeDi")

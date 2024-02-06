@@ -16,7 +16,7 @@ current version}
 interactions, defaults to 0 (all interactions)}
 }
 \value{
-a \link{STRINGdb} object \code{species}
+a \link{STRINGdb} object of \code{species}
 }
 \description{
 Get the respective \link{STRINGdb} object of your species of interest

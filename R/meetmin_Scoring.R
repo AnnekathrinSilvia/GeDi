@@ -15,7 +15,7 @@
 #' @return A [Matrix::Matrix()] with Meet-Min distance rounded to 2 decimal
 #'         places.
 #' @export
-#' @import parallel
+#' @importFrom parallel mclapply
 #'
 #' @examples
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
@@ -46,7 +46,7 @@ getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
       progress$inc(1 / l, detail = paste("Scoring geneset number", j))
     }
     # Parallelly calculate Meet-Min distances for pairs
-    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
+    results[[j]] <- mclapply((j + 1):l, function(i) {
       b <- genesets[[i]]
       if (length(a) == 0 || length(b) == 0) {
         return(1)

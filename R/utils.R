@@ -267,15 +267,6 @@ getGenes <- function(genesets, gene_name = NULL) {
 
 # Shiny resource paths ----------------------------------------------------
 
-#' Title
-#'
-#' @param libname
-#' @param pkgname
-#'
-#' @return
-#' @export
-#'
-#' @examples
 .onLoad <- function(libname, pkgname) {
   # Create link to logo
   shiny::addResourcePath("GeDi", system.file("www", package = "GeDi"))

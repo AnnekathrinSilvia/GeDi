@@ -24,9 +24,21 @@ Download the Protein-Protein Interaction (PPI) information of a \link{STRINGdb}
 object
 }
 \examples{
+## Mock example showing how the data should look like
+
 genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
 string_db <- getStringDB(9606)
 string_db
 anno_df <- getAnnotation(string_db)
+ppi <- getPPI(genes, string_db, anno_df)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+string_db <- getStringDB(9606)
+string_db
+anno_df <- getAnnotation(string_db)
+genes <- GeDi::getGenesmacrophage_topGO_example_small
 ppi <- getPPI(genes, string_db, anno_df)
 }

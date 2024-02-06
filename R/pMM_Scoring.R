@@ -160,8 +160,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'
 #'
 #' @export
-#' @import parallel
-#' @import Matrix
+#' @importFrom parallel mclapply
 #'
 #' @examples
 #' genesets <- list(c("PDHB", "VARS2"), c("IARS2", "PDHA1"))
@@ -205,7 +204,7 @@ getpMMMatrix <- function(genesets, ppi, alpha = 1, progress = NULL, n_cores = NU
     }
 
     # Parallelly calculate pMM distances for pairs using pMMlocal function
-    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
+    results[[j]] <- mclapply((j + 1):l, function(i) {
       b <- genesets[[i]]
       pMMlocal(a, b, ppi, maxInteract)
     }, mc.cores = n_cores)
