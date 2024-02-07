@@ -53,18 +53,25 @@ getId <- function(species, version = "11.5") {
 getStringDB <- function(species,
                         version = "11.5",
                         score_threshold = 0.00,
-                        cache_location = NULL) {
+                        cache_location = FALSE) {
 
-  if(is.null(cache_location)){
+  if(cache_location){
     cache_location <- tools::R_user_dir("GeDi", which = "cache")
+    return(STRINGdb$new(
+      version = version,
+      species = species,
+      score_threshold = score_threshold,
+      input_directory = cache_location
+    ))
+  }else{
+    return(STRINGdb$new(
+      version = version,
+      species = species,
+      score_threshold = score_threshold
+    ))
     }
 
-  return(STRINGdb$new(
-        version = version,
-        species = species,
-        score_threshold = score_threshold,
-        input_directory = cache_location
-      ))
+
 }
 
 #' Get the annotation of a [STRINGdb] object
