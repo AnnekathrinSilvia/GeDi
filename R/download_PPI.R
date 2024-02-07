@@ -39,26 +39,32 @@ getId <- function(species, version = "11.5") {
 #'                current version
 #' @param score_threshold numeric, A score threshold to cut the retrieved
 #'                        interactions, defaults to 0 (all interactions)
+#' @param cache_location character, the location to save the downloaded
+#'                       [STRINGdb] object.
 #'
 #' @return a [STRINGdb] object of `species`
 #' @export
 #'
 #' @import STRINGdb
+#' @importFrom tools R_user_dir
 #' @examples
 #' species <- getId(species = "Homo sapiens")
 #' string_db <- getStringDB(as.numeric(species))
 getStringDB <- function(species,
                         version = "11.5",
-                        score_threshold = 0.00) {
-  # Create and return a new STRINGdb object with specified parameters
-  return(
-    STRINGdb$new(
-      version = version,
-      species = species,
-      score_threshold = score_threshold,
-      input_directory = ""
-    )
-  )
+                        score_threshold = 0.00,
+                        cache_location = NULL) {
+
+  if(is.null(cache_location)){
+    cache_location <- tools::R_user_dir("GeDi", which = "cache")
+    }
+
+  return(STRINGdb$new(
+        version = version,
+        species = species,
+        score_threshold = score_threshold,
+        input_directory = cache_location
+      ))
 }
 
 #' Get the annotation of a [STRINGdb] object

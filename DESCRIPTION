@@ -41,7 +41,8 @@ Imports:
     InteractiveComplexHeatmap,
     BiocNeighbors,
     tm,
-    wordcloud2
+    wordcloud2,
+    tools
 Suggests: 
     knitr,
     rmarkdown,

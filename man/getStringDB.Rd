@@ -4,7 +4,12 @@
 \alias{getStringDB}
 \title{Get the STRING db entry of a species}
 \usage{
-getStringDB(species, version = "11.5", score_threshold = 0)
+getStringDB(
+  species,
+  version = "11.5",
+  score_threshold = 0,
+  cache_location = NULL
+)
 }
 \arguments{
 \item{species}{numeric, the NCBI ID of the species of interest}
@@ -14,6 +19,9 @@ current version}
 
 \item{score_threshold}{numeric, A score threshold to cut the retrieved
 interactions, defaults to 0 (all interactions)}
+
+\item{cache_location}{character, the location to save the downloaded
+\link{STRINGdb} object.}
 }
 \value{
 a \link{STRINGdb} object of \code{species}
