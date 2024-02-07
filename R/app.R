@@ -399,7 +399,7 @@ GeDi <- function(genesets = NULL,
     if (!(is.null(distance_scores))) {
       reactive_values$scores <- distance_scores
     } else {
-      reactive_values$scores <- NULL
+      reactive_values$scores <- list()
     }
 
     # TODO: is this reactive value really needed? Maybe for the report?
@@ -979,12 +979,14 @@ GeDi <- function(genesets = NULL,
     })
 
     output$ui_distance_scores_visuals <- renderUI({
-      validate(need(!(is.null(
-        reactive_values$scores
-      )),
+      validate(need(length(reactive_values$scores) != 0,
       message = "Please compute the distances between the genesets first in the above box"))
       fluidRow(column(
         width = 12,
+        selectInput("plots_distance_score",
+                    label = "Choose the Distance Score Results to plot",
+                    choices = c("", names(reactive_values$scores))),
+        br(),
         bs4Dash::tabsetPanel(
           id = "tabsetpanel_scores",
           type = "tabs",
@@ -1073,19 +1075,19 @@ GeDi <- function(genesets = NULL,
     })
 
     scores_heatmap_react <- reactive({
-      validate(need(!(is.null(
-        reactive_values$scores
-      )),
+      validate(need(length(reactive_values$scores) != 0,
       message = "Please compute the distances between the genesets first in the above box"))
+      scores <- reactive_values$scores[[input$plots_distance_score]]
       res <-
-        ComplexHeatmap::draw(distanceHeatmap(reactive_values$scores,
+        ComplexHeatmap::draw(distanceHeatmap(scores,
                                               chars_limit = 20))
       return(res)
     })
 
 
     output$scores_dendro <- renderPlotly({
-      distanceDendro(reactive_values$scores,
+      scores <- reactive_values$scores[[input$plots_distance_score]]
+      distanceDendro(scores,
                       input$cluster_method_dendro)
     })
 
@@ -1099,7 +1101,8 @@ GeDi <- function(genesets = NULL,
           type = "warning"
         )
       }
-      adj <- getAdjacencyMatrix(reactive_values$scores,
+      scores <- reactive_values$scores[[input$plots_distance_score]]
+      adj <- getAdjacencyMatrix(scores,
                                 input$similarityScores)
       g <- buildGraph(adj,
                       reactive_values$genesets,
@@ -1165,7 +1168,9 @@ GeDi <- function(genesets = NULL,
     # panel Graph ------------------------------------------------------
 
     output$ui_panel_graph <- renderUI({
-      validate(need(!is.null(reactive_values$scores),
+      validate(need(!(is.null(
+        reactive_values$scores
+      ) && (length(reactive_values$scores) == 0)),
                     message = "Please score you genesets first in the Scores
                     panel."))
 
@@ -1283,17 +1288,20 @@ GeDi <- function(genesets = NULL,
 
     output$ui_cluster <- renderUI({
       fluidRow(
-        column(
-          width = 12,
-          strong("Now you can cluster your data"),
-          br(),
-          "Attention: If you have many Genesets to cluster,
+        column(width = 12,
+               selectInput("clustering_score_selected",
+                           label = "Select Distance Scoring Results to use",
+                           choices = c("", names(reactive_values$scores))),
+               br(),
+               p(),
+               strong("Now you can cluster your data"),
+               br(),
+               "Attention: If you have many Genesets to cluster,
            this operation may take some time",
-          br(),
-          actionButton("cluster_data",
-                       label = "Cluster the Genesets",
-                       style = .actionButtonStyle)
-        )
+               br(),
+               actionButton("cluster_data",
+                            label = "Cluster the Genesets",
+                            style = .actionButtonStyle))
       )
     })
 
@@ -1840,7 +1848,7 @@ GeDi <- function(genesets = NULL,
       )
       # reset all reactive_values in case data has already been loaded before
       reactive_values$ppi <- NULL
-      reactive_values$scores <- NULL
+      reactive_values$scores <- list()
       reactive_values$seeds <- NULL
       reactive_values$cluster <- NULL
       reactive_values$bookmarked_genesets <- NULL
@@ -2035,7 +2043,7 @@ GeDi <- function(genesets = NULL,
       reactive_values$ppi <- .checkPPI(ppi)
 
       # reset all reactive_values in case data has already been loaded before
-      reactive_values$scores <- NULL
+      reactive_values$scores <- list()
       reactive_values$seeds <- NULL
       reactive_values$cluster <- NULL
       reactive_values$bookmarked_genesets <- NULL
@@ -2130,7 +2138,10 @@ GeDi <- function(genesets = NULL,
         )
       } else {
         rownames(scores) <- colnames(scores) <- reactive_values$gs_names
-        reactive_values$scores <- scores
+        l <- length(reactive_values$scores) + 1
+
+        reactive_values$scores[[l]] <- scores
+        names(reactive_values$scores)[[l]] <- input$scoringmethod
         updateBox("distance_calc_box", action = "toggle")
       }
     })
@@ -2159,7 +2170,7 @@ GeDi <- function(genesets = NULL,
       output[["info"]] <- renderUI({
         if (!is.null(df)) {
           subset <-
-            as.matrix(reactive_values$scores)[row, column, drop = FALSE]
+            as.matrix(reactive_values$scores[input$scoringmethod])[row, column, drop = FALSE]
           df <- as.data.frame(subset)
           DT::datatable(df,
                         options = list(scrollX = TRUE, scrollY = "400px"))
@@ -2199,7 +2210,7 @@ GeDi <- function(genesets = NULL,
 
     # Clustering panel -----------------------------------------------------------
     observeEvent(input$cluster_data, {
-      if (is.null(reactive_values$scores)) {
+      if (is.null(reactive_values$scores) || length(reactive_values$scores) == 0) {
         showNotification(
           "It seems like you did not compute the distances between the genesets yet. Please go back to
           the Distance Scores panel and select a score of your choice.",
@@ -2209,16 +2220,17 @@ GeDi <- function(genesets = NULL,
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
+      scores <- reactive_values$scores[[input$clustering_score_selected]]
 
       if (input$select_clustering == "Louvain") {
         progress$set(message = "Start the Louvain Clustering", value = 0)
-        cluster <- clustering(reactive_values$scores,
+        cluster <- clustering(scores,
                               input$louvain_threshold,
                               cluster_method = "louvain")
         progress$inc(0.8, detail = "Finished Louvain clustering")
       } else if (input$select_clustering == "Markov") {
         progress$set(message = "Start the Markov Clustering", value = 0)
-        cluster <- clustering(reactive_values$scores,
+        cluster <- clustering(scores,
                               input$markov_threshold,
                               cluster_method = "markov")
         progress$inc(0.8, detail = "Finished Markov clustering")
@@ -2226,7 +2238,7 @@ GeDi <- function(genesets = NULL,
         progress$set(message = "Start the fuzzy clustering", value = 0)
         progress$inc(0.1, detail = "Finding intial seeds")
 
-        seeds <- seedFinding(reactive_values$scores,
+        seeds <- seedFinding(scores,
                              input$simThreshold,
                              input$memThreshold)
 
@@ -2247,7 +2259,7 @@ GeDi <- function(genesets = NULL,
         }
       } else if (input$select_clustering == "k Nearest Neighbour") {
         progress$set(message = "Start the kNN Clustering", value = 0)
-        cluster <- kNN_clustering(reactive_values$scores,
+        cluster <- kNN_clustering(scores,
                                   input$knn_k)
         progress$inc(0.8, detail = "Finished clustering the data.")
       }

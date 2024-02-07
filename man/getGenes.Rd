@@ -26,6 +26,7 @@ Split a long string of space separated genes into a \code{list} of individual
 genes.
 }
 \examples{
+## Mock example showing how the data should look like
 df <- data.frame(
   Geneset = c(
     "Cell Cycle",
@@ -39,4 +40,10 @@ df <- data.frame(
   )
 )
 genes <- getGenes(df)
+
+## Example using the data available in the package
+data(macrophage_topGO_example_small,
+     package = "GeDi",
+     envir = environment())
+genes <- getGenes(macrophage_topGO_example_small)
 }
