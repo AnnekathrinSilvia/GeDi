@@ -397,7 +397,7 @@ GeDi <- function(genesets = NULL,
     reactive_values$species <- NULL
 
     if (!(is.null(distance_scores))) {
-      reactive_values$scores <- distance_scores
+      reactive_values$scores[["My_Score"]] <- distance_scores
     } else {
       reactive_values$scores <- list()
     }
