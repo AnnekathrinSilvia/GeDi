@@ -8,7 +8,7 @@ getStringDB(
   species,
   version = "11.5",
   score_threshold = 0,
-  cache_location = NULL
+  cache_location = FALSE
 )
 }
 \arguments{

@@ -2032,7 +2032,7 @@ GeDi <- function(genesets = NULL,
         )
       )
       progress$inc(1 / 12, detail = "Get species specific STRINGdb")
-      stringdb <- getStringDB(as.numeric(id))
+      stringdb <- getStringDB(as.numeric(id), cache_location = TRUE)
       stringdb
 
       progress$inc(4 / 12, detail = "Get Annotation information")
