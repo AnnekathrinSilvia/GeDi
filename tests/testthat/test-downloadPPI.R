@@ -18,7 +18,7 @@ test_that("StringDB of no species", {
 
 
 test_that("PPI retrieval works", {
-  stringdb <- getStringDB(9606)
+  stringdb <- getStringDB(9606, cache_location = "")
   stringdb
 
   anno_df <- getAnnotation(stringdb)
