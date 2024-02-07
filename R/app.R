@@ -940,7 +940,10 @@ GeDi <- function(genesets = NULL,
             column(width = 6,
                    uiOutput("ui_score_data"))
           ),
-          fluidRow(column(width = 12))
+          fluidRow(column(width = 12,
+                   br(),
+                   p(),
+                   uiOutput("ui_alpha_parameter")))
         ),
         box(
           id = "distance_scores_box",
@@ -976,6 +979,25 @@ GeDi <- function(genesets = NULL,
                        style = .actionButtonStyle)
         )
       )
+    })
+
+    output$ui_alpha_parameter <- renderUI({
+      if(input$scoringmethod == "" || is.null(input$scoringmethod) || input$scoringmethod != "PMM"){
+        return(NULL)
+      }
+      fluidRow(column(
+        width = 6,
+        "Please select how strongly Protein-Protein-Interactions
+        should be weighted in the PMM score by setting the scaling factor",
+        br(),
+        p(),
+        sliderInput("alpha",
+                    label = "Scaling Factor Alpha",
+                    min = 0,
+                    max = 1,
+                    value = 0.5,
+                    step = 0.01)
+      ))
     })
 
     output$ui_distance_scores_visuals <- renderUI({
@@ -2102,6 +2124,7 @@ GeDi <- function(genesets = NULL,
         } else {
           scores <- getpMMMatrix(reactive_values$genes,
                                  reactive_values$ppi,
+                                 alpha = input$alpha,
                                  progress = progress)
         }
       } else if (input$scoringmethod == "Jaccard") {
