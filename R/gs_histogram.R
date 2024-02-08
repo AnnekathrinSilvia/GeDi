@@ -38,8 +38,8 @@
 #' p <- gsHistogram(genes, macrophage_topGO_example_small$Genesets)
 gsHistogram <- function(genesets,
                          gs_names,
-                         start = NULL,
-                         end = NULL,
+                         start = 0,
+                         end = 0,
                          binwidth = 5,
                          color = "#0092AC") {
   # Check if there are gene sets provided
@@ -111,9 +111,14 @@ buildHistogramData <- function(genesets,
   n_genes$Geneset <- gs_names
 
   # Filter genesets based on the specified start and end sizes (if provided)
-  if (!is.null(start) && !is.null(end)) {
-    n_genes <- n_genes[(n_genes$Size >= start & n_genes$Size <= end), ]
+  if(start > 0){
+    n_genes <- n_genes[(n_genes$Size >= start), ]
   }
+
+  if(end > 0){
+    n_genes <- n_genes[(n_genes$Size <= end), ]
+  }
+
 
   # Reorder columns to have geneset names first
   n_genes <- n_genes[, c(2, 1)]

@@ -366,20 +366,7 @@ GeDi <- function(genesets = NULL,
       reactive_values$genesets <- genesets
       reactive_values$gs_names <- genesets$Genesets
       reactive_values$genes <- getGenes(genesets)
-      columns <- names(genesets)
-      if ("Term" %in% columns) {
-        reactive_values$gs_description <- genesets$Term
-      } else if ("Description" %in% columns) {
-        reactive_values$gs_description <- genesets$Description
-      } else {
-        reactive_values$gs_description <- genesets$Genesets
-      }
-      if(any(duplicated(reactive_values$gs_description))){
-        duplicates_ids <- which(duplicated(reactive_values$gs_description))
-        duplicates <- reactive_values$gs_description[duplicates_ids]
-        duplicates <- paste(duplicates, "1", sep = "_")
-        reactive_values$gs_description[duplicates_ids] <- duplicates
-      }
+      reactive_values$gs_description <- .getGenesetDescriptions(genesets)
     } else {
       reactive_values$genesets <- NULL
       reactive_values$gs_names <- NULL
@@ -393,6 +380,7 @@ GeDi <- function(genesets = NULL,
       reactive_values$ppi <- NULL
     }
 
+    reactive_values$filtered_genesets <- NULL
     reactive_values$alt_names <- FALSE
     reactive_values$species <- NULL
 
@@ -1836,21 +1824,8 @@ GeDi <- function(genesets = NULL,
           stopifnot(any(columns) == "Genesets")
           reactive_values$gs_names <-
             reactive_values$genesets$Genesets
-          if ("Term" %in% columns) {
-            reactive_values$gs_description <- reactive_values$genesets$Term
-          } else if ("Description" %in% columns) {
-            reactive_values$gs_description <-
-              reactive_values$genesets$Description
-          } else {
-            reactive_values$gs_description <- reactive_values$gs_names
-          }
-          if(any(duplicated(reactive_values$gs_description))){
-            duplicates_ids <- which(duplicated(reactive_values$gs_description))
-            duplicates <- reactive_values$gs_description[duplicates_ids]
-            duplicates <- paste(duplicates, "1", sep = "_")
-            reactive_values$gs_description[duplicates_ids] <- duplicates
-          }
-
+          reactive_values$gs_description <-
+            .getGenesetDescriptions(reactive_values$genesets)
           reactive_values$genes <-
             getGenes(reactive_values$genesets)
           reactive_values$genesets$Genes <-
@@ -1884,22 +1859,7 @@ GeDi <- function(genesets = NULL,
       reactive_values$genes <- getGenes(reactive_values$genesets,
                                         input$alt_name_genes)
 
-      columns <- names(reactive_values$genesets)
-      if ("Term" %in% columns) {
-        reactive_values$gs_description <- reactive_values$genesets$Term
-      } else if ("Description" %in% columns) {
-        reactive_values$gs_description <-
-          reactive_values$genesets$Description
-      } else {
-        reactive_values$gs_description <- reactive_values$gs_names
-      }
-
-      if(any(duplicated(reactive_values$gs_description))){
-        duplicates_ids <- which(duplicated(reactive_values$gs_description))
-        duplicates <- reactive_values$gs_description[duplicates_ids]
-        duplicates <- paste(duplicates, "1", sep = "_")
-        reactive_values$gs_description[duplicates_ids] <- duplicates
-      }
+      reactive_values$gs_description <- .getGenesetDescriptions(reactive_values$genesets)
 
       names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genesets] <-
         "Genesets"
@@ -1968,17 +1928,23 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$filter_genesets, {
-      # first check with filtering method to use
-      if (length(input$select_filter_genesets) == 0) {
-        if (length(input$select_filter_genesets_threshold) == 0) {
-          showNotification("No Genesets selected for filtering.",
-                           type = "message")
-        } else {
+      if(is.null(input$select_filter_genesets) && input$select_filter_genesets_threshold == ""){
+        showNotification("No Genesets selected for filtering.",
+                         type = "message")
+      }else{
+        remove_specific <- list()
+        remove_threshold <- list()
+
+        if(!is.null(input$select_filter_genesets)){
+          remove_specific <- input$select_filter_genesets
+        }
+
+        if(input$select_filter_genesets_threshold != ""){
           threshold <- as.numeric(input$select_filter_genesets_threshold)
           data <- buildHistogramData(reactive_values$genes,
-                                      reactive_values$gs_names)
-          remove <- data[data$Size >= threshold,]$Geneset
-          if (length(remove) == 0) {
+                                     reactive_values$gs_names)
+          remove_threshold <- data[data$Size >= threshold,]$Geneset
+          if (length(remove_threshold) == 0) {
             showNotification(
               paste(
                 "No Genesets with size larger than ",
@@ -1990,18 +1956,22 @@ GeDi <- function(genesets = NULL,
             )
           }
         }
-      } else {
-        remove <- input$select_filter_genesets
-      }
-      filtered_data <- .filterGenesets(remove,
-                                       reactive_values$genesets)
 
-      reactive_values$genesets <- filtered_data$Geneset
-      reactive_values$gs_names <- filtered_data$gs_names
-      reactive_values$genes <- filtered_data$Genes
+        remove <- c(remove_specific, remove_threshold)
 
-      showNotification("Successfully filtered the selected Genesets.",
-                       type = "message")
+        filtered_data <- .filterGenesets(remove,
+                                         reactive_values$genesets)
+
+        reactive_values$filtered_genesets <- rbind(reactive_values$filtered_genesets,
+                                                   reactive_values$genesets[reactive_values$genesets$Genesets %in% unlist(remove), ])
+        reactive_values$genesets <- filtered_data$Geneset
+        reactive_values$gs_names <- filtered_data$gs_names
+        reactive_values$genes <- filtered_data$Genes
+        reactive_values$gs_description <- .getGenesetDescriptions(reactive_values$genesets)
+
+        showNotification("Successfully filtered the selected Genesets.",
+                         type = "message")
+        }
     })
 
     observeEvent(input$download_ppi, {

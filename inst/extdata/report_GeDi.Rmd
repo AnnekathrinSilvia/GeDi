@@ -37,6 +37,16 @@ library("GeDi")
 DT::datatable(reactive_values$genesets, caption = "The input genesets")
 ```
 
+From your initial input data, you have filtered the following genesets
+
+```{r filteredtData}
+if(length(reactive_values$filtered_genesets) > 0){
+  DT::datatable(reactive_values$filtered_genesets, caption = "The filtered genesets")
+}else{
+  cat("It seems like you didn't filter genesets from the input data.")
+}
+```
+
 Potentially you specified the species of your data and downloaded a Protein-Protein-Interaction (PPI) matrix. 
 
 ```{r inputPPI}
@@ -89,17 +99,17 @@ This section shows the visualizations of the Scoring panel.
 
 ```{r Scoringpanel}
 
-if(is.null(reactive_values$scores)){
+if(length(reactive_values$scores) == 0){
   cat("It seems like you do not have distance scores calculated for your data.")
 }
 
-scoring_heatmap <- distanceHeatmap(reactive_values$scores)
+scoring_heatmap <- distanceHeatmap(reactive_values$scores[[1]])
 scoring_heatmap
 ```
 
 ```{r dendro}
-if(!is.null(reactive_values$scores)){
-dendro <- distanceDendro(reactive_values$scores, input$cluster_method_dendro)
+if(!is.null(reactive_values$scores[[1]])){
+dendro <- distanceDendro(reactive_values$scores[[1]], input$cluster_method_dendro)
 dendro
 }
 ```

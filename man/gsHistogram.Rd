@@ -7,8 +7,8 @@
 gsHistogram(
   genesets,
   gs_names,
-  start = NULL,
-  end = NULL,
+  start = 0,
+  end = 0,
   binwidth = 5,
   color = "#0092AC"
 )

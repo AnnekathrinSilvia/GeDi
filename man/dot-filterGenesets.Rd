@@ -9,7 +9,11 @@
 \arguments{
 \item{remove}{a \code{list}, A list of geneset names to be removed}
 
-\item{df_genesets}{\code{data.frame}, A Data frame of genesets.}
+\item{df_genesets}{a \code{data.frame}, A \code{data.frame} with at least two columns.
+One should be called \code{Geneset}, containing the
+names/identifiers of the genesets in the data. The second
+column should be called \code{Genes} and contains one string of
+the genes contained in each geneset.}
 }
 \value{
 A \code{data.frame} containing information about filtered genesets

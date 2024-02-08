@@ -124,7 +124,11 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' Filter a preselected list of genesets from a `data.frame` of genesets
 #'
 #' @param remove a `list`, A list of geneset names to be removed
-#' @param df_genesets `data.frame`, A Data frame of genesets.
+#' @param df_genesets a `data.frame`, A `data.frame` with at least two columns.
+#'                 One should be called `Geneset`, containing the
+#'                 names/identifiers of the genesets in the data. The second
+#'                 column should be called `Genes` and contains one string of
+#'                 the genes contained in each geneset.
 #'
 #' @return A `data.frame` containing information about filtered genesets
 .filterGenesets <- function(remove,
@@ -132,7 +136,7 @@ getGenes <- function(genesets, gene_name = NULL) {
   # Get genesets to remove
   if (length(remove) > 0) {
     # Split the remove vector
-    genesets_to_remove <- unlist(strsplit(remove, "\\s+"))
+    genesets_to_remove <- unlist(remove)
     df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
   }
 
@@ -153,6 +157,36 @@ getGenes <- function(genesets, gene_name = NULL) {
 
   # Return the filtered geneset information
   return(results)
+}
+
+#' Title
+#'
+#' @param genesets a `data.frame`, A `data.frame` with at least two columns.
+#'                 One should be called `Geneset`, containing the
+#'                 names/identifiers of the genesets in the data. The second
+#'                 column should be called `Genes` and contains one string of
+#'                 the genes contained in each geneset.
+#'
+#' @return a `list` of geneset descriptions
+.getGenesetDescriptions <- function(genesets){
+  columns <- names(genesets)
+  terms <- list()
+  if ("Term" %in% columns) {
+    terms <- genesets$Term
+  } else if ("Description" %in% columns) {
+    terms <- genesets$Description
+  } else {
+    terms <- genesets$Genesets
+  }
+
+  if(any(duplicated(terms))){
+    duplicates_ids <- which(duplicated(terms))
+    duplicates <- terms[duplicates_ids]
+    duplicates <- paste(duplicates, "1", sep = "_")
+    terms[duplicates_ids] <- duplicates
+  }
+
+  return(terms)
 }
 
 #' Check PPI format
