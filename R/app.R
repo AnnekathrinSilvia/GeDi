@@ -879,7 +879,7 @@ GeDi <- function(genesets = NULL,
       fluidRow(column(
         width = 12,
         "In order to avoid lengthy downloads of the PPI matrix in the future,
-        you can also now download the PPI matrix and save it to you machine.",
+        you can also now download the PPI matrix and save it to your machine.",
         br(),
         p(),
         downloadButton(
@@ -1053,14 +1053,7 @@ GeDi <- function(genesets = NULL,
                            placeholder = "",
                            maxItems = "1"
                          )
-                       ),
-                       downloadButton(
-                         "save_distance_score_graph",
-                         label = "Save graph in Cytoscape format",
-                         icon = icon("download"),
-                         style = .actionButtonStyle
-                       ),
-
+                       )
                      ),
                      column(width = 10,
                             withSpinner(
@@ -2083,7 +2076,6 @@ GeDi <- function(genesets = NULL,
       } else if (input$scoringmethod == "Kappa") {
         scores <- getKappaMatrix(reactive_values$genes, progress)
       } else if (input$scoringmethod == "PMM") {
-        # TODO: Handle alpha as possible input
         if (is.null(reactive_values$ppi)) {
           showNotification(
             "It seems like you have not downloaded a PPI matrix.

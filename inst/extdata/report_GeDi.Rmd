@@ -34,7 +34,11 @@ library("GeDi")
 
 
 ```{r inputData}
-DT::datatable(reactive_values$genesets, caption = "The input genesets")
+if(is.null(reactive_values$genesets)){
+  cat("It seems like you did not provide data in this session.")
+}else{
+  DT::datatable(reactive_values$genesets, caption = "The input genesets")
+}
 ```
 
 From your initial input data, you have filtered the following genesets
@@ -50,10 +54,11 @@ if(length(reactive_values$filtered_genesets) > 0){
 Potentially you specified the species of your data and downloaded a Protein-Protein-Interaction (PPI) matrix. 
 
 ```{r inputPPI}
-if(input$species != ""){
-  cat("You specified the species of your data as ", input$species, sep = "")
-}else{
+if(is.null(input$species) || input$species == ""){
   cat("It seems like you didn't specify the species of your data.")
+  
+}else{
+ cat("You specified the species of your data as ", input$species, sep = "")
 }
 
 if(!is.null(reactive_values$ppi)){
@@ -71,19 +76,26 @@ For some of the calculations and visualizations of the app, the selected paramet
 ```{r parameters}
 cat("Your parameters of the Scoring panel")
 
-if(!(is.null(input$scoringmethod) || input$scoringmethod == "")){
-  cat(paste("You have selected ", input$scoringmethod, " as the method to calculate the distance scores of your datasets. \nFor the clustering method in the dendrogram, you have selected ", input$cluster_method_dendro, ". \nAnd for threshold for the Scoring Network was set to ", input$similarityScores, ".",   sep = ""))
+scores <- names(reactive_values$scores)
+
+if(length(scores) > 0){
+  scoring <- paste(scores, collapse = "\n") 
+  cat(paste("You have calculated distance scores of your data using the follow metrics: \n",
+            scoring, sep = ""))
+  cat(paste("\nFor the clustering method in the dendrogram, you have selected ", input$cluster_method_dendro, ".", sep = ""))
+  cat(paste("\nAnd for threshold for the Scoring Network was set to ", input$similarityScores, ".",   sep = ""))
 }else{
   cat("It seems like you did not specify a Scoring method and did not score your data.")
 }
 
 
-
 cat("Your parameters of the Clustering panel")
 
-string <- paste("You have selected ", input$select_clustering, " as clustering method. \n", sep = "")
 
-if(input$select_clustering == "Louvain"){
+string <- paste("You have selected ", input$select_clustering, " as clustering method. \n", sep = "")
+if(is.null(input$select_clustering)){
+  string <- ("It seems like you did not cluster your data in this session")
+}else if(input$select_clustering == "Louvain"){
   string <- paste(string, "The threshold you selected for the Louvain clustering was set to ", input$louvain_threshold , ".", sep = "")
 }else if (input$select_clustering == "Markov"){
   string <- paste(string, "The threshold you selected for the Markov clustering was set to ", input$markov_threshold , ".",  sep = "")
@@ -98,25 +110,34 @@ cat(string)
 This section shows the visualizations of the Scoring panel.
 
 ```{r Scoringpanel}
-
 if(length(reactive_values$scores) == 0){
   cat("It seems like you do not have distance scores calculated for your data.")
+}else{
+  if(input$plots_distance_score == ""){
+    scores <- reactive_values$scores[[1]] 
+    cat(paste("Your plots will be generated on the distance scores calculated with ", names(reactive_values$scores)[[1]], sep = ""))
+  }else{
+    scores <- reactive_values$scores[[input$plots_distance_score]] 
+    cat(paste("Your plots will be generated on the distance scores calculated with ", input$plots_distance_score, sep = ""))
+  }
+  scoring_heatmap <- distanceHeatmap(scores)
+  scoring_heatmap
 }
-
-scoring_heatmap <- distanceHeatmap(reactive_values$scores[[1]])
-scoring_heatmap
 ```
 
 ```{r dendro}
-if(!is.null(reactive_values$scores[[1]])){
-dendro <- distanceDendro(reactive_values$scores[[1]], input$cluster_method_dendro)
-dendro
+if(!length(reactive_values$scores) == 0) {
+  dendro <-
+    distanceDendro(scores, input$cluster_method_dendro)
+  dendro
+} else{
+  cat("It seems like you do not have distance scores calculated for your data.")
 }
 ```
 
 ```{r scoringNetwork}
 library("visNetwork")
-if(!is.null(reactive_values$scores)){
+if(!length(reactive_values$scores) == 0){
   graph <- reactive_values$scores_graph()
 
 visNetwork::visIgraph(graph) %>%
@@ -143,6 +164,8 @@ visNetwork::visIgraph(graph) %>%
             type = "png",
             label = "Save Distance Scores graph"
           )
+}else{
+    cat("It seems like you do not have distance scores calculated for your data.")
 }
 ```
 
@@ -168,6 +191,8 @@ visNetwork::visIgraph(graph) %>%
             type = "png",
             label = "Save Cluster graph"
           )
+} else{
+  cat("It seems like you did not cluster your data in this session")
 }
 ```
 
@@ -190,6 +215,8 @@ visNetwork::visIgraph(graph) %>%
           type = "png",
           label = "Save Cluster-Geneset bipartite graph"
         )
+}else{
+  cat("It seems like you did not cluster your data in this session")
 }
 ```
 
@@ -200,12 +227,14 @@ if(!is.null(reactive_values$cluster)){
         genesets <- reactive_values$cluster[[cluster]]
         genesets_df <- reactive_values$genesets[genesets, ]
         enrichmentWordcloud(genesets_df)
+}else{
+  cat("It seems like you did not cluster your data in this session")
 }
 ```
 
 # About this report
 
-If you use this report in your scientific work, please cite GeneTonic:
+If you use this report in your scientific work, please cite GeDi:
 
 ```{r}
 utils::citation("GeDi")
