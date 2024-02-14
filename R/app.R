@@ -68,7 +68,7 @@ GeDi <- function(genesets = NULL,
         style = .actionButtonStyle,
         class = "ml-5"
       ),
-      tags$span(style = "display:inline-block; width: 60%"),
+      tags$span(style = "display:inline-block; width: 2%"),
       tagList(
         shinyWidgets::dropdownButton(
           inputId = "ddbtn_docs",
