@@ -700,7 +700,13 @@ GeDi <- function(genesets = NULL,
             column(
               width = 6,
               textInput(inputId = "select_filter_genesets_threshold",
-                        label = "Filter genesets with size =>")
+                        label = "Filter genesets with size =>"),
+              downloadButton(
+                outputId = "download_filtered_data",
+                label = "Download the filtered data",
+                icon = icon("download"),
+                style = .actionButtonStyle
+              )
             )
           )
         )
@@ -992,11 +998,25 @@ GeDi <- function(genesets = NULL,
       validate(need(length(reactive_values$scores) != 0,
       message = "Please compute the distances between the genesets first in the above box"))
       fluidRow(column(
-        width = 12,
+        width = 6,
         selectInput("plots_distance_score",
                     label = "Choose the Distance Score Results to plot",
                     choices = c("", names(reactive_values$scores))),
+      ),
+      column(
+        width = 6,
         br(),
+        downloadButton(
+          outputId = "download_scores",
+          label = "Download the distance scores",
+          icon = icon("download"),
+          style = .actionButtonStyle
+        )
+
+      ),
+      fluidRow(
+        column(
+        width = 12,
         bs4Dash::tabsetPanel(
           id = "tabsetpanel_scores",
           type = "tabs",
@@ -1074,7 +1094,7 @@ GeDi <- function(genesets = NULL,
                      )
                    ))
         )
-      ))
+      )))
     })
 
     scores_heatmap_react <- reactive({
@@ -1967,6 +1987,14 @@ GeDi <- function(genesets = NULL,
         }
     })
 
+    output$download_filtered_data <- downloadHandler(
+      filename = "Filtered_data_GeDi.RDS",
+      content = function(file) {
+        saveRDS(reactive_values$genesets, file)
+      }
+    )
+
+
     observeEvent(input$download_ppi, {
       validate(need(!(input$species == ""),
                     message = "Please specify the species of your data"))
@@ -2130,6 +2158,15 @@ GeDi <- function(genesets = NULL,
         updateBox("distance_calc_box", action = "toggle")
       }
     })
+
+    output$download_scores <- downloadHandler(
+      filename = function() {
+        paste(input$scoringmethod, "_GeDi.RDS", sep = "")
+      },
+      content = function(file) {
+        saveRDS(reactive_values$scores[[input$scoringmethod]], file)
+      }
+    )
 
     observeEvent(input$create_heatmap, {
       InteractiveComplexHeatmap::InteractiveComplexHeatmapWidget(
