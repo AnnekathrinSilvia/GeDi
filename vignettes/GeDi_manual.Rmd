@@ -58,15 +58,15 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 
 # Introduction {#introduction}
 
-This vignette describes how to use the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` package for exploring the results of a functional annotation and enrichment analysis. 
+This vignette introduces the usage of the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` package for exploring the results of functional annotation and enrichment analyses.
 
-This package offers a `r BiocStyle::CRANpkg("shiny")` application designed to simplify the exploration and comprehension of functional annotation and enrichment analysis outcomes. The application endeavors to consolidate comprehensive results through a blend of interactivity, visualization, and reproducibility. 
+`r #BiocStyle::Biocpkg("GeDi")` `GeDi` is a versatile package designed to simplify the exploration and comprehension of functional annotation and enrichment analysis results. It offers a `r BiocStyle::CRANpkg("shiny")` application that combines interactivity, visualization, and reproducibility to consolidate comprehensive outcomes.
 
-In order to use `r #BiocStyle::Biocpkg("GeDi")` `GeDi` in your workflow, the results of a functional annotation or enrichment analysis are required. In the following sections of this vignette, we will demonstrate the key functionalities of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` using a publicly available dataset from Alasoo et al., presented in their paper titled "Shared genetic effects on chromatin and gene expression indicate a role for enhancer priming in immune response" [@Alasoo2018].
+To incorporate `r #BiocStyle::Biocpkg("GeDi")` `GeDi` into your workflow, you'll need the results of a functional annotation or enrichment analysis. This vignette demonstrates the core functionalities of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` using a publicly available dataset from Alasoo et al., as described in their paper "Shared genetic effects on chromatin and gene expression indicate a role for enhancer priming in immune response" [@Alasoo2018].
 
-The dataset is accessible through the `r BiocStyle::Biocpkg("macrophage")` Bioconductor package, which includes files generated from Salmon quantification (version 0.12.0, with Gencode v29 reference), as well as gene-level summarized values.
+Accessible through the `r BiocStyle::Biocpkg("macrophage")` Bioconductor package, this dataset comprises files generated from Salmon quantification (version 0.12.0, with Gencode v29 reference) and gene-level summarized values.
 
-In the `r BiocStyle::Biocpkg("macrophage")` experimental setup, samples are derived from six different donors under four distinct conditions: naive, treated with Interferon gamma, with SL1344, or with a combination of Interferon gamma and SL1344. For illustration, we will focus on comparing Interferon gamma-treated samples with naive samples.
+Within the `r BiocStyle::Biocpkg("macrophage")` experimental setup, samples derive from six different donors under four distinct conditions: naive, treated with Interferon gamma, with SL1344, or with a combination of Interferon gamma and SL1344. For illustration, we will focus on comparing Interferon gamma-treated samples with naive samples.
 
 # Getting started {#gettingstarted}
 
@@ -149,7 +149,7 @@ rownames(dds_macrophage) <- substr(rownames(dds_macrophage), 1, 15)
 dds_macrophage
 ```
 
-Now that we've obtained our `DESeqDataset`, we can conduct the differential expression (DE) analysis. In this vignette, we'll utilize the results from comparing two distinct conditions of the dataset, specifically `IFNg` and `naive`, while accounting for the cell line of origin, which comprises 6 levels denoted as `r knitr::combine_words(levels(dds_macrophage$line))`.
+Now that we've obtained our `DESeqDataset`, we can conduct the differential expression (DE) analysis. In this vignette, we'll utilize the results from comparing two distinct conditions of the dataset, specifically `IFNg` and `naive`, while accounting for the cell line of origin.
 
 Before executing the DE analysis, we'll filter out lowly expressed features from the dataset. In this instance, we'll exclude all genes with fewer than 10 counts in at least 6 samples, where 6 corresponds to the smallest group size in the dataset.
 
@@ -187,7 +187,7 @@ res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
 
 Rather than generating the object anew, you have the option to load the precomputed object from the package's available data. This facilitates quicker access to the required data without the need for recomputation.
 
-```{r load_resde, eval=FALSE}
+```{r load_resde, eval=T}
 # Load precomputed differential expression results from the "GeDi" package
 # The results are stored in the object "res_macrophage_IFNg_vs_naive"
 data("res_macrophage_IFNg_vs_naive", package = "GeDi")
@@ -200,7 +200,7 @@ After completing the differential expression analysis, we move on to conduct the
 
 For the enrichment analysis, we use the overrepresentation analysis method provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the integration of these results into `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, we utilize the `topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. By default, this function employs the `BP` ontology and the `elim` method, which helps decorrelate the Gene Ontology (GO) graph structure, resulting in less redundant functional categories. The output is a `DataFrame` object that seamlessly integrates with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
-As mentioned above, enrichment results generated using `r BiocStyle::Biocpkg("clusterProfiler")` can also be utilized. While we primarily tested results from the `enrichGO` method during `r #BiocStyle::Biocpkg("GeDi")` `GeDi` development, those from the `enrichKEGG` and `enrichPathway` methods are also compatible.
+However, as `r #BiocStyle::Biocpkg("GeDi")` `GeDi` has only minimkal requirements for the input, enrichment results generated using `r BiocStyle::Biocpkg("clusterProfiler")` can also be utilized. While we primarily tested results from the `enrichGO` method during `r #BiocStyle::Biocpkg("GeDi")` `GeDi` development, those from the `enrichKEGG` and `enrichPathway` methods are also compatible.
 
 
 ```{r create_resenrich1, eval=TRUE}

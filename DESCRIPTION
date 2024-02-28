@@ -57,7 +57,8 @@ Suggests:
     ReactomePA,
     clusterProfiler,
     BiocStyle,
-    org.Hs.eg.db
+    org.Hs.eg.db,
+    here
 License: MIT + file LICENSE
 Encoding: UTF-8
 VignetteBuilder: knitr
