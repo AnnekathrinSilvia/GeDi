@@ -35,7 +35,7 @@ bibliography: GeDi.bib
 
 **Compiled date**: `r Sys.Date()`
 
-**Last edited**: 2024-02-22
+**Last edited**: 2024-02-29
 
 **License**: `r #packageDescription("GeDi")[["License"]]`
 
@@ -269,7 +269,7 @@ knitr::include_graphics(here::here("", "/inst/www/Welcome_page.png"))
 
 # Description of the `GeDi` user interface {#userinterface}
 
-The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application, developed with the `r BiocStyle::CRANpkg("shiny")` framework, incorporates the modern design elements of the `r BiocStyle::CRANpkg("bs4Dash")` package, which is built upon Bootstrap 4. This combination of technologies ensures a sleek and visually appealing user interface for navigating and interacting with the functionality offered by `r #BiocStyle::Biocpkg("GeDi")` `GeDi` By leveraging the features of `r BiocStyle::CRANpkg("shiny")` and `r BiocStyle::CRANpkg("bs4Dash")`, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` provides users with an intuitive and aesthetically pleasing environment for conducting functional annotation and enrichment analyses on their datasets.
+The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application, developed with the `r BiocStyle::CRANpkg("shiny")` framework, incorporates the modern design elements of the `r BiocStyle::CRANpkg("bs4Dash")` package, which is built upon Bootstrap 4. This combination of technologies ensures a sleek and visually appealing user interface for navigating and interacting with the functionality offered by `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. By leveraging the features of `r BiocStyle::CRANpkg("shiny")` and `r BiocStyle::CRANpkg("bs4Dash")`, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` provides users with an intuitive and aesthetically pleasing environment for conducting functional annotation and enrichment analyses on their datasets.
 
 ## Header (navbar)
 
@@ -280,18 +280,18 @@ The dashboard navbar in `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, referred to as s
 - <i class="fa fa-info-circle"></i> - Selecting this option displays information about the current session, presenting details such as the R environment and loaded packages, helpful for troubleshooting and debugging purposes.
 - <i class="fa fa-heart"></i> - This button offers general information about `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, including links to its development version for contribution and guidelines on citing the tool in research publications.
 
-TODO: Bookamrk button
+Besides the two dropdown menus, users can also find the `Bookmark` button in the Navbar. The `Bookmark` button in the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` navbar serves as a convenient tool for users to save and bookmark genes and genesets of interest for later reference. To use this feature, users must first select or click on a gene or geneset that they wish to bookmark. Once the desired gene or geneset is selected, users can then click on the `Bookmark` button to add it to a list of bookmarked items within the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application. This functionality enables users to organize and revisit specific genes or genesets that they find relevant or intriguing during their exploration of functional annotation and enrichment analysis results. The bookmarked genes and genesets can later be found in the **Report** panel.
 
 ## Sidebar
 
-By clicking the <i class="fa fa-bars"></i> menu bar icon on the left side of the app (or simply by moving the mouse over to the left side if viewing the app in full screen mode), users can activate the sidebar menu. This sidebar menu serves as the primary means of accessing the various tabs of the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application, providing navigation to different functionalities. More detailed explanations of each tab will be provided in the next section (@ref(functionality)).
+By clicking the <i class="fa fa-bars"></i> menu bar icon on the left side of the app (or simply by moving the mouse over to the left side if viewing the app in full screen mode), users can activate the sidebar menu. This sidebar menu serves as the primary means of accessing the various panels of the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application, providing navigation to different functionalities. More detailed explanations of each panel will be provided in the next section.
 
 
 ## Body
 
-The structure of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` is designed around different tabs, each of which becomes active upon clicking the corresponding icons or text in the sidebar.
+The structure of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` is designed around different panels, each of which becomes active upon clicking the corresponding icons or text in the sidebar.
 
-While the Welcome tab is relatively self-explanatory, additional information and explanations are provided for the functionality of the remaining tabs. For new users seeking guidance, there's a question circle button (<i class="fa fa-question-circle"></i>) available to initiate an interactive tour of `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. This tour allows users to learn the basic usage mechanisms by actively engaging with the interface. During the tour, specific elements are highlighted in response to user actions, while the rest of the UI remains shaded to maintain focus. Users can interrupt the tour at any time by clicking outside the highlighted window, and navigation between steps is facilitated by arrow buttons (left, right). The tour functionality is implemented using the `r BiocStyle::CRANpkg("rintrojs")` package.
+While the Welcome panel is relatively self-explanatory, additional information and explanations are provided for the functionality of the remaining panels. For new users seeking guidance, there's a question circle button (<i class="fa fa-question-circle"></i>) available to initiate an interactive tour of `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. This tour allows users to learn the basic usage mechanisms by actively engaging with the interface. During the tour, specific elements are highlighted in response to user actions, while the rest of the UI remains shaded to maintain focus. Users can interrupt the tour at any time by clicking outside the highlighted window, and navigation between steps is facilitated by arrow buttons (left, right). The tour functionality is implemented using the `r BiocStyle::CRANpkg("rintrojs")` package.
 
 # The `GeDi` functionality {#functionality}
 
@@ -301,7 +301,10 @@ The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` `r BiocStyle::Biocpkg("shiny")` appli
 
 This panel serves as a guide for utilizing `r #BiocStyle::Biocpkg("GeDi")` `GeDi` effectively. It offers detailed instructions on generating input data for the application, elucidating the expected input format and outlining the various interactive elements present in the app's other panels.
 
-![The Welcome panel](../inst/www/Welcome_page.png)
+```{r welcome-page2, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Welcome_page.png"))
+```
+
 
 ## The Data Input panel
 
@@ -310,17 +313,20 @@ This panel serves as a hub for managing data input if it's not provided within t
 
 **Step 1**: Provide your Genesets as input data
 
-In the initial **Step 1** box, you can provide your data by utilizing the **Browse** button. This action opens a modal window enabling you to select the relevant file from your computer storage. After successfully loading the data, a preview is displayed in the **Data Preview** box on the right. During this step, the application checks if your input contains the "Genesets" and "Genes" columns. If these columns are missing, a small error message appears in the lower right corner. Additionally, two drop-down menus allow you to select the correct columns from your data and update the input accordingly.
+In the initial **Step 1** box, you can provide your data by utilizing the **Browse** button. This action opens a modal window enabling you to select the relevant file from your computer storage. After successfully loading the data, a preview is displayed in the **Genesets preview** box on the right. During this step, the application checks if your input contains the "Genesets" and "Genes" columns. If these columns are missing, a small error message appears in the lower right corner. Additionally, two drop-down menus allow you to select the correct columns from your data and update the input accordingly.
 
-You also have the option to start using `r #BiocStyle::Biocpkg("GeDi")` `GeDi` with preprocessed example data based on the `r BiocStyle::Biocpkg("macrophage")` dataset. Simply click the **Load demo data** button to load the example data's enrichment results. You can explore these results in the **Data Preview** box.
+You also have the option to start using `r #BiocStyle::Biocpkg("GeDi")` `GeDi` with preprocessed example data based on the `r BiocStyle::Biocpkg("macrophage")` dataset. Simply click the **Load demo data** button to load the example data's enrichment results. You can explore these results in the **Genesets preview** box.
 
-However, instead of loading demo data and observing the expected data structure through the **Data Preview** box, you can also use the **Have a look at the data structure** button. By clicking the **Have a look at the data structure** button, a modal window with a visual representation of the expected input data structure will open. This screenshot serves as a helpful guide, providing you with a clear understanding of how your data should be formatted for optimal compatibility with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+However, instead of loading demo data and observing the expected data structure through the **Genesets preview** box, you can also use the **Have a look at the data structure** button. By clicking this button, a modal window with a visual representation of the expected input data structure will open. This screenshot serves as a helpful guide, providing you with a clear understanding of how your data should be formatted for optimal compatibility with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
 Once, you have successfully loaded some data, the data input process will proceed and two additional boxes will be displayed in the panel. 
 
 TODO: Screenshots am Ende alle updaten
 
-![The Data Input panel - Step 1](../inst/www/Data_Input_panel_Step1.png)
+```{r data-input-step1, fig.align = "center", fig.cap = "The Data input panel - Step 1", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Data_Input_panel_Step1.png"))
+```
+
 
 **Optional Filtering Step**: Filter generic genesets
 
@@ -328,18 +334,27 @@ Introducing the first new box, the **Optional Filtering Step** offers a non-comp
 
 The box features a histogram illustrating geneset sizes, providing visual context for the filtering process. Within the interface, two input fields are available for customization. The left input field facilitates the selection of individual genesets by their identifiers in the "Genesets" column of your dataset. Meanwhile, the right input field empowers you to establish a threshold "x" for filtering genesets with a size greater than or equal to "x." This interactive approach ensures tailored filtering suited to your specific analysis requirements.
 
-![Optinal Filtering Step](../inst/www/Optional_Filtering.png)
+Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the "Remove the selected Genesets" button. This action will remove all selected genesets from the dataset. Additionally, you have the option to save the filtered data using the "Download the filtered data" button. Clicking this button will save the filtered data to your local machine. This feature can be particularly beneficial for users who intend to revisit their data in a new instance of GeDi and want to ensure that previously identified uninsightful genesets have already been filtered out.
+
+
+Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the `Remove the selected Genesets` button. This action will remove all selected genesets from the dataset.  Additionally, you have the option to save the filtered data using the `Download the filtered data` button. Clicking this button will save the filtered data to your local machine.This feature can be particularly beneficial for users who intend to revisit their data in a new instance of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` and want to ensure that previously identified uninsightful genesets have already been filtered out.
+
+```{r optional-filtering, fig.align = "center", fig.cap = "Optional Filtering Step", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Optional_Filtering.png"))
+```
+
 
 **Step 2**: Species Selection
 
-Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial task of selecting the species associated with your dataset. This step holds significant importance for the computation of the **PMM score** within `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, which heavily relies on a **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in capturing protein interaction strength, thereby enriching distance scores with valuable biological context. To access and utilize this essential information, specifying the species linked to your dataset is imperative. By clicking the input field, you'll prompt a dropdown menu showcasing preselected species options. If your species is included, simply make your selection. Alternatively, if your species is not listed, you have the option to manually input it. In cases of uncertainty, a convenient link provided on the right directs you to the STRING database, enabling verification of species details and PPI availability for informed decision-making.
+Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial task of selecting the species associated with your dataset. This step holds significant importance for the computation of the **PMM score** within `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, which heavily relies on a **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in capturing protein interaction strength, thereby enriching distance scores with valuable biological context. To access and utilize this essential information, specifying the species linked to your dataset is mandatory. By clicking the input field, you'll prompt a dropdown menu showcasing preselected species options. If your species is included, simply make your selection. Alternatively, if your species is not listed, you have the option to manually input it. In cases of uncertainty, a convenient link provided on the right directs you to the STRING database, enabling verification of species details and PPI availability for informed decision-making.
 
-![Species Selection](../inst/www/Species_Selection.png)
-
+```{r species-selection, fig.align = "center", fig.cap = "Species Selection", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Species_Selection.png"))
+```
 
 **Step 3**: PPI Matrix Download
 
-Following species selection, a third box named **Step 3** will emerge. In this phase, you have the opportunity to download the Protein-Protein Interaction (PPI) matrix. This process may necessitate some time, with a progress bar positioned in the lower right corner providing real-time updates on the download status. Once the download is complete, you can conveniently preview the PPI matrix within the **PPI Preview** box situated on the right-hand side of the interface. This will show that the PPI consists of three columns: **Gene1** and **Gene2**, housing the gene symbols corresponding to the interacting proteins, and a column labeled **combined_scor**e, denoting the confidence level of each interaction. The assigned score is derived from the number of known interactions between two proteins, normalized to the (0, 1) interval utilizing the formula:
+Following species selection, a third box named **Step 3** will emerge. In this phase, you have the opportunity to download the Protein-Protein Interaction (PPI) matrix. This process may necessitate some time, with a progress bar positioned in the lower right corner providing real-time updates on the download status. Once the download is complete, you can conveniently preview the PPI matrix within the **PPI Preview** box situated on the right-hand side of the interface. This will show that the PPI consists of three columns: **Gene1** and **Gene2**, housing the gene symbols corresponding to the interacting proteins, and a column labeled **combined_score**, denoting the confidence level of each interaction. The assigned score is derived from the number of known interactions between two proteins, normalized to the (0, 1) interval utilizing the formula:
 
 $$
 \begin{aligned} 
@@ -351,7 +366,9 @@ where **min** and **max** represent the minimum and maximum number of interactio
 
 In addition to downloading a PPI matrix during the current session, users can also upload a previously saved matrix for analysis using the **Browse** button. This functionality allows users to work with their own customized datasets or previously analyzed PPI matrices. Furthermore, saving the downloaded PPI matrix locally enables users to store the data on their machine for future use. By saving the matrix locally via the **Save PPI matrix** button, users can access the data quickly in subsequent sessions without having to wait for the download process again. This capability significantly enhances workflow efficiency and allows for seamless continuation of analysis across different sessions.
 
-![Downloading the PPI](../inst/www/Downloading_PPI.png)
+```{r download-ppi, fig.align = "center", fig.cap = "Downloading the PPI", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Downloading_PPI.png"))
+```
 
 While the final two steps are optional, note that the PPI matrix is only required for a singular score. Therefore, you can commence data exploration without necessarily completing these additional steps.
 
@@ -362,11 +379,14 @@ Upon concluding the essential tasks outlined in this panel, you are ready to pro
 This panel focuses mainly on computing distance scores for the provided input data. Like the preceding panel, it is segmented into two distinct sections, each serving a specific function.
 
 
-![The Distance Score panel](../inst/www/Distance_Score_panel.png)
+```{r distance-score, fig.align = "center", fig.cap = "The Distance Score panel", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Distance_Score_panel.png"))
+```
+
 
 **Calculating Distance Scores**
 
-In the upper box, titled **Calculate distance scores for your genesets**, you have the flexibility to select from various distance scores for computation. This feature provides users with a range of options to tailor the analysis according to their specific requirements and preferences. The available scores are: 
+In the upper box, titled **Calculate distance scores for your Genesets**, you have the flexibility to select from various distance scores for computation. This feature provides users with a range of options to tailor the analysis according to their specific requirements and preferences. The available scores are: 
 
 * **PMM Score**: This score integrates protein-protein interaction (PPI) data into the Meet-Min distance. The PPI-weighted Meet-Min (**PMM**) score is defined as 
 
@@ -460,7 +480,10 @@ This panel is dedicated to the computation of clusters among genesets based on t
 
 The computation of clusters involves grouping genesets that display similar patterns of distance scores, thereby indicating shared biological characteristics or functional relationships. This clustering process enables users to identify cohesive groups of genesets with related functionalities or involvement in similar biological processes.
 
-![The Clustering Graph Panel](../inst/www/Clustering_Graph_Panel.png)
+```{r clustering-graph, fig.align = "center", fig.cap = "The Clustering Graph panel", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Clustering_Graph_Panel.png"))
+```
+
 
 **Choosing a Clustering algorithm**
 
@@ -472,7 +495,7 @@ The upper box, labeled **Select the clustering method**, provides a selection of
 
 * **Fuzzy clustering**: The Fuzzy Clustering algorithm is a computational technique used to partition data points into clusters based on their similarity, while allowing for data points to belong to multiple clusters with varying degrees of membership. It operates through distinct steps and requires the specification of different thresholds. Firstly, the **Similarity threshold** is set to determine if two genesets exhibit sufficient similarity to be potentially clustered together. Secondly, the **Membership threshold** dictates how many members of a potential cluster must possess a close relationship, defined by a distance score less than or equal to the similarity threshold, for the cluster to persist. Lastly, the **Clustering threshold** determines whether two clusters will be merged. Clusters are merged if their percentage of overlap meets or exceeds the clustering threshold. Users can adjust all thresholds using sliders provided in the interface.
 
-* **kNN**: The k-nearest neighbor clustering algorithm groups nodes with their k nearest neighbors, where **k** is a parameter defined by the user. Through this algorithm, each node is assigned to the cluster containing its k nearest neighbors based on some similarity metric. The user can specify the value of k using a slider provided in the interface, enabling customization of the clustering process according to the specific requirements of the analysis. Adjusting the value of k allows for exploration of different levels of granularity in the clustering results, providing flexibility in the interpretation of the data.
+* **kNN**: The k-nearest neighbor clustering algorithm groups nodes with their k nearest neighbors, where **k** is a parameter defined by the user. Through this algorithm, each node is assigned to the cluster containing its k nearest neighbors based on the calculated distance scores. The user can specify the value of k using a slider provided in the interface, enabling customization of the clustering process according to the specific requirements of the analysis. Adjusting the value of k allows for exploration of different levels of granularity in the clustering results, providing flexibility in the interpretation of the data.
 
 Once you choose a method, you can start the cluster calculation via the **Cluster the Genesets** button on the right. Keep in mind that this step might take some time, especially for larger datasets. Look for the progress bar in the lower right corner for updates on the scoring status.
 
@@ -480,36 +503,37 @@ Once the clusters are calculated, you can explore various visualizations of your
 
 **Cluster Visualizations**
 
-* **Geneset Graph**: In the **Geneset Graph**, the individual clusters will be visualized as a graph. The nodes are individual genesets and edges are drawn between genesets which belong to the same cluster. You can select and highlight individual nodes by using the **Select by id** functionality on the left or you can highlight all nodes of a cluster by selecting the respective cluster via the **Select by cluster** option. In this graph, only genesets belonging to at least one cluster will be shown, so please do not be surprised if you cannot find a specific geneset of your input data. In order to provide additional information in the **Geneset Graph**, the option to color the nodes by specific parameters of your input data is provided. You can select one of the available options via the **Color the graph by** drop down menu. The menu will be depending on the information given together with your input data. If your input data only contains geneset ids and genes, this option will not provide additional value. However, if your data contains more information on the genesets, you can select from those. You can also interact with the shown network, by relocating individual nodes of the network. For this simply select one of the nodes, hold the left button of your mouse and drag the node to a place of your choice. With this you can change the placement of individual nodes and cluster. This is especially helpful in cluttered graphs and crowded areas of the network
+* **Geneset Graph**: In the **Geneset Graph**, clusters are visualized as a graph, with individual genesets serving as nodes and edges connecting genesets within the same cluster. To highlight specific nodes, utilize the **Select by id** feature on the left, or choose to highlight entire clusters by selecting the respective option under **Select by cluster**. Please note that only genesets belonging to at least one cluster will be displayed in this graph. For additional insights, nodes can be colored based on specific parameters from your input data, accessible through the **Color the graph** by dropdown menu. Depending on the information provided with your data, various options will be available. While interacting with the network, nodes can be moved by clicking and dragging them to desired locations, offering flexibility in managing node placement which is particularly useful in complex or densely populated graphs.
 
-* **Cluster-Geneset Bipartite Graph**: The **Cluster-Geneset Bipartite Graph** is a bipartite visualization of the clusters. Here, the nodes are clusters and genesets and edges are drawn between cluster nodes and their respective geneset members. Upon hovering over the nodes, you will also get additional information about the data. For the cluster nodes, the members of the respective cluster will be listed, while for the geneset nodes the respective genes belonging to the genesets will be shown.
+* **Cluster-Geneset Bipartite Graph**: The **Cluster-Geneset Bipartite Graph** presents a bipartite representation of the clusters. In this visualization, nodes represent both clusters and genesets, with edges connecting cluster nodes to their corresponding geneset members. Hovering over nodes provides additional data insights. Cluster nodes display the members within each cluster, while geneset nodes showcase the genes associated with each geneset.
 
-* **Cluster Enrichment Terms Word Cloud**: The **Cluster Enrichment Terms Word Cloud** will visualize the most commonly used terms for each cluster. This visualization is especially valuable if your data also contains a small description of the genesets besides the required input data. Via the **Select a cluster** drop-down menu, you can specify the cluster. You can also hover over the enrichment map and select individual terms to see how many times the term appeared in the description of the genesets in this cluster.
+* **Cluster Enrichment Terms Word Cloud**: The **Cluster Enrichment Terms Word Cloud** displays the most frequently occurring terms for each cluster. This visualization proves particularly useful when your data includes brief descriptions of the genesets, in addition to the mandatory input data. By utilizing the **Select a cluster** drop-down menu, you can designate the cluster of interest. Furthermore, hovering over the word cloud enables you to select individual terms and view the frequency with which each term appears in the descriptions of the genesets within that cluster.
 
-* **Clustering graph summaries** The cluster information is also summarized in a table-like format in the **Clustering graph summaries** box. The table will show each geneset and the cluster the respective geneset belongs to. The table also has a search function, so you can easily look for a geneset of interest.
+* **Clustering graph summaries**: The cluster information is also summarized in a table-like format in the **Clustering graph summaries** box. This table displays each geneset alongside the cluster to which it belongs. Additionally, the table features a search function, facilitating the quick retrieval of a geneset of interest.
 
 ## The Report panel
-TODO: Rephrase still the tours text
+In this panel of the application, users can obtain a comprehensive overview of the items they have bookmarked for further exploration. On the left side of the interface, bookmarked genesets are listed, while bookmarked clusters are displayed on the right side.
 
-Within this section, users can gain a comprehensive overview of the items they have bookmarked for further investigation. On the left side, there are bookmarked genesets, while on the right side, there are bookmarked clusters.
+During an interactive exploration session, recalling specific details about each bookmarked item can sometimes be challenging. Therefore, users are provided with convenient options to manage their bookmarked data.
 
-In the midst of an interactive exploration session, it can sometimes be challenging to recall the exact details of each point of interest.
+Below the interactive tables displaying bookmarked genesets and clusters, users can find buttons allowing them to download the content of each table individually. Additionally, the **Start the generation of the report** button is provided to generate a detailed report encompassing all selected elements of interest.
 
-Directly beneath the interactive `DT::datatable` displays, there are options to individually download the content of each table by clicking on the corresponding button. Furthermore, a distinct button is provided to initiate the generation of an information-rich report. This report will concentrate on all the selected elements of interest.
+The report generation process utilizes a predefined template report included within the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` package. This template leverages the input elements and reactive values associated with the bookmarks, ensuring that the generated report contains comprehensive and relevant information.
 
-The report generation employs a predefined template report, which is included as part of the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` package. This template accesses the input elements and reactive values associated with the bookmarks.
+The resulting report serves as a valuable tool for creating a permanent and reproducible analysis output. Users can easily store or share this report for future reference or collaboration purposes.
 
-The generated report serves as a valuable tool for creating a permanent and reproducible analysis output. This output can be easily stored or shared for future reference.
-
+```{r report_panel, fig.align = "center", fig.cap = "The Report panel", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Report_Panel.png"))
+```
 
 # Additional Information {#additionalinfo}
 
-Bug reports can be posted on the Bioconductor [support site](https://support.bioconductor.org/) or raised as issues in the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` [GitHub repository](https://github.com/AnnekathrinSilvia/GeDi/issues). 
-The GitHub repository also contains the development version of the package, where new functionality is added over time - careful, you might be running bleeding edge versions!
+Bug reports can be submitted on the Bioconductor [support site](https://support.bioconductor.org/) or opened as issues in the  `r #BiocStyle::Biocpkg("GeDi")` `GeDi` [GitHub repository](https://github.com/AnnekathrinSilvia/GeDi/issues).
+Please note that the GitHub repository also hosts the development version of the package, where new functionality is continuously added - be cautious, as you may be working with cutting-edge versions!
 
-The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.
+The authors welcome thoughtful suggestions for enhancements or new features, and even better, pull requests.
 
-If you use `r #BiocStyle::Biocpkg("GeDi")` `GeDi` for your analysis, please cite it as shown below:
+If you utilize `r #BiocStyle::Biocpkg("GeDi")` `GeDi` for your analysis, kindly cite it using the provided citation format below:
 
 ```{r citation, eval = F}
 utils::citation("GeDi")
@@ -517,12 +541,9 @@ utils::citation("GeDi")
 
 # Additional example data
 
-This workflow has primarily undergone testing with enrichment analyses performed on the Gene Ontology [@Ashburner2000] signature database, such as those generated by tools like `r BiocStyle::Biocpkg("topGO")` or `r BiocStyle::Biocpkg("clusterProfiler")`. Results containing identifiers from databases like KEGG [@Kanehisa2023] or Reactome [@Gillespie2022] - e.g. generated using `enrichKegg` or `enrichPathway` functions from the `r BiocStyle::Biocpkg("clusterProfiler")` package - can also be utilized as input for `r #BiocStyle::Biocpkg("GeDi")` `GeDi` but may require preliminary data transformation. For a comprehensive explanation of the expected input data format, please consult the **Welcome** panel of the application.
+In this section, we present additional examples demonstrating the versatility of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` in analyzing functional enrichment data from two widely used databases, KEGG and Reactome. By leveraging the rich resources provided by these databases, GeDi offers researchers a comprehensive toolkit for exploring and interpreting complex biological pathways and processes. Through step-by-step demonstrations, we illustrate how GeDi can seamlessly integrate with data from KEGG and Reactome, enabling users to gain deeper insights into the functional annotations of their gene sets. Whether investigating specific pathways or broader biological processes, GeDi provides intuitive and powerful functionalities to enhance the analysis of functional enrichment data from diverse sources.
 
-
-As a tool to support the exploration of various enrichment results, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` does not only support results from the `r BiocStyle::Biocpkg("topGO")` package, but also other packages for enrichment analysis as e.g. `r BiocStyle::Biocpkg("clusterProfiler")`. In this section, we will show you how to prepare the results of `clusterProfiler` for the usage in `r #BiocStyle::Biocpkg("GeDi")` `GeDi` as well as how to use functional annotations against the KEGG and Reactome database. 
-
-As a basis we will again use the data of the `r BiocStyle::Biocpkg("macrophage")` package, specifically the differentially expressed genes we have identified before. 
+In this section we will demonstrate how results containing identifiers from databases like KEGG [@Kanehisa2023] or Reactome [@Gillespie2022] - e.g. generated using `enrichKegg` or `enrichPathway` functions from the `r BiocStyle::Biocpkg("clusterProfiler")` package - can be utilized as input for `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. We will again use the data of the `r BiocStyle::Biocpkg("macrophage")` package, specifically the differentially expressed genes we have identified before. With this data, we demonstrate how to generate the results and prepare them for their use in `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
 However, before we can use the `enrichKEGG` function from the `r BiocStyle::Biocpkg("clusterProfiler")` package, we have to map the ENSEMBL ids of the data to Entrez ids. For this, we will up the first use the `r BiocStyle::Biocpkg("biomaRt")` package to generate a mapping of ENSEMBL to Entrez.
 
