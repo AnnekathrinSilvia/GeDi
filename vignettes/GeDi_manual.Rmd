@@ -187,7 +187,7 @@ res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
 
 Rather than generating the object anew, you have the option to load the precomputed object from the package's available data. This facilitates quicker access to the required data without the need for recomputation.
 
-```{r load_resde, eval=T}
+```{r load_resde, eval=F}
 # Load precomputed differential expression results from the "GeDi" package
 # The results are stored in the object "res_macrophage_IFNg_vs_naive"
 data("res_macrophage_IFNg_vs_naive", package = "GeDi")
