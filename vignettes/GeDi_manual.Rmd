@@ -522,7 +522,7 @@ The report generation process utilizes a predefined template report included wit
 
 The resulting report serves as a valuable tool for creating a permanent and reproducible analysis output. Users can easily store or share this report for future reference or collaboration purposes.
 
-```{r report_panel, fig.align = "center", fig.cap = "The Report panel", echo = F}
+```{r report-panel, fig.align = "center", fig.cap = "The Report panel", echo = F}
 knitr::include_graphics(here::here("", "/inst/www/Report_Panel.png"))
 ```
 
