@@ -522,10 +522,6 @@ The report generation process utilizes a predefined template report included wit
 
 The resulting report serves as a valuable tool for creating a permanent and reproducible analysis output. Users can easily store or share this report for future reference or collaboration purposes.
 
-```{r report-panel, fig.align = "center", fig.cap = "The Report panel", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Report_Panel.png"))
-```
-
 # Additional Information {#additionalinfo}
 
 Bug reports can be submitted on the Bioconductor [support site](https://support.bioconductor.org/) or opened as issues in the  `r #BiocStyle::Biocpkg("GeDi")` `GeDi` [GitHub repository](https://github.com/AnnekathrinSilvia/GeDi/issues).
