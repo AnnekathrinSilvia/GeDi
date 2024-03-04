@@ -306,6 +306,74 @@ knitr::include_graphics(here::here("", "/inst/www/Welcome_page.png"))
 ```
 
 
+## The Data Input panel
+
+This panel serves as a hub for managing data input if it's not provided within the function call. It's divided into distinct boxes, each representing a step of the data input process, which sequentially appear as you successfully complete each preceding step.
+
+
+**Step 1**: Provide your Genesets as input data
+
+In the initial **Step 1** box, you can provide your data by utilizing the **Browse** button. This action opens a modal window enabling you to select the relevant file from your computer storage. After successfully loading the data, a preview is displayed in the **Genesets preview** box on the right. During this step, the application checks if your input contains the "Genesets" and "Genes" columns. If these columns are missing, a small error message appears in the lower right corner. Additionally, two drop-down menus allow you to select the correct columns from your data and update the input accordingly.
+
+You also have the option to start using `r #BiocStyle::Biocpkg("GeDi")` `GeDi` with preprocessed example data based on the `r BiocStyle::Biocpkg("macrophage")` dataset. Simply click the **Load demo data** button to load the example data's enrichment results. You can explore these results in the **Genesets preview** box.
+
+However, instead of loading demo data and observing the expected data structure through the **Genesets preview** box, you can also use the **Have a look at the data structure** button. By clicking this button, a modal window with a visual representation of the expected input data structure will open. This screenshot serves as a helpful guide, providing you with a clear understanding of how your data should be formatted for optimal compatibility with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+
+Once, you have successfully loaded some data, the data input process will proceed and two additional boxes will be displayed in the panel. 
+
+TODO: Screenshots am Ende alle updaten
+
+```{r data-input-step1, fig.align = "center", fig.cap = "The Data input panel - Step 1", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Data_Input_panel_Step1.png"))
+```
+
+
+**Optional Filtering Step**: Filter generic genesets
+
+Introducing the first new box, the **Optional Filtering Step** offers a non-compulsory yet advantageous opportunity to refine your geneset selection. While not obligatory for data exploration, engaging in this step can notably optimize downstream processing runtime. Here, you're empowered to filter genesets within your dataset, thereby enhancing result interpretation. This step enables the exclusion of large and generic genesets, contributing to clearer insights. Additionally, you have the flexibility to filter genesets based on size criteria.
+
+The box features a histogram illustrating geneset sizes, providing visual context for the filtering process. Within the interface, two input fields are available for customization. The left input field facilitates the selection of individual genesets by their identifiers in the "Genesets" column of your dataset. Meanwhile, the right input field empowers you to establish a threshold "x" for filtering genesets with a size greater than or equal to "x." This interactive approach ensures tailored filtering suited to your specific analysis requirements.
+
+Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the "Remove the selected Genesets" button. This action will remove all selected genesets from the dataset. Additionally, you have the option to save the filtered data using the "Download the filtered data" button. Clicking this button will save the filtered data to your local machine. This feature can be particularly beneficial for users who intend to revisit their data in a new instance of GeDi and want to ensure that previously identified uninsightful genesets have already been filtered out.
+
+
+Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the `Remove the selected Genesets` button. This action will remove all selected genesets from the dataset.  Additionally, you have the option to save the filtered data using the `Download the filtered data` button. Clicking this button will save the filtered data to your local machine.This feature can be particularly beneficial for users who intend to revisit their data in a new instance of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` and want to ensure that previously identified uninsightful genesets have already been filtered out.
+
+```{r optional-filtering, fig.align = "center", fig.cap = "Optional Filtering Step", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Optional_Filtering.png"))
+```
+
+
+**Step 2**: Species Selection
+
+Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial task of selecting the species associated with your dataset. This step holds significant importance for the computation of the **PMM score** within `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, which heavily relies on a **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in capturing protein interaction strength, thereby enriching distance scores with valuable biological context. To access and utilize this essential information, specifying the species linked to your dataset is mandatory. By clicking the input field, you'll prompt a dropdown menu showcasing preselected species options. If your species is included, simply make your selection. Alternatively, if your species is not listed, you have the option to manually input it. In cases of uncertainty, a convenient link provided on the right directs you to the STRING database, enabling verification of species details and PPI availability for informed decision-making.
+
+```{r species-selection, fig.align = "center", fig.cap = "Species Selection", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Species_Selection.png"))
+```
+
+**Step 3**: PPI Matrix Download
+
+Following species selection, a third box named **Step 3** will emerge. In this phase, you have the opportunity to download the Protein-Protein Interaction (PPI) matrix. This process may necessitate some time, with a progress bar positioned in the lower right corner providing real-time updates on the download status. Once the download is complete, you can conveniently preview the PPI matrix within the **PPI Preview** box situated on the right-hand side of the interface. This will show that the PPI consists of three columns: **Gene1** and **Gene2**, housing the gene symbols corresponding to the interacting proteins, and a column labeled **combined_score**, denoting the confidence level of each interaction. The assigned score is derived from the number of known interactions between two proteins, normalized to the (0, 1) interval utilizing the formula:
+
+$$
+\begin{aligned} 
+combinedScore = \frac{(\#interaction - min)}{(max - min)} 
+\end{aligned}
+$$ 
+
+where **min** and **max** represent the minimum and maximum number of interactions, respectively.
+
+In addition to downloading a PPI matrix during the current session, users can also upload a previously saved matrix for analysis using the **Browse** button. This functionality allows users to work with their own customized datasets or previously analyzed PPI matrices. Furthermore, saving the downloaded PPI matrix locally enables users to store the data on their machine for future use. By saving the matrix locally via the **Save PPI matrix** button, users can access the data quickly in subsequent sessions without having to wait for the download process again. This capability significantly enhances workflow efficiency and allows for seamless continuation of analysis across different sessions.
+
+```{r download-ppi, fig.align = "center", fig.cap = "Downloading the PPI", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Downloading_PPI.png"))
+```
+
+While the final two steps are optional, note that the PPI matrix is only required for a singular score. Therefore, you can commence data exploration without necessarily completing these additional steps.
+
+Upon concluding the essential tasks outlined in this panel, you are ready to progress to the **Distance Scores** panel.
+
 
 # Additional Information {#additionalinfo}
 
