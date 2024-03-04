@@ -297,6 +297,15 @@ While the Welcome panel is relatively self-explanatory, additional information a
 
 The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` `r BiocStyle::Biocpkg("shiny")` application is organized into distinct panels, each serving a specific purpose, which will be thoroughly explored in the following sections.
 
+## The Welcome panel
+
+This panel serves as a guide for utilizing `r #BiocStyle::Biocpkg("GeDi")` `GeDi` effectively. It offers detailed instructions on generating input data for the application, elucidating the expected input format and outlining the various interactive elements present in the app's other panels.
+
+```{r welcome-page2, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Welcome_page.png"))
+```
+
+
 
 # Additional Information {#additionalinfo}
 
