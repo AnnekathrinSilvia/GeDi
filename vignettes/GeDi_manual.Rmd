@@ -374,6 +374,106 @@ While the final two steps are optional, note that the PPI matrix is only require
 
 Upon concluding the essential tasks outlined in this panel, you are ready to progress to the **Distance Scores** panel.
 
+## The Distance Scores panel
+
+This panel focuses mainly on computing distance scores for the provided input data. Like the preceding panel, it is segmented into two distinct sections, each serving a specific function.
+
+
+```{r distance-score, fig.align = "center", fig.cap = "The Distance Score panel", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Distance_Score_panel.png"))
+```
+
+
+**Calculating Distance Scores**
+
+In the upper box, titled **Calculate distance scores for your Genesets**, you have the flexibility to select from various distance scores for computation. This feature provides users with a range of options to tailor the analysis according to their specific requirements and preferences. The available scores are: 
+
+* **PMM Score**: This score integrates protein-protein interaction (PPI) data into the Meet-Min distance. The PPI-weighted Meet-Min (**PMM**) score is defined as 
+
+$$
+\begin{aligned}
+PMM = min(PMM(A -> B), PMM(B -> A))
+\end{aligned}
+$$
+where 
+
+$$
+\begin{aligned}
+PMM(X -> Y) = 1 - \frac{|X \cap Y|}{min(|X|, |Y|)} - \\ \frac{\alpha}{min(|X|,|Y|)} \sum_{x \in X-Y} \frac{w \sum_{y \in X \cap Y} PPI(x, y) + \sum_{y \in Y - X}PPI(x, y)}{max(PPI) (w |X \cap Y| + |Y - X|)}
+\end{aligned}
+$$
+and 
+
+$$
+\begin{aligned}
+w = \frac{min(|X|, |Y|)}{|X| + |Y|}
+\end{aligned}
+$$
+$\alpha$ is a scaling factor between 0 and 1. The PPI matrix can be downloaded from the **Data Input** panel. More details can be found in the paper by Yoon et al [@Yoon2019].
+
+* **Kappa Score**: The **Kappa** distance is a set-based metric based on observed and expected agreement rates between two genesets. It is defined as 
+
+$$
+\begin{aligned}
+Kappa = 1 - \frac{O - E}{1 - E}
+\end{aligned}
+$$
+
+where 
+
+$$
+\begin{aligned}
+O = \frac{|A \cap B| + |A \cup B|^c}{U} \\
+E = \frac{|A| |B| + |A^c| |B^c|}{|U|^2}
+\end{aligned}
+$$
+
+U is the set of all unique genes in the data. In this application the Kappa distance is additionally normalized to the (0, 1) interval to make it comparable to the remaining distance metrics.
+
+* **Jaccard Score**: The **Jaccard** distance uses the Jaccard coefficient, which is transformed into a distance metric by subtracting it from 1. It is defined as 
+
+$$
+\begin{aligned}
+Jaccard = 1 - \frac{|A \cap B|}{|A \cup B|}
+\end{aligned}
+$$
+
+
+* **Meet-Min Score**: The **Meet-Min** (MM) distance transforms the overlap coefficient into a distance measure by subtracting it from 1.The overlap coefficient is a similarity measure which is defined as 
+
+$$
+\begin{aligned}
+OC = \frac{|A \cap B|}{min(|A|, |B|)}
+\end{aligned}
+$$
+
+In order to transform this measure of similarity into a measure of distance, the overlap coefficient is substracted from 1, resulting in the calculation of the Meet-Min (MM) distance as 
+
+$$
+\begin{aligned}
+MM = 1 - \frac{|A \cap B|}{min(|A|, |B|)}
+\end{aligned}
+$$
+
+As a solely set based measurement, the Meet-Min distance only takes the composition of the genesets into account but not the underlying biological information inherent in the genesets.
+
+Each scoring method possesses its own set of advantages and drawbacks, underscoring the importance of selecting one that suits your dataset characteristics and analysis goals. Upon choosing a score, the **Compute the distances between genesets** button appears on the on the right side. Clicking this button initiates the scoring procedure, which may require some time to execute, particularly for larger datasets. To monitor the progress of this operation, refer to the progress bar located in the lower right corner of the panel. Once the scoring process concludes, you can delve into the **Geneset Distance Scores** box to explore a variety of visual representations of your data.
+
+
+**Distance Scores Visualizations**
+
+* **Distance Scores Heatmap**: The initial visualization offered is a heatmap illustrating the distribution of distance scores. Activation of the heatmap generation is triggered by clicking the **Calculate Distance Score Heatmap** button. Following computation, users can interact with the heatmap by hovering over it, revealing the involved genesets and their corresponding scores. Additionally, users can zoom in on specific areas of interest. To reset the zoomed view, a simple click outside the heatmap area suffices.
+
+* **Distance Scores Dendrogram**: The second visualization provided is a dendrogram showcasing individual distance scores. Hierarchical clustering is employed to generate the dendrogram, which effectively groups genesets exhibiting the highest similarity. To enhance the dendrogram's presentation, users can select different combination methods using the drop-down menu located on the left side.
+
+* **Distance Scores Graph**: The final visualization available is the network representation of distance scores. In this representation, nodes/genesets with scores below a predefined threshold are connected by edges. By default, the threshold is set to 0.3, but users can adjust it via the slider located on the left. This interactive graph allows users to hover over or click on nodes to highlight connected nodes and obtain additional information about genesets upon selection. Furthermore, users can search for specific genesets using the input field on the left, with the selected geneset being subsequently highlighted in the graph. The **Graph metrics** table at the bootom of this box contains various metrics pertaining to the graph, such as degree, betweenness, harmonic centrality, clustering coefficient, and input data. This tabulated information serves to provide users with valuable insights into the underlying data and distance scores.
+
+**Bookmarking from the this panel:** 
+
+As users navigate through the distance scores of genesets in this section, they may encounter genesets and interactions that capture their interest and merit further investigation. To aid in preserving these noteworthy genesets for later exploration, you can utilize the **Bookmark** button situated in the Navbar. Upon clicking this button, the selected geneset will be added to the list of bookmarked genesets within the **Report** panel. Additionally, informative messages displayed in the lower right corner will guide users through the bookmarking process.
+
+Once you've finished exploring the distance scores, you can proceed to the **Clustering graph** panel.
+
 
 # Additional Information {#additionalinfo}
 
