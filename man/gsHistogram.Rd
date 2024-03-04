@@ -38,15 +38,15 @@ Create a histogram plot to plot geneset names / identifiers against their size.
 }
 \examples{
 ## Mock example showing how the data should look like
-gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h", "i")
+gs_names <- c("a", "b", "c", "d", "e", "f", "g", "h")
 genesets <- list(
-  c("PDHB", "VARS2"), c("IARS2", "PDHA1"),
-  c("AAAS", "ABCE1"), c("ABI1", "AAR2"), c("AATF", "AMFR"),
+  c("PDHB", "VARS2", "IARS2", "PDHA1"),
+  c("AAAS", "ABCE1"), c("ABI1", "AAR2", "AATF"), c("AMFR"),
   c("BMS1", "DAP3"), c("AURKAIP1", "CHCHD1"), c("IARS2"),
   c("AHI1", "ALMS1")
 )
 
-p <- gsHistogram(genesets, gs_names)
+p <- gsHistogram(genesets, gs_names, binwidth = 1)
 
 ## Example using the data available in the package
 data(macrophage_topGO_example_small,
