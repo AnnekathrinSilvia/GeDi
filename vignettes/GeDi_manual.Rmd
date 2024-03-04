@@ -511,6 +511,20 @@ Once the clusters are calculated, you can explore various visualizations of your
 
 * **Clustering graph summaries**: The cluster information is also summarized in a table-like format in the **Clustering graph summaries** box. This table displays each geneset alongside the cluster to which it belongs. Additionally, the table features a search function, facilitating the quick retrieval of a geneset of interest.
 
+## The Report panel
+In this panel of the application, users can obtain a comprehensive overview of the items they have bookmarked for further exploration. On the left side of the interface, bookmarked genesets are listed, while bookmarked clusters are displayed on the right side.
+
+During an interactive exploration session, recalling specific details about each bookmarked item can sometimes be challenging. Therefore, users are provided with convenient options to manage their bookmarked data.
+
+Below the interactive tables displaying bookmarked genesets and clusters, users can find buttons allowing them to download the content of each table individually. Additionally, the **Start the generation of the report** button is provided to generate a detailed report encompassing all selected elements of interest.
+
+The report generation process utilizes a predefined template report included within the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` package. This template leverages the input elements and reactive values associated with the bookmarks, ensuring that the generated report contains comprehensive and relevant information.
+
+The resulting report serves as a valuable tool for creating a permanent and reproducible analysis output. Users can easily store or share this report for future reference or collaboration purposes.
+
+```{r report-panel, fig.align = "center", fig.cap = "The Report panel", echo = F}
+knitr::include_graphics(here::here("", "/inst/www/Report_Panel.png"))
+```
 
 # Additional Information {#additionalinfo}
 
