@@ -57,6 +57,7 @@ getStringDB <- function(species,
 
   if(cache_location){
     cache_location <- tools::R_user_dir("GeDi", which = "cache")
+    dir.create(cache_location, showWarnings = FALSE)
     return(STRINGdb$new(
       version = version,
       species = species,
