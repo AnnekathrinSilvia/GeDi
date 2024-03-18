@@ -38,7 +38,6 @@ Imports:
     readxl,
     ggdendro,
     ComplexHeatmap,
-    InteractiveComplexHeatmap,
     BiocNeighbors,
     tm,
     wordcloud2,

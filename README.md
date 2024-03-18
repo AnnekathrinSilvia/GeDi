@@ -11,7 +11,7 @@
 
 [![R build
 status](https://github.com/AnnekathrinSilvia/GeDi/workflows/R-CMD-check/badge.svg)](https://github.com/AnnekathrinSilvia/GeDi/actions)
-[![](https://bioconductor.org/shields/build/devel/bioc/GeneTonic.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/GeneTonic/)
+
 [![](https://img.shields.io/github/last-commit/AnnekathrinSilvia/GeDi.svg)](https://github.com/AnnekathrinSilvia/GeDi/commits/devel)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
@@ -19,7 +19,14 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 status](https://codecov.io/github/AnnekathrinSilvia/GeDi/coverage.svg?branch=master)](https://codecov.io/github/AnnekathrinSilvia/GeDi)
 <!-- badges: end -->
 
-The goal of GeDi is to …
+The goal of GeDi is to provide a user-friendly platform for exploring
+and analyzing the results of functional annotation and enrichment
+analyses. By integrating various enrichment methods and offering
+interactive visualizations, GeDi aims to streamline the process of
+interpreting biological data and identifying meaningful patterns within
+it. Through features like distance score calculation, clustering, and
+bookmarking, GeDi empowers users to gain deeper insights into their data
+and make informed decisions in their research endeavors.
 
 ## Installation
 

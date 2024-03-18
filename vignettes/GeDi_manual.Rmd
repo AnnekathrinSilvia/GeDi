@@ -12,7 +12,7 @@ author:
   - Center for Thrombosis and Hemostasis (CTH), Mainz
   email: marinif@uni-mainz.de
 date: "`r BiocStyle::doc_date()`"
-package: "`r BiocStyle::pkg_ver('GeneTonic')`"
+package: "`r BiocStyle::pkg_ver('GeDi')`"
 output: 
   BiocStyle::html_document:
     toc_float: true
@@ -189,7 +189,7 @@ After completing the differential expression analysis, we move on to conduct the
 
 For the enrichment analysis, we use the overrepresentation analysis method provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the integration of these results into `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, we utilize the `topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. By default, this function employs the `BP` ontology and the `elim` method, which helps decorrelate the Gene Ontology (GO) graph structure, resulting in less redundant functional categories. The output is a `DataFrame` object that seamlessly integrates with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
-However, as `r #BiocStyle::Biocpkg("GeDi")` `GeDi` has only minimkal requirements for the input, enrichment results generated using `r BiocStyle::Biocpkg("clusterProfiler")` can also be utilized. While we primarily tested results from the `enrichGO` method during `r #BiocStyle::Biocpkg("GeDi")` `GeDi` development, those from the `enrichKEGG` and `enrichPathway` methods are also compatible.
+However, as `r #BiocStyle::Biocpkg("GeDi")` `GeDi` has only minimal requirements for the input, enrichment results generated using `r BiocStyle::Biocpkg("clusterProfiler")` can also be utilized. While we primarily tested results from the `enrichGO` method during `r #BiocStyle::Biocpkg("GeDi")` `GeDi` development, those from the `enrichKEGG` and `enrichPathway` methods are also compatible.
 
 
 ```{r create_resenrich1, eval=TRUE}
@@ -310,8 +310,6 @@ You also have the option to start using `r #BiocStyle::Biocpkg("GeDi")` `GeDi` w
 However, instead of loading demo data and observing the expected data structure through the **Genesets preview** box, you can also use the **Have a look at the data structure** button. By clicking this button, a modal window with a visual representation of the expected input data structure will open. This screenshot serves as a helpful guide, providing you with a clear understanding of how your data should be formatted for optimal compatibility with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
 Once, you have successfully loaded some data, the data input process will proceed and two additional boxes will be displayed in the panel. 
-
-TODO: Screenshots am Ende alle updaten
 
 ```{r data-input-step1, fig.align = "center", fig.cap = "The Data input panel - Step 1", echo = F}
 knitr::include_graphics(here::here("", "/inst/www/Data_Input_panel_Step1.png"))
@@ -437,7 +435,7 @@ OC = \frac{|A \cap B|}{min(|A|, |B|)}
 \end{aligned}
 $$
 
-In order to transform this measure of similarity into a measure of distance, the overlap coefficient is substracted from 1, resulting in the calculation of the Meet-Min (MM) distance as 
+In order to transform this measure of similarity into a measure of distance, the overlap coefficient is subtracted from 1, resulting in the calculation of the Meet-Min (MM) distance as 
 
 $$
 \begin{aligned}
@@ -456,7 +454,7 @@ Each scoring method possesses its own set of advantages and drawbacks, underscor
 
 * **Distance Scores Dendrogram**: The second visualization provided is a dendrogram showcasing individual distance scores. Hierarchical clustering is employed to generate the dendrogram, which effectively groups genesets exhibiting the highest similarity. To enhance the dendrogram's presentation, users can select different combination methods using the drop-down menu located on the left side.
 
-* **Distance Scores Graph**: The final visualization available is the network representation of distance scores. In this representation, nodes/genesets with scores below a predefined threshold are connected by edges. By default, the threshold is set to 0.3, but users can adjust it via the slider located on the left. This interactive graph allows users to hover over or click on nodes to highlight connected nodes and obtain additional information about genesets upon selection. Furthermore, users can search for specific genesets using the input field on the left, with the selected geneset being subsequently highlighted in the graph. The **Graph metrics** table at the bootom of this box contains various metrics pertaining to the graph, such as degree, betweenness, harmonic centrality, clustering coefficient, and input data. This tabulated information serves to provide users with valuable insights into the underlying data and distance scores.
+* **Distance Scores Graph**: The final visualization available is the network representation of distance scores. In this representation, nodes/genesets with scores below a predefined threshold are connected by edges. By default, the threshold is set to 0.3, but users can adjust it via the slider located on the left. This interactive graph allows users to hover over or click on nodes to highlight connected nodes and obtain additional information about genesets upon selection. Furthermore, users can search for specific genesets using the input field on the left, with the selected geneset being subsequently highlighted in the graph. The **Graph metrics** table at the bottom of this box contains various metrics pertaining to the graph, such as degree, betweenness, harmonic centrality, clustering coefficient, and input data. This tabulated information serves to provide users with valuable insights into the underlying data and distance scores.
 
 **Bookmarking from the this panel:** 
 
@@ -500,6 +498,13 @@ Once the clusters are calculated, you can explore various visualizations of your
 * **Cluster Enrichment Terms Word Cloud**: The **Cluster Enrichment Terms Word Cloud** displays the most frequently occurring terms for each cluster. This visualization proves particularly useful when your data includes brief descriptions of the genesets, in addition to the mandatory input data. By utilizing the **Select a cluster** drop-down menu, you can designate the cluster of interest. Furthermore, hovering over the word cloud enables you to select individual terms and view the frequency with which each term appears in the descriptions of the genesets within that cluster.
 
 * **Clustering graph summaries**: The cluster information is also summarized in a table-like format in the **Clustering graph summaries** box. This table displays each geneset alongside the cluster to which it belongs. Additionally, the table features a search function, facilitating the quick retrieval of a geneset of interest.
+
+**Bookmarking from this panel:**
+
+While exploring the **Clustering Graph panel**, users may encounter genesets and clusters that intrigue them and warrant further investigation. To facilitate the preservation of these notable genesets and clusters for future exploration, users can utilize the **Bookmark** button located in the Navbar. Clicking this button will add the selected geneset or cluster to the list of bookmarked items within the Report panel. Helpful messages displayed in the lower right corner will assist users throughout the bookmarking process.
+
+In order to bookmark interesting genes and clusters, users simply select a geneset or cluster from the Geneset Graph or Cluster-Geneset Bipartite Graph and use the Bookmark button to add the respective information to the set of bookmarked features. 
+After exploring the results in the **Clustering Graph panel**, users can proceed to the **Report** panel to have a look at the bookmarked genesets and clusters or iterate through the individual panels of the app for a more in depth exploration of the data.
 
 ## The Report panel
 In this panel of the application, users can obtain a comprehensive overview of the items they have bookmarked for further exploration. On the left side of the interface, bookmarked genesets are listed, while bookmarked clusters are displayed on the right side.
