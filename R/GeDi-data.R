@@ -111,24 +111,6 @@ NULL
 #' @docType data
 NULL
 
-#' Cluster
-#'
-#' A file containing clusters for the `macrophage_topGO_example_small`.
-#'
-#' @details This sample input contains clusters for the
-#'          `macrophage_topGO_example_small`. Clusters have been calculated on
-#'          `scores_macrophage_topGO_example_small` using a similarity
-#'          threshold of 0.3, a membership threshold of 0.5 and a clustering
-#'          threshold of 0.5.
-#'
-#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
-#'             genetic effects on chromatin and gene expression indicate a role
-#'             for enhancer priming in immune response. Nat Genet 50, 424–431
-#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
-#'
-#' @name cluster_macrophage_topGO_example_small
-#' @docType data
-NULL
 
 #' PPI
 #'
@@ -149,24 +131,6 @@ NULL
 #' @docType data
 NULL
 
-
-#' DESeq results
-#'
-#' A file containing a `DESeqResults` for the
-#' `macrophage_topGO_example`.
-#'
-#' @details This sample input contains a `DESeqResults` for the
-#'          `macrophage_topGO_examplel`. The object has been generated using the
-#'          `DESeq` function.
-#'
-#' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
-#'             genetic effects on chromatin and gene expression indicate a role
-#'             for enhancer priming in immune response. Nat Genet 50, 424–431
-#'             (2018). https://doi.org/10.1038/s41588-018-0046-7
-#'
-#' @name res_macrophage_IFNg_vs_naive
-#' @docType data
-NULL
 
 #' A sample input RData file
 #'

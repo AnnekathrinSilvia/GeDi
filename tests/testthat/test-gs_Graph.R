@@ -1,5 +1,5 @@
 data(scores_macrophage_topGO_example_small, package = "GeDi")
-data(cluster_macrophage_topGO_example_small, package = "GeDi")
+cluster_macrophage_topGO_example_small <- list(c(1, 3, 9, 41), c(15, 28))
 data(macrophage_topGO_example_small, package = "GeDi")
 gs_names <- macrophage_topGO_example_small$Genesets
 data(macrophage_Reactome_example, package = "GeDi")

@@ -185,17 +185,6 @@ res_macrophage_IFNg_vs_naive <- results(dds_macrophage,
 res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
 ```
 
-Rather than generating the object anew, you have the option to load the precomputed object from the package's available data. This facilitates quicker access to the required data without the need for recomputation.
-
-```{r load_resde, eval=F}
-# Load precomputed differential expression results from the "GeDi" package
-# The results are stored in the object "res_macrophage_IFNg_vs_naive"
-data("res_macrophage_IFNg_vs_naive", package = "GeDi")
-
-# Display the first few rows of the differential expression results
-head(res_macrophage_IFNg_vs_naive)
-```
-
 After completing the differential expression analysis, we move on to conduct the functional annotation analysis. To begin, we extract the differentially expressed (DE) genes from the previously generated results and identify the background genes to be utilized for functional enrichment.
 
 For the enrichment analysis, we use the overrepresentation analysis method provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the integration of these results into `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, we utilize the `topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. By default, this function employs the `BP` ontology and the `elim` method, which helps decorrelate the Gene Ontology (GO) graph structure, resulting in less redundant functional categories. The output is a `DataFrame` object that seamlessly integrates with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
@@ -248,7 +237,8 @@ names(macrophage_topGO_example)[names(macrophage_topGO_example) == "GO.ID"] <- "
 # Change the column name "genes" to "Genes"
 names(macrophage_topGO_example)[names(macrophage_topGO_example) == "genes"] <- "Genes"
 ```
-  
+ 
+ 
 
 ## All set!
 

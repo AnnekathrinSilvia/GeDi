@@ -38,9 +38,7 @@ distanceHeatmap <- function(distance_scores, chars_limit = 50) {
   rownames(distance_scores) <- colnames(distance_scores) <- labels
 
   # Create a heatmap using the distance scores matrix
-  p <- Heatmap(as.matrix(distance_scores),
-               name = "Distance Scores"
-  )
+  p <- Heatmap(as.matrix(distance_scores))
 
   # Return the heatmap plot
   return(p)

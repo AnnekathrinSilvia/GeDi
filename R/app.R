@@ -48,7 +48,7 @@ GeDi <- function(genesets = NULL,
   if (!(is.null(ppi_df))) {
     ppi <- .checkPPI(ppi_df)
   }
-  if(!(is.null(distance_scores))){
+  if (!(is.null(distance_scores))) {
     distance_scores <- .checkScores(genesets, distance_scores)
   }
 
@@ -163,9 +163,11 @@ GeDi <- function(genesets = NULL,
           tabName = "tab_graph",
           icon = icon("circle-nodes")
         ),
-        bs4SidebarMenuItem("Report",
-                           tabName = "tab_report",
-                           icon = icon("file-lines"))
+        bs4SidebarMenuItem(
+          "Report",
+          tabName = "tab_report",
+          icon = icon("file-lines")
+        )
       )
     ),
 
@@ -201,11 +203,7 @@ GeDi <- function(genesets = NULL,
           ".biocdlbutton{background-color:#0092AC;} .biocdlbutton{color: #ffffff;}"
         )
       ),
-      tags$head(
-        tags$style(
-          "#shiny-modal img { max-width: 100%; }"
-          )
-        ),
+      tags$head(tags$style("#shiny-modal img { max-width: 100%; }")),
       tags$script(
         HTML(
           "$(function(){
@@ -366,7 +364,8 @@ GeDi <- function(genesets = NULL,
       reactive_values$genesets <- genesets
       reactive_values$gs_names <- genesets$Genesets
       reactive_values$genes <- getGenes(genesets)
-      reactive_values$gs_description <- .getGenesetDescriptions(genesets)
+      reactive_values$gs_description <-
+        .getGenesetDescriptions(genesets)
     } else {
       reactive_values$genesets <- NULL
       reactive_values$gs_names <- NULL
@@ -616,9 +615,11 @@ GeDi <- function(genesets = NULL,
       ),
       message = "Please provide input data via the button on the left."))
 
-      DT::datatable(reactive_values$genesets,
-                    options = list(scrollX = TRUE, scrollY = "400px"),
-                    rownames = FALSE)
+      DT::datatable(
+        reactive_values$genesets,
+        options = list(scrollX = TRUE, scrollY = "400px"),
+        rownames = FALSE
+      )
     })
 
     output$ui_filter_data <- renderUI({
@@ -648,7 +649,9 @@ GeDi <- function(genesets = NULL,
                 inputId = "bins_gs_hist",
                 label = "Select the bins for the histogram",
                 min = 0,
-                max = max(vapply(reactive_values$genes, length, numeric(1))),
+                max = max(vapply(
+                  reactive_values$genes, length, numeric(1)
+                )),
                 value = c(0, max(
                   vapply(reactive_values$genes, length, numeric(1))
                 ))
@@ -835,33 +838,33 @@ GeDi <- function(genesets = NULL,
               ))
             )
           )),
-          fluidRow(column(
-            width = 6,
-            "Or you can upload an already saved Protein-Protein interaction matrix from your machine.",
-            br(),
-            p(),
-            fileInput(
-              inputId = "inputppi",
-              label = "Upload a PPI matrix",
-              accept = c(
-                "text/csv",
-                "text/comma-separated-values",
-                "text/tab-separated-values",
-                "text/plain",
-                ".csv",
-                ".tsv",
-                ".RDS",
-                ".xslx"
-              ),
-              multiple = FALSE
-            )
-          )),
           fluidRow(
             column(
-              width = 12,
-              uiOutput("ui_save_PPI")
+              width = 6,
+              "Or you can upload an already saved Protein-Protein interaction matrix from your machine.",
+              br(),
+              p(),
+              fileInput(
+                inputId = "inputppi",
+                label = "Upload a PPI matrix",
+                accept = c(
+                  "text/csv",
+                  "text/comma-separated-values",
+                  "text/tab-separated-values",
+                  "text/plain",
+                  ".csv",
+                  ".tsv",
+                  ".RDS",
+                  ".xslx"
+                ),
+                multiple = FALSE
+              )
             )
-          )
+          ),
+          fluidRow(column(width = 12,
+                          uiOutput(
+                            "ui_save_PPI"
+                          )))
         )
       )
     })
@@ -873,28 +876,32 @@ GeDi <- function(genesets = NULL,
         )),
         message = "Please download a Protein-Protein Interaction (PPI) matrix via the button on the left.")
       )
-      DT::datatable(reactive_values$ppi,
-                    options = list(scrollX = TRUE, scrollY = "400px"),
-                    rownames = FALSE)
+      DT::datatable(
+        reactive_values$ppi,
+        options = list(scrollX = TRUE, scrollY = "400px"),
+        rownames = FALSE
+      )
     })
 
     output$ui_save_PPI <- renderUI({
       if (is.null(reactive_values$ppi)) {
         return(NULL)
       }
-      fluidRow(column(
-        width = 12,
-        "In order to avoid lengthy downloads of the PPI matrix in the future,
+      fluidRow(
+        column(
+          width = 12,
+          "In order to avoid lengthy downloads of the PPI matrix in the future,
         you can also now download the PPI matrix and save it to your machine.",
-        br(),
-        p(),
-        downloadButton(
-          "save_ppi",
-          label = "Save PPI matrix",
-          icon = icon("download"),
-          style = .actionButtonStyle
+          br(),
+          p(),
+          downloadButton(
+            "save_ppi",
+            label = "Save PPI matrix",
+            icon = icon("download"),
+            style = .actionButtonStyle
+          )
         )
-      ))
+      )
     })
 
     # panel Scores ----------------------------------------------------
@@ -927,17 +934,26 @@ GeDi <- function(genesets = NULL,
               radioButtons(
                 inputId = "scoringmethod",
                 label = "Select the scoring method for your data",
-                choices = c("PMM", "Kappa", "Jaccard", "Meet-Min", "Sorensen-Dice", "GO Similarity"),
+                choices = c(
+                  "PMM",
+                  "Kappa",
+                  "Jaccard",
+                  "Meet-Min",
+                  "Sorensen-Dice",
+                  "GO Similarity"
+                ),
                 selected = character(0)
               )
             ),
             column(width = 6,
                    uiOutput("ui_score_data"))
           ),
-          fluidRow(column(width = 12,
-                   br(),
-                   p(),
-                   uiOutput("ui_alpha_parameter")))
+          fluidRow(column(
+            width = 12,
+            br(),
+            p(),
+            uiOutput("ui_alpha_parameter")
+          ))
         ),
         box(
           id = "distance_scores_box",
@@ -976,142 +992,179 @@ GeDi <- function(genesets = NULL,
     })
 
     output$ui_alpha_parameter <- renderUI({
-      if(input$scoringmethod == "" || is.null(input$scoringmethod) || input$scoringmethod != "PMM"){
+      if (input$scoringmethod == "" ||
+          is.null(input$scoringmethod) ||
+          input$scoringmethod != "PMM") {
         return(NULL)
       }
-      fluidRow(column(
-        width = 6,
-        "Please select how strongly Protein-Protein-Interactions
+      fluidRow(
+        column(
+          width = 6,
+          "Please select how strongly Protein-Protein-Interactions
         should be weighted in the PMM score by setting the scaling factor",
-        br(),
-        p(),
-        sliderInput("alpha",
-                    label = "Scaling Factor Alpha",
-                    min = 0,
-                    max = 1,
-                    value = 0.5,
-                    step = 0.01)
-      ))
+          br(),
+          p(),
+          sliderInput(
+            "alpha",
+            label = "Scaling Factor Alpha",
+            min = 0,
+            max = 1,
+            value = 0.5,
+            step = 0.01
+          )
+        )
+      )
     })
 
     output$ui_distance_scores_visuals <- renderUI({
-      validate(need(length(reactive_values$scores) != 0,
-      message = "Please compute the distances between the genesets first in the above box"))
-      fluidRow(column(
-        width = 6,
-        selectInput("plots_distance_score",
-                    label = "Choose the Distance Score Results to plot",
-                    choices = c("", names(reactive_values$scores))),
-      ),
-      column(
-        width = 6,
-        br(),
-        downloadButton(
-          outputId = "download_scores",
-          label = "Download the distance scores",
-          icon = icon("download"),
-          style = .actionButtonStyle
-        )
-
-      ),
+      validate(
+        need(length(reactive_values$scores) != 0,
+             message = "Please compute the distances between the genesets first in the above box")
+      )
       fluidRow(
         column(
-        width = 12,
-        bs4Dash::tabsetPanel(
-          id = "tabsetpanel_scores",
-          type = "tabs",
-          selected = "Distance Scores Heatmap",
-          side = "right",
-          tabPanel(
-            title = "Distance Scores Heatmap",
-            actionButton(
-              inputId = "create_heatmap",
-              label = "Calculate Distance Score Heatmap",
-              icon = icon("gears"),
-              style = .actionButtonStyle
-            ),
-            htmlOutput("scores_heatmap")
+          width = 6,
+          selectInput(
+            "plots_distance_score",
+            label = "Choose the Distance Score Results to plot",
+            choices = c("", names(reactive_values$scores))
           ),
-          tabPanel(title = "Distance Scores Dendrogram",
-                   fluidRow(
-                     column(width = 2,
-                            selectInput(
-                              inputId = "cluster_method_dendro",
-                              label = "Select a clustering method for the Dendrogram",
-                              choices = c("average", "single", "complete",
-                                          "median", "centroid"),
-                              selected = "average",
-                              multiple = FALSE
-                            )),
-                     column(width = 10,
-                            withSpinner(
-                              plotlyOutput("scores_dendro",
-                                           height = "800px",
-                                           width = "1000px")
-                            ))
-                   )
-                   ),
-          tabPanel(title = "Distance Scores Graph",
-                   fluidRow(
-                     column(
-                       width = 2,
-                       sliderInput(
-                         "similarityScores",
-                         "Distance Threshold:",
-                         min = 0,
-                         max = 1,
-                         value = 0.3,
-                         step = 0.05
-                       ),
-                       selectizeInput(
-                         inputId = "scores_graph_search",
-                         label = "Search for a specific geneset",
-                         choices = c("", reactive_values$gs_description),
-                         multiple = TRUE,
-                         options = list(
-                           create = FALSE,
-                           placeholder = "",
-                           maxItems = "1"
+        ),
+        column(
+          width = 6,
+          br(),
+          downloadButton(
+            outputId = "download_scores",
+            label = "Download the distance scores",
+            icon = icon("download"),
+            style = .actionButtonStyle
+          )
+
+        ),
+        fluidRow(column(
+          width = 12,
+          bs4Dash::tabsetPanel(
+            id = "tabsetpanel_scores",
+            type = "tabs",
+            selected = "Distance Scores Heatmap",
+            side = "right",
+            tabPanel(title = "Distance Scores Heatmap",
+                     # actionButton(
+                     #   inputId = "create_heatmap",
+                     #   label = "Calculate Distance Score Heatmap",
+                     #   icon = icon("gears"),
+                     #   style = .actionButtonStyle
+                     # ),
+                     withSpinner(
+                       plotOutput("scores_heatmap",
+                                  height = "800px",
+                                  width = "1000px")
+                     )),
+            tabPanel(title = "Distance Scores Dendrogram",
+                     fluidRow(
+                       column(
+                         width = 2,
+                         selectInput(
+                           inputId = "cluster_method_dendro",
+                           label = "Select a clustering method for the Dendrogram",
+                           choices = c("average", "single", "complete",
+                                       "median", "centroid"),
+                           selected = "average",
+                           multiple = FALSE
                          )
-                       )
+                       ),
+                       column(width = 10,
+                              withSpinner(
+                                plotlyOutput("scores_dendro",
+                                             height = "800px",
+                                             width = "1000px")
+                              ))
+                     )),
+            tabPanel(title = "Distance Scores Graph",
+                     fluidRow(
+                       column(
+                         width = 2,
+                         sliderInput(
+                           "similarityScores",
+                           "Distance Threshold:",
+                           min = 0,
+                           max = 1,
+                           value = 0.3,
+                           step = 0.05
+                         ),
+                         selectizeInput(
+                           inputId = "scores_graph_search",
+                           label = "Search for a specific geneset",
+                           choices = c("", reactive_values$gs_description),
+                           multiple = TRUE,
+                           options = list(
+                             create = FALSE,
+                             placeholder = "",
+                             maxItems = "1"
+                           )
+                         )
+                       ),
+                       column(width = 10,
+                              withSpinner(
+                                visNetworkOutput("scores_Network",
+                                                 height = "800px")
+                              ))
                      ),
-                     column(width = 10,
-                            withSpinner(
-                              visNetworkOutput("scores_Network",
-                                               height = "800px")
-                            ))
-                   ),
-                   fluidRow(
-                     box(
-                       id = "hub_genes_box",
-                       width = 12,
-                       title = "Graph metrics",
-                       status = "info",
-                       solidHeader = TRUE,
-                       collapsible = TRUE,
-                       collapsed = TRUE,
-                       DT::dataTableOutput("dt_graph_metrics")
-                     )
-                   ))
-        )
-      )))
+                     fluidRow(
+                       box(
+                         id = "hub_genes_box",
+                         width = 12,
+                         title = "Graph metrics",
+                         status = "info",
+                         solidHeader = TRUE,
+                         collapsible = TRUE,
+                         collapsed = TRUE,
+                         DT::dataTableOutput("dt_graph_metrics")
+                       )
+                     ))
+          )
+        ))
+      )
     })
 
-    scores_heatmap_react <- reactive({
-      validate(need(length(reactive_values$scores) != 0,
-      message = "Please compute the distances between the genesets first in the above box"))
-      scores <- reactive_values$scores[[input$plots_distance_score]]
-      res <-
-        ComplexHeatmap::draw(distanceHeatmap(scores,
-                                              chars_limit = 20))
-      return(res)
+    # scores_heatmap_react <- reactive({
+    #   validate(
+    #     need(length(reactive_values$scores) != 0,
+    #          message = "Please compute the distances between the genesets first in the above box")
+    #   )
+    #   scores <- reactive_values$scores[[input$plots_distance_score]]
+    #   res <-
+    #     ComplexHeatmap::draw(distanceHeatmap(scores,
+    #                                          chars_limit = 20))
+    #   return(res)
+    # })
+
+    output$scores_heatmap <- renderPlot({
+      validate(
+        need(length(reactive_values$scores) != 0,
+             message = "Please compute the distances between the genesets first in the above box.")
+      )
+      validate(
+        need(input$plots_distance_score != "",
+             message = "Please select one of your distance score results to be displayed.")
+      )
+      distanceHeatmap(reactive_values$scores[[input$plots_distance_score]],
+                      chars_limit = 20)
     })
 
 
     output$scores_dendro <- renderPlotly({
+      validate(
+        need(length(reactive_values$scores) != 0,
+             message = "Please compute the distances between the genesets first in the above box.")
+      )
+      validate(
+        need(input$plots_distance_score != "",
+             message = "Please select one of your distance score results to be displayed.")
+      )
       scores <- reactive_values$scores[[input$plots_distance_score]]
       distanceDendro(scores,
-                      input$cluster_method_dendro)
+                     input$cluster_method_dendro)
     })
 
 
@@ -1124,6 +1177,15 @@ GeDi <- function(genesets = NULL,
           type = "warning"
         )
       }
+      validate(
+        need(length(reactive_values$scores) != 0,
+             message = "Please compute the distances between the genesets first in the above box.")
+      )
+      validate(
+        need(input$plots_distance_score != "",
+             message = "Please select one of your distance score results to be displayed.")
+      )
+
       scores <- reactive_values$scores[[input$plots_distance_score]]
       adj <- getAdjacencyMatrix(scores,
                                 input$similarityScores)
@@ -1175,26 +1237,27 @@ GeDi <- function(genesets = NULL,
     })
 
     output$save_distance_score_graph <- downloadHandler(
-    #   filename = function() {
-    #   paste0("GeDi_distance_scores_graph_cytoscape_",
-    #          gsub(" ", "_", gsub(
-    #            "-", "", gsub(":", "-", as.character(Sys.time()))
-    #          )),
-    #          ".csv")
-    # }
+      #   filename = function() {
+      #   paste0("GeDi_distance_scores_graph_cytoscape_",
+      #          gsub(" ", "_", gsub(
+      #            "-", "", gsub(":", "-", as.character(Sys.time()))
+      #          )),
+      #          ".csv")
+      # }
       filename <- "test.csv",
-    content = function(file) {
-      utils::write.csv(file = file, x = reactive_values$scores_graph())
-    }
+      content = function(file) {
+        utils::write.csv(file = file, x = reactive_values$scores_graph())
+      }
     )
 
     # panel Graph ------------------------------------------------------
 
     output$ui_panel_graph <- renderUI({
-      validate(need(!(is.null(
-        reactive_values$scores
-      ) && (length(reactive_values$scores) == 0)),
-                    message = "Please score you genesets first in the Scores
+      validate(need(!(
+        is.null(reactive_values$scores) &&
+          (length(reactive_values$scores) == 0)
+      ),
+      message = "Please score you genesets first in the Scores
                     panel."))
 
       tagList(
@@ -1247,12 +1310,12 @@ GeDi <- function(genesets = NULL,
                              inputId = "graphColoring",
                              label = "Color the graph by",
                              choices = if (!(is.null(reactive_values$genesets))) {
-                                   c(NULL, colnames(
-                                     dplyr::select_if(reactive_values$genesets, is.numeric)
-                                   ))
-                                 } else {
-                                   c(NULL)
-                                 },
+                               c(NULL, colnames(
+                                 dplyr::select_if(reactive_values$genesets, is.numeric)
+                               ))
+                             } else {
+                               c(NULL)
+                             },
                              multiple = FALSE
                            )
                          ),
@@ -1311,20 +1374,24 @@ GeDi <- function(genesets = NULL,
 
     output$ui_cluster <- renderUI({
       fluidRow(
-        column(width = 12,
-               selectInput("clustering_score_selected",
-                           label = "Select Distance Scoring Results to use",
-                           choices = c("", names(reactive_values$scores))),
-               br(),
-               p(),
-               strong("Now you can cluster your data"),
-               br(),
-               "Attention: If you have many Genesets to cluster,
+        column(
+          width = 12,
+          selectInput(
+            "clustering_score_selected",
+            label = "Select Distance Scoring Results to use",
+            choices = c("", names(reactive_values$scores))
+          ),
+          br(),
+          p(),
+          strong("Now you can cluster your data"),
+          br(),
+          "Attention: If you have many Genesets to cluster,
            this operation may take some time",
-               br(),
-               actionButton("cluster_data",
-                            label = "Cluster the Genesets",
-                            style = .actionButtonStyle))
+          br(),
+          actionButton("cluster_data",
+                       label = "Cluster the Genesets",
+                       style = .actionButtonStyle)
+        )
       )
     })
 
@@ -1526,9 +1593,11 @@ GeDi <- function(genesets = NULL,
         cluster your data first with the box above."
         )
       )
-      dt_cluster <- .getClusterDatatable(reactive_values$cluster,
-                                         reactive_values$gs_names,
-                                         reactive_values$gs_description)
+      dt_cluster <- .getClusterDatatable(
+        reactive_values$cluster,
+        reactive_values$gs_names,
+        reactive_values$gs_description
+      )
       DT::datatable(dt_cluster,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
@@ -1872,7 +1941,8 @@ GeDi <- function(genesets = NULL,
       reactive_values$genes <- getGenes(reactive_values$genesets,
                                         input$alt_name_genes)
 
-      reactive_values$gs_description <- .getGenesetDescriptions(reactive_values$genesets)
+      reactive_values$gs_description <-
+        .getGenesetDescriptions(reactive_values$genesets)
 
       names(reactive_values$genesets)[names(reactive_values$genesets) == input$alt_name_genesets] <-
         "Genesets"
@@ -1917,15 +1987,17 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$btn_showDataStructure, {
-      showModal(modalDialog(
-        title = "Data structure of the Input Data",
-        "This is an example of the required structure for the input data",
-        HTML('<img src="GeDi/DataExample.png">'),
-        "The data should contain two columns, 'Genesets' and 'Genes', which are tab-seprated.",
-        "The list of genes for each genesets should be comma-, tab- or backslash-separated.",
-        easyClose = TRUE,
-        footer = NULL
-      ))
+      showModal(
+        modalDialog(
+          title = "Data structure of the Input Data",
+          "This is an example of the required structure for the input data",
+          HTML('<img src="GeDi/DataExample.png">'),
+          "The data should contain two columns, 'Genesets' and 'Genes', which are tab-seprated.",
+          "The list of genes for each genesets should be comma-, tab- or backslash-separated.",
+          easyClose = TRUE,
+          footer = NULL
+        )
+      )
     })
 
     observeEvent(input$plot_brush, {
@@ -1941,18 +2013,19 @@ GeDi <- function(genesets = NULL,
     })
 
     observeEvent(input$filter_genesets, {
-      if(is.null(input$select_filter_genesets) && input$select_filter_genesets_threshold == ""){
+      if (is.null(input$select_filter_genesets) &&
+          input$select_filter_genesets_threshold == "") {
         showNotification("No Genesets selected for filtering.",
                          type = "message")
-      }else{
+      } else{
         remove_specific <- list()
         remove_threshold <- list()
 
-        if(!is.null(input$select_filter_genesets)){
+        if (!is.null(input$select_filter_genesets)) {
           remove_specific <- input$select_filter_genesets
         }
 
-        if(input$select_filter_genesets_threshold != ""){
+        if (input$select_filter_genesets_threshold != "") {
           threshold <- as.numeric(input$select_filter_genesets_threshold)
           data <- buildHistogramData(reactive_values$genes,
                                      reactive_values$gs_names)
@@ -1975,16 +2048,18 @@ GeDi <- function(genesets = NULL,
         filtered_data <- .filterGenesets(remove,
                                          reactive_values$genesets)
 
-        reactive_values$filtered_genesets <- rbind(reactive_values$filtered_genesets,
-                                                   reactive_values$genesets[reactive_values$genesets$Genesets %in% unlist(remove), ])
+        reactive_values$filtered_genesets <-
+          rbind(reactive_values$filtered_genesets,
+                reactive_values$genesets[reactive_values$genesets$Genesets %in% unlist(remove), ])
         reactive_values$genesets <- filtered_data$Geneset
         reactive_values$gs_names <- filtered_data$gs_names
         reactive_values$genes <- filtered_data$Genes
-        reactive_values$gs_description <- .getGenesetDescriptions(reactive_values$genesets)
+        reactive_values$gs_description <-
+          .getGenesetDescriptions(reactive_values$genesets)
 
         showNotification("Successfully filtered the selected Genesets.",
                          type = "message")
-        }
+      }
     })
 
     output$download_filtered_data <- downloadHandler(
@@ -2112,15 +2187,17 @@ GeDi <- function(genesets = NULL,
           )
           scores <- NULL
         } else {
-          scores <- getpMMMatrix(reactive_values$genes,
-                                 reactive_values$ppi,
-                                 alpha = input$alpha,
-                                 progress = progress)
+          scores <- getpMMMatrix(
+            reactive_values$genes,
+            reactive_values$ppi,
+            alpha = input$alpha,
+            progress = progress
+          )
         }
       } else if (input$scoringmethod == "Jaccard") {
         scores <- getJaccardMatrix(reactive_values$genes,
                                    progress = progress)
-      } else if (input$scoringmethod == "Sorensen-Dice"){
+      } else if (input$scoringmethod == "Sorensen-Dice") {
         scores <- getSorensenDiceMatrix(reactive_values$genes,
                                         progress = progress)
       } else if (input$scoringmethod == "GO Similarity") {
@@ -2168,47 +2245,47 @@ GeDi <- function(genesets = NULL,
       }
     )
 
-    observeEvent(input$create_heatmap, {
-      InteractiveComplexHeatmap::InteractiveComplexHeatmapWidget(
-        input,
-        output,
-        session,
-        scores_heatmap_react(),
-        output_id = "scores_heatmap",
-        width1 = 600,
-        height1 = 600,
-        width2 = 600,
-        height2 = 600,
-        click_action = .click_action,
-        brush_action = .brush_action,
-        close_button = FALSE,
-        output_ui = htmlOutput("info")
-      )
-    })
+    # observeEvent(input$create_heatmap, {
+    #   InteractiveComplexHeatmap::InteractiveComplexHeatmapWidget(
+    #     input,
+    #     output,
+    #     session,
+    #     scores_heatmap_react(),
+    #     output_id = "scores_heatmap",
+    #     width1 = 600,
+    #     height1 = 600,
+    #     width2 = 600,
+    #     height2 = 600,
+    #     click_action = .click_action,
+    #     brush_action = .brush_action,
+    #     close_button = FALSE,
+    #     output_ui = htmlOutput("info")
+    #   )
+    # })
+    #
+    #     .brush_action <- function(df, output) {
+    #       row <- unique(unlist(df$row_index))
+    #       column <- unique(unlist(df$column_index))
+    #       output[["info"]] <- renderUI({
+    #         if (!is.null(df)) {
+    #           subset <-
+    #             as.matrix(reactive_values$scores[input$scoringmethod])[row, column, drop = FALSE]
+    #           df <- as.data.frame(subset)
+    #           DT::datatable(df,
+    #                         options = list(scrollX = TRUE, scrollY = "400px"))
+    #         }
+    #       })
+    #     }
 
-    .brush_action <- function(df, output) {
-      row <- unique(unlist(df$row_index))
-      column <- unique(unlist(df$column_index))
-      output[["info"]] <- renderUI({
-        if (!is.null(df)) {
-          subset <-
-            as.matrix(reactive_values$scores[input$scoringmethod])[row, column, drop = FALSE]
-          df <- as.data.frame(subset)
-          DT::datatable(df,
-                        options = list(scrollX = TRUE, scrollY = "400px"))
-        }
-      })
-    }
-
-    .click_action <- function(df, output) {
-      output[["info"]] <- renderUI({
-        if (!is.null(df)) {
-          HTML(
-            "<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"
-          )
-        }
-      })
-    }
+    # .click_action <- function(df, output) {
+    #   output[["info"]] <- renderUI({
+    #     if (!is.null(df)) {
+    #       HTML(
+    #         "<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"
+    #       )
+    #     }
+    #   })
+    # }
 
     observeEvent(input$scores_graph_search, {
       current_node <- input$scores_graph_search
@@ -2232,7 +2309,8 @@ GeDi <- function(genesets = NULL,
 
     # Clustering panel -----------------------------------------------------------
     observeEvent(input$cluster_data, {
-      if (is.null(reactive_values$scores) || length(reactive_values$scores) == 0) {
+      if (is.null(reactive_values$scores) ||
+          length(reactive_values$scores) == 0) {
         showNotification(
           "It seems like you did not compute the distances between the genesets yet. Please go back to
           the Distance Scores panel and select a score of your choice.",
@@ -2242,7 +2320,8 @@ GeDi <- function(genesets = NULL,
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
-      scores <- reactive_values$scores[[input$clustering_score_selected]]
+      scores <-
+        reactive_values$scores[[input$clustering_score_selected]]
 
       if (input$select_clustering == "Louvain") {
         progress$set(message = "Start the Louvain Clustering", value = 0)
