@@ -1,20 +1,23 @@
 Package: GeDi
 Title: Defining and visualizing the distances between different genesets
-Version: 1.0.0
-Date: 2024-03-22
+Version: 0.99.0
+Date: 2024-03-21
 Authors@R: 
-    c(person(given = "Annekathrin", family = "Nedwed", 
-           email = "anneludt@uni-mainz.de", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-2475-4945")),
-      person(given = "Federico", family = "Marini", 
-             email = "marinif@uni-mainz.de", role = c("aut"))
-      )
+    c(
+        person(
+            given = "Annekathrin", family = "Nedwed", role = c("aut", "cre"),
+            email = "anneludt@uni-mainz.de", comment = c(ORCID = "0000-0002-2475-4945")),
+        person(
+            given = "Federico", family = "Marini", role = c("aut"), 
+            email = "marinif@uni-mainz.de", comment = c(ORCID = "0000-0003-3252-7758")
+        )
+    )
 Description: The package provides different distances measurements 
     to calculate the difference between genesets. Based on these scores
     the genesets are clustered and visualized as graph. This is all
     presented in an interactive Shiny application for easy usage.
 Depends:
-    R (>= 4.1.0)
+    R (>= 4.4.0)
 Imports: 
     GOSemSim,
     Matrix,
@@ -61,8 +64,7 @@ Suggests:
     ReactomePA,
     clusterProfiler,
     BiocStyle,
-    org.Hs.eg.db,
-    here
+    org.Hs.eg.db
 License: MIT + file LICENSE
 Encoding: UTF-8
 VignetteBuilder: knitr
@@ -72,6 +74,6 @@ RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 biocViews: 
-    GUI, FunctionalAnnotation, GeneSetEnrichment, Software, Transcription, RNASeq, 
+    GUI, GeneSetEnrichment, Software, Transcription, RNASeq, 
     Visualization, Clustering, Pathways, ReportWriting, GO, KEGG, 
     Reactome, ShinyApps

@@ -4,6 +4,9 @@
 \name{sample_geneset_small}
 \alias{sample_geneset_small}
 \title{A small sample input text file}
+\format{
+Text file
+}
 \description{
 A sample input text file taken from the GScluster package, which is reduced
 to a smaller number of entries for faster testing of the application.

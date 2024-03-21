@@ -40,11 +40,14 @@ A Shiny app object is returned
 GeDi main function
 }
 \examples{
-#GeDi()
-
+if (interactive()) {
+  GeDi()
+}
 # Alternatively, you can also start the application with your data directly
 # loaded.
 
-data(macrophage_topGO_example, package = "GeDi")
-#GeDi(genesets = macrophage_topGO_example)
+data("macrophage_topGO_example", package = "GeDi")
+if (interactive()) {
+  GeDi(genesets = macrophage_topGO_example)
+}
 }

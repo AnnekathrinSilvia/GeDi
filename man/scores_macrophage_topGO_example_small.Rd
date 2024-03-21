@@ -4,6 +4,9 @@
 \name{scores_macrophage_topGO_example_small}
 \alias{scores_macrophage_topGO_example_small}
 \title{Sample scores}
+\format{
+A sparse matrix (\code{dgCMatrix})
+}
 \description{
 A file containing sample distance scores for the
 \code{macrophage_topGO_example_small}.

@@ -6,6 +6,8 @@
 #'          It is identical to the sample_geneset.txt file found on the Github
 #'          page of the package.
 #'
+#' @format Text file
+#'
 #' @references Yoon, S., Kim, J., Kim, SK. et al. GScluster: network-weighted
 #'             gene-set clustering analysis. BMC Genomics 20, 352 (2019).
 #'             https://doi.org/10.1186/s12864-019-5738-6
@@ -22,6 +24,8 @@ NULL
 #' @details This sample input text file is empty and used for testing the
 #'          application.
 #'
+#' @format Text file
+#'
 #' @name sample_geneset_empty
 #' @docType data
 NULL
@@ -33,6 +37,8 @@ NULL
 #'
 #' @details This sample input text file is broken and used for testing the
 #'          application.
+#'
+#' @format Text file
 #'
 #' @name sample_geneset_broken
 #' @docType data
@@ -48,6 +54,8 @@ NULL
 #'          It was taken from the sample_geneset.txt file found on the Github
 #'          page of the package and then reduced to a smaller amount of entries
 #'          for faster testing of the application.
+#'
+#' @format Text file
 #'
 #' @references Yoon, S., Kim, J., Kim, SK. et al. GScluster: network-weighted
 #'             gene-set clustering analysis. BMC Genomics 20, 352 (2019).
@@ -65,6 +73,8 @@ NULL
 #' @details This sample input contains data from the macrophage package found on
 #'          Bioconductor. The exact steps used to generated this file can be
 #'          found in the package vignette.
+#'
+#' @format A data.frame object
 #'
 #' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
 #'             genetic effects on chromatin and gene expression indicate a role
@@ -84,6 +94,8 @@ NULL
 #'          `macrophage_topGO_example` and only contains the first 50 rows of
 #'          this example. It can be used for fast testing of the application.
 #'
+#' @format A data.frame object
+#'
 #' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
 #'             genetic effects on chromatin and gene expression indicate a role
 #'             for enhancer priming in immune response. Nat Genet 50, 424–431
@@ -101,6 +113,8 @@ NULL
 #' @details This sample input contains scores  for the
 #'          `macrophage_topGO_example_small`. Distance scores have been
 #'          calculated using the [GeDi::getJaccardMatrix()] method.
+#'
+#' @format A sparse matrix (`dgCMatrix`)
 #'
 #' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
 #'             genetic effects on chromatin and gene expression indicate a role
@@ -122,6 +136,8 @@ NULL
 #'          the functions to download a PPI matrix. Please check out the
 #'          vignette for further information.
 #'
+#' @format A data.frame object
+#'
 #' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
 #'             genetic effects on chromatin and gene expression indicate a role
 #'             for enhancer priming in immune response. Nat Genet 50, 424–431
@@ -141,6 +157,8 @@ NULL
 #'          found in the package vignette. The used database for the enrichment
 #'          was the Reactome database.
 #'
+#' @format A data.frame object
+#'
 #' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
 #'             genetic effects on chromatin and gene expression indicate a role
 #'             for enhancer priming in immune response. Nat Genet 50, 424–431
@@ -158,6 +176,8 @@ NULL
 #'          Bioconductor. The exact steps used to generated this file can be
 #'          found in the package vignette. The used database for the enrichment
 #'          was the KEGG database.
+#'
+#' @format A data.frame object
 #'
 #' @references Alasoo, K., Rodrigues, J., Mukhopadhyay, S. et al. Shared
 #'             genetic effects on chromatin and gene expression indicate a role

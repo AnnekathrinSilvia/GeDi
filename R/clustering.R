@@ -123,7 +123,7 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
     })
 
   # Iterate over all rows in the distance score matrix
-  for (i in 1:nrow(distances)) {
+  for (i in seq_len(nrow(distances))) {
     # Check if at least 2 other entries are reachable from i
     if (sum(reach[i, ], na.rm = TRUE) >= 2) {
       # Extract members reachable from i
@@ -209,7 +209,7 @@ fuzzyClustering <- function(seeds, threshold) {
     l <- length(seeds)
 
     # Iterate over all seeds to check for merging possibilities
-    for (j in 1:length(seeds)) {
+    for (j in seq_len(length(seeds))) {
       s2 <- seeds[[j]]
       int <- intersect(s1, s2)
       union <- sort(union(s1, s2))
@@ -289,7 +289,7 @@ clustering <- function(scores, threshold, cluster_method = "louvain") {
   cluster <- vector(mode = "list", length = max(memberships))
 
   # Transform the mapping of geneset -> cluster to cluster -> genesets mapping
-  for (i in 1:length(memberships)) {
+  for (i in seq_len(length(memberships))) {
     sub_cluster <- memberships[i]
     cluster[[sub_cluster]] <- c(cluster[[sub_cluster]], i)
   }
@@ -373,7 +373,7 @@ kNN_clustering <- function(scores,
   }
 
   # Iterate over all clusters and genesets to build up the data.frame
-  for (i in 1:length(cluster)) {
+  for (i in seq_len(length(cluster))) {
     for (j in cluster[[i]]) {
       entry <- df[[j]]
       if (is.null(entry)) {

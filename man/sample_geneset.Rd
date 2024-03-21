@@ -4,6 +4,9 @@
 \name{sample_geneset}
 \alias{sample_geneset}
 \title{A sample input text file}
+\format{
+Text file
+}
 \description{
 A sample input text file taken from the GScluster package
 }

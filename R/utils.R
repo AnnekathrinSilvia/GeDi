@@ -59,7 +59,7 @@ getGenes <- function(genesets, gene_name = NULL) {
   sep <- .findSeparator(genesList)
 
   # Split large strings of genes into individual gene lists
-  genes <- lapply(1:nrow(genesets), function(i) {
+  genes <- lapply(seq_len(nrow(genesets)), function(i) {
     toupper(strsplit(genesList[i], sep)[[1]])
   })
 

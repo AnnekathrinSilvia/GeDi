@@ -4,6 +4,9 @@
 \name{sample_geneset_broken}
 \alias{sample_geneset_broken}
 \title{A broken input text file}
+\format{
+Text file
+}
 \description{
 A broken input text file to test the application
 }

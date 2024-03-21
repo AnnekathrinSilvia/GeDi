@@ -4,6 +4,9 @@
 \name{macrophage_Reactome_example}
 \alias{macrophage_Reactome_example}
 \title{A sample input RData file}
+\format{
+A data.frame object
+}
 \description{
 A sample input RData file generated from the macrophage dataset.
 }

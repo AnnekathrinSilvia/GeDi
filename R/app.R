@@ -37,15 +37,17 @@
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices get.edgelist
 #'
-#'
 #' @examples
-#' #GeDi()
-#'
+#' if (interactive()) {
+#'   GeDi()
+#' }
 #' # Alternatively, you can also start the application with your data directly
 #' # loaded.
 #'
-#' data(macrophage_topGO_example, package = "GeDi")
-#' #GeDi(genesets = macrophage_topGO_example)
+#' data("macrophage_topGO_example", package = "GeDi")
+#' if (interactive()) {
+#'   GeDi(genesets = macrophage_topGO_example)
+#' }
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
                  distance_scores = NULL) {
@@ -70,6 +72,7 @@ GeDi <- function(genesets = NULL,
   gedi_ui <- bs4DashPage(
     title = "GeDi",
     dark = NULL,
+    help = NULL,
     # navbar definition -------------------------------------------------------
     header = bs4DashNavbar(
       tagList(tags$code(tags$h3("GeDi"))),
@@ -1353,7 +1356,7 @@ GeDi <- function(genesets = NULL,
                            selectInput(
                              "cluster_nb",
                              "Select a cluster",
-                             choices = c(1:length(reactive_values$cluster)),
+                             choices = c(seq_len(length(reactive_values$cluster))),
                              selected = 1
                            )
                          ),
@@ -2666,3 +2669,5 @@ GeDi <- function(genesets = NULL,
 
   shinyApp(ui = gedi_ui, server = gedi_server)
 }
+
+globalVariables("macrophage_topGO_example")

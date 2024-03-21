@@ -4,6 +4,9 @@
 \name{sample_geneset_empty}
 \alias{sample_geneset_empty}
 \title{An empty input text file}
+\format{
+Text file
+}
 \description{
 An empty input text file to test the application
 }

@@ -33,7 +33,7 @@ getAdjacencyMatrix <- function(distanceMatrix,
   adjMat <- Matrix(0, l, l)
 
   # Iterate over each node to identify edges based on cutoff
-  for (i in 1:l) {
+  for (i in seq_len(l)) {
     # Get indices of nodes within cutoff
     edge <- which(distanceMatrix[i,] <= cutOff)
     if (length(edge) > 0) {
@@ -135,7 +135,7 @@ getClusterAdjacencyMatrix <- function(cluster,
   stopifnot(l >= max(unlist(cluster)))
 
   # Fill the adjacency matrix based on the provided cluster
-  for (i in 1:length(cluster)) {
+  for (i in seq_len(length(cluster))) {
     # Get subcluster indices
     subcluster <- cluster[[i]]
     # Initialize edges between all nodes in a cluster
@@ -224,9 +224,9 @@ buildClusterGraph <- function(cluster,
 
   n_cluster <- length(cluster)
   if (n_cluster > 0) {
-    for (i in 1:n_cluster) {
+    for (i in seq_len(n_cluster)) {
       clus <- cluster[[i]]
-      for (y in 1:length(clus)) {
+      for (y in seq_len(length(clus))) {
         gs_name <- gs_names[clus[[y]]]
         id <- which(names(V(g)) %in% gs_name)
         mem <- V(g)$cluster[id]
@@ -410,13 +410,13 @@ getBipartiteGraph <- function(cluster,
 
   # Set up node labels for the clusters
   node_labels <- c()
-  for (i in 1:n_cluster) {
+  for (i in seq_len(n_cluster)) {
     node_labels <- c(node_labels, paste0("Cluster ", i))
   }
 
   # Map numerical cluster member value to the respective geneset identifier
   # Add edges from cluster to members of the cluster
-  for (i in 1:n_cluster) {
+  for (i in seq_len(n_cluster)) {
     subcluster <- cluster[[i]]
     for (j in subcluster) {
       if (!is.na(df_node_mapping[j,])) {
@@ -439,9 +439,9 @@ getBipartiteGraph <- function(cluster,
     igraph::make_bipartite_graph(type, edgelist, directed = TRUE)
   graph <- set_vertex_attr(graph, "name", value = node_labels)
 
-  cluster_id <- which(names(V(graph)) %in% node_labels[1:n_cluster])
+  cluster_id <- which(names(V(graph)) %in% node_labels[seq_len(n_cluster)])
   geneset_id <-
-    which(!(names(V(graph)) %in% node_labels[1:n_cluster]))
+    which(!(names(V(graph)) %in% node_labels[seq_len(n_cluster)]))
 
   # Set node type and shape attributes
   igraph::V(graph)$nodeType <- NA
@@ -600,14 +600,14 @@ getGraphTitle <- function(geneset_df = NULL, node_ids, gs_ids, gs_names = NULL){
     title <- list()
     names_rows <- rownames(transposed_df)
 
-    for (i in 1:ncol(transposed_df)) {
+    for (i in seq_len(ncol(transposed_df))) {
       node_title <- "<!DOCTYPE html> <html> <head> <style>
       table {font-family: arial, sans-serif; font-size: 10px; border-collapse: collapse;width: 100%;} td,
       th { border: 1px solid #dddddd; text-align: center; padding: 5px;}
       tr:nth-child(even) {background-color: #dddddd;}
       </style> </head> <body>
       <table>"
-      for (j in 1:nrow(transposed_df)) {
+      for (j in seq_len(nrow(transposed_df))) {
         text <- gsub(",", " ", transposed_df[j, i])
         text <- gsub("(.{101,}?)\\s", "\\1<br>", text)
         node_title <- paste0(node_title,
