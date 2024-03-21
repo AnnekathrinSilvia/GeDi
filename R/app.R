@@ -72,6 +72,7 @@ GeDi <- function(genesets = NULL,
   gedi_ui <- bs4DashPage(
     title = "GeDi",
     dark = NULL,
+    help = NULL,
     # navbar definition -------------------------------------------------------
     header = bs4DashNavbar(
       tagList(tags$code(tags$h3("GeDi"))),
