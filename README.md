@@ -1,5 +1,5 @@
 
-<img src="vignettes/GeDi.png" align="right" alt="" width="120" />
+<img src="man/figures/GeDi.png" align="right" alt="" width="120" />
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
