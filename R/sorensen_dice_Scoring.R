@@ -57,6 +57,7 @@ calculateSorensenDice <- function(a, b) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom BiocParallel bplapply MulticoreParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -70,40 +71,61 @@ calculateSorensenDice <- function(a, b) {
 #'      envir = environment())
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
 #' sd_matrix <- getSorensenDiceMatrix(genes, n_cores = 1)
-getSorensenDiceMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
-  # Get the number of gene sets
-  l <- length(genesets)
+getSorensenDiceMatrix <-
+  function(genesets,
+           progress = NULL,
+           n_cores = NULL) {
+    # Get the number of gene sets
+    l <- length(genesets)
 
-  # If there are no gene sets, return NULL
-  if (l == 0) {
-    return(NULL)
-  }
-
-  # Initialize an empty matrix for storing Sorensen-Dice distances
-  s <- Matrix::Matrix(0, l, l)
-
-  # Initialize a list for storing intermediate results
-  results <- list()
-
-  # Determine the number of CPU cores to use for parallel processing
-  n_cores <- .getNumberCores(n_cores)
-
-  # Calculate the Sorensen-Dice distance for each pair of gene sets
-  for (k in seq_len((l - 1))) {
-    a <- genesets[[k]]
-    # Update the progress bar if provided
-    if (!is.null(progress)) {
-      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
+    # If there are no gene sets, return NULL
+    if (l == 0) {
+      return(NULL)
     }
-    # Parallelly calculate Sorensen-Dice distances for pairs
-    results[[k]] <- mclapply((k + 1):l, function(i) {
-      b <- genesets[[i]]
-      calculateSorensenDice(a, b)
-    }, mc.cores = n_cores)
-    # Fill the upper and lower triangular sections of the matrix with results
-    s[k, (k + 1):l] <- s[(k + 1):l, k] <- unlist(results[[k]])
-  }
 
-  # Return the Sorensen-Dice distance matrix rounded to 2 decimal places
-  return(round(s, 2))
-}
+    # Initialize an empty matrix for storing Sorensen-Dice distances
+    s <- Matrix::Matrix(0, l, l)
+
+    # Initialize a list for storing intermediate results
+    results <- list()
+
+    if (Sys.info()["sysname"] == "Windows") {
+      # Calculate Meet-Min distance for each pair of gene sets
+      for (j in seq_len((l - 1))) {
+        a <- genesets[[j]]
+        # Update the progress bar if provided
+        if (!is.null(progress)) {
+          progress$inc(1 / l, detail = paste("Scoring geneset number", j))
+        }
+        # Parallelly calculate Meet-Min distances for pairs
+        results[[j]] <- bplapply((j + 1):l, function(i) {
+          b <- genesets[[i]]
+          calculateSorensenDice(a, b)
+        }, BPPARAM = MulticoreParam())
+        s[k, (k + 1):l] <- s[(k + 1):l, k] <- unlist(results[[k]])
+      }
+    }
+    else{
+      # Determine the number of CPU cores to use for parallel processing
+      n_cores <- .getNumberCores(n_cores)
+
+      # Calculate the Sorensen-Dice distance for each pair of gene sets
+      for (k in seq_len((l - 1))) {
+        a <- genesets[[k]]
+        # Update the progress bar if provided
+        if (!is.null(progress)) {
+          progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
+        }
+        # Parallelly calculate Sorensen-Dice distances for pairs
+        results[[k]] <- mclapply((k + 1):l, function(i) {
+          b <- genesets[[i]]
+          calculateSorensenDice(a, b)
+        }, mc.cores = n_cores)
+        # Fill the upper and lower triangular sections of the matrix with results
+        s[k, (k + 1):l] <- s[(k + 1):l, k] <- unlist(results[[k]])
+      }
+    }
+
+    # Return the Sorensen-Dice distance matrix rounded to 2 decimal places
+    return(round(s, 2))
+  }

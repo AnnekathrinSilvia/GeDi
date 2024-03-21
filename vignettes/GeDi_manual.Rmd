@@ -92,7 +92,7 @@ With the attached package, you can simply start the application by running `GeDi
 GeDi()
 ```
 
-This action will open the application, directing you to the **Welcome** page. From there, you can easily provide your data using the **Data Input** panel, ensuring it's in the correct format for analysis.
+This action will open the application, directing you to the **Welcome** page. From there, you can easily provide your data using the **Data Input** panel on the left side menu, ensuring it's in the correct format for analysis.
 
 Alternatively, you can initiate the application by executing:
 
@@ -143,7 +143,7 @@ data("gse", package = "macrophage")
 dds_macrophage <- DESeqDataSet(gse, design = ~ line + condition)
 
 # Change the row names of the DESeqDataSet object to Ensembl IDs
-rownames(dds_macrophage) <- substr(rownames(dds_macrophage), 1, 15)
+rownames(dds_macrophage) <- gsub("\\..*", "", rownames(dds_macrophage))
 
 # Have a look at the resulting DESeqDataSet object
 dds_macrophage
@@ -225,7 +225,7 @@ macrophage_topGO_example <-
   )
 ```
 
-As mentioned earlier, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` expects the input to contain at least two columns: one named "Genesets" and one named "Genes". While this is not strictly mandatory when providing your data, it becomes necessary if you intend to initiate the application with your input as parameters (e.g., `GeDi(genesets = my_genesets_df)`). In such cases, the "Genesets" column should contain identifiers for each geneset in the input, while the "Genes" column should consist of comma-separated lists of genes associated with each geneset.
+As mentioned earlier, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` expects the input to contain at least two columns: one named "Genesets" and one named "Genes". While this is not strictly mandatory when providing your data interactively during an application session, it becomes necessary if you intend to initiate the application with your input as parameters (e.g., `GeDi(genesets = my_genesets_df)`). In such cases, the "Genesets" column should contain identifiers for each geneset in the input, while the "Genes" column should consist of comma-separated lists of genes associated with each geneset.
 
 Therefore, we will adjust the column names of the resulting `DataFrame` from the enrichment analysis to adhere to the required format.
 

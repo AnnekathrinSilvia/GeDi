@@ -82,6 +82,7 @@ calculateKappa <- function(a, b, all_genes) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom BiocParallel bplapply MulticoreParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -110,43 +111,80 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   # Get the unique genes present across all gene sets
   unique_genes <- unique(unlist(genesets))
 
-  # Determine the number of CPU cores to use for parallel processing
-  n_cores <- .getNumberCores(n_cores)
-
   # Initialize a list for storing intermediate results
   results <- list()
 
-  # Calculate Kappa distance for each pair of genesets
-  for (j in seq_len((l - 1))) {
-    a <- genesets[[j]]
-    # Update the progress bar if provided
-    if (!is.null(progress)) {
-      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
+  if(Sys.info()["sysname"] == "Windows"){
+    # Calculate the Jaccard distance for each pair of gene sets
+    for (k in seq_len((l - 1))) {
+      a <- genesets[[k]]
+      # Update the progress bar if provided
+      if (!is.null(progress)) {
+        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
+      }
+      # Parallelly calculate Jaccard distances for pairs
+      results[[k]] <- bplapply((j + 1):l, function(i){
+        b <- genesets[[i]]
+        calculateKappa(a, b, unique_genes)
+      }, BPPARAM = MulticoreParam())
+      # Fill the upper and lower triangular sections of the matrix with results
+      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
     }
-    # Parallelly calculate Kappa distances for pairs
-    results[[j]] <- mclapply((j + 1):l, function(i) {
-      b <- genesets[[i]]
-      calculateKappa(a, b, unique_genes)
-    }, mc.cores = n_cores)
-    # Fill the upper and lower triangular sections of the matrix with results
-    k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
+
+    # Normalize each value to the (0, 1) interval
+    min <- min(k)
+    max <- max(k)
+    if (!is.null(progress)) {
+      progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
+    }
+
+    # Update the matrix with normalized values
+    results <- list()
+    for (j in seq_len((l - 1))) {
+      results[[j]] <- bplapply((j + 1):l, function(i) {
+        return(1 - ((k[j, i] - min) / (max - min)))
+      }, BPPARAM = MulticoreParam())
+      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
+    }
+  } else{
+    # Determine the number of CPU cores to use for parallel processing
+    n_cores <- .getNumberCores(n_cores)
+
+    # Calculate Kappa distance for each pair of genesets
+    for (j in seq_len((l - 1))) {
+      a <- genesets[[j]]
+      # Update the progress bar if provided
+      if (!is.null(progress)) {
+        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
+      }
+      # Parallelly calculate Kappa distances for pairs
+      results[[j]] <- mclapply((j + 1):l, function(i) {
+        b <- genesets[[i]]
+        calculateKappa(a, b, unique_genes)
+      }, mc.cores = n_cores)
+      # Fill the upper and lower triangular sections of the matrix with results
+      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
+    }
+
+    # Normalize each value to the (0, 1) interval
+    min <- min(k)
+    max <- max(k)
+    if (!is.null(progress)) {
+      progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
+    }
+
+    # Update the matrix with normalized values
+    results <- list()
+    for (j in seq_len((l - 1))) {
+      results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
+        return(1 - ((k[j, i] - min) / (max - min)))
+      }, mc.cores = n_cores)
+      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
+    }
   }
 
-  # Normalize each value to the (0, 1) interval
-  min <- min(k)
-  max <- max(k)
-  if (!is.null(progress)) {
-    progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
-  }
 
-  # Update the matrix with normalized values
-  results <- list()
-  for (j in seq_len((l - 1))) {
-    results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
-      return(1 - ((k[j, i] - min) / (max - min)))
-    }, mc.cores = n_cores)
-    k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
-  }
+
 
   # Return the normalized Kappa distance matrix rounded to 2 decimal places
   return(round(k, 2))

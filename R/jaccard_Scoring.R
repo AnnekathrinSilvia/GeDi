@@ -57,6 +57,7 @@ calculateJaccard <- function(a, b) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom BiocParallel bplapply MulticoreParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -85,23 +86,41 @@ getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   # Initialize a list for storing intermediate results
   results <- list()
 
-  # Determine the number of CPU cores to use for parallel processing
-  n_cores <- .getNumberCores(n_cores)
-
-  # Calculate the Jaccard distance for each pair of gene sets
-  for (k in seq_len((l - 1))) {
-    a <- genesets[[k]]
-    # Update the progress bar if provided
-    if (!is.null(progress)) {
-      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
+  if(Sys.info()["sysname"] == "Windows"){
+    # Calculate the Jaccard distance for each pair of gene sets
+    for (k in seq_len((l - 1))) {
+      a <- genesets[[k]]
+      # Update the progress bar if provided
+      if (!is.null(progress)) {
+        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
+      }
+      # Parallelly calculate Jaccard distances for pairs
+      results[[k]] <- bplapply((k + 1):l, function(i){
+        b <- genesets[[i]]
+        calculateJaccard(a, b)
+      }, BPPARAM = MulticoreParam())
+      # Fill the upper and lower triangular sections of the matrix with results
+      j[k, (k + 1):l] <- j[(k + 1):l, k] <- unlist(results[[k]])
     }
-    # Parallelly calculate Jaccard distances for pairs
-    results[[k]] <- mclapply((k + 1):l, function(i) {
-      b <- genesets[[i]]
-      calculateJaccard(a, b)
-    }, mc.cores = n_cores)
-    # Fill the upper and lower triangular sections of the matrix with results
-    j[k, (k + 1):l] <- j[(k + 1):l, k] <- unlist(results[[k]])
+  } else{
+    # Determine the number of CPU cores to use for parallel processing
+    n_cores <- .getNumberCores(n_cores)
+
+    # Calculate the Jaccard distance for each pair of gene sets
+    for (k in seq_len((l - 1))) {
+      a <- genesets[[k]]
+      # Update the progress bar if provided
+      if (!is.null(progress)) {
+        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
+      }
+      # Parallelly calculate Jaccard distances for pairs
+      results[[k]] <- mclapply((k + 1):l, function(i) {
+        b <- genesets[[i]]
+        calculateJaccard(a, b)
+      }, mc.cores = n_cores)
+      # Fill the upper and lower triangular sections of the matrix with results
+      j[k, (k + 1):l] <- j[(k + 1):l, k] <- unlist(results[[k]])
+    }
   }
 
   # Return the Jaccard distance matrix rounded to 2 decimal places

@@ -1,12 +1,28 @@
 #' GeDi main function
 #'
-#' TODO: In the end add to all the examples
-#' also some with the example data not only with some to see the data structure
-#'
-#' @param genesets a dataframe of genesets containing the columns: genesets (the names / ids of the sets) and genes (the genes included in the genesets)
-#' @param ppi_df a Protein-Protein interaction matrix
-#' @param distance_scores a Matrix of calculated distance scores for the genesets in `genesets`
-#' @param alpha a scaling factor in between 0 and 1
+#' @param genesets a `data.frame`, The input data used for GeDi. This should be
+#'                 a `data.frame` of at least two columns.One column should be
+#'                 called "Genesets" and contain some sort of identifiers for
+#'                 the individual genesets. In this application, we use the term
+#'                 "Genesets" to refer to collections of individual genes, which
+#'                 share common biological characteristics or functions. Such
+#'                 genesets can for example be obtained from databases such as
+#'                 the Gene Ontology (GO), the Kyoto Encyclopedia of Genes and
+#'                 Genomes (KEGG), Reactome, or the Molecular Signatures Database
+#'                 (MSigDB). The identifiers used in these databases can be
+#'                 directly used as geneset identifiers in GeDi. The second
+#'                 column should be called "Genes" and contain a list of genes
+#'                 belonging to the individual genesets in the "Genesets" column.
+#'                 In order to leverage all of the functionality available in
+#'                 GeDi, the column has to contain gene names and no other
+#'                 commonly used identifiers. The column names are case sensitive.
+#' @param ppi_df a `data.frame`, Protein-protein interaction (PPI) network data frame.
+#'            The object is expected to have three columns, `Gene1` and `Gene2`
+#'            which specify the gene names of the interacting proteins in no
+#'            particular order (symmetric interaction) and a column
+#'            `combined_score` which is a numerical value of the strength of
+#'            the interaction.
+#' @param distance_scores A [Matrix::Matrix()] of (distance) scores
 #'
 #' @return A Shiny app object is returned
 #' @export
@@ -23,20 +39,16 @@
 #'
 #'
 #' @examples
-#' \dontrun{
-#' GeDi()
+#' #GeDi()
 #'
 #' # Alternatively, you can also start the application with your data directly
-#' loaded.
+#' # loaded.
 #'
 #' data(macrophage_topGO_example, package = "GeDi")
-#' GeDi(genesets = macrophage_topGO_example)
-#' }
-#'
+#' #GeDi(genesets = macrophage_topGO_example)
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
-                 distance_scores = NULL,
-                 alpha = 1) {
+                 distance_scores = NULL) {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
   on.exit(options(oopt))
 
@@ -70,23 +82,23 @@ GeDi <- function(genesets = NULL,
       ),
       tags$span(style = "display:inline-block; width: 2%"),
       tagList(
-        shinyWidgets::dropdownButton(
-          inputId = "ddbtn_docs",
-          circle = FALSE,
-          status = "info",
-          icon = icon("book"),
-          width = "300px",
-          size = "xs",
-          right = TRUE,
-          tooltip = shinyWidgets::tooltipOptions(title = "More documentation on GeDi"),
-          tags$h5("Documentation"),
-          actionButton(
-            inputId = "btn_first_help",
-            icon = icon("circle-question"),
-            label = "First Help",
-            style = .actionButtonStyle
-          )
-        ),
+      #   shinyWidgets::dropdownButton(
+      #     inputId = "ddbtn_docs",
+      #     circle = FALSE,
+      #     status = "info",
+      #     icon = icon("book"),
+      #     width = "300px",
+      #     size = "xs",
+      #     right = TRUE,
+      #     tooltip = shinyWidgets::tooltipOptions(title = "More documentation on GeDi"),
+      #     tags$h5("Documentation"),
+      #     actionButton(
+      #       inputId = "btn_first_help",
+      #       icon = icon("circle-question"),
+      #       label = "First Help",
+      #       style = .actionButtonStyle
+      #     )
+      #   ),
         shinyWidgets::dropdownButton(
           inputId = "ddbtn_info",
           circle = FALSE,
@@ -689,7 +701,7 @@ GeDi <- function(genesets = NULL,
               selectizeInput(
                 inputId = "select_filter_genesets",
                 label = "Select individual genesets to be filtered",
-                choices = c(reactive_values$gs_names),
+                choices = c(reactive_values$gs_description),
                 multiple = TRUE,
                 options = list(create = TRUE)
               ),
@@ -2022,7 +2034,9 @@ GeDi <- function(genesets = NULL,
         remove_threshold <- list()
 
         if (!is.null(input$select_filter_genesets)) {
-          remove_specific <- input$select_filter_genesets
+          index <- which(reactive_values$gs_description == input$select_filter_genesets)
+          names <- reactive_values$gs_names[index]
+          remove_specific <- names
         }
 
         if (input$select_filter_genesets_threshold != "") {
@@ -2589,20 +2603,20 @@ GeDi <- function(genesets = NULL,
 
 
     # Buttons Navbar Observers -------------------------------------------------
-    observeEvent(input$btn_first_help, {
-      showModal(
-        modalDialog(
-          title = "First Help Info",
-          size = "l",
-          fade = TRUE,
-          footer = NULL,
-          easyClose = TRUE,
-          tagList(includeMarkdown(
-            system.file("extdata", "GeDi101.md", package = "GeDi")
-          ),)
-        )
-      )
-    })
+    # observeEvent(input$btn_first_help, {
+    #   showModal(
+    #     modalDialog(
+    #       title = "First Help Info",
+    #       size = "l",
+    #       fade = TRUE,
+    #       footer = NULL,
+    #       easyClose = TRUE,
+    #       tagList(includeMarkdown(
+    #         system.file("extdata", "GeDi101.md", package = "GeDi")
+    #       ),)
+    #     )
+    #   )
+    # })
 
     observeEvent(input$btn_info_session, {
       showModal(

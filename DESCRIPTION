@@ -41,7 +41,8 @@ Imports:
     BiocNeighbors,
     tm,
     wordcloud2,
-    tools
+    tools,
+    BiocParallel
 Suggests: 
     knitr,
     rmarkdown,

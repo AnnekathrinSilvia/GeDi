@@ -4,33 +4,47 @@
 \alias{GeDi}
 \title{GeDi main function}
 \usage{
-GeDi(genesets = NULL, ppi_df = NULL, distance_scores = NULL, alpha = 1)
+GeDi(genesets = NULL, ppi_df = NULL, distance_scores = NULL)
 }
 \arguments{
-\item{genesets}{a dataframe of genesets containing the columns: genesets (the names / ids of the sets) and genes (the genes included in the genesets)}
+\item{genesets}{a \code{data.frame}, The input data used for GeDi. This should be
+a \code{data.frame} of at least two columns.One column should be
+called "Genesets" and contain some sort of identifiers for
+the individual genesets. In this application, we use the term
+"Genesets" to refer to collections of individual genes, which
+share common biological characteristics or functions. Such
+genesets can for example be obtained from databases such as
+the Gene Ontology (GO), the Kyoto Encyclopedia of Genes and
+Genomes (KEGG), Reactome, or the Molecular Signatures Database
+(MSigDB). The identifiers used in these databases can be
+directly used as geneset identifiers in GeDi. The second
+column should be called "Genes" and contain a list of genes
+belonging to the individual genesets in the "Genesets" column.
+In order to leverage all of the functionality available in
+GeDi, the column has to contain gene names and no other
+commonly used identifiers. The column names are case sensitive.}
 
-\item{ppi_df}{a Protein-Protein interaction matrix}
+\item{ppi_df}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
+The object is expected to have three columns, \code{Gene1} and \code{Gene2}
+which specify the gene names of the interacting proteins in no
+particular order (symmetric interaction) and a column
+\code{combined_score} which is a numerical value of the strength of
+the interaction.}
 
-\item{distance_scores}{a Matrix of calculated distance scores for the genesets in \code{genesets}}
-
-\item{alpha}{a scaling factor in between 0 and 1}
+\item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
 }
 \value{
 A Shiny app object is returned
 }
 \description{
-TODO: In the end add to all the examples
-also some with the example data not only with some to see the data structure
+GeDi main function
 }
 \examples{
-\dontrun{
-GeDi()
+#GeDi()
 
 # Alternatively, you can also start the application with your data directly
-loaded.
+# loaded.
 
 data(macrophage_topGO_example, package = "GeDi")
-GeDi(genesets = macrophage_topGO_example)
-}
-
+#GeDi(genesets = macrophage_topGO_example)
 }

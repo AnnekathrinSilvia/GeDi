@@ -19,6 +19,7 @@
 #'         geneset pair.
 #' @export
 #' @importFrom GOSemSim godata goSim
+#' @importFrom BiocParallel bplapply MulticoreParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -64,22 +65,42 @@ goSimilarity <- function(geneset_ids,
 
   results <- list()
 
-  # Determine the number of cores to use
-  n_cores <- .getNumberCores(n_cores)
-
-  # Calculate the GO similarity for each pair of genesets
-  for (g in seq_len((l - 1))) {
-    a <- geneset_ids[[g]]
-    if (!is.null(progress)) {
-      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
+  if (Sys.info()["sysname"] == "Windows") {
+    # Calculate Meet-Min distance for each pair of gene sets
+    for (j in seq_len((l - 1))) {
+      a <- genesets[[j]]
+      # Update the progress bar if provided
+      if (!is.null(progress)) {
+        progress$inc(1 / l, detail = paste("Scoring geneset number", j))
+      }
+      # Parallelly calculate Meet-Min distances for pairs
+      results[[j]] <- bplapply((j + 1):l, function(i) {
+        b <- geneset_ids[[i]]
+        # Calculate GO similarity
+        goSim(a, b, go, measure = method)
+      }, BPPARAM = MulticoreParam())
+      go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
     }
-    results[[g]] <- parallel::mclapply((g + 1):l, function(i) {
-      b <- geneset_ids[[i]]
-      # Calculate GO similarity
-      goSim(a, b, go, measure = method)
-    }, mc.cores = n_cores)
-    go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
   }
+  else{
+    # Determine the number of cores to use
+    n_cores <- .getNumberCores(n_cores)
+
+    # Calculate the GO similarity for each pair of genesets
+    for (g in seq_len((l - 1))) {
+      a <- geneset_ids[[g]]
+      if (!is.null(progress)) {
+        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
+      }
+      results[[g]] <- parallel::mclapply((g + 1):l, function(i) {
+        b <- geneset_ids[[i]]
+        # Calculate GO similarity
+        goSim(a, b, go, measure = method)
+      }, mc.cores = n_cores)
+      go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
+    }
+  }
+
 
   # Return the rounded GO similarity scores matrix
   return(round(go_sim, 2))

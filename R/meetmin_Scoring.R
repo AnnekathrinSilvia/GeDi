@@ -16,6 +16,7 @@
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
+#' @importFrom BiocParallel bplapply MulticoreParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -44,28 +45,51 @@ getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   # Initialize a list for storing intermediate results
   results <- list()
 
-  # Determine the number of CPU cores to use for parallel processing
-  n_cores <- .getNumberCores(n_cores)
-
-  # Calculate Meet-Min distance for each pair of gene sets
-  for (j in seq_len((l - 1))) {
-    a <- genesets[[j]]
-    # Update the progress bar if provided
-    if (!is.null(progress)) {
-      progress$inc(1 / l, detail = paste("Scoring geneset number", j))
-    }
-    # Parallelly calculate Meet-Min distances for pairs
-    results[[j]] <- mclapply((j + 1):l, function(i) {
-      b <- genesets[[i]]
-      if (length(a) == 0 || length(b) == 0) {
-        return(1)
-      } else {
-        int <- length(intersect(a, b))
-        return(1 - (int / min(length(a), length(b))))
+  if(Sys.info()["sysname"] == "Windows"){
+    # Calculate Meet-Min distance for each pair of gene sets
+    for (j in seq_len((l - 1))) {
+      a <- genesets[[j]]
+      # Update the progress bar if provided
+      if (!is.null(progress)) {
+        progress$inc(1 / l, detail = paste("Scoring geneset number", j))
       }
-    }, mc.cores = n_cores)
-    # Fill the upper and lower triangular sections of the matrix with results
-    m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
+      # Parallelly calculate Meet-Min distances for pairs
+      results[[j]] <- bplapply((j + 1):l, function(i){
+        b <- genesets[[i]]
+        if (length(a) == 0 || length(b) == 0) {
+          return(1)
+        } else {
+          int <- length(intersect(a, b))
+          return(1 - (int / min(length(a), length(b))))
+        }
+      }, BPPARAM = MulticoreParam())
+      m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
+    }
+  }
+  else{
+    # Determine the number of CPU cores to use for parallel processing
+    n_cores <- .getNumberCores(n_cores)
+
+    # Calculate Meet-Min distance for each pair of gene sets
+    for (j in seq_len((l - 1))) {
+      a <- genesets[[j]]
+      # Update the progress bar if provided
+      if (!is.null(progress)) {
+        progress$inc(1 / l, detail = paste("Scoring geneset number", j))
+      }
+      # Parallelly calculate Meet-Min distances for pairs
+      results[[j]] <- mclapply((j + 1):l, function(i) {
+        b <- genesets[[i]]
+        if (length(a) == 0 || length(b) == 0) {
+          return(1)
+        } else {
+          int <- length(intersect(a, b))
+          return(1 - (int / min(length(a), length(b))))
+        }
+      }, mc.cores = n_cores)
+      # Fill the upper and lower triangular sections of the matrix with results
+      m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
+    }
   }
 
   # Return the Meet-Min distance matrix rounded to 2 decimal places
