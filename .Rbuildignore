@@ -7,4 +7,4 @@
 ^docs$
 ^pkgdown$
 ^CODE_OF_CONDUCT\.md$
-.DS_Store
+^\.DS_Store$
