@@ -1,3 +1,7 @@
+# GeDi 0.99.0
+
+* Ready for the submission to Bioconductor!
+
 # GeDi 0.90.0
 
 * Final touches and bug fixes to the main functionality
