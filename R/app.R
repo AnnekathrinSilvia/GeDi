@@ -117,7 +117,7 @@ GeDi <- function(genesets = NULL,
             onclick = ifelse(
               system.file("doc", "GeDi_manual.html", package = "GeDi") != "",
               "",
-              "window.open('https://federicomarini.github.io/GeneTonic/articles/GeneTonic_manual.html', '_blank')"
+              "window.open('https://annekathrinsilvia.github.io/GeDi/articles/GeDi_manual.html', '_blank')"
             )
           ),
           actionButton(
