@@ -1,9 +1,12 @@
 authors:
   Annekathrin Silvia Nedwed:
     href: https://github.com/AnnekathrinSilvia/GeDi
+  Federico Marini:
+    href: https://federicomarini.github.io
 
 template:
   params:
+    bootstrap: 5
     bootswatch: cosmo
 
 navbar:
