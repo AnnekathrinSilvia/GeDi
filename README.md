@@ -5,8 +5,6 @@
 
 # GeDi
 
-<a href="https://doi.org/10.1186/s12859-021-04461-5"><img src="https://img.shields.io/badge/doi-GeDi-blue.svg"><a>
-
 <!-- badges: start -->
 
 [![R build
