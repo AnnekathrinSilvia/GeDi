@@ -79,7 +79,7 @@ goSimilarity <- function(geneset_ids,
         # Calculate GO similarity
         goSim(a, b, go, measure = method)
       }, BPPARAM = SnowParam())
-      go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
+      go_sim[j, (j + 1):l] <- go_sim[(j + 1):l, j] <- unlist(results[[j]])
     }
   }
   else{
