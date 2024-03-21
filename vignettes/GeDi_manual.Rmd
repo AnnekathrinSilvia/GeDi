@@ -253,7 +253,7 @@ GeDi(genesets = macrophage_topGO_example)
 The above shown code will open the application, directing you to the **Welcome** page. The **Welcome** page of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` serves as the entry point to the application, providing users with an overview of its features and functionalities. Upon launching the application, users are greeted with a user-friendly interface designed to facilitate the exploration and interpretation of functional annotation and enrichment analysis results. The **Welcome** page offers guidance on how to navigate the application and highlights key components such as data input options, visualization tools, and interactive features. Whether users are new to GeDi or returning to explore additional datasets, the **Welcome** page serves as a central hub for accessing resources and getting started with their analysis journey.
 
 ```{r welcome-page, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Welcome_page.png"))
+knitr::include_graphics("Welcome_page.png")
 ```
 
 
@@ -292,7 +292,7 @@ The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` `r BiocStyle::Biocpkg("shiny")` appli
 This panel serves as a guide for utilizing `r #BiocStyle::Biocpkg("GeDi")` `GeDi` effectively. It offers detailed instructions on generating input data for the application, elucidating the expected input format and outlining the various interactive elements present in the app's other panels.
 
 ```{r welcome-page2, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Welcome_page.png"))
+knitr::include_graphics("Welcome_page.png")
 ```
 
 
@@ -312,7 +312,7 @@ However, instead of loading demo data and observing the expected data structure 
 Once, you have successfully loaded some data, the data input process will proceed and two additional boxes will be displayed in the panel. 
 
 ```{r data-input-step1, fig.align = "center", fig.cap = "The Data input panel - Step 1", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Data_Input_panel_Step1.png"))
+knitr::include_graphics("Data_Input_panel_Step1.png")
 ```
 
 
@@ -328,7 +328,7 @@ Once you've chosen the genesets you wish to exclude from your dataset, you can i
 Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the `Remove the selected Genesets` button. This action will remove all selected genesets from the dataset.  Additionally, you have the option to save the filtered data using the `Download the filtered data` button. Clicking this button will save the filtered data to your local machine.This feature can be particularly beneficial for users who intend to revisit their data in a new instance of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` and want to ensure that previously identified uninsightful genesets have already been filtered out.
 
 ```{r optional-filtering, fig.align = "center", fig.cap = "Optional Filtering Step", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Optional_Filtering.png"))
+knitr::include_graphics("Optional_Filtering.png")
 ```
 
 
@@ -337,7 +337,7 @@ knitr::include_graphics(here::here("", "/inst/www/Optional_Filtering.png"))
 Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial task of selecting the species associated with your dataset. This step holds significant importance for the computation of the **PMM score** within `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, which heavily relies on a **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in capturing protein interaction strength, thereby enriching distance scores with valuable biological context. To access and utilize this essential information, specifying the species linked to your dataset is mandatory. By clicking the input field, you'll prompt a dropdown menu showcasing preselected species options. If your species is included, simply make your selection. Alternatively, if your species is not listed, you have the option to manually input it. In cases of uncertainty, a convenient link provided on the right directs you to the STRING database, enabling verification of species details and PPI availability for informed decision-making.
 
 ```{r species-selection, fig.align = "center", fig.cap = "Species Selection", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Species_Selection.png"))
+knitr::include_graphics("Species_Selection.png")
 ```
 
 **Step 3**: PPI Matrix Download
@@ -355,7 +355,7 @@ where **min** and **max** represent the minimum and maximum number of interactio
 In addition to downloading a PPI matrix during the current session, users can also upload a previously saved matrix for analysis using the **Browse** button. This functionality allows users to work with their own customized datasets or previously analyzed PPI matrices. Furthermore, saving the downloaded PPI matrix locally enables users to store the data on their machine for future use. By saving the matrix locally via the **Save PPI matrix** button, users can access the data quickly in subsequent sessions without having to wait for the download process again. This capability significantly enhances workflow efficiency and allows for seamless continuation of analysis across different sessions.
 
 ```{r download-ppi, fig.align = "center", fig.cap = "Downloading the PPI", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Downloading_PPI.png"))
+knitr::include_graphics("Downloading_PPI.png")
 ```
 
 While the final two steps are optional, note that the PPI matrix is only required for a singular score. Therefore, you can commence data exploration without necessarily completing these additional steps.
@@ -368,7 +368,7 @@ This panel focuses mainly on computing distance scores for the provided input da
 
 
 ```{r distance-score, fig.align = "center", fig.cap = "The Distance Score panel", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Distance_Score_panel.png"))
+knitr::include_graphics("Distance_Score_panel.png")
 ```
 
 
@@ -469,7 +469,7 @@ This panel is dedicated to the computation of clusters among genesets based on t
 The computation of clusters involves grouping genesets that display similar patterns of distance scores, thereby indicating shared biological characteristics or functional relationships. This clustering process enables users to identify cohesive groups of genesets with related functionalities or involvement in similar biological processes.
 
 ```{r clustering-graph, fig.align = "center", fig.cap = "The Clustering Graph panel", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Clustering_Graph_Panel.png"))
+knitr::include_graphics("Clustering_Graph_Panel.png")
 ```
 
 
@@ -518,7 +518,7 @@ The report generation process utilizes a predefined template report included wit
 The resulting report serves as a valuable tool for creating a permanent and reproducible analysis output. Users can easily store or share this report for future reference or collaboration purposes.
 
 ```{r report-panel, fig.align = "center", fig.cap = "The Report panel", echo = F}
-knitr::include_graphics(here::here("", "/inst/www/Report_panel.png"))
+knitr::include_graphics("Report_panel.png")
 ```
 
 
