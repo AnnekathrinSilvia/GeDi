@@ -68,7 +68,7 @@ goSimilarity <- function(geneset_ids,
   if (Sys.info()["sysname"] == "Windows") {
     # Calculate Meet-Min distance for each pair of gene sets
     for (j in seq_len((l - 1))) {
-      a <- genesets[[j]]
+      a <- geneset_ids[[j]]
       # Update the progress bar if provided
       if (!is.null(progress)) {
         progress$inc(1 / l, detail = paste("Scoring geneset number", j))

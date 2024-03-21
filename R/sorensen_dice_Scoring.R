@@ -95,7 +95,7 @@ getSorensenDiceMatrix <-
         a <- genesets[[k]]
         # Update the progress bar if provided
         if (!is.null(progress)) {
-          progress$inc(1 / l, detail = paste("Scoring geneset number", j))
+          progress$inc(1 / l, detail = paste("Scoring geneset number", k))
         }
         # Parallelly calculate Meet-Min distances for pairs
         results[[k]] <- bplapply((k + 1):l, function(i) {
