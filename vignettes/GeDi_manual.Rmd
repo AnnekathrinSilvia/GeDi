@@ -126,7 +126,7 @@ To utilize `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, you'll require results from a
 
 Firstly, we'll load the macrophage data and create a `DESeqDataset`, as the subsequent differential expression analysis will be performed using `r BiocStyle::Biocpkg("DESeq2")` [@Love2014].
 
-```{r create_dds, eval=TRUE}
+```{r create_dds}
 # Load required libraries
 library("macrophage")
 library("DESeq2")
@@ -157,7 +157,7 @@ Subsequently, we'll conduct the DE analysis and assess against a null hypothesis
 
 Finally, we'll append the gene symbols to the resultant `DataFrame`, which will later serve as our "Genes" column in the input data for `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
-```{r create_resde1, eval = TRUE}
+```{r create_resde1}
 # Filter genes based on read counts
 # Calculate the number of genes with at least 10 counts in at least 6 samples
 keep <- rowSums(counts(dds_macrophage) >= 10) >= 6
@@ -169,7 +169,7 @@ dds_macrophage <- dds_macrophage[keep, ]
 dds_macrophage
 ```
 
-```{r create_resde2, eval = TRUE}
+```{r create_resde2}
 # Perform differential expression analysis using DESeq2
 dds_macrophage <- DESeq(dds_macrophage)
 
