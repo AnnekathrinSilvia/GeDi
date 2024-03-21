@@ -2669,3 +2669,5 @@ GeDi <- function(genesets = NULL,
 
   shinyApp(ui = gedi_ui, server = gedi_server)
 }
+
+globalVariables("macrophage_topGO_example")
