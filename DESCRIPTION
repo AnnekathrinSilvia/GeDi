@@ -17,7 +17,7 @@ Description: The package provides different distances measurements
     the genesets are clustered and visualized as graph. This is all
     presented in an interactive Shiny application for easy usage.
 Depends:
-    R (>= 4.1.0)
+    R (>= 4.4.0)
 Imports: 
     GOSemSim,
     Matrix,
