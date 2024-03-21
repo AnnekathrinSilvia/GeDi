@@ -74,6 +74,6 @@ RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 biocViews: 
-    GUI, FunctionalAnnotation, GeneSetEnrichment, Software, Transcription, RNASeq, 
+    GUI, GeneSetEnrichment, Software, Transcription, RNASeq, 
     Visualization, Clustering, Pathways, ReportWriting, GO, KEGG, 
     Reactome, ShinyApps
