@@ -19,7 +19,7 @@
 #'         geneset pair.
 #' @export
 #' @importFrom GOSemSim godata goSim
-#' @importFrom BiocParallel bplapply MulticoreParam
+#' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -78,7 +78,7 @@ goSimilarity <- function(geneset_ids,
         b <- geneset_ids[[i]]
         # Calculate GO similarity
         goSim(a, b, go, measure = method)
-      }, BPPARAM = MulticoreParam())
+      }, BPPARAM = SnowParam())
       go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
     }
   }

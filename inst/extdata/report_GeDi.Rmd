@@ -236,7 +236,7 @@ if(!is.null(reactive_values$cluster)){
 
 If you use this report in your scientific work, please cite GeDi:
 
-```{r}
+```{r, eval = F}
 utils::citation("GeDi")
 ```
 

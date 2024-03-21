@@ -57,7 +57,7 @@ calculateSorensenDice <- function(a, b) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
-#' @importFrom BiocParallel bplapply MulticoreParam
+#' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -91,17 +91,17 @@ getSorensenDiceMatrix <-
 
     if (Sys.info()["sysname"] == "Windows") {
       # Calculate Meet-Min distance for each pair of gene sets
-      for (j in seq_len((l - 1))) {
-        a <- genesets[[j]]
+      for (k in seq_len((l - 1))) {
+        a <- genesets[[k]]
         # Update the progress bar if provided
         if (!is.null(progress)) {
           progress$inc(1 / l, detail = paste("Scoring geneset number", j))
         }
         # Parallelly calculate Meet-Min distances for pairs
-        results[[j]] <- bplapply((j + 1):l, function(i) {
+        results[[k]] <- bplapply((k + 1):l, function(i) {
           b <- genesets[[i]]
           calculateSorensenDice(a, b)
-        }, BPPARAM = MulticoreParam())
+        }, BPPARAM = SnowParam())
         s[k, (k + 1):l] <- s[(k + 1):l, k] <- unlist(results[[k]])
       }
     }
