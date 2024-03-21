@@ -82,7 +82,7 @@ BiocManager::install("GeDi")
 
 Once installed, the package can be loaded and attached to your current workspace as follows:
 
-```{r loadlib, eval = F}
+```{r loadlib, eval = FALSE}
 library("GeDi")
 ```
 
@@ -252,7 +252,7 @@ GeDi(genesets = macrophage_topGO_example)
 
 The above shown code will open the application, directing you to the **Welcome** page. The **Welcome** page of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` serves as the entry point to the application, providing users with an overview of its features and functionalities. Upon launching the application, users are greeted with a user-friendly interface designed to facilitate the exploration and interpretation of functional annotation and enrichment analysis results. The **Welcome** page offers guidance on how to navigate the application and highlights key components such as data input options, visualization tools, and interactive features. Whether users are new to GeDi or returning to explore additional datasets, the **Welcome** page serves as a central hub for accessing resources and getting started with their analysis journey.
 
-```{r welcome-page, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = F}
+```{r welcome-page, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = FALSE}
 knitr::include_graphics("Welcome_page.png")
 ```
 
@@ -291,7 +291,7 @@ The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` `r BiocStyle::Biocpkg("shiny")` appli
 
 This panel serves as a guide for utilizing `r #BiocStyle::Biocpkg("GeDi")` `GeDi` effectively. It offers detailed instructions on generating input data for the application, elucidating the expected input format and outlining the various interactive elements present in the app's other panels.
 
-```{r welcome-page2, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = F}
+```{r welcome-page2, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = FALSE}
 knitr::include_graphics("Welcome_page.png")
 ```
 
@@ -311,7 +311,7 @@ However, instead of loading demo data and observing the expected data structure 
 
 Once, you have successfully loaded some data, the data input process will proceed and two additional boxes will be displayed in the panel. 
 
-```{r data-input-step1, fig.align = "center", fig.cap = "The Data input panel - Step 1", echo = F}
+```{r data-input-step1, fig.align = "center", fig.cap = "The Data input panel - Step 1", echo = FALSE}
 knitr::include_graphics("Data_Input_panel_Step1.png")
 ```
 
@@ -327,7 +327,7 @@ Once you've chosen the genesets you wish to exclude from your dataset, you can i
 
 Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the `Remove the selected Genesets` button. This action will remove all selected genesets from the dataset.  Additionally, you have the option to save the filtered data using the `Download the filtered data` button. Clicking this button will save the filtered data to your local machine.This feature can be particularly beneficial for users who intend to revisit their data in a new instance of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` and want to ensure that previously identified uninsightful genesets have already been filtered out.
 
-```{r optional-filtering, fig.align = "center", fig.cap = "Optional Filtering Step", echo = F}
+```{r optional-filtering, fig.align = "center", fig.cap = "Optional Filtering Step", echo = FALSE}
 knitr::include_graphics("Optional_Filtering.png")
 ```
 
@@ -336,7 +336,7 @@ knitr::include_graphics("Optional_Filtering.png")
 
 Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial task of selecting the species associated with your dataset. This step holds significant importance for the computation of the **PMM score** within `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, which heavily relies on a **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in capturing protein interaction strength, thereby enriching distance scores with valuable biological context. To access and utilize this essential information, specifying the species linked to your dataset is mandatory. By clicking the input field, you'll prompt a dropdown menu showcasing preselected species options. If your species is included, simply make your selection. Alternatively, if your species is not listed, you have the option to manually input it. In cases of uncertainty, a convenient link provided on the right directs you to the STRING database, enabling verification of species details and PPI availability for informed decision-making.
 
-```{r species-selection, fig.align = "center", fig.cap = "Species Selection", echo = F}
+```{r species-selection, fig.align = "center", fig.cap = "Species Selection", echo = FALSE}
 knitr::include_graphics("Species_Selection.png")
 ```
 
@@ -354,7 +354,7 @@ where **min** and **max** represent the minimum and maximum number of interactio
 
 In addition to downloading a PPI matrix during the current session, users can also upload a previously saved matrix for analysis using the **Browse** button. This functionality allows users to work with their own customized datasets or previously analyzed PPI matrices. Furthermore, saving the downloaded PPI matrix locally enables users to store the data on their machine for future use. By saving the matrix locally via the **Save PPI matrix** button, users can access the data quickly in subsequent sessions without having to wait for the download process again. This capability significantly enhances workflow efficiency and allows for seamless continuation of analysis across different sessions.
 
-```{r download-ppi, fig.align = "center", fig.cap = "Downloading the PPI", echo = F}
+```{r download-ppi, fig.align = "center", fig.cap = "Downloading the PPI", echo = FALSE}
 knitr::include_graphics("Downloading_PPI.png")
 ```
 
@@ -367,7 +367,7 @@ Upon concluding the essential tasks outlined in this panel, you are ready to pro
 This panel focuses mainly on computing distance scores for the provided input data. Like the preceding panel, it is segmented into two distinct sections, each serving a specific function.
 
 
-```{r distance-score, fig.align = "center", fig.cap = "The Distance Score panel", echo = F}
+```{r distance-score, fig.align = "center", fig.cap = "The Distance Score panel", echo = FALSE}
 knitr::include_graphics("Distance_Score_panel.png")
 ```
 
@@ -468,7 +468,7 @@ This panel is dedicated to the computation of clusters among genesets based on t
 
 The computation of clusters involves grouping genesets that display similar patterns of distance scores, thereby indicating shared biological characteristics or functional relationships. This clustering process enables users to identify cohesive groups of genesets with related functionalities or involvement in similar biological processes.
 
-```{r clustering-graph, fig.align = "center", fig.cap = "The Clustering Graph panel", echo = F}
+```{r clustering-graph, fig.align = "center", fig.cap = "The Clustering Graph panel", echo = FALSE}
 knitr::include_graphics("Clustering_Graph_Panel.png")
 ```
 
@@ -517,7 +517,7 @@ The report generation process utilizes a predefined template report included wit
 
 The resulting report serves as a valuable tool for creating a permanent and reproducible analysis output. Users can easily store or share this report for future reference or collaboration purposes.
 
-```{r report-panel, fig.align = "center", fig.cap = "The Report panel", echo = F}
+```{r report-panel, fig.align = "center", fig.cap = "The Report panel", echo = FALSE}
 knitr::include_graphics("Report_panel.png")
 ```
 
@@ -531,7 +531,7 @@ The authors welcome thoughtful suggestions for enhancements or new features, and
 
 If you utilize `r #BiocStyle::Biocpkg("GeDi")` `GeDi` for your analysis, kindly cite it using the provided citation format below:
 
-```{r citation, eval = F}
+```{r citation, eval = FALSE}
 utils::citation("GeDi")
 ```
 
@@ -543,7 +543,7 @@ In this section we will demonstrate how results containing identifiers from data
 
 However, before we can use the `enrichKEGG` function from the `r BiocStyle::Biocpkg("clusterProfiler")` package, we have to map the ENSEMBL ids of the data to Entrez ids. For this, we will up the first use the `r BiocStyle::Biocpkg("biomaRt")` package to generate a mapping of ENSEMBL to Entrez.
 
-```{r, eval = F}
+```{r, eval = FALSE}
 # Load the "biomaRt" package to access the BioMart database
 library("biomaRt")
 
@@ -570,7 +570,7 @@ anns <- anns[match(rownames(dds_macrophage), anns[, 1]), ]
 
 Next, we map the differentially expressed genes to get the right identifiers and run the `enrichKEGG` function. We set the organism to human and the p-value cutoff to 5%.
 
-```{r enrichKegg, eval = F}
+```{r enrichKegg, eval = FALSE}
 # Load the "clusterProfiler" package for functional enrichment analysis
 library("clusterProfiler")
 
@@ -599,7 +599,7 @@ GeDi(genesets = macrophage_KEGG_example)
 In a similar manner we can use the Reactome database for the functional annotation. Here, we use the 
 `r BiocStyle::Biocpkg("ReactomePA")` package and the differentially expressed genes. 
 
-```{r enrichReactome, eval = F}
+```{r enrichReactome, eval = FALSE}
 # Load the "ReactomePA" package for pathway enrichment analysis
 library("ReactomePA")
 

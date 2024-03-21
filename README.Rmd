@@ -32,7 +32,7 @@ The goal of GeDi is to provide a user-friendly platform for exploring and analyz
 
 You can install the development version of GeDi from [GitHub](https://github.com/AnnekathrinSilvia/GeDi) with:
 
-```{r, eval = F}
+```{r, eval = FALSE}
 install.packages("devtools")
 devtools::install_github("AnnekathrinSilvia/GeDi")
 ```
@@ -41,7 +41,7 @@ devtools::install_github("AnnekathrinSilvia/GeDi")
 
 If you want to give GeDi a testrun on a demo dataset, you can simply launch the Shiny application and load the demo data in the **Data input** panel. To start the Shiny Application, you can use the following code:
 
-```{r, eval = F}
+```{r, eval = FALSE}
 library("GeDi")
 GeDi()
 ```
