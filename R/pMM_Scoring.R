@@ -191,7 +191,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'
 #' @export
 #' @importFrom parallel mclapply
-#' @importFrom BiocParallel bplapply MulticoreParam
+#' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -253,7 +253,7 @@ getpMMMatrix <-
         results[[j]] <- bplapply((j + 1):l, function(i) {
           b <- genesets[[i]]
           pMMlocal(a, b, ppi, maxInteract)
-        }, BPPARAM = MulticoreParam())
+        }, BPPARAM = SnowParam())
         scores[j, (j + 1):l] <-
           scores[(j + 1):l, j] <- unlist(results[[j]])
       }

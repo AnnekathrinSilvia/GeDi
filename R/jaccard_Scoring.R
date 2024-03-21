@@ -57,7 +57,7 @@ calculateJaccard <- function(a, b) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
-#' @importFrom BiocParallel bplapply MulticoreParam
+#' @importFrom BiocParallel bplapply SnowParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -98,7 +98,7 @@ getJaccardMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
       results[[k]] <- bplapply((k + 1):l, function(i){
         b <- genesets[[i]]
         calculateJaccard(a, b)
-      }, BPPARAM = MulticoreParam())
+      }, BPPARAM = SnowParam())
       # Fill the upper and lower triangular sections of the matrix with results
       j[k, (k + 1):l] <- j[(k + 1):l, k] <- unlist(results[[k]])
     }
