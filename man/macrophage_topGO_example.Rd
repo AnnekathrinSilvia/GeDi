@@ -4,6 +4,9 @@
 \name{macrophage_topGO_example}
 \alias{macrophage_topGO_example}
 \title{A sample input RData file}
+\format{
+A data.frame object
+}
 \description{
 A sample input RData file generated from the macrophage dataset.
 }
