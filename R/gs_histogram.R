@@ -53,7 +53,7 @@ gsHistogram <- function(genesets,
   }
 
   # Create a histogram plot using ggplot2
-  p <- ggplot(n_genes, aes(x = Size)) +
+  p <- ggplot(n_genes, aes(x = .data$Size)) +
     geom_histogram(binwidth = binwidth, fill = color) +
     theme_bw()
 
