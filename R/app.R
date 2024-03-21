@@ -1356,7 +1356,7 @@ GeDi <- function(genesets = NULL,
                            selectInput(
                              "cluster_nb",
                              "Select a cluster",
-                             choices = c(1:length(reactive_values$cluster)),
+                             choices = c(seq_len(length(reactive_values$cluster))),
                              selected = 1
                            )
                          ),
