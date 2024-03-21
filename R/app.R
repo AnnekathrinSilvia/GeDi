@@ -37,15 +37,17 @@
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices get.edgelist
 #'
-#'
 #' @examples
-#' #GeDi()
-#'
+#' if (interactive()) {
+#'   GeDi()
+#' }
 #' # Alternatively, you can also start the application with your data directly
 #' # loaded.
 #'
-#' data(macrophage_topGO_example, package = "GeDi")
-#' #GeDi(genesets = macrophage_topGO_example)
+#' data("macrophage_topGO_example", package = "GeDi")
+#' if (interactive()) {
+#'   GeDi(genesets = macrophage_topGO_example)
+#' }
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
                  distance_scores = NULL) {
