@@ -82,7 +82,7 @@ BiocManager::install("GeDi")
 
 Once installed, the package can be loaded and attached to your current workspace as follows:
 
-```{r loadlib, eval = FALSE}
+```{r loadlib}
 library("GeDi")
 ```
 
