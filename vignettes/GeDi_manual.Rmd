@@ -39,7 +39,7 @@ bibliography: GeDi.bib
 
 **License**: `r #packageDescription("GeDi")[["License"]]`
 
-```{r, include = FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -88,7 +88,7 @@ library("GeDi")
 
 With the attached package, you can simply start the application by running `GeDi()`. 
 
-```{r launchapp, eval = FALSE}
+```{r launchapp, eval=FALSE}
 GeDi()
 ```
 
@@ -99,15 +99,15 @@ Alternatively, you can initiate the application by executing:
 ```{r launchappwithData, eval=FALSE}
 GeDi(
   genesets = geneset_df,
-  ppi = ppi_df
+  ppi = ppi_df,
   distance_scores = distance_scores_df
 )
 ```
 
 where
 
-- `geneset_df` represents your input data in the form of a `DataFrame`, which should include at least one column named "Genesets" containing geneset identifiers and one column named "Genes" containing a comma-separated list of genes belonging to each respective geneset.
-- `ppi_df` is another `DataFrame` containing protein-protein interaction scores, with columns named "from", "to", and "combined_score".
+- `geneset_df` represents your input data in the form of a `data.frame`, which should include at least one column named "Genesets" containing geneset identifiers and one column named "Genes" containing a comma-separated list of genes belonging to each respective geneset.
+- `ppi_df` is another `data.frame` containing protein-protein interaction scores, with columns named "from", "to", and "combined_score".
 - `distance_scores_df` is a sparse `Matrix` containing the distance scores of the genesets in your data.
 
 All of these parameters are optional, as you can alternatively upload, download, and compute them directly within the application. However, some of these processes may require a significant amount of time, especially with larger datasets. Therefore, it may be advantageous to save the intermediate results, such as the downloaded PPI and computed distance scores, for later use within the application.
@@ -155,7 +155,7 @@ Before executing the DE analysis, we'll filter out lowly expressed features from
 
 Subsequently, we'll conduct the DE analysis and assess against a null hypothesis of a log2FoldChange of 1 to ensure that we identify genes with consistent and robust changes in expression.
 
-Finally, we'll append the gene symbols to the resultant `DataFrame`, which will later serve as our "Genes" column in the input data for `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+Finally, we'll append the gene symbols to the resultant `data.frame`, which will later serve as our "Genes" column in the input data for `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
 ```{r create_resde1}
 # Filter genes based on read counts
@@ -187,7 +187,7 @@ res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
 
 After completing the differential expression analysis, we move on to conduct the functional annotation analysis. To begin, we extract the differentially expressed (DE) genes from the previously generated results and identify the background genes to be utilized for functional enrichment.
 
-For the enrichment analysis, we use the overrepresentation analysis method provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the integration of these results into `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, we utilize the `topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. By default, this function employs the `BP` ontology and the `elim` method, which helps decorrelate the Gene Ontology (GO) graph structure, resulting in less redundant functional categories. The output is a `DataFrame` object that seamlessly integrates with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+For the enrichment analysis, we use the overrepresentation analysis method provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the integration of these results into `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, we utilize the `topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. By default, this function employs the `BP` ontology and the `elim` method, which helps decorrelate the Gene Ontology (GO) graph structure, resulting in less redundant functional categories. The output is a `data.frame` object that seamlessly integrates with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
 
 However, as `r #BiocStyle::Biocpkg("GeDi")` `GeDi` has only minimal requirements for the input, enrichment results generated using `r BiocStyle::Biocpkg("clusterProfiler")` can also be utilized. While we primarily tested results from the `enrichGO` method during `r #BiocStyle::Biocpkg("GeDi")` `GeDi` development, those from the `enrichKEGG` and `enrichPathway` methods are also compatible.
 
@@ -227,7 +227,7 @@ macrophage_topGO_example <-
 
 As mentioned earlier, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` expects the input to contain at least two columns: one named "Genesets" and one named "Genes". While this is not strictly mandatory when providing your data interactively during an application session, it becomes necessary if you intend to initiate the application with your input as parameters (e.g., `GeDi(genesets = my_genesets_df)`). In such cases, the "Genesets" column should contain identifiers for each geneset in the input, while the "Genes" column should consist of comma-separated lists of genes associated with each geneset.
 
-Therefore, we will adjust the column names of the resulting `DataFrame` from the enrichment analysis to adhere to the required format.
+Therefore, we will adjust the column names of the resulting `data.frame` from the enrichment analysis to adhere to the required format.
 
 ```{r renamecolumns, eval=TRUE}
 # Rename columns in the macrophage_topGO_example dataframe
