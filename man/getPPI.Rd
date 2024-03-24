@@ -27,7 +27,7 @@ object
 ## Mock example showing how the data should look like
 
 genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
-string_db <- getStringDB(9606, cache_location = TRUE)
+string_db <- getStringDB(9606, cache_location = FALSE)
 # string_db
 anno_df <- getAnnotation(string_db)
 ppi <- getPPI(genes, string_db, anno_df)
