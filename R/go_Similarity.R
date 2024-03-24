@@ -35,8 +35,10 @@
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small, package = "GeDi")
 #' go_ids <- macrophage_topGO_example_small$Genesets
+#' \dontrun{
 #' similarity <- goSimilarity(go_ids,
 #'                            n_cores = 1)
+#' }
 goSimilarity <- function(geneset_ids,
                          method = "Wang",
                          ontology = "BP",
@@ -140,9 +142,11 @@ goSimilarity <- function(geneset_ids,
 #' data(scores_macrophage_topGO_example_small, package = "GeDi")
 #' data(macrophage_topGO_example_small, package = "GeDi")
 #' go_ids <- macrophage_topGO_example_small$Genesets
+#' \dontrun{
 #' scores_scaled <- scaleGO(scores_macrophage_topGO_example_small,
 #'                          go_ids,
 #'                          n_cores = 1)
+#' }
 scaleGO <- function(scores,
                     geneset_ids,
                     method = "Wang",

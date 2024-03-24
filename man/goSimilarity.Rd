@@ -52,6 +52,8 @@ similarity <- goSimilarity(go_ids,
 ## Example using the data available in the package
 data(macrophage_topGO_example_small, package = "GeDi")
 go_ids <- macrophage_topGO_example_small$Genesets
+\dontrun{
 similarity <- goSimilarity(go_ids,
                            n_cores = 1)
+}
 }

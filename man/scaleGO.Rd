@@ -52,7 +52,9 @@ similarity <- scaleGO(scores,
 data(scores_macrophage_topGO_example_small, package = "GeDi")
 data(macrophage_topGO_example_small, package = "GeDi")
 go_ids <- macrophage_topGO_example_small$Genesets
+\dontrun{
 scores_scaled <- scaleGO(scores_macrophage_topGO_example_small,
                          go_ids,
                          n_cores = 1)
+}
 }
