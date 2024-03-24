@@ -39,8 +39,9 @@ getId <- function(species, version = "11.5") {
 #'                current version
 #' @param score_threshold numeric, A score threshold to cut the retrieved
 #'                        interactions, defaults to 0 (all interactions)
-#' @param cache_location character, the location to save the downloaded
-#'                       [STRINGdb] object.
+#' @param cache_location Logical value, defining whether to use the BiocFileCache
+#'                       for retrieval of the files underlying the [STRINGdb]
+#'                       object. Defaults to `TRUE`.
 #'
 #' @return a [STRINGdb] object of `species`
 #' @export
@@ -53,7 +54,7 @@ getId <- function(species, version = "11.5") {
 getStringDB <- function(species,
                         version = "11.5",
                         score_threshold = 0.00,
-                        cache_location = FALSE) {
+                        cache_location = TRUE) {
 
   if(cache_location){
     cache_location <- tools::R_user_dir("GeDi", which = "cache")
@@ -114,12 +115,13 @@ getAnnotation <- function(stringdb) {
 #' ## Mock example showing how the data should look like
 #'
 #' genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
-#' string_db <- getStringDB(9606)
-#' string_db
+#' string_db <- getStringDB(9606, cache_location = TRUE)
+#' # string_db
 #' anno_df <- getAnnotation(string_db)
 #' ppi <- getPPI(genes, string_db, anno_df)
 #'
 #' ## Example using the data available in the package
+#' \dontrun{
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
@@ -128,6 +130,7 @@ getAnnotation <- function(stringdb) {
 #' anno_df <- getAnnotation(string_db)
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
 #' ppi <- getPPI(genes, string_db, anno_df)
+#' }
 getPPI <- function(genes, string_db, anno_df) {
   # Convert input list to vector
   genes <- unlist(genes)
