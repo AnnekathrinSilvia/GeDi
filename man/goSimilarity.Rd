@@ -10,7 +10,7 @@ goSimilarity(
   ontology = "BP",
   species = "org.Hs.eg.db",
   progress = NULL,
-  n_cores = NULL
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
@@ -28,9 +28,8 @@ org.XX.eg.db package from Bioconductor.}
 \item{progress}{\code{\link[shiny:Progress]{shiny::Progress()}} object, optional. To track the progress
 of the function (e.g. in a Shiny app)}
 
-\item{n_cores}{numeric, number of cores to use for the function.
-Defaults to \code{NULL} in which case the function takes half of
-the available cores (see \code{.detectNumberCores()}).}
+\item{BPPARAM}{A BiocParallel \code{bpparam} object specifying how parallelization
+should be handled. Defaults to \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}}}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity of each
@@ -46,14 +45,12 @@ Calculate the pairwise similarity of GO terms
 go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
             "GO:0002250", "GO:0001916", "GO:0019885")
 
-similarity <- goSimilarity(go_ids,
-                           n_cores = 1)
+similarity <- goSimilarity(go_ids)
 
 ## Example using the data available in the package
 data(macrophage_topGO_example_small, package = "GeDi")
 go_ids <- macrophage_topGO_example_small$Genesets
 \dontrun{
-similarity <- goSimilarity(go_ids,
-                           n_cores = 1)
+similarity <- goSimilarity(go_ids)
 }
 }

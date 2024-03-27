@@ -10,7 +10,7 @@ scaleGO(
   method = "Wang",
   ontology = "BP",
   species = "org.Hs.eg.db",
-  n_cores = NULL
+  BPPARAM = BiocParallel::SerialParam()
 )
 }
 \arguments{
@@ -28,9 +28,8 @@ ont parameter for possibilities.}
 \item{species}{character, the species of your data. Indicated as
 org.XX.eg.db package from Bioconductor.}
 
-\item{n_cores}{numeric, number of cores to use for the function.
-Defaults to \code{NULL} in which case the function takes half of
-the available cores (see \code{.detectNumberCores()}).}
+\item{BPPARAM}{A BiocParallelParam object specifying how parallelization should
+be handled}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of scaled values.
@@ -43,10 +42,10 @@ of the associated genesets.
 ## Mock example showing how the data should look like
 go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
             "GO:0002250", "GO:0001916", "GO:0019885")
+set.seed(42)
 scores <- Matrix::Matrix(stats::runif(36, min = 0, max = 1), 6, 6)
 similarity <- scaleGO(scores,
-                      go_ids,
-                      n_cores = 1)
+                      go_ids)
 
 ## Example using the data available in the package
 data(scores_macrophage_topGO_example_small, package = "GeDi")
@@ -54,7 +53,6 @@ data(macrophage_topGO_example_small, package = "GeDi")
 go_ids <- macrophage_topGO_example_small$Genesets
 \dontrun{
 scores_scaled <- scaleGO(scores_macrophage_topGO_example_small,
-                         go_ids,
-                         n_cores = 1)
+                         go_ids)
 }
 }

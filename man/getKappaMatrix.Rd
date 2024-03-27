@@ -4,7 +4,11 @@
 \alias{getKappaMatrix}
 \title{Get Matrix of Kappa distances}
 \usage{
-getKappaMatrix(genesets, progress = NULL, n_cores = NULL)
+getKappaMatrix(
+  genesets,
+  progress = NULL,
+  BPPARAM = BiocParallel::SerialParam()
+)
 }
 \arguments{
 \item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
@@ -13,10 +17,8 @@ by \code{list} of genes.}
 \item{progress}{a \code{\link[shiny:Progress]{shiny::Progress()}} object, Optional progress bar object
 to track the progress of the function (e.g. in a Shiny app).}
 
-\item{n_cores}{numeric, Optional number of CPU cores to use for parallel
-processing. Defaults to \code{NULL} in which case the function
-takes half of the available cores (see
-\code{.detectNumberCores()} function).}
+\item{BPPARAM}{A BiocParallel \code{bpparam} object specifying how parallelization
+should be handled. Defaults to \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}}}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with Kappa distance rounded to 2 decimal
@@ -29,12 +31,12 @@ set of genesets. The Kappa distance is normalized to the (0, 1) interval.
 \examples{
 #' ## Mock example showing how the data should look like
 genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
-m <- getKappaMatrix(genesets, n_cores = 1)
+m <- getKappaMatrix(genesets)
 
 ## Example using the data available in the package
 data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
 genes <- GeDi::getGenes(macrophage_topGO_example_small)
-kappa <-getKappaMatrix(genes, n_cores = 1)
+kappa <-getKappaMatrix(genes)
 }

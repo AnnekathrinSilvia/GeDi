@@ -7,30 +7,30 @@
 #'                 by `list` of genes.
 #' @param progress a [shiny::Progress()] object, Optional progress bar object
 #'                 to track the progress of the function (e.g. in a Shiny app).
-#' @param n_cores numeric, Optional number of CPU cores to use for parallel
-#'                processing. Defaults to `NULL` in which case the function
-#'                takes half of the available cores (see
-#'                \code{.detectNumberCores()} function).
+#' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization
+#'                should be handled. Defaults to [BiocParallel::SerialParam()]
 #'
 #' @return A [Matrix::Matrix()] with Meet-Min distance rounded to 2 decimal
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
-#' @importFrom BiocParallel bplapply SnowParam
+#' @importFrom BiocParallel bplapply SerialParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
 #' ## Mock example showing how the data should look like
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
-#' m <- getMeetMinMatrix(genesets, n_cores = 1)
+#' m <- getMeetMinMatrix(genesets)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
-#' mm <- getMeetMinMatrix(genes, n_cores = 1)
-getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
+#' mm <- getMeetMinMatrix(genes)
+getMeetMinMatrix <- function(genesets,
+                             progress = NULL,
+                             BPPARAM = BiocParallel::SerialParam()) {
   # Get the number of genesets
   l <- length(genesets)
 
@@ -45,51 +45,24 @@ getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   # Initialize a list for storing intermediate results
   results <- list()
 
-  if(Sys.info()["sysname"] == "Windows"){
-    # Calculate Meet-Min distance for each pair of gene sets
-    for (j in seq_len((l - 1))) {
-      a <- genesets[[j]]
-      # Update the progress bar if provided
-      if (!is.null(progress)) {
-        progress$inc(1 / l, detail = paste("Scoring geneset number", j))
-      }
-      # Parallelly calculate Meet-Min distances for pairs
-      results[[j]] <- bplapply((j + 1):l, function(i){
-        b <- genesets[[i]]
-        if (length(a) == 0 || length(b) == 0) {
-          return(1)
-        } else {
-          int <- length(intersect(a, b))
-          return(1 - (int / min(length(a), length(b))))
-        }
-      }, BPPARAM = SnowParam())
-      m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
+  # Calculate Meet-Min distance for each pair of gene sets
+  for (j in seq_len((l - 1))) {
+    a <- genesets[[j]]
+    # Update the progress bar if provided
+    if (!is.null(progress)) {
+      progress$inc(1 / l, detail = paste("Scoring geneset number", j))
     }
-  }
-  else{
-    # Determine the number of CPU cores to use for parallel processing
-    n_cores <- .getNumberCores(n_cores)
-
-    # Calculate Meet-Min distance for each pair of gene sets
-    for (j in seq_len((l - 1))) {
-      a <- genesets[[j]]
-      # Update the progress bar if provided
-      if (!is.null(progress)) {
-        progress$inc(1 / l, detail = paste("Scoring geneset number", j))
+    # Parallelly calculate Meet-Min distances for pairs
+    results[[j]] <- bplapply((j + 1):l, function(i){
+      b <- genesets[[i]]
+      if (length(a) == 0 || length(b) == 0) {
+        return(1)
+      } else {
+        int <- length(intersect(a, b))
+        return(1 - (int / min(length(a), length(b))))
       }
-      # Parallelly calculate Meet-Min distances for pairs
-      results[[j]] <- mclapply((j + 1):l, function(i) {
-        b <- genesets[[i]]
-        if (length(a) == 0 || length(b) == 0) {
-          return(1)
-        } else {
-          int <- length(intersect(a, b))
-          return(1 - (int / min(length(a), length(b))))
-        }
-      }, mc.cores = n_cores)
-      # Fill the upper and lower triangular sections of the matrix with results
-      m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
-    }
+    }, BPPARAM = BPPARAM)
+    m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
   }
 
   # Return the Meet-Min distance matrix rounded to 2 decimal places
