@@ -28,8 +28,8 @@ org.XX.eg.db package from Bioconductor.}
 \item{progress}{\code{\link[shiny:Progress]{shiny::Progress()}} object, optional. To track the progress
 of the function (e.g. in a Shiny app)}
 
-\item{BPPARAM}{A BiocParallelParam object specifying how parallelization should
-be handled}
+\item{BPPARAM}{A BiocParallel \code{bpparam} object specifying how parallelization
+should be handled. Defaults to \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}}}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO similarity of each

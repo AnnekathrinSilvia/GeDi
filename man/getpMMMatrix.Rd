@@ -4,7 +4,13 @@
 \alias{getpMMMatrix}
 \title{Calculate the pMM distance}
 \usage{
-getpMMMatrix(genesets, ppi, alpha = 1, progress = NULL, n_cores = NULL)
+getpMMMatrix(
+  genesets,
+  ppi,
+  alpha = 1,
+  progress = NULL,
+  BPPARAM = BiocParallel::SerialParam()
+)
 }
 \arguments{
 \item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
@@ -23,10 +29,8 @@ interaction score. Defaults to 1.}
 \item{progress}{a \code{\link[shiny:Progress]{shiny::Progress()}} object, Optional progress bar object
 to track the progress of the function (e.g. in a Shiny app).}
 
-\item{n_cores}{numeric, Optional number of CPU cores to use for parallel
-processing. Defaults to \code{NULL} in which case the function
-takes half of the available cores (see
-\code{.detectNumberCores()} function).}
+\item{BPPARAM}{A BiocParallel \code{bpparam} object specifying how parallelization
+should be handled. Defaults to \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}}}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with pMM distance rounded to 2 decimal places.
@@ -45,7 +49,7 @@ ppi <- data.frame(
   combined_score = c(0.5, 0.2)
 )
 
-pMM <- getpMMMatrix(genesets, ppi, n_cores = 1)
+pMM <- getpMMMatrix(genesets, ppi)
 
 ## Example using the data available in the package
 data(macrophage_topGO_example_small,
@@ -56,7 +60,7 @@ data(ppi_macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
 
-pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
+pMM <- getpMMMatrix(genes, ppi)
 }
 \references{
 See https://doi.org/10.1186/s12864-019-5738-6 for details on the original
