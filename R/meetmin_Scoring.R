@@ -16,7 +16,7 @@
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
-#' @importFrom BiocParallel bplapply SnowParam
+#' @importFrom BiocParallel bplapply SerialParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -62,7 +62,7 @@ getMeetMinMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
           int <- length(intersect(a, b))
           return(1 - (int / min(length(a), length(b))))
         }
-      }, BPPARAM = SnowParam())
+      }, BPPARAM = SerialParam())
       m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
     }
   }

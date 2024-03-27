@@ -82,7 +82,7 @@ calculateKappa <- function(a, b, all_genes) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
-#' @importFrom BiocParallel bplapply SnowParam
+#' @importFrom BiocParallel bplapply SerialParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -126,7 +126,7 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
       results[[j]] <- bplapply((j + 1):l, function(i){
         b <- genesets[[i]]
         calculateKappa(a, b, unique_genes)
-      }, BPPARAM = SnowParam())
+      }, BPPARAM = SerialParam())
       # Fill the upper and lower triangular sections of the matrix with results
       k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
     }
@@ -143,7 +143,7 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
     for (j in seq_len((l - 1))) {
       results[[j]] <- bplapply((j + 1):l, function(i) {
         return(1 - ((k[j, i] - min) / (max - min)))
-      }, BPPARAM = SnowParam())
+      }, BPPARAM = SerialParam())
       k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
     }
   } else{

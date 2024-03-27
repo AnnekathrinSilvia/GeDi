@@ -57,7 +57,7 @@ calculateSorensenDice <- function(a, b) {
 #'         places.
 #' @export
 #' @importFrom parallel mclapply
-#' @importFrom BiocParallel bplapply SnowParam
+#' @importFrom BiocParallel bplapply SerialParam
 #' @importFrom Matrix Matrix
 #'
 #' @examples
@@ -101,7 +101,7 @@ getSorensenDiceMatrix <-
         results[[k]] <- bplapply((k + 1):l, function(i) {
           b <- genesets[[i]]
           calculateSorensenDice(a, b)
-        }, BPPARAM = SnowParam())
+        }, BPPARAM = SerialParam())
         s[k, (k + 1):l] <- s[(k + 1):l, k] <- unlist(results[[k]])
       }
     }
