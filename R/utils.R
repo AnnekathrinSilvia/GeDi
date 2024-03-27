@@ -112,7 +112,7 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
 .sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
-  rl <- readLines(file, warn = FALSE)
+  rl <- readLines(file(file, open = "w+"), warn = FALSE)
   # Allow last line to be empty
   rl <- rl[rl != ""]
   sep <- .findSeparator(rl, sep_list)
