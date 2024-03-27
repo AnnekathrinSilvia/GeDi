@@ -11,8 +11,8 @@
 #'                org.XX.eg.db package from Bioconductor.
 #' @param progress [shiny::Progress()] object, optional. To track the progress
 #'                 of the function (e.g. in a Shiny app)
-#' @param BPPARAM A BiocParallelParam object specifying how parallelization should
-#'                be handled
+#' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization
+#'                should be handled. Defaults to [BiocParallel::SerialParam()]
 #'
 #' @return A [Matrix::Matrix()] with the pairwise GO similarity of each
 #'         geneset pair.
@@ -70,45 +70,6 @@ goSimilarity <- function(geneset_ids,
   go <- godata(annoDb = species, ont = ontology, computeIC = useIC)
 
   results <- list()
-
-  # if (Sys.info()["sysname"] == "Windows") {
-  #   # Calculate Meet-Min distance for each pair of gene sets
-  #   for (j in seq_len((l - 1))) {
-  #     a <- geneset_ids[[j]]
-  #     # Update the progress bar if provided
-  #     if (!is.null(progress)) {
-  #       progress$inc(1 / l, detail = paste("Scoring geneset number", j))
-  #     }
-  #     # Parallelly calculate Meet-Min distances for pairs
-  #     results[[j]] <- bplapply((j + 1):l, function(i) {
-  #       b <- geneset_ids[[i]]
-  #       # Calculate GO similarity
-  #       goSim(a, b, go, measure = method)
-  #     }, BPPARAM = SerialParam())
-  #     go_sim[j, (j + 1):l] <- go_sim[(j + 1):l, j] <- unlist(results[[j]])
-  #   }
-  # } else{
-  #   # Determine the number of cores to use
-  #   n_cores <- .getNumberCores(n_cores)
-  #
-  #   # Calculate the GO similarity for each pair of genesets
-  #   for (g in seq_len((l - 1))) {
-  #     a <- geneset_ids[[g]]
-  #     if (!is.null(progress)) {
-  #       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
-  #     }
-  #     results[[g]] <- parallel::mclapply((g + 1):l, function(i) {
-  #       b <- geneset_ids[[i]]
-  #       # Calculate GO similarity
-  #       goSim(a, b, go, measure = method)
-  #     }, mc.cores = n_cores)
-  #     go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
-  #   }
-  # }
-
-
-  # Determine the number of cores to use
-  # n_cores <- .getNumberCores(n_cores)
 
   # Calculate the GO similarity for each pair of genesets
   for (g in seq_len((l - 1))) {
