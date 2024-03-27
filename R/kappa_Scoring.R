@@ -73,10 +73,8 @@ calculateKappa <- function(a, b, all_genes) {
 #'                 by `list` of genes.
 #' @param progress a [shiny::Progress()] object, Optional progress bar object
 #'                 to track the progress of the function (e.g. in a Shiny app).
-#' @param n_cores numeric, Optional number of CPU cores to use for parallel
-#'                processing. Defaults to `NULL` in which case the function
-#'                takes half of the available cores (see
-#'                \code{.detectNumberCores()} function).
+#' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization
+#'                should be handled. Defaults to [BiocParallel::SerialParam()]
 #'
 #' @return A [Matrix::Matrix()] with Kappa distance rounded to 2 decimal
 #'         places.
@@ -88,15 +86,17 @@ calculateKappa <- function(a, b, all_genes) {
 #' @examples
 #' #' ## Mock example showing how the data should look like
 #' genesets <- list(list("PDHB", "VARS2"), list("IARS2", "PDHA1"))
-#' m <- getKappaMatrix(genesets, n_cores = 1)
+#' m <- getKappaMatrix(genesets)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
-#' kappa <-getKappaMatrix(genes, n_cores = 1)
-getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
+#' kappa <-getKappaMatrix(genes)
+getKappaMatrix <- function(genesets,
+                           progress = NULL,
+                           BPPARAM = BiocParallel::SerialParam()) {
   # Get the number of genesets
   l <- length(genesets)
 
@@ -114,76 +114,37 @@ getKappaMatrix <- function(genesets, progress = NULL, n_cores = NULL) {
   # Initialize a list for storing intermediate results
   results <- list()
 
-  if(Sys.info()["sysname"] == "Windows"){
-    # Calculate the Jaccard distance for each pair of gene sets
-    for (j in seq_len((l - 1))) {
-      a <- genesets[[j]]
-      # Update the progress bar if provided
-      if (!is.null(progress)) {
-        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
-      }
-      # Parallelly calculate Jaccard distances for pairs
-      results[[j]] <- bplapply((j + 1):l, function(i){
-        b <- genesets[[i]]
-        calculateKappa(a, b, unique_genes)
-      }, BPPARAM = SerialParam())
-      # Fill the upper and lower triangular sections of the matrix with results
-      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
-    }
-
-    # Normalize each value to the (0, 1) interval
-    min <- min(k)
-    max <- max(k)
+  # Calculate the Jaccard distance for each pair of gene sets
+  for (j in seq_len((l - 1))) {
+    a <- genesets[[j]]
+    # Update the progress bar if provided
     if (!is.null(progress)) {
-      progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
+      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
     }
-
-    # Update the matrix with normalized values
-    results <- list()
-    for (j in seq_len((l - 1))) {
-      results[[j]] <- bplapply((j + 1):l, function(i) {
-        return(1 - ((k[j, i] - min) / (max - min)))
-      }, BPPARAM = SerialParam())
-      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
-    }
-  } else{
-    # Determine the number of CPU cores to use for parallel processing
-    n_cores <- .getNumberCores(n_cores)
-
-    # Calculate Kappa distance for each pair of genesets
-    for (j in seq_len((l - 1))) {
-      a <- genesets[[j]]
-      # Update the progress bar if provided
-      if (!is.null(progress)) {
-        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
-      }
-      # Parallelly calculate Kappa distances for pairs
-      results[[j]] <- mclapply((j + 1):l, function(i) {
-        b <- genesets[[i]]
-        calculateKappa(a, b, unique_genes)
-      }, mc.cores = n_cores)
-      # Fill the upper and lower triangular sections of the matrix with results
-      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
-    }
-
-    # Normalize each value to the (0, 1) interval
-    min <- min(k)
-    max <- max(k)
-    if (!is.null(progress)) {
-      progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
-    }
-
-    # Update the matrix with normalized values
-    results <- list()
-    for (j in seq_len((l - 1))) {
-      results[[j]] <- parallel::mclapply((j + 1):l, function(i) {
-        return(1 - ((k[j, i] - min) / (max - min)))
-      }, mc.cores = n_cores)
-      k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
-    }
+    # Parallelly calculate Jaccard distances for pairs
+    results[[j]] <- bplapply((j + 1):l, function(i){
+      b <- genesets[[i]]
+      calculateKappa(a, b, unique_genes)
+    }, BPPARAM = BPPARAM)
+    # Fill the upper and lower triangular sections of the matrix with results
+    k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
   }
 
+  # Normalize each value to the (0, 1) interval
+  min <- min(k)
+  max <- max(k)
+  if (!is.null(progress)) {
+    progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
+  }
 
+  # Update the matrix with normalized values
+  results <- list()
+  for (j in seq_len((l - 1))) {
+    results[[j]] <- bplapply((j + 1):l, function(i) {
+      return(1 - ((k[j, i] - min) / (max - min)))
+    }, BPPARAM = BPPARAM)
+    k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
+  }
 
 
   # Return the normalized Kappa distance matrix rounded to 2 decimal places

@@ -177,10 +177,8 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'              interaction score. Defaults to 1.
 #' @param progress a [shiny::Progress()] object, Optional progress bar object
 #'                 to track the progress of the function (e.g. in a Shiny app).
-#' @param n_cores numeric, Optional number of CPU cores to use for parallel
-#'                processing. Defaults to `NULL` in which case the function
-#'                takes half of the available cores (see
-#'                \code{.detectNumberCores()} function).
+#' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization
+#'                should be handled. Defaults to [BiocParallel::SerialParam()]
 #'
 #' @return A [Matrix::Matrix()] with pMM distance rounded to 2 decimal places.
 #'
@@ -204,7 +202,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'   combined_score = c(0.5, 0.2)
 #' )
 #'
-#' pMM <- getpMMMatrix(genesets, ppi, n_cores = 1)
+#' pMM <- getpMMMatrix(genesets, ppi)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small,
@@ -215,72 +213,48 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #'      package = "GeDi",
 #'      envir = environment())
 #'
-#' pMM <- getpMMMatrix(genes, ppi, n_cores = 1)
-getpMMMatrix <-
-  function(genesets,
-           ppi,
-           alpha = 1,
-           progress = NULL,
-           n_cores = NULL) {
-    # Get the number of genesets
-    l <- length(genesets)
+#' pMM <- getpMMMatrix(genes, ppi)
+getpMMMatrix <- function(genesets,
+                         ppi,
+                         alpha = 1,
+                         progress = NULL,
+                         BPPARAM = BiocParallel::SerialParam()) {
+  # Get the number of genesets
+  l <- length(genesets)
 
-    # If there are no genesets, return NULL
-    if (l == 0) {
-      return(NULL)
-    }
-
-    # Ensure that the protein-protein interaction (PPI) network is provided
-    stopifnot(!is.null(ppi))
-
-    # Initialize an empty matrix for storing pMM distances
-    scores <- Matrix(0, l, l)
-    # Get the maximum interaction score in the PPI network
-    maxInteract <- max(ppi$combined_score)
-
-    # Initialize a list for storing intermediate results
-    results <- list()
-
-    if (Sys.info()["sysname"] == "Windows") {
-      # Calculate Meet-Min distance for each pair of gene sets
-      for (j in seq_len((l - 1))) {
-        a <- genesets[[j]]
-        # Update the progress bar if provided
-        if (!is.null(progress)) {
-          progress$inc(1 / l, detail = paste("Scoring geneset number", j))
-        }
-        # Parallelly calculate Meet-Min distances for pairs
-        results[[j]] <- bplapply((j + 1):l, function(i) {
-          b <- genesets[[i]]
-          pMMlocal(a, b, ppi, maxInteract)
-        }, BPPARAM = SerialParam())
-        scores[j, (j + 1):l] <-
-          scores[(j + 1):l, j] <- unlist(results[[j]])
-      }
-    }
-    else{
-      # Determine the number of CPU cores to use for parallel processing
-      n_cores <- .getNumberCores(n_cores)
-
-      # Calculate pMM distances for each pair of genesets
-      for (j in seq_len((l - 1))) {
-        a <- genesets[[j]]
-        # Update the progress bar if provided
-        if (!is.null(progress)) {
-          progress$inc(1 / l, detail = paste("Scoring geneset number", j))
-        }
-
-        # Parallelly calculate pMM distances for pairs using pMMlocal function
-        results[[j]] <- mclapply((j + 1):l, function(i) {
-          b <- genesets[[i]]
-          pMMlocal(a, b, ppi, maxInteract)
-        }, mc.cores = n_cores)
-        # Fill the upper and lower triangular sections of the matrix with results
-        scores[j, (j + 1):l] <-
-          scores[(j + 1):l, j] <- unlist(results[[j]])
-      }
-    }
-
-    # Return the pMM distance matrix rounded to 2 decimal places
-    return(round(scores, 2))
+  # If there are no genesets, return NULL
+  if (l == 0) {
+    return(NULL)
   }
+
+  # Ensure that the protein-protein interaction (PPI) network is provided
+  stopifnot(!is.null(ppi))
+
+  # Initialize an empty matrix for storing pMM distances
+  scores <- Matrix(0, l, l)
+  # Get the maximum interaction score in the PPI network
+  maxInteract <- max(ppi$combined_score)
+
+  # Initialize a list for storing intermediate results
+  results <- list()
+
+  # Calculate Meet-Min distance for each pair of gene sets
+  for (j in seq_len((l - 1))) {
+    a <- genesets[[j]]
+    # Update the progress bar if provided
+    if (!is.null(progress)) {
+      progress$inc(1 / l, detail = paste("Scoring geneset number", j))
+    }
+    # Parallelly calculate Meet-Min distances for pairs
+    results[[j]] <- bplapply((j + 1):l, function(i) {
+      b <- genesets[[i]]
+      pMMlocal(a, b, ppi, maxInteract)
+    }, BPPARAM = BPPARAM)
+    scores[j, (j + 1):l] <-
+      scores[(j + 1):l, j] <- unlist(results[[j]])
+  }
+
+
+  # Return the pMM distance matrix rounded to 2 decimal places
+  return(round(scores, 2))
+}
