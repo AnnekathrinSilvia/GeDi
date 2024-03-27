@@ -11,9 +11,8 @@
 #'                org.XX.eg.db package from Bioconductor.
 #' @param progress [shiny::Progress()] object, optional. To track the progress
 #'                 of the function (e.g. in a Shiny app)
-#' @param n_cores numeric, number of cores to use for the function.
-#'                Defaults to `NULL` in which case the function takes half of
-#'                the available cores (see \code{.detectNumberCores()}).
+#' @param BPPARAM A BiocParallelParam object specifying how parallelization should
+#'                be handled
 #'
 #' @return A [Matrix::Matrix()] with the pairwise GO similarity of each
 #'         geneset pair.
@@ -29,22 +28,27 @@
 #' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
 #'             "GO:0002250", "GO:0001916", "GO:0019885")
 #'
-#' similarity <- goSimilarity(go_ids,
-#'                            n_cores = 1)
+#' similarity <- goSimilarity(go_ids)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small, package = "GeDi")
 #' go_ids <- macrophage_topGO_example_small$Genesets
 #' \dontrun{
-#' similarity <- goSimilarity(go_ids,
-#'                            n_cores = 1)
+#' similarity <- goSimilarity(go_ids)
 #' }
 goSimilarity <- function(geneset_ids,
                          method = "Wang",
                          ontology = "BP",
                          species = "org.Hs.eg.db",
                          progress = NULL,
-                         n_cores = NULL) {
+                         BPPARAM = BiocParallel::SerialParam()) {
+  method <- match.arg(method, c("Resnik", "Lin", "Rel", "Jiang", "TCSS", "Wang"))
+
+  if (method %in% c("Resnik", "Lin", "Rel", "Jiang"))
+    useIC <- TRUE
+  else
+    useIC <- FALSE
+
   # Check if the species-specific org.XX.eg.db package is installed
   stopifnot("Species specific org.XX.eg.db
             is not installed" = system.file(package = species) != "")
@@ -63,44 +67,61 @@ goSimilarity <- function(geneset_ids,
   # Initialize a matrix for GO similarity scores
   go_sim <- Matrix::Matrix(0, l, l)
   # Retrieve GO data for the specified species and ontology
-  go <- godata(species, ont = ontology)
+  go <- godata(annoDb = species, ont = ontology, computeIC = useIC)
 
   results <- list()
 
-  if (Sys.info()["sysname"] == "Windows") {
-    # Calculate Meet-Min distance for each pair of gene sets
-    for (j in seq_len((l - 1))) {
-      a <- geneset_ids[[j]]
-      # Update the progress bar if provided
-      if (!is.null(progress)) {
-        progress$inc(1 / l, detail = paste("Scoring geneset number", j))
-      }
-      # Parallelly calculate Meet-Min distances for pairs
-      results[[j]] <- bplapply((j + 1):l, function(i) {
-        b <- geneset_ids[[i]]
-        # Calculate GO similarity
-        goSim(a, b, go, measure = method)
-      }, BPPARAM = SnowParam())
-      go_sim[j, (j + 1):l] <- go_sim[(j + 1):l, j] <- unlist(results[[j]])
-    }
-  }
-  else{
-    # Determine the number of cores to use
-    n_cores <- .getNumberCores(n_cores)
+  # if (Sys.info()["sysname"] == "Windows") {
+  #   # Calculate Meet-Min distance for each pair of gene sets
+  #   for (j in seq_len((l - 1))) {
+  #     a <- geneset_ids[[j]]
+  #     # Update the progress bar if provided
+  #     if (!is.null(progress)) {
+  #       progress$inc(1 / l, detail = paste("Scoring geneset number", j))
+  #     }
+  #     # Parallelly calculate Meet-Min distances for pairs
+  #     results[[j]] <- bplapply((j + 1):l, function(i) {
+  #       b <- geneset_ids[[i]]
+  #       # Calculate GO similarity
+  #       goSim(a, b, go, measure = method)
+  #     }, BPPARAM = SnowParam())
+  #     go_sim[j, (j + 1):l] <- go_sim[(j + 1):l, j] <- unlist(results[[j]])
+  #   }
+  # } else{
+  #   # Determine the number of cores to use
+  #   n_cores <- .getNumberCores(n_cores)
+  #
+  #   # Calculate the GO similarity for each pair of genesets
+  #   for (g in seq_len((l - 1))) {
+  #     a <- geneset_ids[[g]]
+  #     if (!is.null(progress)) {
+  #       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
+  #     }
+  #     results[[g]] <- parallel::mclapply((g + 1):l, function(i) {
+  #       b <- geneset_ids[[i]]
+  #       # Calculate GO similarity
+  #       goSim(a, b, go, measure = method)
+  #     }, mc.cores = n_cores)
+  #     go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
+  #   }
+  # }
 
-    # Calculate the GO similarity for each pair of genesets
-    for (g in seq_len((l - 1))) {
-      a <- geneset_ids[[g]]
-      if (!is.null(progress)) {
-        progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
-      }
-      results[[g]] <- parallel::mclapply((g + 1):l, function(i) {
-        b <- geneset_ids[[i]]
-        # Calculate GO similarity
-        goSim(a, b, go, measure = method)
-      }, mc.cores = n_cores)
-      go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
+
+  # Determine the number of cores to use
+  # n_cores <- .getNumberCores(n_cores)
+
+  # Calculate the GO similarity for each pair of genesets
+  for (g in seq_len((l - 1))) {
+    a <- geneset_ids[[g]]
+    if (!is.null(progress)) {
+      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", g))
     }
+    results[[g]] <- BiocParallel::bplapply((g + 1):l, function(i) {
+      b <- geneset_ids[[i]]
+      # Calculate GO similarity
+      goSim(a, b, go, measure = method)
+    }, BPPARAM = BPPARAM)
+    go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
   }
 
 
@@ -122,9 +143,8 @@ goSimilarity <- function(geneset_ids,
 #'                 ont parameter for possibilities.
 #' @param species character, the species of your data. Indicated as
 #'                org.XX.eg.db package from Bioconductor.
-#' @param n_cores numeric, number of cores to use for the function.
-#'                Defaults to `NULL` in which case the function takes half of
-#'                the available cores (see \code{.detectNumberCores()}).
+#' @param BPPARAM A BiocParallelParam object specifying how parallelization should
+#'                be handled
 #'
 #' @return A [Matrix::Matrix()] of scaled values.
 #' @export
@@ -133,10 +153,10 @@ goSimilarity <- function(geneset_ids,
 #' ## Mock example showing how the data should look like
 #' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
 #'             "GO:0002250", "GO:0001916", "GO:0019885")
+#' set.seed(42)
 #' scores <- Matrix::Matrix(stats::runif(36, min = 0, max = 1), 6, 6)
 #' similarity <- scaleGO(scores,
-#'                       go_ids,
-#'                       n_cores = 1)
+#'                       go_ids)
 #'
 #' ## Example using the data available in the package
 #' data(scores_macrophage_topGO_example_small, package = "GeDi")
@@ -144,15 +164,16 @@ goSimilarity <- function(geneset_ids,
 #' go_ids <- macrophage_topGO_example_small$Genesets
 #' \dontrun{
 #' scores_scaled <- scaleGO(scores_macrophage_topGO_example_small,
-#'                          go_ids,
-#'                          n_cores = 1)
+#'                          go_ids)
 #' }
 scaleGO <- function(scores,
                     geneset_ids,
                     method = "Wang",
                     ontology = "BP",
                     species = "org.Hs.eg.db",
-                    n_cores = NULL) {
+                    BPPARAM = BiocParallel::SerialParam()) {
+
+  method <- match.arg(method, c("Resnik", "Lin", "Rel", "Jiang", "TCSS", "Wang"))
 
   # Determine the number of genesets
   l <- nrow(scores)
@@ -163,7 +184,7 @@ scaleGO <- function(scores,
   # Initialize a matrix for scaled scores
   scaled <- Matrix::Matrix(0, l, l)
   # Get GO similarity scores
-  scores_go <- goSimilarity(geneset_ids, method, ontology, species, n_cores = n_cores)
+  scores_go <- goSimilarity(geneset_ids, method, ontology, species, BPPARAM = BPPARAM)
 
   # Scale interaction scores with GO similarity scores
   for (i in seq_len((l - 1))) {
