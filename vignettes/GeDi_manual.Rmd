@@ -39,7 +39,7 @@ bibliography: GeDi.bib
 
 **License**: `r #packageDescription("GeDi")[["License"]]`
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -543,7 +543,7 @@ In this section we will demonstrate how results containing identifiers from data
 
 However, before we can use the `enrichKEGG` function from the `r BiocStyle::Biocpkg("clusterProfiler")` package, we have to map the ENSEMBL ids of the data to Entrez ids. For this, we will up the first use the `r BiocStyle::Biocpkg("biomaRt")` package to generate a mapping of ENSEMBL to Entrez.
 
-```{r, eval = FALSE}
+```{r withbiomart, eval = FALSE}
 # Load the "biomaRt" package to access the BioMart database
 library("biomaRt")
 
