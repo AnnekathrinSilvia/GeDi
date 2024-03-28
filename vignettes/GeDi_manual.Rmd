@@ -252,11 +252,6 @@ GeDi(genesets = macrophage_topGO_example)
 
 The above shown code will open the application, directing you to the **Welcome** page. The **Welcome** page of `r BiocStyle::Biocpkg("GeDi")` serves as the entry point to the application, providing users with an overview of its features and functionalities. Upon launching the application, users are greeted with a user-friendly interface designed to facilitate the exploration and interpretation of functional annotation and enrichment analysis results. The **Welcome** page offers guidance on how to navigate the application and highlights key components such as data input options, visualization tools, and interactive features. Whether users are new to GeDi or returning to explore additional datasets, the **Welcome** page serves as a central hub for accessing resources and getting started with their analysis journey.
 
-```{r welcome-page, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = FALSE}
-knitr::include_graphics("Welcome_page.png")
-```
-
-
 # Description of the `GeDi` user interface {#userinterface}
 
 The `r BiocStyle::Biocpkg("GeDi")` application, developed with the `r BiocStyle::CRANpkg("shiny")` framework, incorporates the modern design elements of the `r BiocStyle::CRANpkg("bs4Dash")` package, which is built upon Bootstrap 4. This combination of technologies ensures a sleek and visually appealing user interface for navigating and interacting with the functionality offered by `r BiocStyle::Biocpkg("GeDi")`. By leveraging the features of `r BiocStyle::CRANpkg("shiny")` and `r BiocStyle::CRANpkg("bs4Dash")`, `r BiocStyle::Biocpkg("GeDi")` provides users with an intuitive and aesthetically pleasing environment for conducting functional annotation and enrichment analyses on their datasets.
