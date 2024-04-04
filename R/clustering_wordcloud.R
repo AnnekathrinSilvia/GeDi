@@ -15,7 +15,8 @@
 #'
 #' @return A [wordcloud2::wordcloud2()] plot object
 #' @export
-#' @importFrom tm VCorpus VectorSource removeWords removePunctuation stripWhitespace stopwords TermDocumentMatrix tm_map
+#' @importFrom tm VCorpus VectorSource removeWords removePunctuation 
+#' stripWhitespace stopwords TermDocumentMatrix tm_map
 #' @importFrom wordcloud2 wordcloud2
 #' @importFrom RColorBrewer brewer.pal
 #'
@@ -40,10 +41,11 @@
 #'               Genes = c("B2M, HLA-DMA, HLA-DMB",
 #'                         "ACOD1, ADAM8, AIM2",
 #'                         "B2M, CD74, CTSS"),
-#'               Term = c("peptide antigen assembly with MHC class II protein complex",
-#'                        "innate immune response",
-#'                        "antigen processing and presentation of exogenous
-#'                        peptide antigen via MHC class II")
+#'               Term = c(
+#'               "peptide antigen assembly with MHC class II protein complex",
+#'               "innate immune response",
+#'               "antigen processing and presentation of exogenous
+#'                peptide antigen via MHC class II")
 #' )
 #'
 #' wordcloud <- enrichmentWordcloud(geneset_df)
@@ -73,7 +75,8 @@ enrichmentWordcloud <- function(genesets_df) {
   # Create a text corpus from the selected terms
   corpus <- VCorpus(VectorSource(terms))
 
-  # Preprocess the text corpus by removing English stopwords, punctuation, and whitespace
+  # Preprocess the text corpus by removing English stopwords, punctuation, 
+  # and whitespace
   corpus <- tm_map(corpus, removeWords, stopwords("english"))
   corpus <- tm_map(corpus, removePunctuation)
   corpus <- tm_map(corpus, stripWhitespace)

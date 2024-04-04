@@ -24,7 +24,8 @@ getId <- function(species, version = "11.5") {
   df_species <- read.delim(url(url_species))
 
   # Get the species ID of the respective organism
-  species_id <- df_species$X.taxon_id[match(species, df_species$official_name_NCBI)]
+  species_id <- df_species$X.taxon_id[match(species,
+                                            df_species$official_name_NCBI)]
 
   # Return the species ID
   return(species_id)
@@ -39,9 +40,9 @@ getId <- function(species, version = "11.5") {
 #'                current version
 #' @param score_threshold numeric, A score threshold to cut the retrieved
 #'                        interactions, defaults to 0 (all interactions)
-#' @param cache_location Logical value, defining whether to use the BiocFileCache
-#'                       for retrieval of the files underlying the [STRINGdb]
-#'                       object. Defaults to `TRUE`.
+#' @param cache_location Logical value, defining whether to use the 
+#'                       BiocFileCache for retrieval of the files underlying 
+#'                       the [STRINGdb] object. Defaults to `TRUE`.
 #'
 #' @return a [STRINGdb] object of `species`
 #' @export
@@ -100,8 +101,8 @@ getAnnotation <- function(stringdb) {
 #' Download the Protein-Protein Interaction (PPI) information of a [STRINGdb]
 #' object
 #'
-#' @param genes a `list`, A `list` of genes to download the respective protein-protein
-#'              interaction information
+#' @param genes a `list`, A `list` of genes to download the respective protein-
+#'              protein interaction information
 #' @param string_db A [STRINGdb] object, the species of the object should match
 #'                  the species of `genes`.
 #' @param anno_df An annotation `data.frame` mapping [STRINGdb] ids to gene

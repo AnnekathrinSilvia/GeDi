@@ -57,7 +57,7 @@ checkInclusion <- function(seeds) {
       lapply(
         c(1:l1),
         FUN = function(x)
-          combn(s1, x, simplify = F)
+          combn(s1, x, simplify = FALSE)
       )
     comb <- do.call(c, comb)
     r <- which(seeds %in% comb)

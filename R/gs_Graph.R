@@ -6,9 +6,9 @@
 #' @param distanceMatrix A [Matrix::Matrix()] containing (distance) scores
 #'                       between 0 and 1.
 #' @param cutOff Numeric value, indicating for which pair of entries in the
-#'               `distanceMatrix` a 1 should be inserted in the adjacency matrix.
-#'               A 1 is inserted when for each entry in the matrix that is
-#'               smaller or equal to the `cutOff` value.
+#'               `distanceMatrix` a 1 should be inserted in the adjacency 
+#'               matrix. A 1 is inserted when for each entry in the matrix #
+#'               that is smaller or equal to the `cutOff` value.
 #'
 #' @return A [Matrix::Matrix()] of adjacency status
 #' @importFrom Matrix Matrix
@@ -420,7 +420,8 @@ getBipartiteGraph <- function(cluster,
   igraph::V(graph)$nodeType[geneset_id] <- "Geneset"
 
   igraph::V(graph)$shape <-
-    c("box", "ellipse")[factor(V(graph)$nodeType, levels = c("Cluster", "Geneset"))]
+    c("box", "ellipse")[factor(V(graph)$nodeType, levels = c("Cluster",
+                                                             "Geneset"))]
 
   # Set color attributes for nodes and edges
   igraph::V(graph)$color <- NA
@@ -440,7 +441,11 @@ getBipartiteGraph <- function(cluster,
 
   for (j in geneset_id) {
     gs <-
-    paste(unlist(genes[as.integer(na.omit(rownames(df_node_mapping)[df_node_mapping$Node_number == j]))]), collapse = " ")
+    paste(unlist(
+      genes[as.integer(
+        na.omit(
+          rownames(df_node_mapping)[df_node_mapping$Node_number == j]))]),
+      collapse = " ")
     gs <- gsub("(.{71,}?)\\s", "\\1<br>", gs)
     text[[j]] <- gs
   }
@@ -473,9 +478,9 @@ getBipartiteGraph <- function(cluster,
 #' in a given graph.
 #'
 #' @param g A [igraph] graph object
-#' @param genesets A `data.frame` of genesets with a column `Genesets` containing
-#'                 geneset identifiers and a column `Genes` containing the
-#'                 genes belonging to each geneset
+#' @param genesets A `data.frame` of genesets with a column `Genesets` 
+#'                 containing geneset identifiers and a column `Genes` 
+#'                 containing the genes belonging to each geneset
 #'
 #' @return A `data.frame` of `geneset` extended by columns for the degree,
 #'         betweenness, harmonic centrality and clustering coefficient for each
@@ -510,7 +515,8 @@ getBipartiteGraph <- function(cluster,
     genesets
   )
 
-  # Rename columns and order the data frame by the Degree column in descending order
+  # Rename columns and order the data frame by the Degree column in
+  # descending order
   rownames(df) <- NULL
   colnames(df) <- c(
     "Geneset",
@@ -531,9 +537,9 @@ getBipartiteGraph <- function(cluster,
 #' Build up the title for the graph nodes to display the available information
 #' of each geneset.
 #'
-#' @param geneset_df  A `data.frame` of genesets with a column `Genesets` containing
-#'                    geneset identifiers and a column `Genes` containing the
-#'                    genes belonging to each geneset
+#' @param geneset_df  A `data.frame` of genesets with a column `Genesets` 
+#'                    containing geneset identifiers and a column `Genes` 
+#'                    containing the genes belonging to each geneset
 #' @param node_ids  vector, a vector of ids of the nodes in the graph for
 #'                  which the node title should be build.
 #' @param gs_ids  vector, a vector of geneset identifiers, e.g. the `Genesets`
@@ -566,7 +572,8 @@ getBipartiteGraph <- function(cluster,
 #'
 getGraphTitle <- function(geneset_df = NULL, node_ids, gs_ids, gs_names = NULL){
   if(!is.null(geneset_df)){
-    # Construct HTML-based title for each node using input information from geneset_df
+    # Construct HTML-based title for each node using input information from 
+    # geneset_df
     transposed_df <- as.data.frame(t(geneset_df))
     title <- list()
     names_rows <- rownames(transposed_df)
