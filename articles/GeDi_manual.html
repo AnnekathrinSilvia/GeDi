@@ -12,7 +12,8 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="The `GeDi` User's Guide
+<script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="The `GeDi` User's Guide
 ">
 <meta property="og:description" content="GeDi">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -35,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GeDi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.4</span>
       </span>
     </div>
 
@@ -105,7 +106,7 @@ Marini</h4>
 Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
                   
-            <h4 data-toc-skip class="date">21 March 2024</h4>
+            <h4 data-toc-skip class="date">4 April 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/AnnekathrinSilvia/GeDi/blob/HEAD/vignettes/GeDi_manual.Rmd" class="external-link"><code>vignettes/GeDi_manual.Rmd</code></a></small>
       <div class="hidden name"><code>GeDi_manual.Rmd</code></div>
@@ -119,24 +120,26 @@ Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni
   font-size: 10px
 }
 </style>
-<p><strong>Compiled date</strong>: 2024-03-21</p>
+<p><strong>Compiled date</strong>: 2024-04-04</p>
 <p><strong>Last edited</strong>: 2024-02-29</p>
-<p><strong>License</strong>:</p>
+<p><strong>License</strong>: MIT + file LICENSE</p>
 <hr>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette introduces the usage of the <code>GeDi</code> package
+<p>This vignette introduces the usage of the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> package
 for exploring the results of functional annotation and enrichment
 analyses.</p>
-<p><code>GeDi</code> is a versatile package designed to simplify the
-exploration and comprehension of functional annotation and enrichment
-analysis results. It offers a <em><a href="https://CRAN.R-project.org/package=shiny" class="external-link">shiny</a></em>
+<p><em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> is a
+versatile package designed to simplify the exploration and comprehension
+of functional annotation and enrichment analysis results. It offers a
+<em><a href="https://CRAN.R-project.org/package=shiny" class="external-link">shiny</a></em>
 application that combines interactivity, visualization, and
 reproducibility to consolidate comprehensive outcomes.</p>
-<p>To incorporate <code>GeDi</code> into your workflow, you’ll need the
-results of a functional annotation or enrichment analysis. This vignette
-demonstrates the core functionalities of <code>GeDi</code> using a
+<p>To incorporate <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> into
+your workflow, you’ll need the results of a functional annotation or
+enrichment analysis. This vignette demonstrates the core functionalities
+of <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> using a
 publicly available dataset from Alasoo et al., as described in their
 paper “Shared genetic effects on chromatin and gene expression indicate
 a role for enhancer priming in immune response” <span class="citation">(Alasoo et al. 2018)</span>.</p>
@@ -176,21 +179,22 @@ running <code><a href="../reference/GeDi.html">GeDi()</a></code>.</p>
 data using the <strong>Data Input</strong> panel on the left side menu,
 ensuring it’s in the correct format for analysis.</p>
 <p>Alternatively, you can initiate the application by executing:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">GeDi</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">genesets =</span> geneset_df,</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">ppi =</span> ppi_df</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">distance_scores =</span> distance_scores_df</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/GeDi.html">GeDi</a></span><span class="op">(</span></span>
+<span>  genesets <span class="op">=</span> <span class="va">geneset_df</span>,</span>
+<span>  ppi <span class="op">=</span> <span class="va">ppi_df</span>,</span>
+<span>  distance_scores <span class="op">=</span> <span class="va">distance_scores_df</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>where</p>
 <ul>
 <li>
 <code>geneset_df</code> represents your input data in the form of a
-<code>DataFrame</code>, which should include at least one column named
+<code>data.frame</code>, which should include at least one column named
 “Genesets” containing geneset identifiers and one column named “Genes”
 containing a comma-separated list of genes belonging to each respective
 geneset.</li>
 <li>
-<code>ppi_df</code> is another <code>DataFrame</code> containing
+<code>ppi_df</code> is another <code>data.frame</code> containing
 protein-protein interaction scores, with columns named “from”, “to”, and
 “combined_score”.</li>
 <li>
@@ -214,11 +218,11 @@ button in the <strong>Data Input</strong> panel.</p>
 <p>Alternatively, you can proceed by following the subsequent code
 chunks to create the necessary input objects, step by step. This can
 serve as a reference guide for the steps ideally executed prior to
-analyzing the data with <code>GeDi</code>.</p>
-<p>To utilize <code>GeDi</code>, you’ll require results from a
-functional annotation analysis. In this vignette, we’ll demonstrate how
-to conduct an enrichment analysis on differentially expressed (DE) genes
-from the <em><a href="https://bioconductor.org/packages/3.19/macrophage" class="external-link">macrophage</a></em>
+analyzing the data with <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>.</p>
+<p>To utilize <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>, you’ll
+require results from a functional annotation analysis. In this vignette,
+we’ll demonstrate how to conduct an enrichment analysis on
+differentially expressed (DE) genes from the <em><a href="https://bioconductor.org/packages/3.19/macrophage" class="external-link">macrophage</a></em>
 dataset.</p>
 <p>Firstly, we’ll load the macrophage data and create a
 <code>DESeqDataset</code>, as the subsequent differential expression
@@ -267,7 +271,7 @@ hypothesis of a log2FoldChange of 1 to ensure that we identify genes
 with consistent and robust changes in expression.</p>
 <p>Finally, we’ll append the gene symbols to the resultant
 <code>DataFrame</code>, which will later serve as our “Genes” column in
-the input data for <code>GeDi</code>.</p>
+the input data for <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Filter genes based on read counts</span></span>
 <span><span class="co"># Calculate the number of genes with at least 10 counts in at least 6 samples</span></span>
@@ -307,20 +311,20 @@ results and identify the background genes to be utilized for functional
 enrichment.</p>
 <p>For the enrichment analysis, we use the overrepresentation analysis
 method provided by the <em><a href="https://bioconductor.org/packages/3.19/topGO" class="external-link">topGO</a></em>
-package. To streamline the integration of these results into
-<code>GeDi</code>, we utilize the <code>topGOtable</code> function from
-the <em><a href="https://bioconductor.org/packages/3.19/pcaExplorer" class="external-link">pcaExplorer</a></em>
+package. To streamline the integration of these results into <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>, we
+utilize the <code>topGOtable</code> function from the <em><a href="https://bioconductor.org/packages/3.19/pcaExplorer" class="external-link">pcaExplorer</a></em>
 package. By default, this function employs the <code>BP</code> ontology
 and the <code>elim</code> method, which helps decorrelate the Gene
 Ontology (GO) graph structure, resulting in less redundant functional
 categories. The output is a <code>DataFrame</code> object that
-seamlessly integrates with <code>GeDi</code>.</p>
-<p>However, as <code>GeDi</code> has only minimal requirements for the
-input, enrichment results generated using <em><a href="https://bioconductor.org/packages/3.19/clusterProfiler" class="external-link">clusterProfiler</a></em>
+seamlessly integrates with <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>.</p>
+<p>However, as <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> has
+only minimal requirements for the input, enrichment results generated
+using <em><a href="https://bioconductor.org/packages/3.19/clusterProfiler" class="external-link">clusterProfiler</a></em>
 can also be utilized. While we primarily tested results from the
-<code>enrichGO</code> method during <code>GeDi</code> development, those
-from the <code>enrichKEGG</code> and <code>enrichPathway</code> methods
-are also compatible.</p>
+<code>enrichGO</code> method during <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+development, those from the <code>enrichKEGG</code> and
+<code>enrichPathway</code> methods are also compatible.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load required packages for analysis</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/federicomarini/pcaExplorer" class="external-link">"pcaExplorer"</a></span><span class="op">)</span></span>
@@ -331,7 +335,8 @@ are also compatible.</p>
 <span><span class="co"># The function deseqresult2df is used to convert the DESeq2 results to a </span></span>
 <span><span class="co"># dataframe format</span></span>
 <span><span class="co"># FDR is set to 0.05 to filter significant results</span></span>
-<span><span class="va">de_symbols_IFNg_vs_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GeneTonic/man/deseqresult2df.html" class="external-link">deseqresult2df</a></span><span class="op">(</span><span class="va">res_macrophage_IFNg_vs_naive</span>, FDR <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">$</span><span class="va">SYMBOL</span></span>
+<span><span class="va">de_symbols_IFNg_vs_naive</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/GeneTonic/man/deseqresult2df.html" class="external-link">deseqresult2df</a></span><span class="op">(</span><span class="va">res_macrophage_IFNg_vs_naive</span>,</span>
+<span>                                           FDR <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">$</span><span class="va">SYMBOL</span></span>
 <span></span>
 <span><span class="co"># Extract gene symbols for background using the DESeq2 results object</span></span>
 <span><span class="co"># Filter genes that have nonzero counts</span></span>
@@ -350,17 +355,17 @@ are also compatible.</p>
 <span>    geneID <span class="op">=</span> <span class="st">"symbol"</span>,</span>
 <span>    topTablerows <span class="op">=</span> <span class="fl">500</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p>As mentioned earlier, <code>GeDi</code> expects the input to contain
-at least two columns: one named “Genesets” and one named “Genes”. While
-this is not strictly mandatory when providing your data interactively
-during an application session, it becomes necessary if you intend to
-initiate the application with your input as parameters (e.g.,
-<code>GeDi(genesets = my_genesets_df)</code>). In such cases, the
+<p>As mentioned earlier, <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> expects
+the input to contain at least two columns: one named “Genesets” and one
+named “Genes”. While this is not strictly mandatory when providing your
+data interactively during an application session, it becomes necessary
+if you intend to initiate the application with your input as parameters
+(e.g., <code>GeDi(genesets = my_genesets_df)</code>). In such cases, the
 “Genesets” column should contain identifiers for each geneset in the
 input, while the “Genes” column should consist of comma-separated lists
 of genes associated with each geneset.</p>
 <p>Therefore, we will adjust the column names of the resulting
-<code>DataFrame</code> from the enrichment analysis to adhere to the
+<code>data.frame</code> from the enrichment analysis to adhere to the
 required format.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Rename columns in the macrophage_topGO_example dataframe</span></span>
@@ -373,7 +378,7 @@ required format.</p>
 <h3 id="all-set">All set!<a class="anchor" aria-label="anchor" href="#all-set"></a>
 </h3>
 <p>Now that we’ve obtained functional annotation results from the <em><a href="https://bioconductor.org/packages/3.19/macrophage" class="external-link">macrophage</a></em>
-dataset, we can begin exploring the data using <code>GeDi</code>. You
+dataset, we can begin exploring the data using <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>. You
 have two options: you can either launch the application and supply the
 generated data using the <code><a href="../reference/GeDi.html">GeDi()</a></code> command, or if you’ve
 followed this vignette, you can initiate the application directly with
@@ -385,42 +390,40 @@ the loaded data by executing
 <span><span class="fu"><a href="../reference/GeDi.html">GeDi</a></span><span class="op">(</span>genesets <span class="op">=</span> <span class="va">macrophage_topGO_example</span><span class="op">)</span></span></code></pre></div>
 <p>The above shown code will open the application, directing you to the
 <strong>Welcome</strong> page. The <strong>Welcome</strong> page of
-<code>GeDi</code> serves as the entry point to the application,
-providing users with an overview of its features and functionalities.
-Upon launching the application, users are greeted with a user-friendly
-interface designed to facilitate the exploration and interpretation of
-functional annotation and enrichment analysis results. The
-<strong>Welcome</strong> page offers guidance on how to navigate the
-application and highlights key components such as data input options,
-visualization tools, and interactive features. Whether users are new to
-GeDi or returning to explore additional datasets, the
-<strong>Welcome</strong> page serves as a central hub for accessing
-resources and getting started with their analysis journey.</p>
-<div class="figure" style="text-align: center">
-<img src="Welcome_page.png" alt="The Welcome panel of GeDi" width="1453"><p class="caption">
-The Welcome panel of GeDi
-</p>
-</div>
+<em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+serves as the entry point to the application, providing users with an
+overview of its features and functionalities. Upon launching the
+application, users are greeted with a user-friendly interface designed
+to facilitate the exploration and interpretation of functional
+annotation and enrichment analysis results. The <strong>Welcome</strong>
+page offers guidance on how to navigate the application and highlights
+key components such as data input options, visualization tools, and
+interactive features. Whether users are new to GeDi or returning to
+explore additional datasets, the <strong>Welcome</strong> page serves as
+a central hub for accessing resources and getting started with their
+analysis journey.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="userinterface">Description of the <code>GeDi</code> user interface<a class="anchor" aria-label="anchor" href="#userinterface"></a>
 </h2>
-<p>The <code>GeDi</code> application, developed with the <em><a href="https://CRAN.R-project.org/package=shiny" class="external-link">shiny</a></em>
+<p>The <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+application, developed with the <em><a href="https://CRAN.R-project.org/package=shiny" class="external-link">shiny</a></em>
 framework, incorporates the modern design elements of the <em><a href="https://CRAN.R-project.org/package=bs4Dash" class="external-link">bs4Dash</a></em>
 package, which is built upon Bootstrap 4. This combination of
 technologies ensures a sleek and visually appealing user interface for
-navigating and interacting with the functionality offered by
-<code>GeDi</code>. By leveraging the features of <em><a href="https://CRAN.R-project.org/package=shiny" class="external-link">shiny</a></em> and
+navigating and interacting with the functionality offered by <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>. By
+leveraging the features of <em><a href="https://CRAN.R-project.org/package=shiny" class="external-link">shiny</a></em> and
 <em><a href="https://CRAN.R-project.org/package=bs4Dash" class="external-link">bs4Dash</a></em>,
-<code>GeDi</code> provides users with an intuitive and aesthetically
-pleasing environment for conducting functional annotation and enrichment
-analyses on their datasets.</p>
+<em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+provides users with an intuitive and aesthetically pleasing environment
+for conducting functional annotation and enrichment analyses on their
+datasets.</p>
 <div class="section level3">
 <h3 id="header-navbar">Header (navbar)<a class="anchor" aria-label="anchor" href="#header-navbar"></a>
 </h3>
-<p>The dashboard navbar in <code>GeDi</code>, referred to as such in the
-<em><a href="https://CRAN.R-project.org/package=bs4Dash" class="external-link">bs4Dash</a></em>
+<p>The dashboard navbar in <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>,
+referred to as such in the <em><a href="https://CRAN.R-project.org/package=bs4Dash" class="external-link">bs4Dash</a></em>
 framework, features two dropdown menus accessible by clicking on their
 respective icons (<i class="fa fa-book"></i> and
 <i class="fa fa-info"></i>). These menus offer additional functionality
@@ -428,14 +431,14 @@ through various buttons:</p>
 <ul>
 <li>
 <i class="fa fa-book"></i> - This option allows users to explore the
-<code>GeDi</code> vignette, either the version bundled with the package
-or the online version, providing detailed documentation and usage
-guidelines.</li>
+<em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+vignette, either the version bundled with the package or the online
+version, providing detailed documentation and usage guidelines.</li>
 <li>
 <i class="fa fa-question-circle"></i> - Clicking this icon provides
-users with initial help information about <code>GeDi</code>, offering a
-brief overview of the package’s functionality and outlining the
-prerequisites for proper execution.</li>
+users with initial help information about <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>,
+offering a brief overview of the package’s functionality and outlining
+the prerequisites for proper execution.</li>
 <li>
 <i class="fa fa-info-circle"></i> - Selecting this option displays
 information about the current session, presenting details such as the R
@@ -443,23 +446,24 @@ environment and loaded packages, helpful for troubleshooting and
 debugging purposes.</li>
 <li>
 <i class="fa fa-heart"></i> - This button offers general information
-about <code>GeDi</code>, including links to its development version for
-contribution and guidelines on citing the tool in research
-publications.</li>
+about <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>,
+including links to its development version for contribution and
+guidelines on citing the tool in research publications.</li>
 </ul>
 <p>Besides the two dropdown menus, users can also find the
 <code>Bookmark</code> button in the Navbar. The <code>Bookmark</code>
-button in the <code>GeDi</code> navbar serves as a convenient tool for
-users to save and bookmark genes and genesets of interest for later
-reference. To use this feature, users must first select or click on a
-gene or geneset that they wish to bookmark. Once the desired gene or
-geneset is selected, users can then click on the <code>Bookmark</code>
-button to add it to a list of bookmarked items within the
-<code>GeDi</code> application. This functionality enables users to
-organize and revisit specific genes or genesets that they find relevant
-or intriguing during their exploration of functional annotation and
-enrichment analysis results. The bookmarked genes and genesets can later
-be found in the <strong>Report</strong> panel.</p>
+button in the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> navbar
+serves as a convenient tool for users to save and bookmark genes and
+genesets of interest for later reference. To use this feature, users
+must first select or click on a gene or geneset that they wish to
+bookmark. Once the desired gene or geneset is selected, users can then
+click on the <code>Bookmark</code> button to add it to a list of
+bookmarked items within the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+application. This functionality enables users to organize and revisit
+specific genes or genesets that they find relevant or intriguing during
+their exploration of functional annotation and enrichment analysis
+results. The bookmarked genes and genesets can later be found in the
+<strong>Report</strong> panel.</p>
 </div>
 <div class="section level3">
 <h3 id="sidebar">Sidebar<a class="anchor" aria-label="anchor" href="#sidebar"></a>
@@ -468,42 +472,43 @@ be found in the <strong>Report</strong> panel.</p>
 side of the app (or simply by moving the mouse over to the left side if
 viewing the app in full screen mode), users can activate the sidebar
 menu. This sidebar menu serves as the primary means of accessing the
-various panels of the <code>GeDi</code> application, providing
-navigation to different functionalities. More detailed explanations of
-each panel will be provided in the next section.</p>
+various panels of the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+application, providing navigation to different functionalities. More
+detailed explanations of each panel will be provided in the next
+section.</p>
 </div>
 <div class="section level3">
 <h3 id="body">Body<a class="anchor" aria-label="anchor" href="#body"></a>
 </h3>
-<p>The structure of <code>GeDi</code> is designed around different
-panels, each of which becomes active upon clicking the corresponding
-icons or text in the sidebar.</p>
+<p>The structure of <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> is
+designed around different panels, each of which becomes active upon
+clicking the corresponding icons or text in the sidebar.</p>
 <p>While the Welcome panel is relatively self-explanatory, additional
 information and explanations are provided for the functionality of the
 remaining panels. For new users seeking guidance, there’s a question
 circle button (<i class="fa fa-question-circle"></i>) available to
-initiate an interactive tour of <code>GeDi</code>. This tour allows
-users to learn the basic usage mechanisms by actively engaging with the
-interface. During the tour, specific elements are highlighted in
-response to user actions, while the rest of the UI remains shaded to
-maintain focus. Users can interrupt the tour at any time by clicking
-outside the highlighted window, and navigation between steps is
-facilitated by arrow buttons (left, right). The tour functionality is
-implemented using the <em><a href="https://CRAN.R-project.org/package=rintrojs" class="external-link">rintrojs</a></em>
+initiate an interactive tour of <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>. This
+tour allows users to learn the basic usage mechanisms by actively
+engaging with the interface. During the tour, specific elements are
+highlighted in response to user actions, while the rest of the UI
+remains shaded to maintain focus. Users can interrupt the tour at any
+time by clicking outside the highlighted window, and navigation between
+steps is facilitated by arrow buttons (left, right). The tour
+functionality is implemented using the <em><a href="https://CRAN.R-project.org/package=rintrojs" class="external-link">rintrojs</a></em>
 package.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="functionality">The <code>GeDi</code> functionality<a class="anchor" aria-label="anchor" href="#functionality"></a>
 </h2>
-<p>The <code>GeDi</code> <em><a href="https://bioconductor.org/packages/3.19/shiny" class="external-link">shiny</a></em>
+<p>The <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> <em><a href="https://bioconductor.org/packages/3.19/shiny" class="external-link">shiny</a></em>
 application is organized into distinct panels, each serving a specific
 purpose, which will be thoroughly explored in the following
 sections.</p>
 <div class="section level3">
 <h3 id="the-welcome-panel">The Welcome panel<a class="anchor" aria-label="anchor" href="#the-welcome-panel"></a>
 </h3>
-<p>This panel serves as a guide for utilizing <code>GeDi</code>
+<p>This panel serves as a guide for utilizing <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
 effectively. It offers detailed instructions on generating input data
 for the application, elucidating the expected input format and outlining
 the various interactive elements present in the app’s other panels.</p>
@@ -531,7 +536,7 @@ step, the application checks if your input contains the “Genesets” and
 appears in the lower right corner. Additionally, two drop-down menus
 allow you to select the correct columns from your data and update the
 input accordingly.</p>
-<p>You also have the option to start using <code>GeDi</code> with
+<p>You also have the option to start using <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> with
 preprocessed example data based on the <em><a href="https://bioconductor.org/packages/3.19/macrophage" class="external-link">macrophage</a></em>
 dataset. Simply click the <strong>Load demo data</strong> button to load
 the example data’s enrichment results. You can explore these results in
@@ -542,8 +547,7 @@ also use the <strong>Have a look at the data structure</strong> button.
 By clicking this button, a modal window with a visual representation of
 the expected input data structure will open. This screenshot serves as a
 helpful guide, providing you with a clear understanding of how your data
-should be formatted for optimal compatibility with
-<code>GeDi</code>.</p>
+should be formatted for optimal compatibility with <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>.</p>
 <p>Once, you have successfully loaded some data, the data input process
 will proceed and two additional boxes will be displayed in the
 panel.</p>
@@ -582,13 +586,14 @@ identified uninsightful genesets have already been filtered out.</p>
 <p>Once you’ve chosen the genesets you wish to exclude from your
 dataset, you can initiate the filtering process by clicking the
 <code>Remove the selected Genesets</code> button. This action will
-remove all selected genesets from the dataset. Additionally, you have
-the option to save the filtered data using the
+remove all selected genesets from the dataset.<br>
+Additionally, you have the option to save the filtered data using the
 <code>Download the filtered data</code> button. Clicking this button
 will save the filtered data to your local machine.This feature can be
 particularly beneficial for users who intend to revisit their data in a
-new instance of <code>GeDi</code> and want to ensure that previously
-identified uninsightful genesets have already been filtered out.</p>
+new instance of <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> and
+want to ensure that previously identified uninsightful genesets have
+already been filtered out.</p>
 <div class="figure" style="text-align: center">
 <img src="Optional_Filtering.png" alt="Optional Filtering Step" width="1512"><p class="caption">
 Optional Filtering Step
@@ -598,17 +603,17 @@ Optional Filtering Step
 <p>Upon advancing to the second box labeled <strong>Step 2</strong>,
 you’ll encounter the crucial task of selecting the species associated
 with your dataset. This step holds significant importance for the
-computation of the <strong>PMM score</strong> within <code>GeDi</code>,
-which heavily relies on a <strong>Protein-Protein Interaction
-(PPI)</strong> matrix. This matrix plays a pivotal role in capturing
-protein interaction strength, thereby enriching distance scores with
-valuable biological context. To access and utilize this essential
-information, specifying the species linked to your dataset is mandatory.
-By clicking the input field, you’ll prompt a dropdown menu showcasing
-preselected species options. If your species is included, simply make
-your selection. Alternatively, if your species is not listed, you have
-the option to manually input it. In cases of uncertainty, a convenient
-link provided on the right directs you to the STRING database, enabling
+computation of the <strong>PMM score</strong> within <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>, which
+heavily relies on a <strong>Protein-Protein Interaction (PPI)</strong>
+matrix. This matrix plays a pivotal role in capturing protein
+interaction strength, thereby enriching distance scores with valuable
+biological context. To access and utilize this essential information,
+specifying the species linked to your dataset is mandatory. By clicking
+the input field, you’ll prompt a dropdown menu showcasing preselected
+species options. If your species is included, simply make your
+selection. Alternatively, if your species is not listed, you have the
+option to manually input it. In cases of uncertainty, a convenient link
+provided on the right directs you to the STRING database, enabling
 verification of species details and PPI availability for informed
 decision-making.</p>
 <div class="figure" style="text-align: center">
@@ -973,10 +978,10 @@ of each table individually. Additionally, the <strong>Start the
 generation of the report</strong> button is provided to generate a
 detailed report encompassing all selected elements of interest.</p>
 <p>The report generation process utilizes a predefined template report
-included within the <code>GeDi</code> package. This template leverages
-the input elements and reactive values associated with the bookmarks,
-ensuring that the generated report contains comprehensive and relevant
-information.</p>
+included within the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+package. This template leverages the input elements and reactive values
+associated with the bookmarks, ensuring that the generated report
+contains comprehensive and relevant information.</p>
 <p>The resulting report serves as a valuable tool for creating a
 permanent and reproducible analysis output. Users can easily store or
 share this report for future reference or collaboration purposes.</p>
@@ -990,50 +995,48 @@ The Report panel
 <div class="section level2">
 <h2 id="additionalinfo">Additional Information<a class="anchor" aria-label="anchor" href="#additionalinfo"></a>
 </h2>
-<p>Bug reports can be submitted on the Bioconductor <a href="https://support.bioconductor.org/" class="external-link">support site</a> or opened as
-issues in the <code>GeDi</code> <a href="https://github.com/AnnekathrinSilvia/GeDi/issues" class="external-link">GitHub
+<p>If you have questions about the package or the available
+functionality, please submit them on the Bioconductor <a href="https://support.bioconductor.org/" class="external-link">support site</a> using the tag
+‘GeDi’.</p>
+<p>Bug reports can be opened as issues in the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> <a href="https://github.com/AnnekathrinSilvia/GeDi/issues" class="external-link">GitHub
 repository</a>. Please note that the GitHub repository also hosts the
 development version of the package, where new functionality is
 continuously added - be cautious, as you may be working with
 cutting-edge versions!</p>
 <p>The authors welcome thoughtful suggestions for enhancements or new
 features, and even better, pull requests.</p>
-<p>If you utilize <code>GeDi</code> for your analysis, kindly cite it
-using the provided citation format below:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"GeDi"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="additional-example-data">Additional example data<a class="anchor" aria-label="anchor" href="#additional-example-data"></a>
 </h2>
 <p>In this section, we present additional examples demonstrating the
-versatility of <code>GeDi</code> in analyzing functional enrichment data
-from two widely used databases, KEGG and Reactome. By leveraging the
-rich resources provided by these databases, GeDi offers researchers a
-comprehensive toolkit for exploring and interpreting complex biological
-pathways and processes. Through step-by-step demonstrations, we
-illustrate how GeDi can seamlessly integrate with data from KEGG and
-Reactome, enabling users to gain deeper insights into the functional
-annotations of their gene sets. Whether investigating specific pathways
-or broader biological processes, GeDi provides intuitive and powerful
-functionalities to enhance the analysis of functional enrichment data
-from diverse sources.</p>
+versatility of <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> in
+analyzing functional enrichment data from two widely used databases,
+KEGG and Reactome. By leveraging the rich resources provided by these
+databases, GeDi offers researchers a comprehensive toolkit for exploring
+and interpreting complex biological pathways and processes. Through
+step-by-step demonstrations, we illustrate how GeDi can seamlessly
+integrate with data from KEGG and Reactome, enabling users to gain
+deeper insights into the functional annotations of their gene sets.
+Whether investigating specific pathways or broader biological processes,
+GeDi provides intuitive and powerful functionalities to enhance the
+analysis of functional enrichment data from diverse sources.</p>
 <p>In this section we will demonstrate how results containing
 identifiers from databases like KEGG <span class="citation">(Kanehisa et
 al. 2023)</span> or Reactome <span class="citation">(Gillespie et al.
 2022)</span> - e.g. generated using <code>enrichKegg</code> or
 <code>enrichPathway</code> functions from the <em><a href="https://bioconductor.org/packages/3.19/clusterProfiler" class="external-link">clusterProfiler</a></em>
-package - can be utilized as input for <code>GeDi</code>. We will again
-use the data of the <em><a href="https://bioconductor.org/packages/3.19/macrophage" class="external-link">macrophage</a></em>
+package - can be utilized as input for <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>. We
+will again use the data of the <em><a href="https://bioconductor.org/packages/3.19/macrophage" class="external-link">macrophage</a></em>
 package, specifically the differentially expressed genes we have
 identified before. With this data, we demonstrate how to generate the
-results and prepare them for their use in <code>GeDi</code>.</p>
+results and prepare them for their use in <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>.</p>
 <p>However, before we can use the <code>enrichKEGG</code> function from
 the <em><a href="https://bioconductor.org/packages/3.19/clusterProfiler" class="external-link">clusterProfiler</a></em>
 package, we have to map the ENSEMBL ids of the data to Entrez ids. For
 this, we will up the first use the <em><a href="https://bioconductor.org/packages/3.19/biomaRt" class="external-link">biomaRt</a></em>
 package to generate a mapping of ENSEMBL to Entrez.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the "biomaRt" package to access the BioMart database</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/grimbough/biomaRt" class="external-link">"biomaRt"</a></span><span class="op">)</span></span>
 <span></span>
@@ -1059,34 +1062,36 @@ package to generate a mapping of ENSEMBL to Entrez.</p>
 <p>Next, we map the differentially expressed genes to get the right
 identifiers and run the <code>enrichKEGG</code> function. We set the
 organism to human and the p-value cutoff to 5%.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the "clusterProfiler" package for functional enrichment analysis</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/" class="external-link">"clusterProfiler"</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Retrieve Entrez gene IDs from the annotations data frame based on matching </span></span>
 <span><span class="co"># Ensembl gene IDs from the DE results</span></span>
-<span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">anns</span><span class="op">$</span><span class="va">entrezgene_id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">res_macrophage_IFNg_vs_naive</span><span class="op">)</span>, <span class="va">anns</span><span class="op">$</span><span class="va">ensembl_gene_id</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">anns</span><span class="op">$</span><span class="va">entrezgene_id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/match.html" class="external-link">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/row_colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">res_macrophage_IFNg_vs_naive</span><span class="op">)</span>,</span>
+<span>                                  <span class="va">anns</span><span class="op">$</span><span class="va">ensembl_gene_id</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Perform KEGG pathway enrichment analysis using the retrieved gene IDs</span></span>
 <span><span class="va">res_enrich</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/clusterProfiler/man/enrichKEGG.html" class="external-link">enrichKEGG</a></span><span class="op">(</span><span class="va">genes</span>,</span>
 <span>  organism <span class="op">=</span> <span class="st">"hsa"</span>,</span>
 <span>  pvalueCutoff <span class="op">=</span> <span class="fl">0.05</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>We can now use the results of the enrichment in <code>GeDi</code>.
-For this, we directly start the app with the loaded data. If you have
-not computed the data following this workflow, you can beforehand load
-it from the available data in this package.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p>We can now use the results of the enrichment in <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>. For
+this, we directly start the app with the loaded data. If you have not
+computed the data following this workflow, you can beforehand load it
+from the available data in this package.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the "macrophage_KEGG_example" dataset from the "GeDi" package</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"macrophage_KEGG_example"</span>, package <span class="op">=</span> <span class="st">"GeDi"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Start the GeDi app with the loaded data</span></span>
-<span><span class="co"># The "genesets" parameter is set to the loaded "macrophage_KEGG_example" dataset</span></span>
+<span><span class="co"># The "genesets" parameter is set to the loaded "macrophage_KEGG_example" </span></span>
+<span><span class="co"># dataset</span></span>
 <span><span class="fu"><a href="../reference/GeDi.html">GeDi</a></span><span class="op">(</span>genesets <span class="op">=</span> <span class="va">macrophage_KEGG_example</span><span class="op">)</span></span></code></pre></div>
 <p>In a similar manner we can use the Reactome database for the
 functional annotation. Here, we use the <em><a href="https://bioconductor.org/packages/3.19/ReactomePA" class="external-link">ReactomePA</a></em>
 package and the differentially expressed genes.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the "ReactomePA" package for pathway enrichment analysis</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://yulab-smu.top/biomedical-knowledge-mining-book/" class="external-link">"ReactomePA"</a></span><span class="op">)</span></span>
 <span></span>
@@ -1098,12 +1103,13 @@ package and the differentially expressed genes.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Now we can use the results in the same manner as for the KEGG pathway
 analysis.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the "macrophage_Reactome_example" dataset from the "GeDi" package</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"macrophage_Reactome_example"</span>, package <span class="op">=</span> <span class="st">"GeDi"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Start the GeDi app with the loaded data</span></span>
-<span><span class="co"># The "genesets" parameter is set to the loaded "macrophage_Reactome_example" dataset</span></span>
+<span><span class="co"># The "genesets" parameter is set to the loaded "macrophage_Reactome_example" </span></span>
+<span><span class="co"># dataset</span></span>
 <span><span class="fu"><a href="../reference/GeDi.html">GeDi</a></span><span class="op">(</span>genesets <span class="op">=</span> <span class="va">macrophage_Reactome_example</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -1120,15 +1126,15 @@ packages might be causing the issue.</p>
 results of functional enrichment analysis. How do I plug this into
 <code>GeDi</code>?</strong></p>
 <p>A: You can use nearly any result of a functional enrichment analysis
-in <code>GeDi</code> as long as the results are transformed in a way
-that they fit the input requirements. Please check out the
-<strong>Welcome</strong> page to see the specification of the input
-requirements.</p>
+in <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em> as long
+as the results are transformed in a way that they fit the input
+requirements. Please check out the <strong>Welcome</strong> page to see
+the specification of the input requirements.</p>
 </div>
 <div class="section level2">
 <h2 class="unnumbered smaller" id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R Under development (unstable) (2024-03-12 r86109)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-apple-darwin20</span></span>
@@ -1154,67 +1160,74 @@ requirements.</p>
 <span><span class="co">#&gt; [10] DESeq2_1.43.4               SummarizedExperiment_1.33.3 Biobase_2.63.0             </span></span>
 <span><span class="co">#&gt; [13] MatrixGenerics_1.15.0       matrixStats_1.2.0           GenomicRanges_1.55.3       </span></span>
 <span><span class="co">#&gt; [16] GenomeInfoDb_1.39.9         IRanges_2.37.1              S4Vectors_0.41.4           </span></span>
-<span><span class="co">#&gt; [19] BiocGenerics_0.49.1         macrophage_1.19.0           BiocStyle_2.31.0           </span></span>
+<span><span class="co">#&gt; [19] BiocGenerics_0.49.1         macrophage_1.19.0           GeDi_0.99.0                </span></span>
+<span><span class="co">#&gt; [22] BiocStyle_2.31.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;   [1] fs_1.6.3                bitops_1.0-7            fontawesome_0.5.2      </span></span>
-<span><span class="co">#&gt;   [4] httr_1.4.7              webshot_0.5.5           RColorBrewer_1.1-3     </span></span>
-<span><span class="co">#&gt;   [7] doParallel_1.0.17       Rgraphviz_2.47.0        dynamicTreeCut_1.63-1  </span></span>
-<span><span class="co">#&gt;  [10] tippy_0.1.0             tools_4.4.0             utf8_1.2.4             </span></span>
-<span><span class="co">#&gt;  [13] R6_2.5.1                DT_0.32                 lazyeval_0.2.2         </span></span>
-<span><span class="co">#&gt;  [16] GetoptLong_1.0.5        withr_3.0.0             prettyunits_1.2.0      </span></span>
-<span><span class="co">#&gt;  [19] gridExtra_2.3           cli_3.6.2               textshaping_0.3.7      </span></span>
-<span><span class="co">#&gt;  [22] TSP_1.2-4               sass_0.4.8              bs4Dash_2.3.3          </span></span>
-<span><span class="co">#&gt;  [25] genefilter_1.85.1       ggridges_0.5.6          pkgdown_2.0.7          </span></span>
-<span><span class="co">#&gt;  [28] systemfonts_1.0.6       AnnotationForge_1.45.0  limma_3.59.5           </span></span>
-<span><span class="co">#&gt;  [31] rstudioapi_0.15.0       RSQLite_2.3.5           visNetwork_2.1.2       </span></span>
-<span><span class="co">#&gt;  [34] generics_0.1.3          GOstats_2.69.0          shape_1.4.6.1          </span></span>
-<span><span class="co">#&gt;  [37] crosstalk_1.2.1         dplyr_1.1.4             dendextend_1.17.1      </span></span>
-<span><span class="co">#&gt;  [40] Matrix_1.6-5            fansi_1.0.6             abind_1.4-5            </span></span>
-<span><span class="co">#&gt;  [43] lifecycle_1.0.4         yaml_2.3.8              SparseArray_1.3.4      </span></span>
-<span><span class="co">#&gt;  [46] BiocFileCache_2.11.1    grid_4.4.0              blob_1.2.4             </span></span>
-<span><span class="co">#&gt;  [49] promises_1.2.1          crayon_1.5.2            shinydashboard_0.7.2   </span></span>
-<span><span class="co">#&gt;  [52] miniUI_0.1.1.1          lattice_0.22-5          ComplexUpset_1.3.3     </span></span>
-<span><span class="co">#&gt;  [55] annotate_1.81.2         KEGGREST_1.43.0         pillar_1.9.0           </span></span>
-<span><span class="co">#&gt;  [58] knitr_1.45              ComplexHeatmap_2.19.0   rjson_0.2.21           </span></span>
-<span><span class="co">#&gt;  [61] codetools_0.2-19        glue_1.7.0              data.table_1.15.2      </span></span>
-<span><span class="co">#&gt;  [64] vctrs_0.6.5             png_0.1-8               gtable_0.3.4           </span></span>
-<span><span class="co">#&gt;  [67] assertthat_0.2.1        cachem_1.0.8            xfun_0.42              </span></span>
-<span><span class="co">#&gt;  [70] S4Arrays_1.3.6          mime_0.12               survival_3.5-8         </span></span>
-<span><span class="co">#&gt;  [73] pheatmap_1.0.12         seriation_1.5.4         iterators_1.0.14       </span></span>
-<span><span class="co">#&gt;  [76] statmod_1.5.0           ellipsis_0.3.2          Category_2.69.0        </span></span>
-<span><span class="co">#&gt;  [79] bit64_4.0.5             threejs_0.3.3           progress_1.2.3         </span></span>
-<span><span class="co">#&gt;  [82] filelock_1.0.3          bslib_0.6.1             colorspace_2.1-0       </span></span>
-<span><span class="co">#&gt;  [85] DBI_1.2.2               tidyselect_1.2.1        bit_4.0.5              </span></span>
-<span><span class="co">#&gt;  [88] compiler_4.4.0          curl_5.2.1              httr2_1.0.0            </span></span>
-<span><span class="co">#&gt;  [91] expm_0.999-9            xml2_1.3.6              desc_1.4.3             </span></span>
-<span><span class="co">#&gt;  [94] DelayedArray_0.29.9     plotly_4.10.4           colourpicker_1.3.0     </span></span>
-<span><span class="co">#&gt;  [97] bookdown_0.38           scales_1.3.0            RBGL_1.79.0            </span></span>
-<span><span class="co">#&gt; [100] NMF_0.27                rappdirs_0.3.3          stringr_1.5.1          </span></span>
-<span><span class="co">#&gt; [103] digest_0.6.35           shinyBS_0.61.1          rmarkdown_2.26         </span></span>
-<span><span class="co">#&gt; [106] ca_0.71.1               XVector_0.43.1          htmltools_0.5.7        </span></span>
-<span><span class="co">#&gt; [109] pkgconfig_2.0.3         base64enc_0.1-3         highr_0.10             </span></span>
-<span><span class="co">#&gt; [112] dbplyr_2.4.0            fastmap_1.1.1           rlang_1.1.3            </span></span>
-<span><span class="co">#&gt; [115] GlobalOptions_0.1.2     htmlwidgets_1.6.4       shiny_1.8.0            </span></span>
-<span><span class="co">#&gt; [118] farver_2.1.1            jquerylib_0.1.4         jsonlite_1.8.8         </span></span>
-<span><span class="co">#&gt; [121] BiocParallel_1.37.1     RCurl_1.98-1.14         magrittr_2.0.3         </span></span>
-<span><span class="co">#&gt; [124] GenomeInfoDbData_1.2.11 patchwork_1.2.0         munsell_0.5.0          </span></span>
-<span><span class="co">#&gt; [127] Rcpp_1.0.12             shinycssloaders_1.0.0   viridis_0.6.5          </span></span>
-<span><span class="co">#&gt; [130] stringi_1.8.3           rintrojs_0.3.4          zlibbioc_1.49.3        </span></span>
-<span><span class="co">#&gt; [133] MASS_7.3-60.2           plyr_1.8.9              parallel_4.4.0         </span></span>
-<span><span class="co">#&gt; [136] ggrepel_0.9.5           bigmemory.sri_0.1.8     Biostrings_2.71.4      </span></span>
-<span><span class="co">#&gt; [139] splines_4.4.0           hms_1.1.3               circlize_0.4.16        </span></span>
-<span><span class="co">#&gt; [142] locfit_1.5-9.9          igraph_2.0.3            uuid_1.2-0             </span></span>
-<span><span class="co">#&gt; [145] rngtools_1.5.2          reshape2_1.4.4          biomaRt_2.59.1         </span></span>
-<span><span class="co">#&gt; [148] XML_3.99-0.16.1         evaluate_0.23           BiocManager_1.30.22    </span></span>
-<span><span class="co">#&gt; [151] foreach_1.5.2           tweenr_2.0.3            httpuv_1.6.14          </span></span>
-<span><span class="co">#&gt; [154] backbone_2.1.3          tidyr_1.3.1             purrr_1.0.2            </span></span>
-<span><span class="co">#&gt; [157] polyclip_1.10-6         heatmaply_1.5.0         clue_0.3-65            </span></span>
-<span><span class="co">#&gt; [160] ggplot2_3.5.0           gridBase_0.4-7          ggforce_0.4.2          </span></span>
-<span><span class="co">#&gt; [163] xtable_1.8-4            later_1.3.2             viridisLite_0.4.2      </span></span>
-<span><span class="co">#&gt; [166] ragg_1.3.0              tibble_3.2.1            memoise_2.0.1          </span></span>
-<span><span class="co">#&gt; [169] registry_0.5-1          cluster_2.1.6           shinyWidgets_0.8.2     </span></span>
-<span><span class="co">#&gt; [172] shinyAce_0.4.2          GSEABase_1.65.1</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1] STRINGdb_2.15.3         fs_1.6.3                bitops_1.0-7           </span></span>
+<span><span class="co">#&gt;   [4] fontawesome_0.5.2       httr_1.4.7              webshot_0.5.5          </span></span>
+<span><span class="co">#&gt;   [7] RColorBrewer_1.1-3      doParallel_1.0.17       Rgraphviz_2.47.0       </span></span>
+<span><span class="co">#&gt;  [10] dynamicTreeCut_1.63-1   tippy_0.1.0             tools_4.4.0            </span></span>
+<span><span class="co">#&gt;  [13] utf8_1.2.4              R6_2.5.1                DT_0.32                </span></span>
+<span><span class="co">#&gt;  [16] lazyeval_0.2.2          GetoptLong_1.0.5        withr_3.0.0            </span></span>
+<span><span class="co">#&gt;  [19] prettyunits_1.2.0       gridExtra_2.3           cli_3.6.2              </span></span>
+<span><span class="co">#&gt;  [22] textshaping_0.3.7       TSP_1.2-4               slam_0.1-50            </span></span>
+<span><span class="co">#&gt;  [25] sass_0.4.8              bs4Dash_2.3.3           tm_0.7-12              </span></span>
+<span><span class="co">#&gt;  [28] genefilter_1.85.1       ggridges_0.5.6          pkgdown_2.0.7          </span></span>
+<span><span class="co">#&gt;  [31] systemfonts_1.0.6       yulab.utils_0.1.4       AnnotationForge_1.45.0 </span></span>
+<span><span class="co">#&gt;  [34] plotrix_3.8-4           limma_3.59.5            rstudioapi_0.15.0      </span></span>
+<span><span class="co">#&gt;  [37] RSQLite_2.3.5           GOstats_2.69.0          visNetwork_2.1.2       </span></span>
+<span><span class="co">#&gt;  [40] generics_0.1.3          shape_1.4.6.1           gtools_3.9.5           </span></span>
+<span><span class="co">#&gt;  [43] crosstalk_1.2.1         dplyr_1.1.4             dendextend_1.17.1      </span></span>
+<span><span class="co">#&gt;  [46] Matrix_1.6-5            fansi_1.0.6             abind_1.4-5            </span></span>
+<span><span class="co">#&gt;  [49] lifecycle_1.0.4         yaml_2.3.8              gplots_3.1.3.1         </span></span>
+<span><span class="co">#&gt;  [52] SparseArray_1.3.4       BiocFileCache_2.11.1    grid_4.4.0             </span></span>
+<span><span class="co">#&gt;  [55] blob_1.2.4              promises_1.2.1          crayon_1.5.2           </span></span>
+<span><span class="co">#&gt;  [58] shinydashboard_0.7.2    miniUI_0.1.1.1          lattice_0.22-5         </span></span>
+<span><span class="co">#&gt;  [61] ComplexUpset_1.3.3      annotate_1.81.2         KEGGREST_1.43.0        </span></span>
+<span><span class="co">#&gt;  [64] pillar_1.9.0            knitr_1.45              ComplexHeatmap_2.19.0  </span></span>
+<span><span class="co">#&gt;  [67] rjson_0.2.21            codetools_0.2-19        glue_1.7.0             </span></span>
+<span><span class="co">#&gt;  [70] data.table_1.15.2       vctrs_0.6.5             png_0.1-8              </span></span>
+<span><span class="co">#&gt;  [73] gtable_0.3.4            assertthat_0.2.1        gsubfn_0.7             </span></span>
+<span><span class="co">#&gt;  [76] cachem_1.0.8            xfun_0.42               S4Arrays_1.3.6         </span></span>
+<span><span class="co">#&gt;  [79] mime_0.12               survival_3.5-8          wordcloud2_0.2.1       </span></span>
+<span><span class="co">#&gt;  [82] pheatmap_1.0.12         seriation_1.5.4         iterators_1.0.14       </span></span>
+<span><span class="co">#&gt;  [85] statmod_1.5.0           ellipsis_0.3.2          Category_2.69.0        </span></span>
+<span><span class="co">#&gt;  [88] bit64_4.0.5             threejs_0.3.3           progress_1.2.3         </span></span>
+<span><span class="co">#&gt;  [91] filelock_1.0.3          bslib_0.6.1             KernSmooth_2.23-22     </span></span>
+<span><span class="co">#&gt;  [94] colorspace_2.1-0        DBI_1.2.2               tidyselect_1.2.1       </span></span>
+<span><span class="co">#&gt;  [97] bit_4.0.5               compiler_4.4.0          curl_5.2.1             </span></span>
+<span><span class="co">#&gt; [100] chron_2.3-61            httr2_1.0.0             BiocNeighbors_1.21.2   </span></span>
+<span><span class="co">#&gt; [103] expm_0.999-9            xml2_1.3.6              NLP_0.2-1              </span></span>
+<span><span class="co">#&gt; [106] desc_1.4.3              ggdendro_0.2.0          DelayedArray_0.29.9    </span></span>
+<span><span class="co">#&gt; [109] plotly_4.10.4           colourpicker_1.3.0      bookdown_0.38          </span></span>
+<span><span class="co">#&gt; [112] scales_1.3.0            caTools_1.18.2          RBGL_1.79.0            </span></span>
+<span><span class="co">#&gt; [115] NMF_0.27                rappdirs_0.3.3          stringr_1.5.1          </span></span>
+<span><span class="co">#&gt; [118] digest_0.6.35           shinyBS_0.61.1          rmarkdown_2.26         </span></span>
+<span><span class="co">#&gt; [121] ca_0.71.1               XVector_0.43.1          htmltools_0.5.7        </span></span>
+<span><span class="co">#&gt; [124] pkgconfig_2.0.3         base64enc_0.1-3         highr_0.10             </span></span>
+<span><span class="co">#&gt; [127] dbplyr_2.4.0            fastmap_1.1.1           rlang_1.1.3            </span></span>
+<span><span class="co">#&gt; [130] GlobalOptions_0.1.2     htmlwidgets_1.6.4       shiny_1.8.0            </span></span>
+<span><span class="co">#&gt; [133] farver_2.1.1            jquerylib_0.1.4         jsonlite_1.8.8         </span></span>
+<span><span class="co">#&gt; [136] BiocParallel_1.37.1     GOSemSim_2.29.1         RCurl_1.98-1.14        </span></span>
+<span><span class="co">#&gt; [139] magrittr_2.0.3          GenomeInfoDbData_1.2.11 patchwork_1.2.0        </span></span>
+<span><span class="co">#&gt; [142] munsell_0.5.0           Rcpp_1.0.12             shinycssloaders_1.0.0  </span></span>
+<span><span class="co">#&gt; [145] viridis_0.6.5           proto_1.0.0             sqldf_0.4-11           </span></span>
+<span><span class="co">#&gt; [148] stringi_1.8.3           rintrojs_0.3.4          zlibbioc_1.49.3        </span></span>
+<span><span class="co">#&gt; [151] MASS_7.3-60.2           plyr_1.8.9              parallel_4.4.0         </span></span>
+<span><span class="co">#&gt; [154] ggrepel_0.9.5           bigmemory.sri_0.1.8     Biostrings_2.71.4      </span></span>
+<span><span class="co">#&gt; [157] splines_4.4.0           hash_2.2.6.3            hms_1.1.3              </span></span>
+<span><span class="co">#&gt; [160] circlize_0.4.16         locfit_1.5-9.9          igraph_2.0.3           </span></span>
+<span><span class="co">#&gt; [163] uuid_1.2-0              rngtools_1.5.2          reshape2_1.4.4         </span></span>
+<span><span class="co">#&gt; [166] biomaRt_2.59.1          XML_3.99-0.16.1         evaluate_0.23          </span></span>
+<span><span class="co">#&gt; [169] BiocManager_1.30.22     foreach_1.5.2           tweenr_2.0.3           </span></span>
+<span><span class="co">#&gt; [172] httpuv_1.6.14           backbone_2.1.3          tidyr_1.3.1            </span></span>
+<span><span class="co">#&gt; [175] purrr_1.0.2             polyclip_1.10-6         heatmaply_1.5.0        </span></span>
+<span><span class="co">#&gt; [178] clue_0.3-65             ggplot2_3.5.0           gridBase_0.4-7         </span></span>
+<span><span class="co">#&gt; [181] ggforce_0.4.2           xtable_1.8-4            later_1.3.2            </span></span>
+<span><span class="co">#&gt; [184] viridisLite_0.4.2       ragg_1.3.0              tibble_3.2.1           </span></span>
+<span><span class="co">#&gt; [187] memoise_2.0.1           registry_0.5-1          cluster_2.1.6          </span></span>
+<span><span class="co">#&gt; [190] shinyWidgets_0.8.2      GSEABase_1.65.1         shinyAce_0.4.2</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -1248,7 +1261,7 @@ RNA-seq data with DESeq2</span>.”</span> <em>Genome Biology</em> 15
 </div>
 <div id="ref-Yoon2019" class="csl-entry">
 Yoon, Sora, Jinhwan Kim, Seon-kyu Kim, Bukyung Baik, Sang-mun Chi, and
-Seon-young Kim. 2019. <span>“<span class="nocase">GScluster :
+Seon-young Kim. 2019. <span>“<span class="nocase">GScluster:
 network-weighted gene-set clustering analysis</span>,”</span> 1–14.
 </div>
 </div>
