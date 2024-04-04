@@ -4,7 +4,7 @@
 \alias{getId}
 \title{Get NCBI ID}
 \usage{
-getId(species, version = "11.5")
+getId(species, version = "11.5", cache = FALSE)
 }
 \arguments{
 \item{species}{character, the species of your input data}
