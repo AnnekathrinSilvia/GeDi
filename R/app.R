@@ -2438,9 +2438,10 @@ GeDi <- function(genesets = NULL,
         )
       )
     })
+  }
   # nocov end
 
   shinyApp(ui = gedi_ui, server = gedi_server)
-}
+  }
 
 globalVariables("macrophage_topGO_example")
