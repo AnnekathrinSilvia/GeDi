@@ -11,9 +11,9 @@ Text file
 A sample input text file taken from the GScluster package
 }
 \details{
-This sample input text file contains data from the GScluster package.
-It is identical to the sample_geneset.txt file found on the Github
-page of the package.
+This sample input text file contains data from the GScluster
+package. It is identical to the sample_geneset.txt file found on
+the Github page of the package.
 }
 \references{
 Yoon, S., Kim, J., Kim, SK. et al. GScluster: network-weighted

@@ -28,8 +28,8 @@ ont parameter for possibilities.}
 \item{species}{character, the species of your data. Indicated as
 org.XX.eg.db package from Bioconductor.}
 
-\item{BPPARAM}{A BiocParallelParam object specifying how parallelization should
-be handled}
+\item{BPPARAM}{A BiocParallelParam object specifying how parallelization
+should be handled}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of scaled values.

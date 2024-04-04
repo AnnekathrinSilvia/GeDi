@@ -7,8 +7,8 @@
 buildHistogramData(genesets, gs_names, start = 0, end = 0)
 }
 \arguments{
-\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
-by \code{list} of genes.}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
+represented by \code{list} of genes.}
 
 \item{gs_names}{character vector, Name / identifier of the genesets in
 \code{genesets}}

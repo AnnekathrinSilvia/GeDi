@@ -14,8 +14,8 @@ gsHistogram(
 )
 }
 \arguments{
-\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
-by \code{list} of genes.}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
+represented by \code{list} of genes.}
 
 \item{gs_names}{character vector, Name / identifier of the genesets in
 \code{genesets}}
@@ -34,7 +34,8 @@ Defaults to 0.}
 A \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} plot object.
 }
 \description{
-Create a histogram plot to plot geneset names / identifiers against their size.
+Create a histogram plot to plot geneset names / identifiers against their
+size.
 }
 \examples{
 ## Mock example showing how the data should look like

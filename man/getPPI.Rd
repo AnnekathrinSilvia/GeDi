@@ -7,8 +7,8 @@
 getPPI(genes, string_db, anno_df)
 }
 \arguments{
-\item{genes}{a \code{list}, A \code{list} of genes to download the respective protein-protein
-interaction information}
+\item{genes}{a \code{list}, A \code{list} of genes to download the respective protein-
+protein interaction information}
 
 \item{string_db}{A \link{STRINGdb} object, the species of the object should match
 the species of \code{genes}.}

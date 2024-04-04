@@ -8,23 +8,23 @@
 #'                 share common biological characteristics or functions. Such
 #'                 genesets can for example be obtained from databases such as
 #'                 the Gene Ontology (GO), the Kyoto Encyclopedia of Genes and
-#'                 Genomes (KEGG), Reactome, or the Molecular Signatures 
-#'                 Database (MSigDB). The identifiers used in these databases 
-#'                 can be directly used as geneset identifiers in GeDi. The 
+#'                 Genomes (KEGG), Reactome, or the Molecular Signatures
+#'                 Database (MSigDB). The identifiers used in these databases
+#'                 can be directly used as geneset identifiers in GeDi. The
 #'                 second column should be called "Genes" and contain a list of
-#'                 genes belonging to the individual genesets in the "Genesets" 
-#'                 column. In order to leverage all of the functionality 
-#'                 available in GeDi, the column has to contain gene names and 
+#'                 genes belonging to the individual genesets in the "Genesets"
+#'                 column. In order to leverage all of the functionality
+#'                 available in GeDi, the column has to contain gene names and
 #'                 no other commonly used identifiers. The column names are case
 #'                 sensitive.
-#' @param ppi_df a `data.frame`, Protein-protein interaction (PPI) network data 
+#' @param ppi_df a `data.frame`, Protein-protein interaction (PPI) network data
 #'               frame. The object is expected to have three columns, `Gene1`
-#'               and `Gene2` which specify the gene names of the interacting 
-#'               proteins in no particular order (symmetric interaction) and a 
-#'               column `combined_score` which is a numerical value of the 
+#'               and `Gene2` which specify the gene names of the interacting
+#'               proteins in no particular order (symmetric interaction) and a
+#'               column `combined_score` which is a numerical value of the
 #'               strength of the interaction.
 #' @param distance_scores A [Matrix::Matrix()] of (distance) scores
-#' @param col_name_genesets character, the name of the column in which the 
+#' @param col_name_genesets character, the name of the column in which the
 #'                          geneset ids are listed. Defaults to "Genesets".
 #' @param col_name_genes character, the name of the column in which the genes
 #'                       are listed. Defaults to "Genes".
@@ -35,8 +35,8 @@
 #' @import shiny
 #' @import shinyBS
 #' @import fontawesome
-#' @importFrom bs4Dash box bs4DashPage bs4DashNavbar bs4DashBrand bs4DashSidebar 
-#' bs4SidebarMenu bs4SidebarMenuItem bs4DashBody bs4DashControlbar bs4DashFooter 
+#' @importFrom bs4Dash box bs4DashPage bs4DashNavbar bs4DashBrand bs4DashSidebar
+#' bs4SidebarMenu bs4SidebarMenuItem bs4DashBody bs4DashControlbar bs4DashFooter
 #' bs4TabItems bs4TabItem renderbs4InfoBox updateBox bs4Card
 #' @importFrom plotly renderPlotly plotlyOutput
 #' @importFrom rintrojs introjs
@@ -55,7 +55,6 @@
 #' if (interactive()) {
 #'   GeDi(genesets = macrophage_topGO_example)
 #' }
-#' TODO: rename alt_name to col_name_genesets and genes
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
                  distance_scores = NULL,
@@ -67,8 +66,8 @@ GeDi <- function(genesets = NULL,
   usage_mode <- "shiny_mode"
 
   if (!(is.null(genesets))) {
-    genesets <- .checkGenesets(genesets, 
-                               col_name_genesets, 
+    genesets <- .checkGenesets(genesets,
+                               col_name_genesets,
                                col_name_genes)
   }
   if (!(is.null(ppi_df))) {
@@ -343,20 +342,20 @@ GeDi <- function(genesets = NULL,
                                column(
                                  width = 11,
                                  align = "center",
-                                 "GeDi is a project developed by Annekathrin 
-                                 Silvia Nedwed in the Bioinformatics division 
+                                 "GeDi is a project developed by Annekathrin
+                                 Silvia Nedwed in the Bioinformatics division
                                  of the ",
                                  tags$a(
                                    href = "http://www.unimedizin-mainz.de/imbei",
                                    "IMBEI"),
-                                 "- Institute for Medical Biostatistics, 
+                                 "- Institute for Medical Biostatistics,
                                  Epidemiology and Informatics",
                                  br(),
                                  "License: ",
                                  tags$a(
                                    href = "https://opensource.org/licenses/MIT",
                                    "MIT"),
-                                 "- The GeDi package is developed and available 
+                                 "- The GeDi package is developed and available
                                  on ",
                                  tags$a(
                                    href = "https://github.com/AnnekathrinSilvia/GeDi",
@@ -428,7 +427,7 @@ GeDi <- function(genesets = NULL,
           br(),
           p(
             "you can click on it and it will start a process in the app.
-          We tried to choose the button text wisely so that you can easily 
+          We tried to choose the button text wisely so that you can easily
           understand the process that will be started."
           ),
           p(
@@ -585,10 +584,10 @@ GeDi <- function(genesets = NULL,
       fluidRow(
         column(
           width = 12,
-          "It seems like your data does not contain columns named Genesets and 
+          "It seems like your data does not contain columns named Genesets and
           Genes. Please select the column which contains the identifiers for the
-          Genesets and the column which contains the Genes. If you are unsure 
-          about the format of the input data, please check out the Welcome 
+          Genesets and the column which contains the Genes. If you are unsure
+          about the format of the input data, please check out the Welcome
           panel.",
           br(),
           "Upon choosing the respective columns, we will rename the column
@@ -1284,7 +1283,7 @@ GeDi <- function(genesets = NULL,
                            selectInput(
                              inputId = "graphColoring",
                              label = "Color the graph by",
-                             choices = 
+                             choices =
                                if (!(is.null(reactive_values$genesets))) {
                                c(NULL, colnames(
                                  dplyr::select_if(reactive_values$genesets,
@@ -2114,7 +2113,7 @@ GeDi <- function(genesets = NULL,
         saveRDS(reactive_values$scores[[input$scoringmethod]], file)
       }
     )
-    
+
     observeEvent(input$scores_graph_search, {
       current_node <- input$scores_graph_search
       if (current_node != "") {
@@ -2169,7 +2168,7 @@ GeDi <- function(genesets = NULL,
                              input$simThreshold,
                              input$memThreshold)
 
-        progress$inc(0.4, 
+        progress$inc(0.4,
                      detail = "Found initial seeds. Now clustering the data.")
 
         cluster <- fuzzyClustering(seeds, input$clustThreshold)

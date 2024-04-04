@@ -6,18 +6,18 @@
 \usage{
 .checkGenesets(
   genesets,
-  alt_name_genesets = "Genesets",
-  alt_name_genes = "Genes"
+  col_name_genesets = "Genesets",
+  col_name_genes = "Genes"
 )
 }
 \arguments{
-\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
-by \code{list} of genes.}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
+represented  by \code{list} of genes.}
 
-\item{alt_name_genesets}{character, the name of the column in which the geneset
-ids are listed. Defaults to "Genesets".}
+\item{col_name_genesets}{character, the name of the column in which the
+geneset ids are listed. Defaults to "Genesets".}
 
-\item{alt_name_genes}{character, the name of the column in which the genes
+\item{col_name_genes}{character, the name of the column in which the genes
 are listed. Defaults to "Genes".}
 }
 \value{

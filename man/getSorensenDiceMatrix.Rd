@@ -11,8 +11,8 @@ getSorensenDiceMatrix(
 )
 }
 \arguments{
-\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
-by \code{list} of genes.}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
+represented by \code{list} of genes.}
 
 \item{progress}{a \code{\link[shiny:Progress]{shiny::Progress()}} object, Optional progress bar object
 to track the progress of the function (e.g. in a Shiny app).}
@@ -25,8 +25,8 @@ A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with Sorensen-Dice distance roun
 places.
 }
 \description{
-Calculate the Sorensen-Dice distance of all combinations of genesets in a given data
-set of genesets.
+Calculate the Sorensen-Dice distance of all combinations of genesets in a
+given data set of genesets.
 }
 \examples{
 ## Mock example showing how the data should look like

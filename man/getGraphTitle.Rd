@@ -7,9 +7,9 @@
 getGraphTitle(geneset_df = NULL, node_ids, gs_ids, gs_names = NULL)
 }
 \arguments{
-\item{geneset_df}{A \code{data.frame} of genesets with a column \code{Genesets} containing
-geneset identifiers and a column \code{Genes} containing the
-genes belonging to each geneset}
+\item{geneset_df}{A \code{data.frame} of genesets with a column \code{Genesets}
+containing geneset identifiers and a column \code{Genes}
+containing the genes belonging to each geneset}
 
 \item{node_ids}{vector, a vector of ids of the nodes in the graph for
 which the node title should be build.}
