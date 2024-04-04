@@ -1827,9 +1827,9 @@ GeDi <- function(genesets = NULL,
 
       progress$set(message = "Loading demo data now", value = 0)
 
-      data(macrophage_topGO_example,
-           package = "GeDi",
-           envir = environment())
+      data_env <- new.env(parent = emptyenv())
+      data("macrophage_topGO_example", envir = data_env, package = "GeDi")
+      macrophage_topGO_example <- data_env[["macrophage_topGO_example"]]
 
       progress$inc(1 / 3, detail = "Extracting Genesets")
 
@@ -2442,6 +2442,5 @@ GeDi <- function(genesets = NULL,
   # nocov end
 
   shinyApp(ui = gedi_ui, server = gedi_server)
-  }
+}
 
-globalVariables("macrophage_topGO_example")
