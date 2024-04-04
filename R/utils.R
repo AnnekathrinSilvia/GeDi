@@ -315,5 +315,3 @@ getGenes <- function(genesets, gene_name = NULL) {
 
 .actionButtonStyle <-
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
-#.tourButtonStyle <- "color: #0092AC; background-color: #FFFFFF; border-color: #FFFFFF"
-

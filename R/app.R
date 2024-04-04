@@ -85,23 +85,6 @@ GeDi <- function(genesets = NULL,
       ),
       tags$span(style = "display:inline-block; width: 2%"),
       tagList(
-      #   shinyWidgets::dropdownButton(
-      #     inputId = "ddbtn_docs",
-      #     circle = FALSE,
-      #     status = "info",
-      #     icon = icon("book"),
-      #     width = "300px",
-      #     size = "xs",
-      #     right = TRUE,
-      #     tooltip = shinyWidgets::tooltipOptions(title = "More documentation on GeDi"),
-      #     tags$h5("Documentation"),
-      #     actionButton(
-      #       inputId = "btn_first_help",
-      #       icon = icon("circle-question"),
-      #       label = "First Help",
-      #       style = .actionButtonStyle
-      #     )
-      #   ),
         shinyWidgets::dropdownButton(
           inputId = "ddbtn_info",
           circle = FALSE,
@@ -140,7 +123,6 @@ GeDi <- function(genesets = NULL,
       title = bs4DashBrand(title = HTML("<small>GeDi</small>"),
                            href = "https://github.com/AnnekathrinSilvia/GeDi",),
       skin = "light",
-      #status = "gray-dark",
       border = FALSE,
       controlbarIcon = icon("gears"),
       fixed = TRUE
@@ -333,13 +315,6 @@ GeDi <- function(genesets = NULL,
                    uiOutput("ui_panel_report"))
       )
     ),
-    # controlbar definition ------------------------------------------------
-    # controlbar = bs4DashControlbar(
-    #   collapsed = TRUE,
-    #   icon = icon("gears"),
-    #   uiOutput("ui_controlbar")
-    # ),
-
     # footer definition -------------------------------------------------------
     footer = bs4DashFooter(left =
                              fluidRow(
@@ -403,8 +378,6 @@ GeDi <- function(genesets = NULL,
     } else {
       reactive_values$scores <- list()
     }
-
-    # TODO: is this reactive value really needed? Maybe for the report?
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
 
@@ -1064,12 +1037,6 @@ GeDi <- function(genesets = NULL,
             selected = "Distance Scores Heatmap",
             side = "right",
             tabPanel(title = "Distance Scores Heatmap",
-                     # actionButton(
-                     #   inputId = "create_heatmap",
-                     #   label = "Calculate Distance Score Heatmap",
-                     #   icon = icon("gears"),
-                     #   style = .actionButtonStyle
-                     # ),
                      withSpinner(
                        plotOutput("scores_heatmap",
                                   height = "800px",
@@ -1141,18 +1108,6 @@ GeDi <- function(genesets = NULL,
         ))
       )
     })
-
-    # scores_heatmap_react <- reactive({
-    #   validate(
-    #     need(length(reactive_values$scores) != 0,
-    #          message = "Please compute the distances between the genesets first in the above box")
-    #   )
-    #   scores <- reactive_values$scores[[input$plots_distance_score]]
-    #   res <-
-    #     ComplexHeatmap::draw(distanceHeatmap(scores,
-    #                                          chars_limit = 20))
-    #   return(res)
-    # })
 
     output$scores_heatmap <- renderPlot({
       validate(
@@ -1251,22 +1206,7 @@ GeDi <- function(genesets = NULL,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
-    output$save_distance_score_graph <- downloadHandler(
-      #   filename = function() {
-      #   paste0("GeDi_distance_scores_graph_cytoscape_",
-      #          gsub(" ", "_", gsub(
-      #            "-", "", gsub(":", "-", as.character(Sys.time()))
-      #          )),
-      #          ".csv")
-      # }
-      filename <- "test.csv",
-      content = function(file) {
-        utils::write.csv(file = file, x = reactive_values$scores_graph())
-      }
-    )
-
     # panel Graph ------------------------------------------------------
-
     output$ui_panel_graph <- renderUI({
       validate(need(!(
         is.null(reactive_values$scores) &&
@@ -1633,44 +1573,6 @@ GeDi <- function(genesets = NULL,
         enrichmentWordcloud(genesets_df)
       })
 
-    # controlbar --------------------------------------------------------------
-
-    # output$ui_controlbar <- renderUI({
-    #   tagList(
-    #     # selectInput(
-    #     #   inputId = "cluster_method_dendro",
-    #     #   label = "Select a clustering method for the Dendrogram",
-    #     #   choices = c("average", "single", "complete",
-    #     #               "median", "centroid"),
-    #     #   selected = "average",
-    #     #   multiple = FALSE
-    #     # ),
-    #     numericInput(
-    #       inputId = "n_genesets",
-    #       label = "Number of genesets",
-    #       value = 15,
-    #       min = 1,
-    #       max = 100
-    #     )
-    #     #,
-    #     # selectInput(
-    #     #   "graphColoring",
-    #     #   label = "Color the nodes by: ",
-    #     #   choices = if (!(is.null(reactive_values$genesets))) {
-    #     #     c(NULL, colnames(
-    #     #       dplyr::select_if(reactive_values$genesets, is.numeric)
-    #     #     ))
-    #     #   } else {
-    #     #     c(NULL)
-    #     #   },
-    #     #   selected = NULL,
-    #     #   multiple = FALSE
-    #     # )
-    #   )
-    # })
-    # outputOptions(output, "ui_controlbar", suspendWhenHidden = FALSE)
-
-
     # Report panel -------------------------------------------------------------
     output$ui_panel_report <- renderUI({
       tagList(fluidRow(column(width = 11),
@@ -1723,35 +1625,6 @@ GeDi <- function(genesets = NULL,
             icon = icon("trash"),
             style = .actionButtonStyle
           )
-          # box(
-          #   title = "Manually add genesets to bookmarks",
-          #   collapsible = TRUE,
-          #   collapsed = TRUE,
-          #   id = "box_bm_genesets",
-          #   width = 12,
-          #   shinyAce::aceEditor(
-          #     "editor_bookmarked_genesets",
-          #     theme = "solarized_light",
-          #     height = "200px",
-          #     readOnly = FALSE,
-          #     wordWrap = TRUE,
-          #     placeholder = paste(
-          #       c(
-          #         "Enter some geneset identifiers or gene names, ",
-          #         "as they are provided in the `gene_id` and ",
-          #         "`gene_name` columns of the annotation object. ",
-          #         "For example:"
-          #       ),
-          #       collapse = "\n"
-          #     )
-          #   ),
-          #   actionButton(
-          #     "load_bookmarked_genesets",
-          #     label = "Input genesets",
-          #     icon = icon("upload"),
-          #     style = .actionButtonStyle
-          #   )
-          # )
         ),
         column(
           width = 6,
@@ -1770,36 +1643,6 @@ GeDi <- function(genesets = NULL,
             icon = icon("trash"),
             style = .actionButtonStyle
           )
-          # box(
-          #   title = "Manually add cluster to bookmarks",
-          #   collapsible = TRUE,
-          #   collapsed = TRUE,
-          #   id = "box_bm_cluster",
-          #   width = 12,
-          #   shinyAce::aceEditor(
-          #     "editor_bookmarked_cluster",
-          #     theme = "solarized_light",
-          #     height = "200px",
-          #     readOnly = FALSE,
-          #     wordWrap = TRUE,
-          #     placeholder = paste(
-          #       c(
-          #         "Enter some cluster identifiers, as they are ",
-          #         "provided in the `gs_id` column of the ",
-          #         "res_enrich object. You can also use the ",
-          #         "values in the `gs_description` field. ",
-          #         "For example:"
-          #       ),
-          #       collapse = "\n"
-          #     )
-          #   ),
-          #   actionButton(
-          #     "load_bookmarked_cluster",
-          #     label = "Input cluster",
-          #     icon = icon("upload"),
-          #     style = .actionButtonStyle
-          #   )
-          # )
         )
       ))
     })
@@ -2261,49 +2104,7 @@ GeDi <- function(genesets = NULL,
         saveRDS(reactive_values$scores[[input$scoringmethod]], file)
       }
     )
-
-    # observeEvent(input$create_heatmap, {
-    #   InteractiveComplexHeatmap::InteractiveComplexHeatmapWidget(
-    #     input,
-    #     output,
-    #     session,
-    #     scores_heatmap_react(),
-    #     output_id = "scores_heatmap",
-    #     width1 = 600,
-    #     height1 = 600,
-    #     width2 = 600,
-    #     height2 = 600,
-    #     click_action = .click_action,
-    #     brush_action = .brush_action,
-    #     close_button = FALSE,
-    #     output_ui = htmlOutput("info")
-    #   )
-    # })
-    #
-    #     .brush_action <- function(df, output) {
-    #       row <- unique(unlist(df$row_index))
-    #       column <- unique(unlist(df$column_index))
-    #       output[["info"]] <- renderUI({
-    #         if (!is.null(df)) {
-    #           subset <-
-    #             as.matrix(reactive_values$scores[input$scoringmethod])[row, column, drop = FALSE]
-    #           df <- as.data.frame(subset)
-    #           DT::datatable(df,
-    #                         options = list(scrollX = TRUE, scrollY = "400px"))
-    #         }
-    #       })
-    #     }
-
-    # .click_action <- function(df, output) {
-    #   output[["info"]] <- renderUI({
-    #     if (!is.null(df)) {
-    #       HTML(
-    #         "<p style='background-color:#0092AC;color:white;padding:5px;'>You have clicked on heatmap @{df$heatmap}, row @{df$row_index}, column @{df$column_index}</p>"
-    #       )
-    #     }
-    #   })
-    # }
-
+    
     observeEvent(input$scores_graph_search, {
       current_node <- input$scores_graph_search
       if (current_node != "") {
@@ -2604,23 +2405,6 @@ GeDi <- function(genesets = NULL,
       introjs(session, options = list(steps = tour))
     })
 
-
-    # Buttons Navbar Observers -------------------------------------------------
-    # observeEvent(input$btn_first_help, {
-    #   showModal(
-    #     modalDialog(
-    #       title = "First Help Info",
-    #       size = "l",
-    #       fade = TRUE,
-    #       footer = NULL,
-    #       easyClose = TRUE,
-    #       tagList(includeMarkdown(
-    #         system.file("extdata", "GeDi101.md", package = "GeDi")
-    #       ),)
-    #     )
-    #   )
-    # })
-
     observeEvent(input$btn_info_session, {
       showModal(
         modalDialog(
@@ -2654,17 +2438,6 @@ GeDi <- function(genesets = NULL,
         )
       )
     })
-
-    # observeEvent(input$theme_switch, {
-    #   if (input$theme_switch == 1) {
-    #     showNotification("You are now in dark mode.",
-    #                      type = "message")
-    #   } else{
-    #     showNotification("You are now in light mode.",
-    #                      type = "message")
-    #   }
-    # })
-  }
   # nocov end
 
   shinyApp(ui = gedi_ui, server = gedi_server)
