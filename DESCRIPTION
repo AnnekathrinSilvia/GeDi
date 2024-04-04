@@ -49,7 +49,8 @@ Imports:
     tm,
     wordcloud2,
     tools,
-    BiocParallel
+    BiocParallel,
+    BiocFileCache
 Suggests: 
     knitr,
     rmarkdown,

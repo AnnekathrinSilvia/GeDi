@@ -7,6 +7,8 @@
 #'                the current version of STRING
 #'
 #' @return A character of the NCBI ID of `species`
+#' @importFrom BiocFileCache BiocFileCache bfcquery bfccount bfcneedsupdate 
+#'                           bfcdownload
 #' @export
 #'
 #' @examples
@@ -15,14 +17,41 @@
 #'
 #' species <- "Mus musculus"
 #' id <- getId(species = species)
-getId <- function(species, version = "11.5") {
+getId <- function(species, 
+                  version = "11.5",
+                  cache = FALSE) {
+  
   # Download available species information from STRING
   url_species <- sprintf("https://stringdb-static.org/download/species.v%s.txt",
                          version)
-
-  # Read species data from URL
-  df_species <- read.delim(url(url_species))
-
+  df_species <- NULL
+  if(cache){
+    cache_location <- tools::R_user_dir("GeDi", which = "cache")
+    bfc_gedi <- BiocFileCache(cache_location)
+    
+    nh_query <- bfcquery(bfc_gedi, url_species, exact = TRUE)
+    
+    # Evaluate if there is already a cached version
+    res_nh <- NULL
+    if (bfccount(nh_query)) {
+      rid <- nh_query$rid
+      
+      # Evaluate if the cached version is outdated
+      nu <- bfcneedsupdate(bfc_gedi, rid)
+      if (!isFALSE(nu)) {
+        bfcdownload(bfc_gedi, rid, ask = FALSE, ...)
+      }
+      
+      message("Using cached version from ", nh_query$create_time)
+      df_species <- BiocFileCache::bfcrpath(bfcdownload, url_species)
+    }
+  }
+  
+  if(!cache | is.null(df_species)){
+    # Read species data from URL
+    df_species <- read.delim(url(url_species))
+  }
+    
   # Get the species ID of the respective organism
   species_id <- df_species$X.taxon_id[match(species,
                                             df_species$official_name_NCBI)]

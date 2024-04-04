@@ -1964,7 +1964,7 @@ GeDi <- function(genesets = NULL,
 
       progress$set(message = "Downloading PPI from STRINGdb", value = 0)
       progress$inc(1 / 12, detail = "Get species ID")
-      id <- getId(reactive_values$species)
+      id <- getId(reactive_values$species, cache = TRUE)
       progress$inc(1 / 12, detail = "Validate species ID")
       validate(
         need(
