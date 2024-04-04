@@ -41,10 +41,6 @@ checkInclusion <- function(seeds) {
   # Determine the number of sets
   l <- length(seeds)
   
-  # TODO: Instead of growing the remove vector, initialize remove in the length of seeds
-  # set all elements to NA and then those that should be removed set to true or something
-  # and in the end extract those genesets to remove
-  
   # Iterate over all sets to compare them for inclusion
   for (i in seq_len((l))) {
     if (i %in% remove) {
