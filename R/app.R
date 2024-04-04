@@ -23,6 +23,10 @@
 #'            `combined_score` which is a numerical value of the strength of
 #'            the interaction.
 #' @param distance_scores A [Matrix::Matrix()] of (distance) scores
+#' @param alt_name_genesets character, the name of the column in which the geneset
+#'                          ids are listed. Defaults to "Genesets".
+#' @param alt_name_genes character, the name of the column in which the genes
+#'                       are listed. Defaults to "Genes".
 #'
 #' @return A Shiny app object is returned
 #' @export
@@ -50,14 +54,18 @@
 #' }
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
-                 distance_scores = NULL) {
+                 distance_scores = NULL,
+                 alt_name_genesets = "Genesets",
+                 alt_name_genes = "Genes") {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
   on.exit(options(oopt))
 
   usage_mode <- "shiny_mode"
 
   if (!(is.null(genesets))) {
-    genesets <- .checkGenesets(genesets)
+    genesets <- .checkGenesets(genesets, 
+                               alt_name_genesets, 
+                               alt_name_genes)
   }
   if (!(is.null(ppi_df))) {
     ppi <- .checkPPI(ppi_df)
@@ -352,8 +360,8 @@ GeDi <- function(genesets = NULL,
 
     if (!is.null(genesets)) {
       reactive_values$genesets <- genesets
-      reactive_values$gs_names <- genesets$Genesets
-      reactive_values$genes <- getGenes(genesets)
+      reactive_values$gs_names <- genesets[[alt_name_genesets]]
+      reactive_values$genes <- getGenes(genesets, gene_name = alt_name_genes)
       reactive_values$gs_description <-
         .getGenesetDescriptions(genesets)
     } else {

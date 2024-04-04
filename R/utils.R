@@ -229,18 +229,22 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @param genesets a `list`, A `list` of genesets where each genesets is represented
 #'                 by `list` of genes.
+#' @param alt_name_genesets character, the name of the column in which the geneset
+#'                          ids are listed. Defaults to "Genesets".
+#' @param alt_name_genes character, the name of the column in which the genes
+#'                       are listed. Defaults to "Genes".
 #'
 #' @return A validated and formatted genesets data frame.
 #'
-.checkGenesets <- function(genesets) {
+.checkGenesets <- function(genesets, alt_name_genesets = "Genesets", alt_name_genes = "Genes") {
   # Check if genesets is a data frame
   stopifnot(is.data.frame(genesets))
 
   # Check if genesets has the required columns
-  stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
+  stopifnot(any(names(genesets) == alt_name_genesets) & any(names(genesets) == alt_name_genes))
 
   # Check if Genesets and Genes columns are character type
-  stopifnot(all(is.character(genesets$Genesets)) & all(is.character(unlist(genesets$Genes))))
+  stopifnot(all(is.character(genesets[[alt_name_genesets]])) & all(is.character(unlist(genesets[[alt_name_genes]]))))
 
   # Return the validated and formatted genesets data frame
   return(genesets)

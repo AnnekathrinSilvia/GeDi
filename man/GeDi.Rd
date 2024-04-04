@@ -4,7 +4,13 @@
 \alias{GeDi}
 \title{GeDi main function}
 \usage{
-GeDi(genesets = NULL, ppi_df = NULL, distance_scores = NULL)
+GeDi(
+  genesets = NULL,
+  ppi_df = NULL,
+  distance_scores = NULL,
+  alt_name_genesets = "Genesets",
+  alt_name_genes = "Genes"
+)
 }
 \arguments{
 \item{genesets}{a \code{data.frame}, The input data used for GeDi. This should be
@@ -32,6 +38,12 @@ particular order (symmetric interaction) and a column
 the interaction.}
 
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
+
+\item{alt_name_genesets}{character, the name of the column in which the geneset
+ids are listed. Defaults to "Genesets".}
+
+\item{alt_name_genes}{character, the name of the column in which the genes
+are listed. Defaults to "Genes".}
 }
 \value{
 A Shiny app object is returned
