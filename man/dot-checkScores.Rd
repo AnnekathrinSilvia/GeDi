@@ -7,8 +7,8 @@
 .checkScores(genesets, distance_scores)
 }
 \arguments{
-\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
-by \code{list} of genes.}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
+represented by \code{list} of genes.}
 
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} or  object,
 A matrix with numerical (distance) scores.}

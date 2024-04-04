@@ -5,8 +5,13 @@
 #' @param species character, the species of your input data
 #' @param version character, the version of STRING you want to use, defaults to
 #'                the current version of STRING
+#' @param cache Logical value, defining whether to use the 
+#'              BiocFileCache for retrieval of the files underlying 
+#'              the [STRINGdb] object. Defaults to `TRUE`.
 #'
 #' @return A character of the NCBI ID of `species`
+#' @importFrom BiocFileCache BiocFileCache bfcquery bfccount bfcneedsupdate 
+#'                           bfcdownload bfcadd
 #' @export
 #'
 #' @examples
@@ -15,16 +20,53 @@
 #'
 #' species <- "Mus musculus"
 #' id <- getId(species = species)
-getId <- function(species, version = "11.5") {
+getId <- function(species, 
+                  version = "11.5",
+                  cache = FALSE) {
+  
   # Download available species information from STRING
   url_species <- sprintf("https://stringdb-static.org/download/species.v%s.txt",
                          version)
-
-  # Read species data from URL
-  df_species <- read.delim(url(url_species))
-
+  df_species <- NULL
+  if(cache){
+    cache_location <- tools::R_user_dir("GeDi", which = "cache")
+    bfc_gedi <- BiocFileCache(cache_location)
+    
+    gedi_query <- bfcquery(bfc_gedi, url_species, exact = TRUE)
+    
+    # Evaluate if there is already a cached version
+    if (bfccount(gedi_query)) {
+      rid <- gedi_query$rid
+      
+      # Evaluate if the cached version is outdated
+      nu <- bfcneedsupdate(bfc_gedi, rid)
+      if (!isFALSE(nu)) {
+        bfcdownload(bfc_gedi, rid, ask = FALSE)
+      }
+      
+      message("Using cached version from ", gedi_query$create_time)
+      df_species <- BiocFileCache::bfcrpath(bfc_gedi, url_species)
+    }
+  }
+  
+  if(!cache | is.null(df_species)){
+    # Read species data from URL
+    df_species <- read.delim(url(url_species))
+  }
+    
+  if(cache){
+    gedi_query <- bfcquery(bfc_gedi, url_species)
+    if (bfccount(gedi_query) == 0) {
+      rpath <- bfcadd(bfc_gedi, url_species, url_species)
+    } else {
+      rpath <- gedi_query$rpath
+    }
+    df_species <- read.delim(url(url_species))
+  }
+    
   # Get the species ID of the respective organism
-  species_id <- df_species$X.taxon_id[match(species, df_species$official_name_NCBI)]
+  species_id <- df_species$X.taxon_id[match(species,
+                                            df_species$official_name_NCBI)]
 
   # Return the species ID
   return(species_id)
@@ -39,9 +81,9 @@ getId <- function(species, version = "11.5") {
 #'                current version
 #' @param score_threshold numeric, A score threshold to cut the retrieved
 #'                        interactions, defaults to 0 (all interactions)
-#' @param cache_location Logical value, defining whether to use the BiocFileCache
-#'                       for retrieval of the files underlying the [STRINGdb]
-#'                       object. Defaults to `TRUE`.
+#' @param cache_location Logical value, defining whether to use the 
+#'                       BiocFileCache for retrieval of the files underlying 
+#'                       the [STRINGdb] object. Defaults to `TRUE`.
 #'
 #' @return a [STRINGdb] object of `species`
 #' @export
@@ -100,8 +142,8 @@ getAnnotation <- function(stringdb) {
 #' Download the Protein-Protein Interaction (PPI) information of a [STRINGdb]
 #' object
 #'
-#' @param genes a `list`, A `list` of genes to download the respective protein-protein
-#'              interaction information
+#' @param genes a `list`, A `list` of genes to download the respective protein-
+#'              protein interaction information
 #' @param string_db A [STRINGdb] object, the species of the object should match
 #'                  the species of `genes`.
 #' @param anno_df An annotation `data.frame` mapping [STRINGdb] ids to gene

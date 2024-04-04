@@ -42,7 +42,8 @@ goSimilarity <- function(geneset_ids,
                          species = "org.Hs.eg.db",
                          progress = NULL,
                          BPPARAM = BiocParallel::SerialParam()) {
-  method <- match.arg(method, c("Resnik", "Lin", "Rel", "Jiang", "TCSS", "Wang"))
+  method <- match.arg(method, c("Resnik", "Lin", "Rel",
+                                "Jiang", "TCSS", "Wang"))
 
   if (method %in% c("Resnik", "Lin", "Rel", "Jiang"))
     useIC <- TRUE
@@ -54,7 +55,8 @@ goSimilarity <- function(geneset_ids,
             is not installed" = system.file(package = species) != "")
 
    # Check if all geneset ids are GO identifiers
-  go_ids <- all(vapply(geneset_ids, function(x) substr(x, 1, 2) == "GO",  logical(1)))
+  go_ids <- all(vapply(geneset_ids, function(x) substr(x, 1, 2) == "GO",
+                       logical(1)))
   stopifnot("Not all geneset ids are GO identifiers.
             This score only works on GO identifiers" = go_ids)
 
@@ -104,8 +106,8 @@ goSimilarity <- function(geneset_ids,
 #'                 ont parameter for possibilities.
 #' @param species character, the species of your data. Indicated as
 #'                org.XX.eg.db package from Bioconductor.
-#' @param BPPARAM A BiocParallelParam object specifying how parallelization should
-#'                be handled
+#' @param BPPARAM A BiocParallelParam object specifying how parallelization 
+#'                should be handled
 #'
 #' @return A [Matrix::Matrix()] of scaled values.
 #' @export
@@ -134,7 +136,8 @@ scaleGO <- function(scores,
                     species = "org.Hs.eg.db",
                     BPPARAM = BiocParallel::SerialParam()) {
 
-  method <- match.arg(method, c("Resnik", "Lin", "Rel", "Jiang", "TCSS", "Wang"))
+  method <- match.arg(method, c("Resnik", "Lin", "Rel",
+                                "Jiang", "TCSS", "Wang"))
 
   # Determine the number of genesets
   l <- nrow(scores)
@@ -145,7 +148,8 @@ scaleGO <- function(scores,
   # Initialize a matrix for scaled scores
   scaled <- Matrix::Matrix(0, l, l)
   # Get GO similarity scores
-  scores_go <- goSimilarity(geneset_ids, method, ontology, species, BPPARAM = BPPARAM)
+  scores_go <- goSimilarity(geneset_ids, method, ontology, species,
+                            BPPARAM = BPPARAM)
 
   # Scale interaction scores with GO similarity scores
   for (i in seq_len((l - 1))) {

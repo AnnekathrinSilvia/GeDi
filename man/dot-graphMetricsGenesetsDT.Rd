@@ -9,9 +9,9 @@
 \arguments{
 \item{g}{A \link{igraph} graph object}
 
-\item{genesets}{A \code{data.frame} of genesets with a column \code{Genesets} containing
-geneset identifiers and a column \code{Genes} containing the
-genes belonging to each geneset}
+\item{genesets}{A \code{data.frame} of genesets with a column \code{Genesets}
+containing geneset identifiers and a column \code{Genes}
+containing the genes belonging to each geneset}
 }
 \value{
 A \code{data.frame} of \code{geneset} extended by columns for the degree,

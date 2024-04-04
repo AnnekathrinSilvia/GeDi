@@ -6,6 +6,7 @@
 #' @param seeds A `list` of sets
 #'
 #' @return A `list` of unique sets
+#' @importFrom utils combn
 #' @export
 #'
 #' @examples
@@ -26,40 +27,43 @@
 checkInclusion <- function(seeds) {
   # Remove all empty seeds from the list
   seeds <- seeds[lengths(seeds) != 0]
-
+  
   # Create a list to store the indices of sets to be removed (i.e. subsets of
   # other sets)
   remove <- c()
-
+  
   # If there are less than 2 sets, no removal is possible,
   # return the original set list
   if (length(seeds) < 2) {
     return(seeds)
   }
-
+  
   # Determine the number of sets
   l <- length(seeds)
-
+  
   # Iterate over all sets to compare them for inclusion
-  for (i in seq_len((l - 1))) {
+  for (i in seq_len((l))) {
+    if (i %in% remove) {
+      next
+    }
     # Current set
     s1 <- seeds[[i]]
-    # Iterate over the remaining sets to compare them with the current set
-    for (j in (i + 1):l) {
-      s2 <- seeds[[j]]
-
-      # Check if s1 is a subset of s2 or vice versa, if so, mark for removal
-      if (setequal(intersect(s1, s2), s1) || length(s1) == 0) {
-        remove <- c(remove, i)
-      } else if (setequal(intersect(s2, s1), s2) || length(s2) == 0) {
-        remove <- c(remove, j)
-      }
-    }
+    l1 <- length(s1)
+    comb <-
+      lapply(
+        c(seq_len(l1)),
+        FUN = function(x)
+          combn(s1, x, simplify = FALSE)
+      )
+    comb <- do.call(c, comb)
+    r <- which(seeds %in% comb)
+    r <- r[r != i]
+    remove <- c(remove, r)
+    
   }
-
   # Ensure that there are no duplicates in the sets to remove
   remove <- unique(remove)
-
+  
   # Remove the identified subsets from the original list of seeds
   if (length(remove) == 0) {
     # If there are no sets to be removed, return the original list
@@ -110,10 +114,10 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
   if (is.null(distances) || length(distances) == 0) {
     return(NULL)
   }
-
+  
   # Initialize a list to store the identified seeds
   seeds <- list()
-
+  
   # Determine which entries of the distances matrix are reachable from each
   # other (i.e. have a distance score smaller or equal the provided
   # simThreshold)
@@ -121,22 +125,22 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
     apply(distances, 1, function(x) {
       as.numeric(x <= simThreshold)
     })
-
+  
   # Iterate over all rows in the distance score matrix
   for (i in seq_len(nrow(distances))) {
     # Check if at least 2 other entries are reachable from i
     if (sum(reach[i, ], na.rm = TRUE) >= 2) {
       # Extract members reachable from i
       members <- which(reach[i, ] == 1)
-
+      
       # Calculate an individual threshold for i to be considered a seed
       includethreshold <-
         (length(members) ^ 2 - length(members)) * memThreshold
-
+      
       # Subset the reach matrix and sum up entries
       reach_red <- reach[members, members]
       in_reach <- sum(reach_red)
-
+      
       # If sum of entries in reach is above the individual threshold,
       # i is a seed
       if (in_reach >= includethreshold) {
@@ -145,12 +149,13 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
       }
     }
   }
-
-  # Ensure no seed is fully included in a larger seed
-  seeds <- checkInclusion(unique(seeds))
+  
+  seeds <- unique(seeds)
   # Ensure each seed contains each member only once
   seeds <- lapply(seeds, unique)
-
+  # Ensure no seed is fully included in a larger seed
+  seeds <- checkInclusion(seeds)
+  
   # Return the identified seeds
   return(seeds)
 }
@@ -192,10 +197,10 @@ fuzzyClustering <- function(seeds, threshold) {
   if (length(seeds) <= 1) {
     return(seeds)
   }
-
+  
   # Create a logical vector to track whether a seed is still mergeable
   mergeable <- rep(TRUE, length(seeds))
-
+  
   # Repeat the merging process until no more seeds are mergeable
   while (any(mergeable)) {
     # Get the index of the first mergeable seed
@@ -203,11 +208,11 @@ fuzzyClustering <- function(seeds, threshold) {
     if (index > length(seeds)) {
       break
     }
-
+    
     # Current mergeable seed
     s1 <- seeds[[index]]
     l <- length(seeds)
-
+    
     # Iterate over all seeds to check for merging possibilities
     for (j in seq_len(length(seeds))) {
       s2 <- seeds[[j]]
@@ -230,7 +235,7 @@ fuzzyClustering <- function(seeds, threshold) {
       mergeable[[index]] <- FALSE
     }
   }
-
+  
   return(seeds)
 }
 
@@ -267,40 +272,43 @@ fuzzyClustering <- function(seeds, threshold) {
 #'
 #'clustering <- clustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-clustering <- function(scores, threshold, cluster_method = "louvain") {
-  # Check if the cluster_method is valid (only "louvain" or "markov" allowed)
-  stopifnot(cluster_method == "louvain" || cluster_method == "markov")
-
-  # Obtain adjacency matrix based on the distance scores and build a graph
-  adj_matrix <- getAdjacencyMatrix(scores, threshold)
-  stopifnot(!is.null(adj_matrix))
-  graph <- buildGraph(adj_matrix)
-
-  # Run Louvain or Markov clustering based on the chosen method
-  if (cluster_method == "louvain") {
-    clustering <- cluster_louvain(graph)
-    memberships <- membership(clustering)
-  } else if (cluster_method == "markov") {
-    clustering <- cluster_markov(graph)
-    memberships <- clustering$membership
+clustering <-
+  function(scores, threshold, cluster_method = "louvain") {
+    # Check if the cluster_method is valid (only "louvain" or "markov" allowed)
+    stopifnot(cluster_method == "louvain" ||
+                cluster_method == "markov")
+    
+    # Obtain adjacency matrix based on the distance scores and build a graph
+    adj_matrix <- getAdjacencyMatrix(scores, threshold)
+    stopifnot(!is.null(adj_matrix))
+    graph <- buildGraph(adj_matrix)
+    
+    # Run Louvain or Markov clustering based on the chosen method
+    if (cluster_method == "louvain") {
+      clustering <- cluster_louvain(graph)
+      memberships <- membership(clustering)
+    } else if (cluster_method == "markov") {
+      clustering <- cluster_markov(graph)
+      memberships <- clustering$membership
+    }
+    
+    # Extract cluster memberships for each geneset
+    cluster <- vector(mode = "list", length = max(memberships))
+    
+    # Transform the mapping of geneset -> cluster to cluster -> genesets mapping
+    for (i in seq_len(length(memberships))) {
+      sub_cluster <- memberships[i]
+      cluster[[sub_cluster]] <- c(cluster[[sub_cluster]], i)
+    }
+    
+    # Remove all singleton clusters (clusters with only one geneset)
+    filter <- vapply(cluster, function(x)
+      length(x) > 1, logical(1))
+    cluster <- cluster[filter]
+    
+    # Return the final cluster mapping
+    return(cluster)
   }
-
-  # Extract cluster memberships for each geneset
-  cluster <- vector(mode = "list", length = max(memberships))
-
-  # Transform the mapping of geneset -> cluster to cluster -> genesets mapping
-  for (i in seq_len(length(memberships))) {
-    sub_cluster <- memberships[i]
-    cluster[[sub_cluster]] <- c(cluster[[sub_cluster]], i)
-  }
-
-  # Remove all singleton clusters (clusters with only one geneset)
-  filter <- vapply(cluster, function(x) length(x) > 1, logical(1))
-  cluster <- cluster[filter]
-
-  # Return the final cluster mapping
-  return(cluster)
-}
 
 
 #' Calculate clusters based on kNN clustering
@@ -342,7 +350,7 @@ kNN_clustering <- function(scores,
   # Select the first neighbor as the cluster for each geneset
   kNN <- lapply(seq_len(nrow(kNN)), function(i)
     kNN[i, ])
-
+  
   # Return the list of clusters based on k-Nearest Neighbors
   return(kNN)
 }
@@ -358,53 +366,54 @@ kNN_clustering <- function(scores,
 #' @param gs_description A vector of descriptions for each geneset
 #'
 #' @return A `data.frame` mapping each geneset to the cluster(s) it belongs to
-.getClusterDatatable <- function(cluster, gs_names, gs_description) {
-  # Check if geneset names are given
-  stopifnot(length(gs_names) > 0)
-  n_gs <- length(gs_names)
-  df <- vector("list", n_gs)
-
-  # Check if there are no clusters
-  if (length(cluster) == 0) {
-    # Create a data.frame with "No associated Cluster" label for all genesets
-    df <- data.frame(Cluster = rep("No associated Cluster", n_gs))
+.getClusterDatatable <-
+  function(cluster, gs_names, gs_description) {
+    # Check if geneset names are given
+    stopifnot(length(gs_names) > 0)
+    n_gs <- length(gs_names)
+    df <- vector("list", n_gs)
+    
+    # Check if there are no clusters
+    if (length(cluster) == 0) {
+      # Create a data.frame with "No associated Cluster" label for all genesets
+      df <-
+        data.frame(Cluster = rep("No associated Cluster", n_gs))
+      rownames(df) <- gs_names
+      return(df)
+    }
+    
+    # Iterate over all clusters and genesets to build up the data.frame
+    for (i in seq_len(length(cluster))) {
+      for (j in cluster[[i]]) {
+        entry <- df[[j]]
+        if (is.null(entry)) {
+          entry <- i
+        } else {
+          entry <- c(entry, i)
+        }
+        df[[j]] <- entry
+      }
+    }
+    
+    # Transform the list of lists into a data.frame format
+    df <- data.frame(matrix(df, nrow = n_gs, ncol = 1))
+    colnames(df) <- c("Cluster")
+    cluster <- df$Cluster
+    
+    # Set information of genesets belonging to no cluster
+    cluster <- lapply(cluster, function(x) {
+      if (is.null(x)) {
+        "No associated Cluster"
+      } else {
+        x
+      }
+    })
+    
+    df$Cluster <- cluster
+    df$Description <- gs_description
+    df <- df[, c(2, 1)]
     rownames(df) <- gs_names
+    
+    # Return the final cluster datatable
     return(df)
   }
-
-  # Iterate over all clusters and genesets to build up the data.frame
-  for (i in seq_len(length(cluster))) {
-    for (j in cluster[[i]]) {
-      entry <- df[[j]]
-      if (is.null(entry)) {
-        entry <- i
-      } else {
-        entry <- c(entry, i)
-      }
-      df[[j]] <- entry
-    }
-  }
-
-  # Transform the list of lists into a data.frame format
-  df <- data.frame(matrix(df, nrow = n_gs, ncol = 1))
-  colnames(df) <- c("Cluster")
-  cluster <- df$Cluster
-
-  # Set information of genesets belonging to no cluster
-  cluster <- lapply(cluster, function(x) {
-    if (is.null(x)) {
-      "No associated Cluster"
-    } else {
-      x
-    }
-  })
-
-  df$Cluster <- cluster
-  df$Description <- gs_description
-  df <- df[, c(2, 1)]
-  rownames(df) <- gs_names
-
-  # Return the final cluster datatable
-  return(df)
-}
-

@@ -88,7 +88,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 .findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")) {
   sephits_min <-
     vapply(sepList, function(x) {
-      sum(vapply(stringList, function(y) nchar(y) - nchar(gsub(x, '', y)), numeric(1)))
+      sum(vapply(stringList, function(y) nchar(y) - nchar(gsub(x, '', y)),+
+                   numeric(1)))
     }, numeric(1))
   sep <- sepList[which.max(sephits_min)]
 
@@ -194,10 +195,10 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' Check if the Protein-Protein-interaction (PPI) has the expected format for
 #' this app
 #'
-#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data frame.
-#'            The object is expected to have three columns, `Gene1` and `Gene2`
-#'            which specify the gene names of the interacting proteins in no
-#'            particular order (symmetric interaction) and a column
+#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data 
+#'            frame. The object is expected to have three columns, `Gene1` and 
+#'            `Gene2` which specify the gene names of the interacting proteins 
+#'            in no particular order (symmetric interaction) and a column
 #'            `combined_score` which is a numerical value of the strength of
 #'            the interaction.
 #'
@@ -227,20 +228,27 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' Check if the input genesets have the expected format for this app
 #'
-#' @param genesets a `list`, A `list` of genesets where each genesets is represented
-#'                 by `list` of genes.
+#' @param genesets a `list`, A `list` of genesets where each genesets is 
+#'                 represented  by `list` of genes.
+#' @param col_name_genesets character, the name of the column in which the 
+#'                          geneset ids are listed. Defaults to "Genesets".
+#' @param col_name_genes character, the name of the column in which the genes
+#'                       are listed. Defaults to "Genes".
 #'
 #' @return A validated and formatted genesets data frame.
 #'
-.checkGenesets <- function(genesets) {
+.checkGenesets <- function(genesets, col_name_genesets = "Genesets", 
+                           col_name_genes = "Genes") {
   # Check if genesets is a data frame
   stopifnot(is.data.frame(genesets))
 
   # Check if genesets has the required columns
-  stopifnot(any(names(genesets) == "Genesets") & any(names(genesets) == "Genes"))
+  stopifnot(any(names(genesets) == col_name_genesets) & 
+              any(names(genesets) == col_name_genes))
 
   # Check if Genesets and Genes columns are character type
-  stopifnot(all(is.character(genesets$Genesets)) & all(is.character(unlist(genesets$Genes))))
+  stopifnot(all(is.character(genesets[[col_name_genesets]])) & 
+              all(is.character(unlist(genesets[[col_name_genes]]))))
 
   # Return the validated and formatted genesets data frame
   return(genesets)
@@ -250,8 +258,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' Check if the provided distance scores have the expected format for this app
 #'
-#' @param genesets a `list`, A `list` of genesets where each genesets is represented
-#'                 by `list` of genes.
+#' @param genesets a `list`, A `list` of genesets where each genesets is
+#'                 represented by `list` of genes.
 #' @param distance_scores A [Matrix::Matrix()] or  object,
 #'                        A matrix with numerical (distance) scores.
 #'

@@ -1,7 +1,7 @@
 Package: GeDi
 Title: Defining and visualizing the distances between different genesets
-Version: 0.99.3
-Date: 2024-03-27
+Version: 0.99.4
+Date: 2024-04-04
 Authors@R: 
     c(
         person(
@@ -49,7 +49,8 @@ Imports:
     tm,
     wordcloud2,
     tools,
-    BiocParallel
+    BiocParallel,
+    BiocFileCache
 Suggests: 
     knitr,
     rmarkdown,

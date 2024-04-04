@@ -4,7 +4,13 @@
 \alias{GeDi}
 \title{GeDi main function}
 \usage{
-GeDi(genesets = NULL, ppi_df = NULL, distance_scores = NULL)
+GeDi(
+  genesets = NULL,
+  ppi_df = NULL,
+  distance_scores = NULL,
+  col_name_genesets = "Genesets",
+  col_name_genes = "Genes"
+)
 }
 \arguments{
 \item{genesets}{a \code{data.frame}, The input data used for GeDi. This should be
@@ -15,23 +21,30 @@ the individual genesets. In this application, we use the term
 share common biological characteristics or functions. Such
 genesets can for example be obtained from databases such as
 the Gene Ontology (GO), the Kyoto Encyclopedia of Genes and
-Genomes (KEGG), Reactome, or the Molecular Signatures Database
-(MSigDB). The identifiers used in these databases can be
-directly used as geneset identifiers in GeDi. The second
-column should be called "Genes" and contain a list of genes
-belonging to the individual genesets in the "Genesets" column.
-In order to leverage all of the functionality available in
-GeDi, the column has to contain gene names and no other
-commonly used identifiers. The column names are case sensitive.}
+Genomes (KEGG), Reactome, or the Molecular Signatures
+Database (MSigDB). The identifiers used in these databases
+can be directly used as geneset identifiers in GeDi. The
+second column should be called "Genes" and contain a list of
+genes belonging to the individual genesets in the "Genesets"
+column. In order to leverage all of the functionality
+available in GeDi, the column has to contain gene names and
+no other commonly used identifiers. The column names are case
+sensitive.}
 
-\item{ppi_df}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
-The object is expected to have three columns, \code{Gene1} and \code{Gene2}
-which specify the gene names of the interacting proteins in no
-particular order (symmetric interaction) and a column
-\code{combined_score} which is a numerical value of the strength of
-the interaction.}
+\item{ppi_df}{a \code{data.frame}, Protein-protein interaction (PPI) network data
+frame. The object is expected to have three columns, \code{Gene1}
+and \code{Gene2} which specify the gene names of the interacting
+proteins in no particular order (symmetric interaction) and a
+column \code{combined_score} which is a numerical value of the
+strength of the interaction.}
 
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
+
+\item{col_name_genesets}{character, the name of the column in which the
+geneset ids are listed. Defaults to "Genesets".}
+
+\item{col_name_genes}{character, the name of the column in which the genes
+are listed. Defaults to "Genes".}
 }
 \value{
 A Shiny app object is returned

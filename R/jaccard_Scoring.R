@@ -41,11 +41,11 @@ calculateJaccard <- function(a, b) {
 
 #' Get Matrix of Jaccard distances
 #'
-#' Calculate the Jaccard distance of all combinations of genesets in a given data
-#' set of genesets.
+#' Calculate the Jaccard distance of all combinations of genesets in a given 
+#' data set of genesets.
 #'
-#' @param genesets a `list`, A `list` of genesets where each genesets is represented
-#'                 by `list` of genes.
+#' @param genesets a `list`, A `list` of genesets where each genesets is 
+#'                 represented by `list` of genes.
 #' @param progress a [shiny::Progress()] object, Optional progress bar object
 #'                 to track the progress of the function (e.g. in a Shiny app).
 #' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization

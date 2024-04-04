@@ -7,10 +7,10 @@
 .checkPPI(ppi)
 }
 \arguments{
-\item{ppi}{a \code{data.frame}, Protein-protein interaction (PPI) network data frame.
-The object is expected to have three columns, \code{Gene1} and \code{Gene2}
-which specify the gene names of the interacting proteins in no
-particular order (symmetric interaction) and a column
+\item{ppi}{a \code{data.frame}, Protein-protein interaction (PPI) network data
+frame. The object is expected to have three columns, \code{Gene1} and
+\code{Gene2} which specify the gene names of the interacting proteins
+in no particular order (symmetric interaction) and a column
 \code{combined_score} which is a numerical value of the strength of
 the interaction.}
 }

@@ -1,9 +1,10 @@
 #' Create a histogram plot for gene set sizes
 #'
-#' Create a histogram plot to plot geneset names / identifiers against their size.
+#' Create a histogram plot to plot geneset names / identifiers against their 
+#' size.
 #'
-#' @param genesets a `list`, A `list` of genesets where each genesets is represented
-#'                 by `list` of genes.
+#' @param genesets a `list`, A `list` of genesets where each genesets is 
+#'                 represented by `list` of genes.
 #' @param gs_names character vector, Name / identifier of the genesets in
 #'                 `genesets`
 #' @param start numeric, Optional, describes the minimum gene set size to
@@ -67,8 +68,8 @@ gsHistogram <- function(genesets,
 #' Prepare the data for the \code{gsHistogram()} by generating a `data.frame`
 #' which maps geneset names / identifiers to the size of their size.
 #'
-#' @param genesets a `list`, A `list` of genesets where each genesets is represented
-#'              by `list` of genes.
+#' @param genesets a `list`, A `list` of genesets where each genesets is 
+#'                 represented by `list` of genes.
 #' @param gs_names character vector, Name / identifier of the genesets in
 #'                 `genesets`
 #' @param start numeric, Optional, describes the minimum gene set size to

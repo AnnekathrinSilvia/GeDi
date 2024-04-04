@@ -8,21 +8,26 @@
 #'                 share common biological characteristics or functions. Such
 #'                 genesets can for example be obtained from databases such as
 #'                 the Gene Ontology (GO), the Kyoto Encyclopedia of Genes and
-#'                 Genomes (KEGG), Reactome, or the Molecular Signatures Database
-#'                 (MSigDB). The identifiers used in these databases can be
-#'                 directly used as geneset identifiers in GeDi. The second
-#'                 column should be called "Genes" and contain a list of genes
-#'                 belonging to the individual genesets in the "Genesets" column.
-#'                 In order to leverage all of the functionality available in
-#'                 GeDi, the column has to contain gene names and no other
-#'                 commonly used identifiers. The column names are case sensitive.
-#' @param ppi_df a `data.frame`, Protein-protein interaction (PPI) network data frame.
-#'            The object is expected to have three columns, `Gene1` and `Gene2`
-#'            which specify the gene names of the interacting proteins in no
-#'            particular order (symmetric interaction) and a column
-#'            `combined_score` which is a numerical value of the strength of
-#'            the interaction.
+#'                 Genomes (KEGG), Reactome, or the Molecular Signatures
+#'                 Database (MSigDB). The identifiers used in these databases
+#'                 can be directly used as geneset identifiers in GeDi. The
+#'                 second column should be called "Genes" and contain a list of
+#'                 genes belonging to the individual genesets in the "Genesets"
+#'                 column. In order to leverage all of the functionality
+#'                 available in GeDi, the column has to contain gene names and
+#'                 no other commonly used identifiers. The column names are case
+#'                 sensitive.
+#' @param ppi_df a `data.frame`, Protein-protein interaction (PPI) network data
+#'               frame. The object is expected to have three columns, `Gene1`
+#'               and `Gene2` which specify the gene names of the interacting
+#'               proteins in no particular order (symmetric interaction) and a
+#'               column `combined_score` which is a numerical value of the
+#'               strength of the interaction.
 #' @param distance_scores A [Matrix::Matrix()] of (distance) scores
+#' @param col_name_genesets character, the name of the column in which the
+#'                          geneset ids are listed. Defaults to "Genesets".
+#' @param col_name_genes character, the name of the column in which the genes
+#'                       are listed. Defaults to "Genes".
 #'
 #' @return A Shiny app object is returned
 #' @export
@@ -30,7 +35,9 @@
 #' @import shiny
 #' @import shinyBS
 #' @import fontawesome
-#' @importFrom bs4Dash box bs4DashPage bs4DashNavbar bs4DashBrand bs4DashSidebar bs4SidebarMenu bs4SidebarMenuItem bs4DashBody bs4DashControlbar bs4DashFooter bs4TabItems bs4TabItem renderbs4InfoBox updateBox bs4Card
+#' @importFrom bs4Dash box bs4DashPage bs4DashNavbar bs4DashBrand bs4DashSidebar
+#' bs4SidebarMenu bs4SidebarMenuItem bs4DashBody bs4DashControlbar bs4DashFooter
+#' bs4TabItems bs4TabItem renderbs4InfoBox updateBox bs4Card
 #' @importFrom plotly renderPlotly plotlyOutput
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.delim data
@@ -50,14 +57,18 @@
 #' }
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
-                 distance_scores = NULL) {
+                 distance_scores = NULL,
+                 col_name_genesets = "Genesets",
+                 col_name_genes = "Genes") {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
   on.exit(options(oopt))
 
   usage_mode <- "shiny_mode"
 
   if (!(is.null(genesets))) {
-    genesets <- .checkGenesets(genesets)
+    genesets <- .checkGenesets(genesets,
+                               col_name_genesets,
+                               col_name_genes)
   }
   if (!(is.null(ppi_df))) {
     ppi <- .checkPPI(ppi_df)
@@ -93,7 +104,8 @@ GeDi <- function(genesets = NULL,
           width = "300px",
           size = "xs",
           right = TRUE,
-          tooltip = shinyWidgets::tooltipOptions(title = "More info on GeDi and on the current session"),
+          tooltip = shinyWidgets::tooltipOptions(
+            title = "More info on GeDi and on the current session"),
           tags$h5("Additional information"),
           actionButton(
             inputId = "btn_docs_vignette",
@@ -330,16 +342,24 @@ GeDi <- function(genesets = NULL,
                                column(
                                  width = 11,
                                  align = "center",
-                                 "GeDi is a project developed by Annekathrin Silvia Nedwed
-            in the Bioinformatics division of the ",
-                                 tags$a(href = "http://www.unimedizin-mainz.de/imbei", "IMBEI"),
-                                 "- Institute for Medical Biostatistics, Epidemiology and
-            Informatics",
+                                 "GeDi is a project developed by Annekathrin
+                                 Silvia Nedwed in the Bioinformatics division
+                                 of the ",
+                                 tags$a(
+                                   href = "http://www.unimedizin-mainz.de/imbei",
+                                   "IMBEI"),
+                                 "- Institute for Medical Biostatistics,
+                                 Epidemiology and Informatics",
                                  br(),
                                  "License: ",
-                                 tags$a(href = "https://opensource.org/licenses/MIT", "MIT"),
-                                 "- The GeDi package is developed and available on ",
-                                 tags$a(href = "https://github.com/AnnekathrinSilvia/GeDi", "GitHub")
+                                 tags$a(
+                                   href = "https://opensource.org/licenses/MIT",
+                                   "MIT"),
+                                 "- The GeDi package is developed and available
+                                 on ",
+                                 tags$a(
+                                   href = "https://github.com/AnnekathrinSilvia/GeDi",
+                                   "GitHub")
                                )
                              ),
                            right = NULL)
@@ -352,8 +372,8 @@ GeDi <- function(genesets = NULL,
 
     if (!is.null(genesets)) {
       reactive_values$genesets <- genesets
-      reactive_values$gs_names <- genesets$Genesets
-      reactive_values$genes <- getGenes(genesets)
+      reactive_values$gs_names <- genesets[[col_name_genesets]]
+      reactive_values$genes <- getGenes(genesets, gene_name = col_name_genes)
       reactive_values$gs_description <-
         .getGenesetDescriptions(genesets)
     } else {
@@ -407,8 +427,8 @@ GeDi <- function(genesets = NULL,
           br(),
           p(
             "you can click on it and it will start a process in the app.
-          We tried to choose the button text wisely so that you can easily understand
-          the process that will be started."
+          We tried to choose the button text wisely so that you can easily
+          understand the process that will be started."
           ),
           p(
             "Besides buttons, you will also find input fields where you can type
@@ -564,10 +584,11 @@ GeDi <- function(genesets = NULL,
       fluidRow(
         column(
           width = 12,
-          "It seems like your data does not contain columns named Genesets and Genes.
-        Please select the column which contains the identifiers for the Genesets
-        and the column which contains the Genes. If you are unsure about the
-        format of the input data, please check out the Welcome panel.",
+          "It seems like your data does not contain columns named Genesets and
+          Genes. Please select the column which contains the identifiers for the
+          Genesets and the column which contains the Genes. If you are unsure
+          about the format of the input data, please check out the Welcome
+          panel.",
           br(),
           "Upon choosing the respective columns, we will rename the column
           containing the geneset identifiers to 'Genesets' and the column
@@ -1142,8 +1163,7 @@ GeDi <- function(genesets = NULL,
       if (is.null(reactive_values$scores) ||
           length(reactive_values$scores) == 0) {
         showNotification(
-          "It seems like you do not have any distance scores.
-          Please score you data first in the Scores panel.",
+          "It seems like you do not have any distance scores. Please score you data first in the Scores panel.",
           type = "warning"
         )
       }
@@ -1168,8 +1188,7 @@ GeDi <- function(genesets = NULL,
     output$scores_Network <- renderVisNetwork({
       if (!any(get.edgelist(reactive_values$scores_graph()) != 0)) {
         showNotification(
-          "Please select a larger distance threshold as currently no nodes are
-          connected and the graph cannot be properly rendered.",
+          "Please select a larger distance threshold as currently no nodes are connected and the graph cannot be properly rendered.",
           type = "warning"
         )
       } else {
@@ -1264,9 +1283,11 @@ GeDi <- function(genesets = NULL,
                            selectInput(
                              inputId = "graphColoring",
                              label = "Color the graph by",
-                             choices = if (!(is.null(reactive_values$genesets))) {
+                             choices =
+                               if (!(is.null(reactive_values$genesets))) {
                                c(NULL, colnames(
-                                 dplyr::select_if(reactive_values$genesets, is.numeric)
+                                 dplyr::select_if(reactive_values$genesets,
+                                                  is.numeric)
                                ))
                              } else {
                                c(NULL)
@@ -1529,8 +1550,7 @@ GeDi <- function(genesets = NULL,
         },
         error = function(cond) {
           showNotification(
-            "It seems like your data does not have any clusters.
-            Please adapt the thresholds and try again.",
+            "It seems like your data does not have any clusters. Please adapt the thresholds and try again.",
             type = "error"
           )
           return(NULL)
@@ -1573,7 +1593,7 @@ GeDi <- function(genesets = NULL,
         enrichmentWordcloud(genesets_df)
       })
 
-    # Report panel -------------------------------------------------------------
+    # Report panel -----------------------------------------------------------
     output$ui_panel_report <- renderUI({
       tagList(fluidRow(column(width = 11),
                        column(
@@ -1733,9 +1753,9 @@ GeDi <- function(genesets = NULL,
     )
 
 
-    # Observers ------------------------------------------------------------------
+    # Observers ---------------------------------------------------------------
 
-    # Data Input Panel ----------------------------------------------------------
+    # Data Input Panel --------------------------------------------------------
     observeEvent(input$inputgenesetfile, {
       filename <-
         unlist(strsplit(input$inputgenesetfile$datapath, ".", fixed = TRUE))
@@ -1751,9 +1771,7 @@ GeDi <- function(genesets = NULL,
           readxl::read_excel(input$inputgenesetfile$datapath)
       } else {
         showNotification(
-          "It seems like your input file has not the right format.
-          Please check the Welcome panel for the right input format and
-          provide your data again.",
+          "It seems like your input file has not the right format. Please check the Welcome panel for the right input format and provide your data again.",
           type = "error"
         )
       }
@@ -1812,9 +1830,7 @@ GeDi <- function(genesets = NULL,
           gsub("/", ",", x), character(1))
 
       showNotification(
-        "Successfully selected your columns and read your data.
-        We renamed the columns to 'Genesets' and 'Genes'.
-        You can now proceed.",
+        "Successfully selected your columns and read your data. We renamed the columns to 'Genesets' and 'Genes'. You can now proceed.",
         type = "message"
       )
       reactive_values$alt_names <- FALSE
@@ -1827,9 +1843,9 @@ GeDi <- function(genesets = NULL,
 
       progress$set(message = "Loading demo data now", value = 0)
 
-      data(macrophage_topGO_example,
-           package = "GeDi",
-           envir = environment())
+      data_env <- new.env(parent = emptyenv())
+      data("macrophage_topGO_example", envir = data_env, package = "GeDi")
+      macrophage_topGO_example <- data_env[["macrophage_topGO_example"]]
 
       progress$inc(1 / 3, detail = "Extracting Genesets")
 
@@ -1935,8 +1951,7 @@ GeDi <- function(genesets = NULL,
                     message = "Please specify the species of your data"))
       if (length(strsplit(input$species, "\\s+")) > 1) {
         showNotification(
-          "It seems like you have selected more than one species.
-          Please go back to the box and select the correct species.",
+          "It seems like you have selected more than one species. Please go back to the box and select the correct species.",
           type = "error"
         )
         return()
@@ -1948,7 +1963,7 @@ GeDi <- function(genesets = NULL,
 
       progress$set(message = "Downloading PPI from STRINGdb", value = 0)
       progress$inc(1 / 12, detail = "Get species ID")
-      id <- getId(reactive_values$species)
+      id <- getId(reactive_values$species, cache = TRUE)
       progress$inc(1 / 12, detail = "Validate species ID")
       validate(
         need(
@@ -1981,9 +1996,7 @@ GeDi <- function(genesets = NULL,
           readRDS(input$inputppi$datapath)
       } else {
         showNotification(
-          "It seems like your input file has not the right format.
-          Please check the Welcome panel for the right input format and
-          provide your data again.",
+          "It seems like your input file has not the right format. Please check the Welcome panel for the right input format and provide your data again.",
           type = "error"
         )
       }
@@ -2008,13 +2021,12 @@ GeDi <- function(genesets = NULL,
     )
 
 
-    # Scoring panel --------------------------------------------------------------
+    # Scoring panel -----------------------------------------------------------
     observeEvent(input$score_data, {
       if (input$scoringmethod == "" ||
           (is.null(input$scoringmethod))) {
         showNotification(
-          "It seems like you did not select a scoring method.
-          Please select a scoring method on the left.",
+          "It seems like you did not select a scoring method. Please select a scoring method on the left.",
           type = "error"
         )
       }
@@ -2022,8 +2034,7 @@ GeDi <- function(genesets = NULL,
       if ((length(reactive_values$genes) == 0 ||
            (is.null(reactive_values$genes)))) {
         showNotification(
-          "It seems like the file you've provided does not
-             contain any genesets. Please check you input and retry.",
+          "It seems like the file you've provided does not contain any genesets. Please check you input and retry.",
           type = "error"
         )
       }
@@ -2041,8 +2052,7 @@ GeDi <- function(genesets = NULL,
       } else if (input$scoringmethod == "PMM") {
         if (is.null(reactive_values$ppi)) {
           showNotification(
-            "It seems like you have not downloaded a PPI matrix.
-            Please return to the Data Input panel and download the respective PPI.",
+            "It seems like you have not downloaded a PPI matrix. Please return to the Data Input panel and download the respective PPI.",
             type = "error"
           )
           scores <- NULL
@@ -2082,8 +2092,7 @@ GeDi <- function(genesets = NULL,
 
       if (is.null(scores)) {
         showNotification(
-          "It seems like something went wrong while scoring your data.
-          Most likely this is due to the genesets not containg genes.",
+          "It seems like something went wrong while scoring your data. Most likely this is due to the genesets not containg genes.",
           type = "error"
         )
       } else {
@@ -2104,7 +2113,7 @@ GeDi <- function(genesets = NULL,
         saveRDS(reactive_values$scores[[input$scoringmethod]], file)
       }
     )
-    
+
     observeEvent(input$scores_graph_search, {
       current_node <- input$scores_graph_search
       if (current_node != "") {
@@ -2117,21 +2126,19 @@ GeDi <- function(genesets = NULL,
         })
       } else {
         showNotification(
-          "It seems like the geneset identifier you searched for cannot be found
-          in your input data. Please select a different geneset.",
+          "It seems like the geneset identifier you searched for cannot be found in your input data. Please select a different geneset.",
           type = "message"
         )
       }
     })
 
 
-    # Clustering panel -----------------------------------------------------------
+    # Clustering panel --------------------------------------------------------
     observeEvent(input$cluster_data, {
       if (is.null(reactive_values$scores) ||
           length(reactive_values$scores) == 0) {
         showNotification(
-          "It seems like you did not compute the distances between the genesets yet. Please go back to
-          the Distance Scores panel and select a score of your choice.",
+          "It seems like you did not compute the distances between the genesets yet. Please go back to the Distance Scores panel and select a score of your choice.",
           type = "error"
         )
       }
@@ -2161,7 +2168,8 @@ GeDi <- function(genesets = NULL,
                              input$simThreshold,
                              input$memThreshold)
 
-        progress$inc(0.4, detail = "Found initial seeds. Now clustering the data.")
+        progress$inc(0.4,
+                     detail = "Found initial seeds. Now clustering the data.")
 
         cluster <- fuzzyClustering(seeds, input$clustThreshold)
 
@@ -2169,8 +2177,7 @@ GeDi <- function(genesets = NULL,
 
         if (is.null(seeds)) {
           showNotification(
-            "It seems like something went wrong while clustering your data.
-          Most likely this is due to the genesets not containg genes.",
+            "It seems like something went wrong while clustering your data. Most likely this is due to the genesets not containg genes.",
             type = "error"
           )
         } else{
@@ -2185,8 +2192,7 @@ GeDi <- function(genesets = NULL,
 
       if (is.null(cluster)) {
         showNotification(
-          "It seems like something went wrong while clustering your data.
-          Most likely this is due to an error in the scoring.",
+          "It seems like something went wrong while clustering your data. Most likely this is due to an error in the scoring.",
           type = "error"
         )
       } else{
@@ -2210,7 +2216,8 @@ GeDi <- function(genesets = NULL,
           g <- reactive_values$cluster_graph()
           cur_sel <- input$cluster_Network_selected
           if (cur_sel == "") {
-            showNotification("Select a node in the network to bookmark it", type = "warning")
+            showNotification("Select a node in the network to bookmark it",
+                             type = "warning")
           } else{
             cur_node <- match(cur_sel, V(g)$name)
             cur_sel_term <- reactive_values$gs_description[cur_node]
@@ -2250,7 +2257,8 @@ GeDi <- function(genesets = NULL,
           cur_nodetype <- V(g)$nodeType[cur_node]
 
           if (cur_sel == "") {
-            showNotification("Select a node in the network to bookmark it", type = "warning")
+            showNotification("Select a node in the network to bookmark it",
+                             type = "warning")
           } else {
             if (cur_nodetype == "Geneset") {
               cur_sel_term <- reactive_values$gs_description[cur_node]
@@ -2290,8 +2298,10 @@ GeDi <- function(genesets = NULL,
                 reactive_values$gs_description[cur_sel_cluster]
               cur_cluster <- c(
                 "Cluster" = cur_sel,
-                "Cluster_Members" = paste(cur_sel_cluster_member, collapse = ", "),
-                "Cluster_Member_Description" = paste(cur_sel_cluster_term, collapse = ", ")
+                "Cluster_Members" = paste(cur_sel_cluster_member,
+                                          collapse = ", "),
+                "Cluster_Member_Description" = paste(cur_sel_cluster_term,
+                                                     collapse = ", ")
               )
               if (cur_sel %in% reactive_values$bookmarked_cluster) {
                 showNotification(
@@ -2322,8 +2332,7 @@ GeDi <- function(genesets = NULL,
       }
       else if (input$tabs == "tab_report") {
         showNotification(
-          "You are already in the Report tab where you can see
-                         your bookmarked genesets and cluster."
+          "You are already in the Report tab where you can see your bookmarked genesets and cluster."
         )
       }
     })
@@ -2338,7 +2347,7 @@ GeDi <- function(genesets = NULL,
       showNotification("Resetting list of bookmarked cluster...")
     })
 
-    # Tour Observers -------------------------------------------------------------
+    # Tour Observers ----------------------------------------------------------
     observeEvent(input$tour_welcome, {
       tour <- utils::read.delim(
         system.file("extdata",
@@ -2442,6 +2451,5 @@ GeDi <- function(genesets = NULL,
   # nocov end
 
   shinyApp(ui = gedi_ui, server = gedi_server)
-  }
+}
 
-globalVariables("macrophage_topGO_example")

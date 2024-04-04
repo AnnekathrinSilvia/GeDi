@@ -11,9 +11,9 @@ getAdjacencyMatrix(distanceMatrix, cutOff)
 between 0 and 1.}
 
 \item{cutOff}{Numeric value, indicating for which pair of entries in the
-\code{distanceMatrix} a 1 should be inserted in the adjacency matrix.
-A 1 is inserted when for each entry in the matrix that is
-smaller or equal to the \code{cutOff} value.}
+\code{distanceMatrix} a 1 should be inserted in the adjacency
+matrix. A 1 is inserted when for each entry in the matrix #
+that is smaller or equal to the \code{cutOff} value.}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of adjacency status

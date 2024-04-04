@@ -4,10 +4,10 @@
 #' on a protein-protein interaction network.
 #'
 #' @param a,b character vector, set of gene identifiers.
-#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data frame.
-#'            The object is expected to have three columns, `Gene1` and `Gene2`
-#'            which specify the gene names of the interacting proteins in no
-#'            particular order (symmetric interaction) and a column
+#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data 
+#'            frame. The object is expected to have three columns, `Gene1` and 
+#'            `Gene2` which specify the gene names of the interacting proteins 
+#'            in no particular order (symmetric interaction) and a column
 #'            `combined_score` which is a numerical value of the strength of
 #'            the interaction.
 #' @param maxInteract numeric, Maximum interaction value in the PPI.
@@ -92,10 +92,10 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' Calculate the local pMM distance of two genesets.
 #'
 #' @param a,b character vector, set of gene identifiers.
-#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data frame.
-#'            The object is expected to have three columns, `Gene1` and `Gene2`
-#'            which specify the gene names of the interacting proteins in no
-#'            particular order (symmetric interaction) and a column
+#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data 
+#'            frame. The object is expected to have three columns, `Gene1` and 
+#'            `Gene2` which specify the gene names of the interacting proteins 
+#'            in no particular order (symmetric interaction) and a column
 #'            `combined_score` which is a numerical value of the strength of
 #'            the interaction.
 #' @param maxInteract numeric, Maximum interaction value in the PPI.
@@ -165,12 +165,12 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' Calculate the pMM distance of all combinations of genesets in a given data
 #' set of genesets.
 #'
-#' @param genesets a `list`, A `list` of genesets where each genesets is represented
-#'                 by `list` of genes.
-#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data frame.
-#'            The object is expected to have three columns, `Gene1` and `Gene2`
-#'            which specify the gene names of the interacting proteins in no
-#'            particular order (symmetric interaction) and a column
+#' @param genesets a `list`, A `list` of genesets where each genesets is 
+#'                 represented by `list` of genes.
+#' @param ppi a `data.frame`, Protein-protein interaction (PPI) network data 
+#'            frame. The object is expected to have three columns, `Gene1` and 
+#'            `Gene2` which specify the gene names of the interacting proteins 
+#'            in no particular order (symmetric interaction) and a column
 #'            `combined_score` which is a numerical value of the strength of
 #'            the interaction.
 #' @param alpha numeric, Scaling factor for controlling the influence of the

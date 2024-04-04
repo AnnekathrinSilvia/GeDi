@@ -11,8 +11,8 @@ getMeetMinMatrix(
 )
 }
 \arguments{
-\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is represented
-by \code{list} of genes.}
+\item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
+represented by \code{list} of genes.}
 
 \item{progress}{a \code{\link[shiny:Progress]{shiny::Progress()}} object, Optional progress bar object
 to track the progress of the function (e.g. in a Shiny app).}

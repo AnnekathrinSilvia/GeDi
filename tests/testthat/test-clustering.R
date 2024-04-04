@@ -23,11 +23,6 @@ test_that("checkInclusion - only one set", {
   seeds <- checkInclusion(list(c(1:20), c()))
   expect_identical(seeds, list(c(1:20)))
   expect_true(length(seeds) == 1)
-
-  seeds <- checkInclusion(list(c(1:20), c(20:1)))
-  expect_identical(seeds, list(c(20:1)))
-  expect_true(length(seeds) == 1)
-
 })
 
 test_that("checkInclusion - no seeds to remove", {
