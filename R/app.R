@@ -2400,8 +2400,8 @@ GeDi <- function(genesets = NULL,
     # Report panel ----------------------------------------------------------
 
     observeEvent(input$bookmarker, {
-      if (input$tabs == "tab_welcome" |
-          input$tabs == "tab_data_input" |
+      if (input$tabs == "tab_welcome" ||
+          input$tabs == "tab_data_input" ||
           input$tabs == "tab_scores") {
         showNotification("Welcome to GeDi! There is nothing to Bookmark here.")
       } else if (input$tabs == "tab_graph") {
