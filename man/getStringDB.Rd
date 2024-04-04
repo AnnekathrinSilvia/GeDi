@@ -20,8 +20,9 @@ current version}
 \item{score_threshold}{numeric, A score threshold to cut the retrieved
 interactions, defaults to 0 (all interactions)}
 
-\item{cache_location}{character, the location to save the downloaded
-\link{STRINGdb} object.}
+\item{cache_location}{Logical value, defining whether to use the BiocFileCache
+for retrieval of the files underlying the \link{STRINGdb}
+object. Defaults to \code{TRUE}.}
 }
 \value{
 a \link{STRINGdb} object of \code{species}

@@ -27,12 +27,13 @@ object
 ## Mock example showing how the data should look like
 
 genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
-string_db <- getStringDB(9606)
-string_db
+string_db <- getStringDB(9606, cache_location = FALSE)
+# string_db
 anno_df <- getAnnotation(string_db)
 ppi <- getPPI(genes, string_db, anno_df)
 
 ## Example using the data available in the package
+\dontrun{
 data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
@@ -41,4 +42,5 @@ string_db
 anno_df <- getAnnotation(string_db)
 genes <- GeDi::getGenes(macrophage_topGO_example_small)
 ppi <- getPPI(genes, string_db, anno_df)
+}
 }

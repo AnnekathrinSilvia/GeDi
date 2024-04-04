@@ -123,7 +123,6 @@ buildHistogramData <- function(genesets,
     n_genes <- n_genes[(n_genes$Size <= end), ]
   }
 
-
   # Reorder columns to have geneset names first
   n_genes <- n_genes[, c(2, 1)]
 

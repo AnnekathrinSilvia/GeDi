@@ -37,9 +37,9 @@ bibliography: GeDi.bib
 
 **Last edited**: 2024-02-29
 
-**License**: `r #packageDescription("GeDi")[["License"]]`
+**License**: `r packageDescription("GeDi")[["License"]]`
 
-```{r, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -47,7 +47,7 @@ knitr::opts_chunk$set(
   warning = FALSE,
   eval = TRUE,
   message = FALSE,
-  fig.width = 10
+  fig.width = 8
 )
 options(width = 100)
 stopifnot(requireNamespace("htmltools"))
@@ -58,11 +58,11 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 
 # Introduction {#introduction}
 
-This vignette introduces the usage of the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` package for exploring the results of functional annotation and enrichment analyses.
+This vignette introduces the usage of the `r BiocStyle::Biocpkg("GeDi")` package for exploring the results of functional annotation and enrichment analyses.
 
-`r #BiocStyle::Biocpkg("GeDi")` `GeDi` is a versatile package designed to simplify the exploration and comprehension of functional annotation and enrichment analysis results. It offers a `r BiocStyle::CRANpkg("shiny")` application that combines interactivity, visualization, and reproducibility to consolidate comprehensive outcomes.
+`r BiocStyle::Biocpkg("GeDi")` is a versatile package designed to simplify the exploration and comprehension of functional annotation and enrichment analysis results. It offers a `r BiocStyle::CRANpkg("shiny")` application that combines interactivity, visualization, and reproducibility to consolidate comprehensive outcomes.
 
-To incorporate `r #BiocStyle::Biocpkg("GeDi")` `GeDi` into your workflow, you'll need the results of a functional annotation or enrichment analysis. This vignette demonstrates the core functionalities of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` using a publicly available dataset from Alasoo et al., as described in their paper "Shared genetic effects on chromatin and gene expression indicate a role for enhancer priming in immune response" [@Alasoo2018].
+To incorporate `r BiocStyle::Biocpkg("GeDi")` into your workflow, you'll need the results of a functional annotation or enrichment analysis. This vignette demonstrates the core functionalities of `r BiocStyle::Biocpkg("GeDi")` using a publicly available dataset from Alasoo et al., as described in their paper "Shared genetic effects on chromatin and gene expression indicate a role for enhancer priming in immune response" [@Alasoo2018].
 
 Accessible through the `r BiocStyle::Biocpkg("macrophage")` Bioconductor package, this dataset comprises files generated from Salmon quantification (version 0.12.0, with Gencode v29 reference) and gene-level summarized values.
 
@@ -112,7 +112,7 @@ where
 
 All of these parameters are optional, as you can alternatively upload, download, and compute them directly within the application. However, some of these processes may require a significant amount of time, especially with larger datasets. Therefore, it may be advantageous to save the intermediate results, such as the downloaded PPI and computed distance scores, for later use within the application.
 
-In this vignette, we demonstrate the functionality of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` using enrichment analysis results from the `r BiocStyle::Biocpkg("macrophage")` dataset. To immediately start exploring the application, you can simply execute:
+In this vignette, we demonstrate the functionality of `r BiocStyle::Biocpkg("GeDi")` using enrichment analysis results from the `r BiocStyle::Biocpkg("macrophage")` dataset. To immediately start exploring the application, you can simply execute:
 
 ```{r examplerun, eval=FALSE}
 GeDi()
@@ -120,9 +120,9 @@ GeDi()
 
 and load the example data with the `Load example data` button in the **Data Input** panel. 
 
-Alternatively, you can proceed by following the subsequent code chunks to create the necessary input objects, step by step. This can serve as a reference guide for the steps ideally executed prior to analyzing the data with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+Alternatively, you can proceed by following the subsequent code chunks to create the necessary input objects, step by step. This can serve as a reference guide for the steps ideally executed prior to analyzing the data with `r BiocStyle::Biocpkg("GeDi")`.
 
-To utilize `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, you'll require results from a functional annotation analysis. In this vignette, we'll demonstrate how to conduct an enrichment analysis on differentially expressed (DE) genes from the `r BiocStyle::Biocpkg("macrophage")` dataset.
+To utilize `r BiocStyle::Biocpkg("GeDi")`, you'll require results from a functional annotation analysis. In this vignette, we'll demonstrate how to conduct an enrichment analysis on differentially expressed (DE) genes from the `r BiocStyle::Biocpkg("macrophage")` dataset.
 
 Firstly, we'll load the macrophage data and create a `DESeqDataset`, as the subsequent differential expression analysis will be performed using `r BiocStyle::Biocpkg("DESeq2")` [@Love2014].
 
@@ -155,7 +155,7 @@ Before executing the DE analysis, we'll filter out lowly expressed features from
 
 Subsequently, we'll conduct the DE analysis and assess against a null hypothesis of a log2FoldChange of 1 to ensure that we identify genes with consistent and robust changes in expression.
 
-Finally, we'll append the gene symbols to the resultant `data.frame`, which will later serve as our "Genes" column in the input data for `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+Finally, we'll append the gene symbols to the resultant `DataFrame`, which will later serve as our "Genes" column in the input data for `r BiocStyle::Biocpkg("GeDi")`.
 
 ```{r create_resde1}
 # Filter genes based on read counts
@@ -187,9 +187,9 @@ res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
 
 After completing the differential expression analysis, we move on to conduct the functional annotation analysis. To begin, we extract the differentially expressed (DE) genes from the previously generated results and identify the background genes to be utilized for functional enrichment.
 
-For the enrichment analysis, we use the overrepresentation analysis method provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the integration of these results into `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, we utilize the `topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. By default, this function employs the `BP` ontology and the `elim` method, which helps decorrelate the Gene Ontology (GO) graph structure, resulting in less redundant functional categories. The output is a `data.frame` object that seamlessly integrates with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+For the enrichment analysis, we use the overrepresentation analysis method provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the integration of these results into `r BiocStyle::Biocpkg("GeDi")`, we utilize the `topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. By default, this function employs the `BP` ontology and the `elim` method, which helps decorrelate the Gene Ontology (GO) graph structure, resulting in less redundant functional categories. The output is a `DataFrame` object that seamlessly integrates with `r BiocStyle::Biocpkg("GeDi")`.
 
-However, as `r #BiocStyle::Biocpkg("GeDi")` `GeDi` has only minimal requirements for the input, enrichment results generated using `r BiocStyle::Biocpkg("clusterProfiler")` can also be utilized. While we primarily tested results from the `enrichGO` method during `r #BiocStyle::Biocpkg("GeDi")` `GeDi` development, those from the `enrichKEGG` and `enrichPathway` methods are also compatible.
+However, as `r BiocStyle::Biocpkg("GeDi")` has only minimal requirements for the input, enrichment results generated using `r BiocStyle::Biocpkg("clusterProfiler")` can also be utilized. While we primarily tested results from the `enrichGO` method during `r BiocStyle::Biocpkg("GeDi")` development, those from the `enrichKEGG` and `enrichPathway` methods are also compatible.
 
 
 ```{r create_resenrich1, eval=TRUE}
@@ -225,7 +225,7 @@ macrophage_topGO_example <-
   )
 ```
 
-As mentioned earlier, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` expects the input to contain at least two columns: one named "Genesets" and one named "Genes". While this is not strictly mandatory when providing your data interactively during an application session, it becomes necessary if you intend to initiate the application with your input as parameters (e.g., `GeDi(genesets = my_genesets_df)`). In such cases, the "Genesets" column should contain identifiers for each geneset in the input, while the "Genes" column should consist of comma-separated lists of genes associated with each geneset.
+As mentioned earlier, `r BiocStyle::Biocpkg("GeDi")` expects the input to contain at least two columns: one named "Genesets" and one named "Genes". While this is not strictly mandatory when providing your data interactively during an application session, it becomes necessary if you intend to initiate the application with your input as parameters (e.g., `GeDi(genesets = my_genesets_df)`). In such cases, the "Genesets" column should contain identifiers for each geneset in the input, while the "Genes" column should consist of comma-separated lists of genes associated with each geneset.
 
 Therefore, we will adjust the column names of the resulting `data.frame` from the enrichment analysis to adhere to the required format.
 
@@ -242,7 +242,7 @@ names(macrophage_topGO_example)[names(macrophage_topGO_example) == "genes"] <- "
 
 ## All set!
 
-Now that we've obtained functional annotation results from the `r BiocStyle::Biocpkg("macrophage")` dataset, we can begin exploring the data using `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. You have two options: you can either launch the application and supply the generated data using the `GeDi()` command, or if you've followed this vignette, you can initiate the application directly with the loaded data by executing `GeDi(genesets = macrophage_topGO_example)`.
+Now that we've obtained functional annotation results from the `r BiocStyle::Biocpkg("macrophage")` dataset, we can begin exploring the data using `r BiocStyle::Biocpkg("GeDi")`. You have two options: you can either launch the application and supply the generated data using the `GeDi()` command, or if you've followed this vignette, you can initiate the application directly with the loaded data by executing `GeDi(genesets = macrophage_topGO_example)`.
 
 ```{r dryrun, eval=FALSE}
 GeDi()
@@ -250,46 +250,41 @@ GeDi()
 GeDi(genesets = macrophage_topGO_example)
 ```
 
-The above shown code will open the application, directing you to the **Welcome** page. The **Welcome** page of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` serves as the entry point to the application, providing users with an overview of its features and functionalities. Upon launching the application, users are greeted with a user-friendly interface designed to facilitate the exploration and interpretation of functional annotation and enrichment analysis results. The **Welcome** page offers guidance on how to navigate the application and highlights key components such as data input options, visualization tools, and interactive features. Whether users are new to GeDi or returning to explore additional datasets, the **Welcome** page serves as a central hub for accessing resources and getting started with their analysis journey.
-
-```{r welcome-page, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = FALSE}
-knitr::include_graphics("Welcome_page.png")
-```
-
+The above shown code will open the application, directing you to the **Welcome** page. The **Welcome** page of `r BiocStyle::Biocpkg("GeDi")` serves as the entry point to the application, providing users with an overview of its features and functionalities. Upon launching the application, users are greeted with a user-friendly interface designed to facilitate the exploration and interpretation of functional annotation and enrichment analysis results. The **Welcome** page offers guidance on how to navigate the application and highlights key components such as data input options, visualization tools, and interactive features. Whether users are new to GeDi or returning to explore additional datasets, the **Welcome** page serves as a central hub for accessing resources and getting started with their analysis journey.
 
 # Description of the `GeDi` user interface {#userinterface}
 
-The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application, developed with the `r BiocStyle::CRANpkg("shiny")` framework, incorporates the modern design elements of the `r BiocStyle::CRANpkg("bs4Dash")` package, which is built upon Bootstrap 4. This combination of technologies ensures a sleek and visually appealing user interface for navigating and interacting with the functionality offered by `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. By leveraging the features of `r BiocStyle::CRANpkg("shiny")` and `r BiocStyle::CRANpkg("bs4Dash")`, `r #BiocStyle::Biocpkg("GeDi")` `GeDi` provides users with an intuitive and aesthetically pleasing environment for conducting functional annotation and enrichment analyses on their datasets.
+The `r BiocStyle::Biocpkg("GeDi")` application, developed with the `r BiocStyle::CRANpkg("shiny")` framework, incorporates the modern design elements of the `r BiocStyle::CRANpkg("bs4Dash")` package, which is built upon Bootstrap 4. This combination of technologies ensures a sleek and visually appealing user interface for navigating and interacting with the functionality offered by `r BiocStyle::Biocpkg("GeDi")`. By leveraging the features of `r BiocStyle::CRANpkg("shiny")` and `r BiocStyle::CRANpkg("bs4Dash")`, `r BiocStyle::Biocpkg("GeDi")` provides users with an intuitive and aesthetically pleasing environment for conducting functional annotation and enrichment analyses on their datasets.
 
 ## Header (navbar)
 
-The dashboard navbar in `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, referred to as such in the `r BiocStyle::CRANpkg("bs4Dash")` framework, features two dropdown menus accessible by clicking on their respective icons (<i class="fa fa-book"></i> and <i class="fa fa-info"></i>). These menus offer additional functionality through various buttons:
+The dashboard navbar in `r BiocStyle::Biocpkg("GeDi")`, referred to as such in the `r BiocStyle::CRANpkg("bs4Dash")` framework, features two dropdown menus accessible by clicking on their respective icons (<i class="fa fa-book"></i> and <i class="fa fa-info"></i>). These menus offer additional functionality through various buttons:
 
-- <i class="fa fa-book"></i> - This option allows users to explore the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` vignette, either the version bundled with the package or the online version, providing detailed documentation and usage guidelines.
-- <i class="fa fa-question-circle"></i> - Clicking this icon provides users with initial help information about `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, offering a brief overview of the package's functionality and outlining the prerequisites for proper execution.
+- <i class="fa fa-book"></i> - This option allows users to explore the `r BiocStyle::Biocpkg("GeDi")` vignette, either the version bundled with the package or the online version, providing detailed documentation and usage guidelines.
+- <i class="fa fa-question-circle"></i> - Clicking this icon provides users with initial help information about `r BiocStyle::Biocpkg("GeDi")`, offering a brief overview of the package's functionality and outlining the prerequisites for proper execution.
 - <i class="fa fa-info-circle"></i> - Selecting this option displays information about the current session, presenting details such as the R environment and loaded packages, helpful for troubleshooting and debugging purposes.
-- <i class="fa fa-heart"></i> - This button offers general information about `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, including links to its development version for contribution and guidelines on citing the tool in research publications.
+- <i class="fa fa-heart"></i> - This button offers general information about `r BiocStyle::Biocpkg("GeDi")`, including links to its development version for contribution and guidelines on citing the tool in research publications.
 
-Besides the two dropdown menus, users can also find the `Bookmark` button in the Navbar. The `Bookmark` button in the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` navbar serves as a convenient tool for users to save and bookmark genes and genesets of interest for later reference. To use this feature, users must first select or click on a gene or geneset that they wish to bookmark. Once the desired gene or geneset is selected, users can then click on the `Bookmark` button to add it to a list of bookmarked items within the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application. This functionality enables users to organize and revisit specific genes or genesets that they find relevant or intriguing during their exploration of functional annotation and enrichment analysis results. The bookmarked genes and genesets can later be found in the **Report** panel.
+Besides the two dropdown menus, users can also find the `Bookmark` button in the Navbar. The `Bookmark` button in the `r BiocStyle::Biocpkg("GeDi")` navbar serves as a convenient tool for users to save and bookmark genes and genesets of interest for later reference. To use this feature, users must first select or click on a gene or geneset that they wish to bookmark. Once the desired gene or geneset is selected, users can then click on the `Bookmark` button to add it to a list of bookmarked items within the `r BiocStyle::Biocpkg("GeDi")` application. This functionality enables users to organize and revisit specific genes or genesets that they find relevant or intriguing during their exploration of functional annotation and enrichment analysis results. The bookmarked genes and genesets can later be found in the **Report** panel.
 
 ## Sidebar
 
-By clicking the <i class="fa fa-bars"></i> menu bar icon on the left side of the app (or simply by moving the mouse over to the left side if viewing the app in full screen mode), users can activate the sidebar menu. This sidebar menu serves as the primary means of accessing the various panels of the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` application, providing navigation to different functionalities. More detailed explanations of each panel will be provided in the next section.
+By clicking the <i class="fa fa-bars"></i> menu bar icon on the left side of the app (or simply by moving the mouse over to the left side if viewing the app in full screen mode), users can activate the sidebar menu. This sidebar menu serves as the primary means of accessing the various panels of the `r BiocStyle::Biocpkg("GeDi")` application, providing navigation to different functionalities. More detailed explanations of each panel will be provided in the next section.
 
 
 ## Body
 
-The structure of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` is designed around different panels, each of which becomes active upon clicking the corresponding icons or text in the sidebar.
+The structure of `r BiocStyle::Biocpkg("GeDi")` is designed around different panels, each of which becomes active upon clicking the corresponding icons or text in the sidebar.
 
-While the Welcome panel is relatively self-explanatory, additional information and explanations are provided for the functionality of the remaining panels. For new users seeking guidance, there's a question circle button (<i class="fa fa-question-circle"></i>) available to initiate an interactive tour of `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. This tour allows users to learn the basic usage mechanisms by actively engaging with the interface. During the tour, specific elements are highlighted in response to user actions, while the rest of the UI remains shaded to maintain focus. Users can interrupt the tour at any time by clicking outside the highlighted window, and navigation between steps is facilitated by arrow buttons (left, right). The tour functionality is implemented using the `r BiocStyle::CRANpkg("rintrojs")` package.
+While the Welcome panel is relatively self-explanatory, additional information and explanations are provided for the functionality of the remaining panels. For new users seeking guidance, there's a question circle button (<i class="fa fa-question-circle"></i>) available to initiate an interactive tour of `r BiocStyle::Biocpkg("GeDi")`. This tour allows users to learn the basic usage mechanisms by actively engaging with the interface. During the tour, specific elements are highlighted in response to user actions, while the rest of the UI remains shaded to maintain focus. Users can interrupt the tour at any time by clicking outside the highlighted window, and navigation between steps is facilitated by arrow buttons (left, right). The tour functionality is implemented using the `r BiocStyle::CRANpkg("rintrojs")` package.
 
 # The `GeDi` functionality {#functionality}
 
-The `r #BiocStyle::Biocpkg("GeDi")` `GeDi` `r BiocStyle::Biocpkg("shiny")` application is organized into distinct panels, each serving a specific purpose, which will be thoroughly explored in the following sections.
+The `r BiocStyle::Biocpkg("GeDi")` `r BiocStyle::Biocpkg("shiny")` application is organized into distinct panels, each serving a specific purpose, which will be thoroughly explored in the following sections.
 
 ## The Welcome panel
 
-This panel serves as a guide for utilizing `r #BiocStyle::Biocpkg("GeDi")` `GeDi` effectively. It offers detailed instructions on generating input data for the application, elucidating the expected input format and outlining the various interactive elements present in the app's other panels.
+This panel serves as a guide for utilizing `r BiocStyle::Biocpkg("GeDi")` effectively. It offers detailed instructions on generating input data for the application, elucidating the expected input format and outlining the various interactive elements present in the app's other panels.
 
 ```{r welcome-page2, fig.align = "center", fig.cap = "The Welcome panel of GeDi", echo = FALSE}
 knitr::include_graphics("Welcome_page.png")
@@ -305,9 +300,9 @@ This panel serves as a hub for managing data input if it's not provided within t
 
 In the initial **Step 1** box, you can provide your data by utilizing the **Browse** button. This action opens a modal window enabling you to select the relevant file from your computer storage. After successfully loading the data, a preview is displayed in the **Genesets preview** box on the right. During this step, the application checks if your input contains the "Genesets" and "Genes" columns. If these columns are missing, a small error message appears in the lower right corner. Additionally, two drop-down menus allow you to select the correct columns from your data and update the input accordingly.
 
-You also have the option to start using `r #BiocStyle::Biocpkg("GeDi")` `GeDi` with preprocessed example data based on the `r BiocStyle::Biocpkg("macrophage")` dataset. Simply click the **Load demo data** button to load the example data's enrichment results. You can explore these results in the **Genesets preview** box.
+You also have the option to start using `r BiocStyle::Biocpkg("GeDi")` with preprocessed example data based on the `r BiocStyle::Biocpkg("macrophage")` dataset. Simply click the **Load demo data** button to load the example data's enrichment results. You can explore these results in the **Genesets preview** box.
 
-However, instead of loading demo data and observing the expected data structure through the **Genesets preview** box, you can also use the **Have a look at the data structure** button. By clicking this button, a modal window with a visual representation of the expected input data structure will open. This screenshot serves as a helpful guide, providing you with a clear understanding of how your data should be formatted for optimal compatibility with `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+However, instead of loading demo data and observing the expected data structure through the **Genesets preview** box, you can also use the **Have a look at the data structure** button. By clicking this button, a modal window with a visual representation of the expected input data structure will open. This screenshot serves as a helpful guide, providing you with a clear understanding of how your data should be formatted for optimal compatibility with `r BiocStyle::Biocpkg("GeDi")`.
 
 Once, you have successfully loaded some data, the data input process will proceed and two additional boxes will be displayed in the panel. 
 
@@ -325,7 +320,7 @@ The box features a histogram illustrating geneset sizes, providing visual contex
 Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the "Remove the selected Genesets" button. This action will remove all selected genesets from the dataset. Additionally, you have the option to save the filtered data using the "Download the filtered data" button. Clicking this button will save the filtered data to your local machine. This feature can be particularly beneficial for users who intend to revisit their data in a new instance of GeDi and want to ensure that previously identified uninsightful genesets have already been filtered out.
 
 
-Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the `Remove the selected Genesets` button. This action will remove all selected genesets from the dataset.  Additionally, you have the option to save the filtered data using the `Download the filtered data` button. Clicking this button will save the filtered data to your local machine.This feature can be particularly beneficial for users who intend to revisit their data in a new instance of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` and want to ensure that previously identified uninsightful genesets have already been filtered out.
+Once you've chosen the genesets you wish to exclude from your dataset, you can initiate the filtering process by clicking the `Remove the selected Genesets` button. This action will remove all selected genesets from the dataset.  Additionally, you have the option to save the filtered data using the `Download the filtered data` button. Clicking this button will save the filtered data to your local machine.This feature can be particularly beneficial for users who intend to revisit their data in a new instance of `r BiocStyle::Biocpkg("GeDi")` and want to ensure that previously identified uninsightful genesets have already been filtered out.
 
 ```{r optional-filtering, fig.align = "center", fig.cap = "Optional Filtering Step", echo = FALSE}
 knitr::include_graphics("Optional_Filtering.png")
@@ -334,7 +329,7 @@ knitr::include_graphics("Optional_Filtering.png")
 
 **Step 2**: Species Selection
 
-Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial task of selecting the species associated with your dataset. This step holds significant importance for the computation of the **PMM score** within `r #BiocStyle::Biocpkg("GeDi")` `GeDi`, which heavily relies on a **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in capturing protein interaction strength, thereby enriching distance scores with valuable biological context. To access and utilize this essential information, specifying the species linked to your dataset is mandatory. By clicking the input field, you'll prompt a dropdown menu showcasing preselected species options. If your species is included, simply make your selection. Alternatively, if your species is not listed, you have the option to manually input it. In cases of uncertainty, a convenient link provided on the right directs you to the STRING database, enabling verification of species details and PPI availability for informed decision-making.
+Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial task of selecting the species associated with your dataset. This step holds significant importance for the computation of the **PMM score** within `r BiocStyle::Biocpkg("GeDi")`, which heavily relies on a **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in capturing protein interaction strength, thereby enriching distance scores with valuable biological context. To access and utilize this essential information, specifying the species linked to your dataset is mandatory. By clicking the input field, you'll prompt a dropdown menu showcasing preselected species options. If your species is included, simply make your selection. Alternatively, if your species is not listed, you have the option to manually input it. In cases of uncertainty, a convenient link provided on the right directs you to the STRING database, enabling verification of species details and PPI availability for informed decision-making.
 
 ```{r species-selection, fig.align = "center", fig.cap = "Species Selection", echo = FALSE}
 knitr::include_graphics("Species_Selection.png")
@@ -513,7 +508,7 @@ During an interactive exploration session, recalling specific details about each
 
 Below the interactive tables displaying bookmarked genesets and clusters, users can find buttons allowing them to download the content of each table individually. Additionally, the **Start the generation of the report** button is provided to generate a detailed report encompassing all selected elements of interest.
 
-The report generation process utilizes a predefined template report included within the `r #BiocStyle::Biocpkg("GeDi")` `GeDi` package. This template leverages the input elements and reactive values associated with the bookmarks, ensuring that the generated report contains comprehensive and relevant information.
+The report generation process utilizes a predefined template report included within the `r BiocStyle::Biocpkg("GeDi")` package. This template leverages the input elements and reactive values associated with the bookmarks, ensuring that the generated report contains comprehensive and relevant information.
 
 The resulting report serves as a valuable tool for creating a permanent and reproducible analysis output. Users can easily store or share this report for future reference or collaboration purposes.
 
@@ -524,12 +519,12 @@ knitr::include_graphics("Report_panel.png")
 
 # Additional Information {#additionalinfo}
 
-Bug reports can be submitted on the Bioconductor [support site](https://support.bioconductor.org/) or opened as issues in the  `r #BiocStyle::Biocpkg("GeDi")` `GeDi` [GitHub repository](https://github.com/AnnekathrinSilvia/GeDi/issues).
+Bug reports can be submitted on the Bioconductor [support site](https://support.bioconductor.org/) or opened as issues in the  `r BiocStyle::Biocpkg("GeDi")` [GitHub repository](https://github.com/AnnekathrinSilvia/GeDi/issues).
 Please note that the GitHub repository also hosts the development version of the package, where new functionality is continuously added - be cautious, as you may be working with cutting-edge versions!
 
 The authors welcome thoughtful suggestions for enhancements or new features, and even better, pull requests.
 
-If you utilize `r #BiocStyle::Biocpkg("GeDi")` `GeDi` for your analysis, kindly cite it using the provided citation format below:
+If you utilize `r BiocStyle::Biocpkg("GeDi")` for your analysis, kindly cite it using the provided citation format below:
 
 ```{r citation, eval = FALSE}
 utils::citation("GeDi")
@@ -537,13 +532,13 @@ utils::citation("GeDi")
 
 # Additional example data
 
-In this section, we present additional examples demonstrating the versatility of `r #BiocStyle::Biocpkg("GeDi")` `GeDi` in analyzing functional enrichment data from two widely used databases, KEGG and Reactome. By leveraging the rich resources provided by these databases, GeDi offers researchers a comprehensive toolkit for exploring and interpreting complex biological pathways and processes. Through step-by-step demonstrations, we illustrate how GeDi can seamlessly integrate with data from KEGG and Reactome, enabling users to gain deeper insights into the functional annotations of their gene sets. Whether investigating specific pathways or broader biological processes, GeDi provides intuitive and powerful functionalities to enhance the analysis of functional enrichment data from diverse sources.
+In this section, we present additional examples demonstrating the versatility of `r BiocStyle::Biocpkg("GeDi")` in analyzing functional enrichment data from two widely used databases, KEGG and Reactome. By leveraging the rich resources provided by these databases, GeDi offers researchers a comprehensive toolkit for exploring and interpreting complex biological pathways and processes. Through step-by-step demonstrations, we illustrate how GeDi can seamlessly integrate with data from KEGG and Reactome, enabling users to gain deeper insights into the functional annotations of their gene sets. Whether investigating specific pathways or broader biological processes, GeDi provides intuitive and powerful functionalities to enhance the analysis of functional enrichment data from diverse sources.
 
-In this section we will demonstrate how results containing identifiers from databases like KEGG [@Kanehisa2023] or Reactome [@Gillespie2022] - e.g. generated using `enrichKegg` or `enrichPathway` functions from the `r BiocStyle::Biocpkg("clusterProfiler")` package - can be utilized as input for `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. We will again use the data of the `r BiocStyle::Biocpkg("macrophage")` package, specifically the differentially expressed genes we have identified before. With this data, we demonstrate how to generate the results and prepare them for their use in `r #BiocStyle::Biocpkg("GeDi")` `GeDi`.
+In this section we will demonstrate how results containing identifiers from databases like KEGG [@Kanehisa2023] or Reactome [@Gillespie2022] - e.g. generated using `enrichKegg` or `enrichPathway` functions from the `r BiocStyle::Biocpkg("clusterProfiler")` package - can be utilized as input for `r BiocStyle::Biocpkg("GeDi")`. We will again use the data of the `r BiocStyle::Biocpkg("macrophage")` package, specifically the differentially expressed genes we have identified before. With this data, we demonstrate how to generate the results and prepare them for their use in `r BiocStyle::Biocpkg("GeDi")`.
 
 However, before we can use the `enrichKEGG` function from the `r BiocStyle::Biocpkg("clusterProfiler")` package, we have to map the ENSEMBL ids of the data to Entrez ids. For this, we will up the first use the `r BiocStyle::Biocpkg("biomaRt")` package to generate a mapping of ENSEMBL to Entrez.
 
-```{r, eval = FALSE}
+```{r withbiomart, eval = FALSE}
 # Load the "biomaRt" package to access the BioMart database
 library("biomaRt")
 
@@ -585,7 +580,7 @@ res_enrich <- enrichKEGG(genes,
 )
 ```
 
-We can now use the results of the enrichment in `r #BiocStyle::Biocpkg("GeDi")` `GeDi`. For this, we directly start the app with the loaded data. If you have not computed the data following this workflow, you can beforehand load it from the available data in this package.  
+We can now use the results of the enrichment in `r BiocStyle::Biocpkg("GeDi")`. For this, we directly start the app with the loaded data. If you have not computed the data following this workflow, you can beforehand load it from the available data in this package.  
 
 ```{r GeDi_Kegg, eval = FALSE}
 # Load the "macrophage_KEGG_example" dataset from the "GeDi" package
@@ -633,7 +628,7 @@ This can help you pinpoint what packages might be causing the issue.
 
 **Q: I am using a different service/software for generating the results of functional enrichment analysis. How do I plug this into `GeDi`?**
 
-A: You can use nearly any result of a functional enrichment analysis in `r #BiocStyle::Biocpkg("GeDi")` `GeDi` as long as the results are transformed in a way that they fit the input requirements. Please check out the **Welcome** page to see the specification of the input requirements. 
+A: You can use nearly any result of a functional enrichment analysis in `r BiocStyle::Biocpkg("GeDi")` as long as the results are transformed in a way that they fit the input requirements. Please check out the **Welcome** page to see the specification of the input requirements. 
 
 
 # Session Info {- .smaller}
