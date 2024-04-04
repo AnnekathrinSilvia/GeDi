@@ -55,7 +55,7 @@ checkInclusion <- function(seeds) {
     l1 <- length(s1)
     comb <-
       lapply(
-        c(1:l1),
+        c(seq_len(l1)),
         FUN = function(x)
           combn(s1, x, simplify = FALSE)
       )
