@@ -45,10 +45,11 @@ geneset_df <- data.frame(
               Genes = c("B2M, HLA-DMA, HLA-DMB",
                         "ACOD1, ADAM8, AIM2",
                         "B2M, CD74, CTSS"),
-              Term = c("peptide antigen assembly with MHC class II protein complex",
-                       "innate immune response",
-                       "antigen processing and presentation of exogenous
-                       peptide antigen via MHC class II")
+              Term = c(
+              "peptide antigen assembly with MHC class II protein complex",
+              "innate immune response",
+              "antigen processing and presentation of exogenous
+               peptide antigen via MHC class II")
 )
 
 wordcloud <- enrichmentWordcloud(geneset_df)

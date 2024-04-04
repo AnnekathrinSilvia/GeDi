@@ -12,10 +12,10 @@ A sample input text file taken from the GScluster package, which is reduced
 to a smaller number of entries for faster testing of the application.
 }
 \details{
-This sample input text file contains data from the GScluster package.
-It was taken from the sample_geneset.txt file found on the Github
-page of the package and then reduced to a smaller amount of entries
-for faster testing of the application.
+This sample input text file contains data from the GScluster
+package. It was taken from the sample_geneset.txt file found on the
+Github page of the package and then reduced to a smaller amount of
+entries for faster testing of the application.
 }
 \references{
 Yoon, S., Kim, J., Kim, SK. et al. GScluster: network-weighted
