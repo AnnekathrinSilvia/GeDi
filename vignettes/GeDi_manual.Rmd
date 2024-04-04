@@ -519,16 +519,12 @@ knitr::include_graphics("Report_panel.png")
 
 # Additional Information {#additionalinfo}
 
-Bug reports can be submitted on the Bioconductor [support site](https://support.bioconductor.org/) or opened as issues in the  `r BiocStyle::Biocpkg("GeDi")` [GitHub repository](https://github.com/AnnekathrinSilvia/GeDi/issues).
+If you have questions about the package or the available functionality, please submit them on the Bioconductor [support site](https://support.bioconductor.org/) using the tag 'GeDi'.
+
+Bug reports can be opened as issues in the  `r BiocStyle::Biocpkg("GeDi")` [GitHub repository](https://github.com/AnnekathrinSilvia/GeDi/issues).
 Please note that the GitHub repository also hosts the development version of the package, where new functionality is continuously added - be cautious, as you may be working with cutting-edge versions!
 
 The authors welcome thoughtful suggestions for enhancements or new features, and even better, pull requests.
-
-If you utilize `r BiocStyle::Biocpkg("GeDi")` for your analysis, kindly cite it using the provided citation format below:
-
-```{r citation, eval = FALSE}
-utils::citation("GeDi")
-```
 
 # Additional example data
 
