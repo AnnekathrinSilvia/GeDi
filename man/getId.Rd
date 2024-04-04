@@ -11,6 +11,10 @@ getId(species, version = "11.5", cache = FALSE)
 
 \item{version}{character, the version of STRING you want to use, defaults to
 the current version of STRING}
+
+\item{cache}{Logical value, defining whether to use the
+BiocFileCache for retrieval of the files underlying
+the \link{STRINGdb} object. Defaults to \code{TRUE}.}
 }
 \value{
 A character of the NCBI ID of \code{species}

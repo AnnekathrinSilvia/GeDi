@@ -5,10 +5,13 @@
 #' @param species character, the species of your input data
 #' @param version character, the version of STRING you want to use, defaults to
 #'                the current version of STRING
+#' @param cache Logical value, defining whether to use the 
+#'              BiocFileCache for retrieval of the files underlying 
+#'              the [STRINGdb] object. Defaults to `TRUE`.
 #'
 #' @return A character of the NCBI ID of `species`
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfccount bfcneedsupdate 
-#'                           bfcdownload
+#'                           bfcdownload bfcadd
 #' @export
 #'
 #' @examples
@@ -29,26 +32,35 @@ getId <- function(species,
     cache_location <- tools::R_user_dir("GeDi", which = "cache")
     bfc_gedi <- BiocFileCache(cache_location)
     
-    nh_query <- bfcquery(bfc_gedi, url_species, exact = TRUE)
+    gedi_query <- bfcquery(bfc_gedi, url_species, exact = TRUE)
     
     # Evaluate if there is already a cached version
-    res_nh <- NULL
-    if (bfccount(nh_query)) {
-      rid <- nh_query$rid
+    if (bfccount(gedi_query)) {
+      rid <- gedi_query$rid
       
       # Evaluate if the cached version is outdated
       nu <- bfcneedsupdate(bfc_gedi, rid)
       if (!isFALSE(nu)) {
-        bfcdownload(bfc_gedi, rid, ask = FALSE, ...)
+        bfcdownload(bfc_gedi, rid, ask = FALSE)
       }
       
-      message("Using cached version from ", nh_query$create_time)
-      df_species <- BiocFileCache::bfcrpath(bfcdownload, url_species)
+      message("Using cached version from ", gedi_query$create_time)
+      df_species <- BiocFileCache::bfcrpath(bfc_gedi, url_species)
     }
   }
   
   if(!cache | is.null(df_species)){
     # Read species data from URL
+    df_species <- read.delim(url(url_species))
+  }
+    
+  if(cache){
+    gedi_query <- bfcquery(bfc_gedi, url_species)
+    if (bfccount(gedi_query) == 0) {
+      rpath <- bfcadd(bfc_gedi, url_species, url_species)
+    } else {
+      rpath <- gedi_query$rpath
+    }
     df_species <- read.delim(url(url_species))
   }
     
