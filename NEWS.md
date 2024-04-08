@@ -1,3 +1,8 @@
+# GeDi 0.99.5
+
+* This version reflects further changes performed upon the Bioconductor reviewing process.
+* Removed icons from the vignette to reduce the overall size of the package. 
+
 # GeDi 0.99.4
 
 * This version reflects the changes performed upon the Bioconductor reviewing process
