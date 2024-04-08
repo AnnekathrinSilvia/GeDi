@@ -362,23 +362,18 @@ enrichment analyses on their datasets.
 ## Header (navbar)
 
 The dashboard navbar in `r BiocStyle::Biocpkg("GeDi")`, referred to as such in 
-the `r BiocStyle::CRANpkg("bs4Dash")` framework, features two dropdown menus 
-accessible by clicking on their respective icons (<i class="fa fa-book"></i> 
-and <i class="fa fa-info"></i>). These menus offer additional functionality 
-through various buttons:
+the `r BiocStyle::CRANpkg("bs4Dash")` framework, features a dropdown menu 
+accessible by clicking on the respective "info" icon. The menu offers additional
+functionality through various buttons:
 
-- <i class="fa fa-book"></i> - This option allows users to explore the 
+- The open book icon - This option allows users to explore the 
 `r BiocStyle::Biocpkg("GeDi")` vignette, either the version bundled with the 
 package or the online version, providing detailed documentation and usage 
 guidelines.
-- <i class="fa fa-question-circle"></i> - Clicking this icon provides users with
-initial help information about `r BiocStyle::Biocpkg("GeDi")`, offering a brief 
-overview of the package's functionality and outlining the prerequisites for 
-proper execution.
-- <i class="fa fa-info-circle"></i> - Selecting this option displays information
+- The information i cirle - Selecting this option displays information
 about the current session, presenting details such as the R environment and 
 loaded packages, helpful for troubleshooting and debugging purposes.
-- <i class="fa fa-heart"></i> - This button offers general information about 
+- The heart button - This button offers general information about 
 `r BiocStyle::Biocpkg("GeDi")`, including links to its development version for 
 contribution and guidelines on citing the tool in research publications.
 
@@ -396,13 +391,12 @@ genesets can later be found in the **Report** panel.
 
 ## Sidebar
 
-By clicking the <i class="fa fa-bars"></i> menu bar icon on the left side of the
-app (or simply by moving the mouse over to the left side if viewing the app in 
-full screen mode), users can activate the sidebar menu. This sidebar menu serves
-as the primary means of accessing the various panels of the 
-`r BiocStyle::Biocpkg("GeDi")` application, providing navigation to different 
-functionalities. More detailed explanations of each panel will be provided in 
-the next section.
+By clicking the menu bar icon on the left side of the app (or simply by moving 
+the mouse over to the left side if viewing the app in full screen mode), users 
+can activate the sidebar menu. This sidebar menu serves as the primary means of 
+accessing the various panels of the `r BiocStyle::Biocpkg("GeDi")` application, 
+providing navigation to different functionalities. More detailed explanations of
+each panel will be provided in the next section.
 
 
 ## Body
@@ -413,15 +407,15 @@ text in the sidebar.
 
 While the Welcome panel is relatively self-explanatory, additional information 
 and explanations are provided for the functionality of the remaining panels. For
-new users seeking guidance, there's a question circle button 
-(<i class="fa fa-question-circle"></i>) available to initiate an interactive 
-tour of `r BiocStyle::Biocpkg("GeDi")`. This tour allows users to learn the basic
-usage mechanisms by actively engaging with the interface. During the tour, 
-specific elements are highlighted in response to user actions, while the rest of
-the UI remains shaded to maintain focus. Users can interrupt the tour at any time
-by clicking outside the highlighted window, and navigation between steps is 
-facilitated by arrow buttons (left, right). The tour functionality is implemented
-using the `r BiocStyle::CRANpkg("rintrojs")` package.
+new users seeking guidance, there's a question circle button available to 
+initiate an interactive tour of `r BiocStyle::Biocpkg("GeDi")`. This tour allows 
+users to learn the basic usage mechanisms by actively engaging with the
+interface. During the tour, specific elements are highlighted in response to 
+user actions, while the rest of the UI remains shaded to maintain focus. Users 
+can interrupt the tour at any time by clicking outside the highlighted window,
+and navigation between steps is facilitated by arrow buttons (left, right). The 
+tour functionality is implemented using the `r BiocStyle::CRANpkg("rintrojs")`
+package.
 
 # The `GeDi` functionality {#functionality}
 
