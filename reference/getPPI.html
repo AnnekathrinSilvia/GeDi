@@ -18,7 +18,7 @@ object"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/math
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GeDi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.5</span>
       </span>
     </div>
 
@@ -107,7 +107,10 @@ names, e.g. downloaded with <code><a href="getAnnotation.html">GeDi::getAnnotati
 <span class="r-in"><span><span class="va">string_db</span> <span class="op">&lt;-</span> <span class="fu"><a href="getStringDB.html">getStringDB</a></span><span class="op">(</span><span class="fl">9606</span>, cache_location <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># string_db</span></span></span>
 <span class="r-in"><span><span class="va">anno_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="getAnnotation.html">getAnnotation</a></span><span class="op">(</span><span class="va">string_db</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>URL 'https://stringdb-downloads.org/download/protein.aliases.v11.5/9606.protein.aliases.v11.5.txt.gz': status was 'SSL peer certificate or SSH remote key was not OK'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in download.file(urlStr, temp):</span> cannot open URL 'https://stringdb-downloads.org/download/protein.aliases.v11.5/9606.protein.aliases.v11.5.txt.gz'</span>
 <span class="r-in"><span><span class="va">ppi</span> <span class="op">&lt;-</span> <span class="fu">getPPI</span><span class="op">(</span><span class="va">genes</span>, <span class="va">string_db</span>, <span class="va">anno_df</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'anno_df' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Example using the data available in the package</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>

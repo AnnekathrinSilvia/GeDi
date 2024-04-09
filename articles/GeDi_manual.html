@@ -36,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">GeDi</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.99.5</span>
       </span>
     </div>
 
@@ -85,9 +85,7 @@
 
       
 
-      </header><link href="GeDi_manual_files/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="GeDi_manual_files/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
-<div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
@@ -106,7 +104,7 @@ Marini</h4>
 Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
                   
-            <h4 data-toc-skip class="date">4 April 2024</h4>
+            <h4 data-toc-skip class="date">9 April 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/AnnekathrinSilvia/GeDi/blob/HEAD/vignettes/GeDi_manual.Rmd" class="external-link"><code>vignettes/GeDi_manual.Rmd</code></a></small>
       <div class="hidden name"><code>GeDi_manual.Rmd</code></div>
@@ -120,7 +118,7 @@ Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni
   font-size: 10px
 }
 </style>
-<p><strong>Compiled date</strong>: 2024-04-04</p>
+<p><strong>Compiled date</strong>: 2024-04-09</p>
 <p><strong>Last edited</strong>: 2024-02-29</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <hr>
@@ -424,29 +422,19 @@ datasets.</p>
 </h3>
 <p>The dashboard navbar in <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>,
 referred to as such in the <em><a href="https://CRAN.R-project.org/package=bs4Dash" class="external-link">bs4Dash</a></em>
-framework, features two dropdown menus accessible by clicking on their
-respective icons (<i class="fa fa-book"></i> and
-<i class="fa fa-info"></i>). These menus offer additional functionality
-through various buttons:</p>
+framework, features a dropdown menu accessible by clicking on the
+respective “info” icon. The menu offers additional functionality through
+various buttons:</p>
 <ul>
-<li>
-<i class="fa fa-book"></i> - This option allows users to explore the
-<em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+<li>The open book icon - This option allows users to explore the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
 vignette, either the version bundled with the package or the online
 version, providing detailed documentation and usage guidelines.</li>
-<li>
-<i class="fa fa-question-circle"></i> - Clicking this icon provides
-users with initial help information about <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>,
-offering a brief overview of the package’s functionality and outlining
-the prerequisites for proper execution.</li>
-<li>
-<i class="fa fa-info-circle"></i> - Selecting this option displays
-information about the current session, presenting details such as the R
-environment and loaded packages, helpful for troubleshooting and
-debugging purposes.</li>
-<li>
-<i class="fa fa-heart"></i> - This button offers general information
-about <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>,
+<li>The information i cirle - Selecting this option displays information
+about the current session, presenting details such as the R environment
+and loaded packages, helpful for troubleshooting and debugging
+purposes.</li>
+<li>The heart button - This button offers general information about
+<em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>,
 including links to its development version for contribution and
 guidelines on citing the tool in research publications.</li>
 </ul>
@@ -468,11 +456,11 @@ results. The bookmarked genes and genesets can later be found in the
 <div class="section level3">
 <h3 id="sidebar">Sidebar<a class="anchor" aria-label="anchor" href="#sidebar"></a>
 </h3>
-<p>By clicking the <i class="fa fa-bars"></i> menu bar icon on the left
-side of the app (or simply by moving the mouse over to the left side if
-viewing the app in full screen mode), users can activate the sidebar
-menu. This sidebar menu serves as the primary means of accessing the
-various panels of the <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
+<p>By clicking the menu bar icon on the left side of the app (or simply
+by moving the mouse over to the left side if viewing the app in full
+screen mode), users can activate the sidebar menu. This sidebar menu
+serves as the primary means of accessing the various panels of the
+<em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>
 application, providing navigation to different functionalities. More
 detailed explanations of each panel will be provided in the next
 section.</p>
@@ -486,8 +474,7 @@ clicking the corresponding icons or text in the sidebar.</p>
 <p>While the Welcome panel is relatively self-explanatory, additional
 information and explanations are provided for the functionality of the
 remaining panels. For new users seeking guidance, there’s a question
-circle button (<i class="fa fa-question-circle"></i>) available to
-initiate an interactive tour of <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>. This
+circle button available to initiate an interactive tour of <em><a href="https://bioconductor.org/packages/3.19/GeDi" class="external-link">GeDi</a></em>. This
 tour allows users to learn the basic usage mechanisms by actively
 engaging with the interface. During the tour, specific elements are
 highlighted in response to user actions, while the rest of the UI
@@ -1154,12 +1141,12 @@ the specification of the input requirements.</p>
 <span><span class="co">#&gt; [1] stats4    stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] org.Hs.eg.db_3.18.0         topGO_2.55.0                SparseM_1.81               </span></span>
-<span><span class="co">#&gt;  [4] GO.db_3.18.0                graph_1.81.0                AnnotationDbi_1.65.2       </span></span>
-<span><span class="co">#&gt;  [7] GeneTonic_2.7.2             pcaExplorer_2.29.0          bigmemory_4.6.4            </span></span>
-<span><span class="co">#&gt; [10] DESeq2_1.43.4               SummarizedExperiment_1.33.3 Biobase_2.63.0             </span></span>
-<span><span class="co">#&gt; [13] MatrixGenerics_1.15.0       matrixStats_1.2.0           GenomicRanges_1.55.3       </span></span>
-<span><span class="co">#&gt; [16] GenomeInfoDb_1.39.9         IRanges_2.37.1              S4Vectors_0.41.4           </span></span>
+<span><span class="co">#&gt;  [1] org.Hs.eg.db_3.19.0         topGO_2.55.0                SparseM_1.81               </span></span>
+<span><span class="co">#&gt;  [4] GO.db_3.19.0                graph_1.81.0                AnnotationDbi_1.65.2       </span></span>
+<span><span class="co">#&gt;  [7] GeneTonic_2.7.3             pcaExplorer_2.29.2          bigmemory_4.6.4            </span></span>
+<span><span class="co">#&gt; [10] DESeq2_1.43.4               SummarizedExperiment_1.33.3 Biobase_2.63.1             </span></span>
+<span><span class="co">#&gt; [13] MatrixGenerics_1.15.0       matrixStats_1.2.0           GenomicRanges_1.55.4       </span></span>
+<span><span class="co">#&gt; [16] GenomeInfoDb_1.39.13        IRanges_2.37.1              S4Vectors_0.41.6           </span></span>
 <span><span class="co">#&gt; [19] BiocGenerics_0.49.1         macrophage_1.19.0           GeDi_0.99.0                </span></span>
 <span><span class="co">#&gt; [22] BiocStyle_2.31.0           </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -1168,66 +1155,66 @@ the specification of the input requirements.</p>
 <span><span class="co">#&gt;   [4] fontawesome_0.5.2       httr_1.4.7              webshot_0.5.5          </span></span>
 <span><span class="co">#&gt;   [7] RColorBrewer_1.1-3      doParallel_1.0.17       Rgraphviz_2.47.0       </span></span>
 <span><span class="co">#&gt;  [10] dynamicTreeCut_1.63-1   tippy_0.1.0             tools_4.4.0            </span></span>
-<span><span class="co">#&gt;  [13] utf8_1.2.4              R6_2.5.1                DT_0.32                </span></span>
+<span><span class="co">#&gt;  [13] utf8_1.2.4              R6_2.5.1                DT_0.33                </span></span>
 <span><span class="co">#&gt;  [16] lazyeval_0.2.2          GetoptLong_1.0.5        withr_3.0.0            </span></span>
 <span><span class="co">#&gt;  [19] prettyunits_1.2.0       gridExtra_2.3           cli_3.6.2              </span></span>
 <span><span class="co">#&gt;  [22] textshaping_0.3.7       TSP_1.2-4               slam_0.1-50            </span></span>
-<span><span class="co">#&gt;  [25] sass_0.4.8              bs4Dash_2.3.3           tm_0.7-12              </span></span>
+<span><span class="co">#&gt;  [25] sass_0.4.9              bs4Dash_2.3.3           tm_0.7-12              </span></span>
 <span><span class="co">#&gt;  [28] genefilter_1.85.1       ggridges_0.5.6          pkgdown_2.0.7          </span></span>
 <span><span class="co">#&gt;  [31] systemfonts_1.0.6       yulab.utils_0.1.4       AnnotationForge_1.45.0 </span></span>
-<span><span class="co">#&gt;  [34] plotrix_3.8-4           limma_3.59.5            rstudioapi_0.15.0      </span></span>
-<span><span class="co">#&gt;  [37] RSQLite_2.3.5           GOstats_2.69.0          visNetwork_2.1.2       </span></span>
+<span><span class="co">#&gt;  [34] plotrix_3.8-4           limma_3.59.6            rstudioapi_0.16.0      </span></span>
+<span><span class="co">#&gt;  [37] RSQLite_2.3.6           GOstats_2.69.0          visNetwork_2.1.2       </span></span>
 <span><span class="co">#&gt;  [40] generics_0.1.3          shape_1.4.6.1           gtools_3.9.5           </span></span>
 <span><span class="co">#&gt;  [43] crosstalk_1.2.1         dplyr_1.1.4             dendextend_1.17.1      </span></span>
-<span><span class="co">#&gt;  [46] Matrix_1.6-5            fansi_1.0.6             abind_1.4-5            </span></span>
+<span><span class="co">#&gt;  [46] Matrix_1.7-0            fansi_1.0.6             abind_1.4-5            </span></span>
 <span><span class="co">#&gt;  [49] lifecycle_1.0.4         yaml_2.3.8              gplots_3.1.3.1         </span></span>
-<span><span class="co">#&gt;  [52] SparseArray_1.3.4       BiocFileCache_2.11.1    grid_4.4.0             </span></span>
-<span><span class="co">#&gt;  [55] blob_1.2.4              promises_1.2.1          crayon_1.5.2           </span></span>
-<span><span class="co">#&gt;  [58] shinydashboard_0.7.2    miniUI_0.1.1.1          lattice_0.22-5         </span></span>
+<span><span class="co">#&gt;  [52] SparseArray_1.3.4       BiocFileCache_2.11.2    grid_4.4.0             </span></span>
+<span><span class="co">#&gt;  [55] blob_1.2.4              promises_1.3.0          crayon_1.5.2           </span></span>
+<span><span class="co">#&gt;  [58] shinydashboard_0.7.2    miniUI_0.1.1.1          lattice_0.22-6         </span></span>
 <span><span class="co">#&gt;  [61] ComplexUpset_1.3.3      annotate_1.81.2         KEGGREST_1.43.0        </span></span>
-<span><span class="co">#&gt;  [64] pillar_1.9.0            knitr_1.45              ComplexHeatmap_2.19.0  </span></span>
-<span><span class="co">#&gt;  [67] rjson_0.2.21            codetools_0.2-19        glue_1.7.0             </span></span>
-<span><span class="co">#&gt;  [70] data.table_1.15.2       vctrs_0.6.5             png_0.1-8              </span></span>
+<span><span class="co">#&gt;  [64] pillar_1.9.0            knitr_1.46              ComplexHeatmap_2.19.0  </span></span>
+<span><span class="co">#&gt;  [67] rjson_0.2.21            codetools_0.2-20        glue_1.7.0             </span></span>
+<span><span class="co">#&gt;  [70] data.table_1.15.4       vctrs_0.6.5             png_0.1-8              </span></span>
 <span><span class="co">#&gt;  [73] gtable_0.3.4            assertthat_0.2.1        gsubfn_0.7             </span></span>
-<span><span class="co">#&gt;  [76] cachem_1.0.8            xfun_0.42               S4Arrays_1.3.6         </span></span>
+<span><span class="co">#&gt;  [76] cachem_1.0.8            xfun_0.43               S4Arrays_1.3.6         </span></span>
 <span><span class="co">#&gt;  [79] mime_0.12               survival_3.5-8          wordcloud2_0.2.1       </span></span>
 <span><span class="co">#&gt;  [82] pheatmap_1.0.12         seriation_1.5.4         iterators_1.0.14       </span></span>
-<span><span class="co">#&gt;  [85] statmod_1.5.0           ellipsis_0.3.2          Category_2.69.0        </span></span>
-<span><span class="co">#&gt;  [88] bit64_4.0.5             threejs_0.3.3           progress_1.2.3         </span></span>
-<span><span class="co">#&gt;  [91] filelock_1.0.3          bslib_0.6.1             KernSmooth_2.23-22     </span></span>
-<span><span class="co">#&gt;  [94] colorspace_2.1-0        DBI_1.2.2               tidyselect_1.2.1       </span></span>
-<span><span class="co">#&gt;  [97] bit_4.0.5               compiler_4.4.0          curl_5.2.1             </span></span>
-<span><span class="co">#&gt; [100] chron_2.3-61            httr2_1.0.0             BiocNeighbors_1.21.2   </span></span>
-<span><span class="co">#&gt; [103] expm_0.999-9            xml2_1.3.6              NLP_0.2-1              </span></span>
-<span><span class="co">#&gt; [106] desc_1.4.3              ggdendro_0.2.0          DelayedArray_0.29.9    </span></span>
-<span><span class="co">#&gt; [109] plotly_4.10.4           colourpicker_1.3.0      bookdown_0.38          </span></span>
-<span><span class="co">#&gt; [112] scales_1.3.0            caTools_1.18.2          RBGL_1.79.0            </span></span>
-<span><span class="co">#&gt; [115] NMF_0.27                rappdirs_0.3.3          stringr_1.5.1          </span></span>
-<span><span class="co">#&gt; [118] digest_0.6.35           shinyBS_0.61.1          rmarkdown_2.26         </span></span>
-<span><span class="co">#&gt; [121] ca_0.71.1               XVector_0.43.1          htmltools_0.5.7        </span></span>
-<span><span class="co">#&gt; [124] pkgconfig_2.0.3         base64enc_0.1-3         highr_0.10             </span></span>
-<span><span class="co">#&gt; [127] dbplyr_2.4.0            fastmap_1.1.1           rlang_1.1.3            </span></span>
-<span><span class="co">#&gt; [130] GlobalOptions_0.1.2     htmlwidgets_1.6.4       shiny_1.8.0            </span></span>
+<span><span class="co">#&gt;  [85] statmod_1.5.0           Category_2.69.0         bit64_4.0.5            </span></span>
+<span><span class="co">#&gt;  [88] threejs_0.3.3           progress_1.2.3          filelock_1.0.3         </span></span>
+<span><span class="co">#&gt;  [91] bslib_0.7.0             KernSmooth_2.23-22      colorspace_2.1-0       </span></span>
+<span><span class="co">#&gt;  [94] DBI_1.2.2               tidyselect_1.2.1        bit_4.0.5              </span></span>
+<span><span class="co">#&gt;  [97] compiler_4.4.0          curl_5.2.1              chron_2.3-61           </span></span>
+<span><span class="co">#&gt; [100] httr2_1.0.1             BiocNeighbors_1.21.2    expm_0.999-9           </span></span>
+<span><span class="co">#&gt; [103] xml2_1.3.6              NLP_0.2-1               desc_1.4.3             </span></span>
+<span><span class="co">#&gt; [106] ggdendro_0.2.0          DelayedArray_0.29.9     plotly_4.10.4          </span></span>
+<span><span class="co">#&gt; [109] colourpicker_1.3.0      bookdown_0.38           scales_1.3.0           </span></span>
+<span><span class="co">#&gt; [112] caTools_1.18.2          RBGL_1.79.0             NMF_0.27               </span></span>
+<span><span class="co">#&gt; [115] rappdirs_0.3.3          stringr_1.5.1           digest_0.6.35          </span></span>
+<span><span class="co">#&gt; [118] shinyBS_0.61.1          rmarkdown_2.26          ca_0.71.1              </span></span>
+<span><span class="co">#&gt; [121] XVector_0.43.1          htmltools_0.5.8.1       pkgconfig_2.0.3        </span></span>
+<span><span class="co">#&gt; [124] base64enc_0.1-3         highr_0.10              dbplyr_2.5.0           </span></span>
+<span><span class="co">#&gt; [127] fastmap_1.1.1           rlang_1.1.3             GlobalOptions_0.1.2    </span></span>
+<span><span class="co">#&gt; [130] htmlwidgets_1.6.4       UCSC.utils_0.99.5       shiny_1.8.1.1          </span></span>
 <span><span class="co">#&gt; [133] farver_2.1.1            jquerylib_0.1.4         jsonlite_1.8.8         </span></span>
 <span><span class="co">#&gt; [136] BiocParallel_1.37.1     GOSemSim_2.29.1         RCurl_1.98-1.14        </span></span>
-<span><span class="co">#&gt; [139] magrittr_2.0.3          GenomeInfoDbData_1.2.11 patchwork_1.2.0        </span></span>
-<span><span class="co">#&gt; [142] munsell_0.5.0           Rcpp_1.0.12             shinycssloaders_1.0.0  </span></span>
+<span><span class="co">#&gt; [139] magrittr_2.0.3          GenomeInfoDbData_1.2.12 patchwork_1.2.0        </span></span>
+<span><span class="co">#&gt; [142] munsell_0.5.1           Rcpp_1.0.12             shinycssloaders_1.0.0  </span></span>
 <span><span class="co">#&gt; [145] viridis_0.6.5           proto_1.0.0             sqldf_0.4-11           </span></span>
 <span><span class="co">#&gt; [148] stringi_1.8.3           rintrojs_0.3.4          zlibbioc_1.49.3        </span></span>
 <span><span class="co">#&gt; [151] MASS_7.3-60.2           plyr_1.8.9              parallel_4.4.0         </span></span>
-<span><span class="co">#&gt; [154] ggrepel_0.9.5           bigmemory.sri_0.1.8     Biostrings_2.71.4      </span></span>
+<span><span class="co">#&gt; [154] ggrepel_0.9.5           bigmemory.sri_0.1.8     Biostrings_2.71.5      </span></span>
 <span><span class="co">#&gt; [157] splines_4.4.0           hash_2.2.6.3            hms_1.1.3              </span></span>
 <span><span class="co">#&gt; [160] circlize_0.4.16         locfit_1.5-9.9          igraph_2.0.3           </span></span>
 <span><span class="co">#&gt; [163] uuid_1.2-0              rngtools_1.5.2          reshape2_1.4.4         </span></span>
 <span><span class="co">#&gt; [166] biomaRt_2.59.1          XML_3.99-0.16.1         evaluate_0.23          </span></span>
 <span><span class="co">#&gt; [169] BiocManager_1.30.22     foreach_1.5.2           tweenr_2.0.3           </span></span>
-<span><span class="co">#&gt; [172] httpuv_1.6.14           backbone_2.1.3          tidyr_1.3.1            </span></span>
+<span><span class="co">#&gt; [172] httpuv_1.6.15           backbone_2.1.3          tidyr_1.3.1            </span></span>
 <span><span class="co">#&gt; [175] purrr_1.0.2             polyclip_1.10-6         heatmaply_1.5.0        </span></span>
 <span><span class="co">#&gt; [178] clue_0.3-65             ggplot2_3.5.0           gridBase_0.4-7         </span></span>
 <span><span class="co">#&gt; [181] ggforce_0.4.2           xtable_1.8-4            later_1.3.2            </span></span>
 <span><span class="co">#&gt; [184] viridisLite_0.4.2       ragg_1.3.0              tibble_3.2.1           </span></span>
 <span><span class="co">#&gt; [187] memoise_2.0.1           registry_0.5-1          cluster_2.1.6          </span></span>
-<span><span class="co">#&gt; [190] shinyWidgets_0.8.2      GSEABase_1.65.1         shinyAce_0.4.2</span></span></code></pre></div>
+<span><span class="co">#&gt; [190] shinyWidgets_0.8.4      GSEABase_1.65.1         shinyAce_0.4.2</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
