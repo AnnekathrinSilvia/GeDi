@@ -928,7 +928,7 @@ GeDi <- function(genesets = NULL,
         box(
           id = "distance_calc_box",
           width = 12,
-          title = "Calculate distance scores for you Genesets",
+          title = "Calculate Distance Scores for your Genesets",
           status = "info",
           solidHeader = TRUE,
           collapsible = TRUE,
