@@ -6,7 +6,6 @@
 #' @param seeds A `list` of sets
 #'
 #' @return A `list` of unique sets
-#' @importFrom utils combn
 #' @export
 #'
 #' @examples
@@ -42,24 +41,25 @@ checkInclusion <- function(seeds) {
   l <- length(seeds)
   
   # Iterate over all sets to compare them for inclusion
-  for (i in seq_len((l))) {
+  for (i in seq_len((l-1))) {
     if (i %in% remove) {
       next
     }
     # Current set
     s1 <- seeds[[i]]
     l1 <- length(s1)
-    comb <-
-      lapply(
-        c(seq_len(l1)),
-        FUN = function(x)
-          combn(s1, x, simplify = FALSE)
-      )
-    comb <- do.call(c, comb)
-    r <- which(seeds %in% comb)
-    r <- r[r != i]
-    remove <- c(remove, r)
+  
+  # Iterate over the remaining sets to compare them with the current set
+  for (j in (i + 1):l) {
+    s2 <- seeds[[j]]
     
+    # Check if s1 is a subset of s2 or vice versa, if so, mark for removal
+    if (setequal(intersect(s1, s2), s1) || length(s1) == 0) {
+      remove <- c(remove, i)
+    } else if (setequal(intersect(s2, s1), s2) || length(s2) == 0) {
+      remove <- c(remove, j)
+    }
+  }
   }
   # Ensure that there are no duplicates in the sets to remove
   remove <- unique(remove)

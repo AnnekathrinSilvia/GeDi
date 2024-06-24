@@ -21,12 +21,17 @@
 #' species <- "Mus musculus"
 #' id <- getId(species = species)
 getId <- function(species, 
-                  version = "11.5",
+                  version = "12.0",
                   cache = FALSE) {
   
   # Download available species information from STRING
-  url_species <- sprintf("https://stringdb-static.org/download/species.v%s.txt",
+  if(version == "12.0"){
+  url_species <- sprintf("https://stringdb-downloads.org/download/species.v%s.txt",
                          version)
+  }else{
+    url_species <- sprintf("https://stringdb-static.org/download/species.v%s.txt",
+                           version)
+  }
   df_species <- NULL
   if(cache){
     cache_location <- tools::R_user_dir("GeDi", which = "cache")
@@ -94,7 +99,7 @@ getId <- function(species,
 #' species <- getId(species = "Homo sapiens")
 #' string_db <- getStringDB(as.numeric(species))
 getStringDB <- function(species,
-                        version = "11.5",
+                        version = "12.0",
                         score_threshold = 0.00,
                         cache_location = FALSE) {
 

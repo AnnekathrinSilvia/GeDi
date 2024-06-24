@@ -7,6 +7,7 @@
 gsHistogram(
   genesets,
   gs_names,
+  gs_description = NULL,
   start = 0,
   end = 0,
   binwidth = 5,
@@ -19,6 +20,9 @@ represented by \code{list} of genes.}
 
 \item{gs_names}{character vector, Name / identifier of the genesets in
 \code{genesets}}
+
+\item{gs_description}{Optional, a character vector containing a short
+description for each geneset}
 
 \item{start}{numeric, Optional, describes the minimum gene set size to
 include. Defaults to 0.}

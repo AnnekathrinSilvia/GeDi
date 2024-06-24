@@ -699,8 +699,7 @@ GeDi <- function(genesets = NULL,
                 inputId = "select_filter_genesets",
                 label = "Select individual genesets to be filtered",
                 choices = c(reactive_values$gs_description),
-                multiple = TRUE,
-                options = list(create = TRUE)
+                multiple = TRUE
               ),
               actionButton(
                 inputId = "filter_genesets",
@@ -729,6 +728,7 @@ GeDi <- function(genesets = NULL,
       gsHistogram(
         reactive_values$genes,
         reactive_values$gs_names,
+        gs_description = reactive_values$gs_description,
         start = input$bins_gs_hist[1],
         end = input$bins_gs_hist[2],
         binwidth = input$bindwidth_hist
@@ -1878,11 +1878,12 @@ GeDi <- function(genesets = NULL,
       df <- buildHistogramData(
         genesets = reactive_values$genes,
         gs_names = reactive_values$gs_names,
+        gs_description = reactive_values$gs_description,
         start = input$bins_gs_hist[1],
         end = input$bins_gs_hist[2]
       )
 
-      info_plot <- brushedPoints(df, input$plot_brush)
+      info_plot <- brushedPoints(df, input$plot_brush, xvar = "Size")
       output$table <- DT::renderDataTable(info_plot)
     })
 

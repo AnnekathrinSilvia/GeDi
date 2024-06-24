@@ -7,6 +7,8 @@
 #'                 represented by `list` of genes.
 #' @param gs_names character vector, Name / identifier of the genesets in
 #'                 `genesets`
+#' @param gs_description Optional, a character vector containing a short 
+#'                       description for each geneset
 #' @param start numeric, Optional, describes the minimum gene set size to
 #'              include. Defaults to 0.
 #' @param end numeric, Optional, describes the maximum gene set size to include.
@@ -38,16 +40,17 @@
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
 #' p <- gsHistogram(genes, macrophage_topGO_example_small$Genesets)
 gsHistogram <- function(genesets,
-                         gs_names,
-                         start = 0,
-                         end = 0,
-                         binwidth = 5,
-                         color = "#0092AC") {
+                        gs_names,
+                        gs_description = NULL,
+                        start = 0,
+                        end = 0,
+                        binwidth = 5,
+                        color = "#0092AC") {
   # Check if there are gene sets provided
   stopifnot(length(genesets) > 0)
 
   # Build a data frame containing gene set sizes
-  n_genes <- buildHistogramData(genesets, gs_names, start, end)
+  n_genes <- buildHistogramData(genesets, gs_names, gs_description,  start, end)
 
   if(binwidth >= max(n_genes$Size)){
     binwidth <- max(n_genes$Size) - 1
@@ -72,6 +75,8 @@ gsHistogram <- function(genesets,
 #'                 represented by `list` of genes.
 #' @param gs_names character vector, Name / identifier of the genesets in
 #'                 `genesets`
+#' @param gs_description Optional, a character vector containing a short 
+#'                       description for each geneset
 #' @param start numeric, Optional, describes the minimum gene set size to
 #'              include. Defaults to 0.
 #' @param end numeric, Optional, describes the maximum gene set size to include.
@@ -99,9 +104,10 @@ gsHistogram <- function(genesets,
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
 #' p <- buildHistogramData(genes, macrophage_topGO_example_small$Genesets)
 buildHistogramData <- function(genesets,
-                                gs_names,
-                                start = 0,
-                                end = 0) {
+                               gs_names,
+                               gs_description = NULL,
+                               start = 0,
+                               end = 0) {
   # Get the size of each gene set
   n_genes <- vapply(genesets, length, numeric(1))
 
@@ -126,6 +132,10 @@ buildHistogramData <- function(genesets,
 
   # Reorder columns to have geneset names first
   n_genes <- n_genes[, c(2, 1)]
+  if(!is.null(gs_description)){
+    n_genes$Description <- gs_description
+    n_genes <- n_genes[, c(1, 3, 2)]
+  }
 
   # Return the final data frame
   return(n_genes)

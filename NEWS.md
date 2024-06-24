@@ -30,3 +30,20 @@ avoid unexpected behaviors
 # GeDi 0.1.0
 
 * Officially entering the path of the GeDi!
+
+# GeDi 0.1.1
+
+* Fixed the bug that the `getGenes()` function would set all gene names to all 
+  caps which lead to the inability to download the correct PPI information for 
+  species like mouse.
+  
+* Updated the default version used in the `getId()` and `getStringDB()` to 12.0, 
+  the current version of the String database.
+  
+* Fixed the broken zoom feature in the Optional Filtering Step in the Data Input
+  panel. Additionally added a column Description to the table of zoomed genesets
+  to facilitate interpretation.
+  
+* Fixed that the clustering will now be reset whenever a new score is calculated.
+
+* Updated the `checkInclusion()` function to drastically reduce runtime.

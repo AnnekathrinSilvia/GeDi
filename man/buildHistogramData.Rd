@@ -4,7 +4,13 @@
 \alias{buildHistogramData}
 \title{Prepare data for \code{gsHistogram()}.}
 \usage{
-buildHistogramData(genesets, gs_names, start = 0, end = 0)
+buildHistogramData(
+  genesets,
+  gs_names,
+  gs_description = NULL,
+  start = 0,
+  end = 0
+)
 }
 \arguments{
 \item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
@@ -12,6 +18,9 @@ represented by \code{list} of genes.}
 
 \item{gs_names}{character vector, Name / identifier of the genesets in
 \code{genesets}}
+
+\item{gs_description}{Optional, a character vector containing a short
+description for each geneset}
 
 \item{start}{numeric, Optional, describes the minimum gene set size to
 include. Defaults to 0.}

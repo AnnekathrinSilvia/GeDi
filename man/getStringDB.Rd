@@ -6,7 +6,7 @@
 \usage{
 getStringDB(
   species,
-  version = "11.5",
+  version = "12.0",
   score_threshold = 0,
   cache_location = FALSE
 )
