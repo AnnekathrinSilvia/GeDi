@@ -1,6 +1,6 @@
 Package: GeDi
 Title: Defining and visualizing the distances between different genesets
-Version: 1.1.1
+Version: 1.0.1
 Date: 2024-06-24
 Authors@R: 
     c(
