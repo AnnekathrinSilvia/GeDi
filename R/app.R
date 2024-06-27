@@ -944,7 +944,7 @@ GeDi <- function(genesets = NULL,
                 inputId = "scoringmethod",
                 label = "Select the scoring method for your data",
                 choices = c(
-                  "PMM",
+                  "pMM",
                   "Kappa",
                   "Jaccard",
                   "Meet-Min",
@@ -1003,14 +1003,14 @@ GeDi <- function(genesets = NULL,
     output$ui_alpha_parameter <- renderUI({
       if (input$scoringmethod == "" ||
           is.null(input$scoringmethod) ||
-          input$scoringmethod != "PMM") {
+          input$scoringmethod != "pMM") {
         return(NULL)
       }
       fluidRow(
         column(
           width = 6,
           "Please select how strongly Protein-Protein-Interactions
-        should be weighted in the PMM score by setting the scaling factor",
+        should be weighted in the pMM score by setting the scaling factor",
           br(),
           p(),
           sliderInput(
@@ -2050,7 +2050,7 @@ GeDi <- function(genesets = NULL,
         scores <- getMeetMinMatrix(reactive_values$genes, progress)
       } else if (input$scoringmethod == "Kappa") {
         scores <- getKappaMatrix(reactive_values$genes, progress)
-      } else if (input$scoringmethod == "PMM") {
+      } else if (input$scoringmethod == "pMM") {
         if (is.null(reactive_values$ppi)) {
           showNotification(
             "It seems like you have not downloaded a PPI matrix. Please return to the Data Input panel and download the respective PPI.",

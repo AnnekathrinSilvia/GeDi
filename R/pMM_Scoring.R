@@ -121,7 +121,7 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' )
 #' maxInteract <- max(ppi$combined_score)
 #'
-#' pMM_score <- pMMlocal(a, b, ppi, maxInteract)
+#' pMM_score <- pMMlocal(a, b, ppi, alpha = 1,  maxInteract)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small,
@@ -133,8 +133,8 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #'      envir = environment())
 #' maxInteract <- max(ppi_macrophage_topGO_example_small$combined_score)
 #'
-#' pMMlocal <- pMMlocal(genes[1], genes[2], ppi, maxInteract)
-pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
+#' pMMlocal <- pMMlocal(genes[1], genes[2], ppi, alpha = 1,  maxInteract)
+pMMlocal <- function(a, b, ppi, maxInteract, alpha) {
   # Get the minimum size of sets a and b
   z <- min(length(a), length(b))
 
@@ -146,6 +146,9 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
   # Calculate factor1 as the proportion of intersection size to z
   factor1 <- (length(intersect(a, b))) / z
 
+  if(alpha == 0){
+    return(min(factor1, 1))
+  }
   # Calculate the interaction score as the minimum of two interaction scores
   interaction_score <- min(
     getInteractionScore(a, b, ppi, maxInteract),
@@ -248,7 +251,7 @@ getpMMMatrix <- function(genesets,
     # Parallelly calculate Meet-Min distances for pairs
     results[[j]] <- bplapply((j + 1):l, function(i) {
       b <- genesets[[i]]
-      pMMlocal(a, b, ppi, maxInteract)
+      pMMlocal(a, b, ppi, maxInteract, alpha)
     }, BPPARAM = BPPARAM)
     scores[j, (j + 1):l] <-
       scores[(j + 1):l, j] <- unlist(results[[j]])

@@ -15,6 +15,12 @@
 
 * Updated the `checkInclusion()` function to drastically reduce runtime.
 
+* Fixed the error that the value of `alpha` would not be properly pass to all the
+  sub function used by the `getpMMMatrix()` function.
+  
+* Replaced all occurrences of PMM with pMM to match the notation of the original
+  publication. 
+
 # GeDi 1.1.0
 
 * GeDi is now on Bioconductor.

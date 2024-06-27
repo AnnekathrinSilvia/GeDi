@@ -520,7 +520,7 @@ knitr::include_graphics("Optional_Filtering.png")
 
 Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial
 task of selecting the species associated with your dataset. This step holds 
-significant importance for the computation of the **PMM score** within 
+significant importance for the computation of the **pMM score** within 
 `r BiocStyle::Biocpkg("GeDi")`, which heavily relies on a 
 **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in
 capturing protein interaction strength, thereby enriching distance scores with 
@@ -601,20 +601,20 @@ This feature provides users with a range of options to tailor the analysis
 according to their specific requirements and preferences. The available scores 
 are: 
 
-* **PMM Score**: This score integrates protein-protein interaction (PPI) data 
-into the Meet-Min distance. The PPI-weighted Meet-Min (**PMM**) score is defined 
+* **pMM Score**: This score integrates protein-protein interaction (PPI) data 
+into the Meet-Min distance. The PPI-weighted Meet-Min (**pMM**) score is defined 
 as 
 
 $$
 \begin{aligned}
-PMM = min(PMM(A -> B), PMM(B -> A))
+pMM = min(pMM(A -> B), pMM(B -> A))
 \end{aligned}
 $$
 where 
 
 $$
 \begin{aligned}
-PMM(X -> Y) = 1 - \frac{|X \cap Y|}{min(|X|, |Y|)} - \\ \frac{\alpha}{min(|X|,|Y|)} \sum_{x \in X-Y} \frac{w \sum_{y \in X \cap Y} PPI(x, y) + \sum_{y \in Y - X}PPI(x, y)}{max(PPI) (w |X \cap Y| + |Y - X|)}
+pMM(X -> Y) = 1 - \frac{|X \cap Y|}{min(|X|, |Y|)} - \\ \frac{\alpha}{min(|X|,|Y|)} \sum_{x \in X-Y} \frac{w \sum_{y \in X \cap Y} PPI(x, y) + \sum_{y \in Y - X}PPI(x, y)}{max(PPI) (w |X \cap Y| + |Y - X|)}
 \end{aligned}
 $$
 and 

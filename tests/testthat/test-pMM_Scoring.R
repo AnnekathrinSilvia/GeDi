@@ -33,13 +33,13 @@ test_that("getInteractionScore runs correctly", {
 
 test_that("Empty genesets - pMMlocal", {
   ppi <- data.frame()
-  expect_equal(pMMlocal(a = c(), b = c(), ppi = ppi, maxInteract = 0), 1)
+  expect_equal(pMMlocal(a = c(), b = c(), ppi = ppi, alpha = 1,  maxInteract = 0), 1)
 })
 
 test_that("One geneset empty - pMMlocal", {
   a <- a <- c("PDHB", "VARS2")
   ppi <- data.frame()
-  expect_equal(pMMlocal(a = a, b = c(), ppi = ppi, maxInteract = 0), 1)
+  expect_equal(pMMlocal(a = a, b = c(), ppi = ppi, alpha = 1,  maxInteract = 0), 1)
 })
 
 test_that("pMMlocal runs correctly", {
@@ -51,7 +51,7 @@ test_that("pMMlocal runs correctly", {
     combined_score = c(0.5, 0.2)
   )
   maxInteract <- max(ppi$combined_score)
-  expect_gte(pMMlocal(a = a, b = b, ppi = ppi, maxInteract = maxInteract), 0)
+  expect_gte(pMMlocal(a = a, b = b, ppi = ppi, alpha = 1,  maxInteract = maxInteract), 0)
 })
 
 test_that("Empty genesets - getpMMMatrix", {
