@@ -1465,9 +1465,9 @@ GeDi <- function(genesets = NULL,
           sliderInput(
             inputId = "knn_k",
             label = "Select a k for the number of neigbours.",
-            min = 1,
+            min = 2,
             max = 0.1 * length(reactive_values$gs_names),
-            value = 0,
+            value = 2,
             step = 1
           )
         )

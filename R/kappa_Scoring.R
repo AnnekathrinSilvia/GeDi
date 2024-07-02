@@ -119,7 +119,7 @@ getKappaMatrix <- function(genesets,
     a <- genesets[[j]]
     # Update the progress bar if provided
     if (!is.null(progress)) {
-      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", k))
+      progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
     }
     # Parallelly calculate Jaccard distances for pairs
     results[[j]] <- bplapply((j + 1):l, function(i){

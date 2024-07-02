@@ -251,6 +251,7 @@ buildClusterGraph <- function(cluster,
   
   # Remove nodes without any connections (degree equals 0)
   no_cluster <- V(g)[degree(g) == 0]
+  stopifnot("No cluster found. Please choose a different threshold and cluster again." = length(no_cluster) != length(gs_names))
   g <- delete_vertices(g, no_cluster)
   
   # Update ids to include only nodes present in the graph

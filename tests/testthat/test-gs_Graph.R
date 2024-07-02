@@ -97,14 +97,12 @@ test_that("getBipartiteGraph runs correctly", {
 
 test_that("buildClusterGraph - no cluster", {
   cluster <- list()
-  graph <- buildClusterGraph(
+
+  expect_error(  graph <- buildClusterGraph(
     cluster,
     macrophage_topGO_example_small,
     gs_names
-  )
-  expect_type(graph, "list")
-  expect_equal(gorder(graph), 0)
-  expect_equal(gsize(graph), 0)
+  ))
 })
 
 test_that("buildClusterGraph coloring", {
