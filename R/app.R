@@ -1077,11 +1077,10 @@ GeDi <- function(genesets = NULL,
                          )
                        ),
                        column(width = 10,
-                              withSpinner(
-                                plotlyOutput("scores_dendro",
-                                             height = "800px",
-                                             width = "1000px")
-                              ))
+                              plotlyOutput("scores_dendro",
+                                            height = "800px",
+                                            width = "1000px")
+                            )
                      )),
             tabPanel(title = "Distance Scores Graph",
                      fluidRow(
@@ -1270,7 +1269,7 @@ GeDi <- function(genesets = NULL,
             title = "Geneset Cluster Graphs",
             elevation = 1,
             width = 12,
-            closable = TRUE,
+            closable = FALSE,
             bs4Dash::tabsetPanel(
               id = "tabsetpanel_cluster",
               type = "tabs",
@@ -1285,12 +1284,12 @@ GeDi <- function(genesets = NULL,
                              label = "Color the graph by",
                              choices =
                                if (!(is.null(reactive_values$genesets))) {
-                               c(NULL, colnames(
+                               c(NULL, "Cluster", colnames(
                                  dplyr::select_if(reactive_values$genesets,
                                                   is.numeric)
                                ))
                              } else {
-                               c(NULL)
+                               c("Cluster")
                              },
                              multiple = FALSE
                            )
@@ -1322,9 +1321,8 @@ GeDi <- function(genesets = NULL,
                            )
                          ),
                          column(width = 12,
-                                withSpinner(
-                                  wordcloud2::wordcloud2Output("enrichment_wordcloud_cluster")
-                                ))
+                                wordcloud2::wordcloud2Output("enrichment_wordcloud_cluster")
+                                )
                        ))
             )
           )
@@ -2142,7 +2140,12 @@ GeDi <- function(genesets = NULL,
           "It seems like you did not compute the distances between the genesets yet. Please go back to the Distance Scores panel and select a score of your choice.",
           type = "error"
         )
-      }
+      }else if (input$clustering_score_selected == "" || length(input$clustering_score_selected) == 0) {
+        showNotification(
+          "Please select a score of your choice to start the clustering.",
+          type = "error"
+        )
+      } else {
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
@@ -2201,7 +2204,7 @@ GeDi <- function(genesets = NULL,
         progress$inc(0.2, detail = "Successfully clustered data.")
         updateBox("clustering_selection_box", action = "toggle")
       }
-    })
+    }})
 
 
 
