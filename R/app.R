@@ -1501,13 +1501,7 @@ GeDi <- function(genesets = NULL,
       )),
       message = "Please cluster the genesets first in the above box"))
 
-      graph <- buildClusterGraph(
-        reactive_values$cluster,
-        reactive_values$genesets,
-        reactive_values$gs_names,
-        input$graphColoring,
-        reactive_values$gs_description
-      )
+      graph <- reactive_values$cluster_graph()
 
       if (!any(get.edgelist(graph) != 0)) {
         showNotification(
@@ -1531,16 +1525,16 @@ GeDi <- function(genesets = NULL,
       }
     })
 
-    # reactive_values$cluster_graph <- reactive({
-    #   g <- buildClusterGraph(
-    #     reactive_values$cluster,
-    #     reactive_values$genesets,
-    #     reactive_values$gs_names,
-    #     input$graphColoring,
-    #     reactive_values$gs_description
-    #   )
-    #   return(g)
-    # })
+    reactive_values$cluster_graph <- reactive({
+      g <- buildClusterGraph(
+        reactive_values$cluster,
+        reactive_values$genesets,
+        reactive_values$gs_names,
+        input$graphColoring,
+        reactive_values$gs_description
+      )
+      return(g)
+    })
 
 
 
@@ -1550,20 +1544,7 @@ GeDi <- function(genesets = NULL,
       )),
       message = "Please cluster you genesets first in the above box"))
       
-      graph <- tryCatch(
-        expr = {
-          g <- getBipartiteGraph(reactive_values$cluster,
-                                 reactive_values$gs_names,
-                                 reactive_values$genes)
-        },
-        error = function(cond) {
-          showNotification(
-            "It seems like your data does not have any clusters. Please adapt the thresholds and try again.",
-            type = "error"
-          )
-          return(NULL)
-        }
-      )
+      graph <- reactive_values$bipartite_graph()
 
       visNetwork::visIgraph(graph) %>%
         visIgraphLayout(layout = "layout_as_bipartite") %>%
@@ -1579,24 +1560,25 @@ GeDi <- function(genesets = NULL,
                   type = "png",
                   label = "Save Cluster-Geneset bipartite graph")
     })
-
-    # reactive_values$bipartite_graph <- reactive({
-    #   tryCatch(
-    #     expr = {
-    #       g <- getBipartiteGraph(reactive_values$cluster,
-    #                              reactive_values$gs_names,
-    #                              reactive_values$genes)
-    #     },
-    #     error = function(cond) {
-    #       showNotification(
-    #         "It seems like your data does not have any clusters. Please adapt the thresholds and try again.",
-    #         type = "error"
-    #       )
-    #       return(NULL)
-    #     }
-    #   )
-    #   return(g)
-    # })
+    
+    
+    reactive_values$bipartite_graph <- reactive({
+      tryCatch(
+        expr = {
+          g <- getBipartiteGraph(reactive_values$cluster,
+                                 reactive_values$gs_names,
+                                 reactive_values$genes)
+        },
+        error = function(cond) {
+          showNotification(
+            "It seems like your data does not have any clusters. Please adapt the thresholds and try again.",
+            type = "error"
+          )
+          return(NULL)
+        }
+      )
+      return(g)
+    })
 
 
     output$dt_cluster <- DT::renderDataTable({
