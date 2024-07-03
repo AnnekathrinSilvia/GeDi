@@ -1262,71 +1262,19 @@ GeDi <- function(genesets = NULL,
             uiOutput("ui_parameters_clustering")
           ))
         ),
-        fluidRow(column(
+        box(
+          id = "cluster_graph_box",
           width = 12,
-          bs4Card(
-            id = "tabcard_cluster",
-            title = "Geneset Cluster Graphs",
-            elevation = 1,
-            width = 12,
-            closable = FALSE,
-            bs4Dash::tabsetPanel(
-              id = "tabsetpanel_cluster",
-              type = "tabs",
-              selected = "Geneset Graph",
-              side = "right",
-              tabPanel(title = "Geneset Graph",
-                       fluidRow(
-                         column(
-                           width = 2,
-                           selectInput(
-                             inputId = "graphColoring",
-                             label = "Color the graph by",
-                             choices =
-                               if (!(is.null(reactive_values$genesets))) {
-                               c(NULL, "Cluster", colnames(
-                                 dplyr::select_if(reactive_values$genesets,
-                                                  is.numeric)
-                               ))
-                             } else {
-                               c("Cluster")
-                             },
-                             multiple = FALSE
-                           )
-                         ),
-                         column(width = 10,
-                                withSpinner(
-                                  visNetworkOutput("cluster_Network",
-                                                   height = "700px",
-                                                   width = "100%")
-                                ))
-                       )),
-              tabPanel(title = "Cluster-Geneset Bipartite Graph",
-                       withSpinner(
-                         visNetworkOutput(
-                           "cluster_geneset_bipartite_Network",
-                           height = "800px",
-                           width = "100%"
-                         )
-                       )),
-              tabPanel(title = "Cluster Enrichment Terms Word Cloud",
-                       fluidRow(
-                         column(
-                           width = 2,
-                           selectInput(
-                             "cluster_nb",
-                             "Select a cluster",
-                             choices = c(seq_len(length(reactive_values$cluster))),
-                             selected = 1
-                           )
-                         ),
-                         column(width = 12,
-                                wordcloud2::wordcloud2Output("enrichment_wordcloud_cluster")
-                                )
-                       ))
-            )
-          )
-        )),
+          status = "info",
+          title = "Geneset Cluster Graphs",
+          collapsible = TRUE,
+          collapsed = FALSE,
+          solidHeader = TRUE,
+          fluidRow(column(width = 12,
+                          uiOutput("ui_cluster_graphs")
+                          )
+                   )
+        ),
         fluidRow(
           bs4Card(
             width = 12,
@@ -1341,6 +1289,78 @@ GeDi <- function(genesets = NULL,
               width = 12,
               DT::dataTableOutput("dt_cluster")
             ))
+          )
+        )
+      )
+    })
+    
+    output$ui_cluster_graphs <- renderUI({
+      validate(need(!(
+        is.null(reactive_values$cluster) &&
+          (length(reactive_values$cluster) == 0)
+      ),
+      message = "Please cluster your genesets first in the Cluster Graph
+                    panel."))
+      
+      fluidRow(column(
+        width = 12,
+        bs4Dash::tabsetPanel(
+            id = "tabsetpanel_cluster",
+            type = "tabs",
+            selected = "Geneset Graph",
+            side = "right",
+            tabPanel(title = "Geneset Graph",
+                     fluidRow(
+                       column(
+                         width = 2,
+                         selectInput(
+                           inputId = "graphColoring",
+                           label = "Color the graph by",
+                           choices =
+                             if (!(is.null(reactive_values$genesets))) {
+                               c(NULL, "Cluster", colnames(dplyr::select_if(
+                                 reactive_values$genesets,
+                                 is.numeric
+                               )))
+                             } else {
+                               c("Cluster")
+                             },
+                           multiple = FALSE
+                         )
+                       ),
+                       column(width = 10,
+                              withSpinner(
+                                visNetworkOutput("cluster_Network",
+                                                 height = "700px",
+                                                 width = "100%")
+                              ))
+                     )),
+            tabPanel(title = "Cluster-Geneset Bipartite Graph",
+                     withSpinner(
+                       visNetworkOutput(
+                         "cluster_geneset_bipartite_Network",
+                         height = "800px",
+                         width = "100%"
+                       )
+                     )),
+            tabPanel(title = "Cluster Enrichment Terms Word Cloud",
+                     fluidRow(
+                       column(
+                         width = 2,
+                         selectInput(
+                           "cluster_nb",
+                           "Select a cluster",
+                           choices = c(seq_len(length(
+                             reactive_values$cluster
+                           ))),
+                           selected = 1
+                         )
+                       ),
+                       column(
+                         width = 12,
+                         wordcloud2::wordcloud2Output("enrichment_wordcloud_cluster")
+                       )
+                     ))
           )
         )
       )
@@ -1481,7 +1501,13 @@ GeDi <- function(genesets = NULL,
       )),
       message = "Please cluster the genesets first in the above box"))
 
-      graph <- reactive_values$cluster_graph()
+      graph <- buildClusterGraph(
+        reactive_values$cluster,
+        reactive_values$genesets,
+        reactive_values$gs_names,
+        input$graphColoring,
+        reactive_values$gs_description
+      )
 
       if (!any(get.edgelist(graph) != 0)) {
         showNotification(
@@ -1505,16 +1531,16 @@ GeDi <- function(genesets = NULL,
       }
     })
 
-    reactive_values$cluster_graph <- reactive({
-      g <- buildClusterGraph(
-        reactive_values$cluster,
-        reactive_values$genesets,
-        reactive_values$gs_names,
-        input$graphColoring,
-        reactive_values$gs_description
-      )
-      return(g)
-    })
+    # reactive_values$cluster_graph <- reactive({
+    #   g <- buildClusterGraph(
+    #     reactive_values$cluster,
+    #     reactive_values$genesets,
+    #     reactive_values$gs_names,
+    #     input$graphColoring,
+    #     reactive_values$gs_description
+    #   )
+    #   return(g)
+    # })
 
 
 
@@ -1523,8 +1549,23 @@ GeDi <- function(genesets = NULL,
         reactive_values$cluster
       )),
       message = "Please cluster you genesets first in the above box"))
+      
+      graph <- tryCatch(
+        expr = {
+          g <- getBipartiteGraph(reactive_values$cluster,
+                                 reactive_values$gs_names,
+                                 reactive_values$genes)
+        },
+        error = function(cond) {
+          showNotification(
+            "It seems like your data does not have any clusters. Please adapt the thresholds and try again.",
+            type = "error"
+          )
+          return(NULL)
+        }
+      )
 
-      visNetwork::visIgraph(reactive_values$bipartite_graph()) %>%
+      visNetwork::visIgraph(graph) %>%
         visIgraphLayout(layout = "layout_as_bipartite") %>%
         visOptions(
           highlightNearest = list(
@@ -1539,23 +1580,23 @@ GeDi <- function(genesets = NULL,
                   label = "Save Cluster-Geneset bipartite graph")
     })
 
-    reactive_values$bipartite_graph <- reactive({
-      tryCatch(
-        expr = {
-          g <- getBipartiteGraph(reactive_values$cluster,
-                                 reactive_values$gs_names,
-                                 reactive_values$genes)
-        },
-        error = function(cond) {
-          showNotification(
-            "It seems like your data does not have any clusters. Please adapt the thresholds and try again.",
-            type = "error"
-          )
-          return(NULL)
-        }
-      )
-      return(g)
-    })
+    # reactive_values$bipartite_graph <- reactive({
+    #   tryCatch(
+    #     expr = {
+    #       g <- getBipartiteGraph(reactive_values$cluster,
+    #                              reactive_values$gs_names,
+    #                              reactive_values$genes)
+    #     },
+    #     error = function(cond) {
+    #       showNotification(
+    #         "It seems like your data does not have any clusters. Please adapt the thresholds and try again.",
+    #         type = "error"
+    #       )
+    #       return(NULL)
+    #     }
+    #   )
+    #   return(g)
+    # })
 
 
     output$dt_cluster <- DT::renderDataTable({
@@ -1585,6 +1626,12 @@ GeDi <- function(genesets = NULL,
           )
         )
         cluster <- as.numeric(input$cluster_nb)
+        validate(
+          need(
+            cluster <= length(reactive_values$cluster),
+            message = "It seems like you have selected a number larger than the number of available clusters."
+          )
+        )
         genesets <- reactive_values$cluster[[cluster]]
         genesets_df <- reactive_values$genesets[genesets, ]
 
@@ -2041,6 +2088,7 @@ GeDi <- function(genesets = NULL,
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
+      reactive_values$clustering <- NULL
 
       progress$set(message = "Scoring your genesets", value = 0)
 
