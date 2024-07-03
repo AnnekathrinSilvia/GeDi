@@ -232,6 +232,45 @@ if(!is.null(reactive_values$cluster)){
 }
 ```
 
+# Highlighting your bookmarked genesets and clusters
+
+If you have bookmarked any genesets or clusters, they will be displayed here.
+
+```{r bookmarkedGenesets}
+if(!(nrow(reactive_values$bookmarked_genesets) == 0)){
+  cat("Here is a data table of your bookmarked genesets. \n")
+  DT::datatable(reactive_values$bookmarked_genesets, rownames = F)
+}else{
+  cat("You have not bookmarked any genesets to be displayed here.")
+}
+```
+
+
+```{r bookmarkedClusters}
+if(!(nrow(reactive_values$bookmarked_cluster) == 0)){
+  for(i in 1:nrow(reactive_values$bookmarked_cluster)){
+    cluster <- reactive_values$bookmarked_cluster[i, ]
+    cluster_nb <- cluster[["Cluster"]]
+    cat(paste("Now, we will have a look at ", cluster_nb, " which has the following genesets as members: ", cluster["Cluster_Members"], ".\n", sep = ""))
+    cat(paste("The clusters are involved in the following biological processes: ", cluster["Cluster_Member_Description"], ".\n", sep = ""))
+
+    cluster_nb <- as.numeric(unlist(strsplit(
+        cluster_nb, split = ' ', fixed = TRUE
+      ))[2])
+    
+    genesets <- reactive_values$cluster[[cluster_nb]]
+    genesets_df <- reactive_values$genesets[genesets, ]
+    cat(paste("Showing the Enrichment Wordcloud for cluster ", cluster_nb, "\n\n", sep = ""))
+    e <- enrichmentWordcloud(genesets_df)
+    print(e)
+      
+  }
+}else{
+  cat("You have not bookmarked any clusters to be displayed here.")
+}
+```
+
+
 # About this report
 
 If you use this report in your scientific work, please cite GeDi:
