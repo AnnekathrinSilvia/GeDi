@@ -20,6 +20,9 @@
   
 * Replaced all occurrences of PMM with pMM to match the notation of the original
   publication. 
+  
+* Replaced the kNN clustering algortihm with kMeans as this seems to be more 
+  suitable for enrichment data. 
 
 # GeDi 1.1.0
 

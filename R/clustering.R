@@ -355,6 +355,62 @@ kNN_clustering <- function(scores,
   return(kNN)
 }
 
+#' Calculate clusters based on kMeans clustering
+#'
+#' This function performs kMeans clustering on a set of
+#' scores.
+#'
+#' @param scores A [Matrix::Matrix()] of (distance) scores
+#' @param center numerical, the number of centers to start with. This number will
+#'               correlate with the resulting number of clusters.
+#' @param iter numerical, number of iterations for refinement. Defaults to 500.
+#' @param nstart numerical, how often the start points should be switched. 
+#'               Ensures a robust clustering, as clustering is influenced by the
+#'               start points. Defaults to 50.
+#'
+#' @return A `list` of clusters
+#' @importFrom stats kmeans
+#' @export
+#'
+#' @examples
+#' #' ## Mock example showing how the data should look like
+#' scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+#' rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
+#'                                 "f", "g", "h", "i", "j")
+#' cluster <- kMeans_clustering(scores, center = 3)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#'cluster <- kMeans_clustering(scores_macrophage_topGO_example_small,
+#'                             center = 5)
+kMeans_clustering <- function(scores,
+                              center,
+                              iter = 500, 
+                              nstart = 50){
+  # Check if there are any distance scores, if not, return NULL
+  if (is.null(scores) || length(scores) == 0) {
+    return(NULL)
+  }
+  
+  if(center <= 0){
+    return(NULL)
+  }
+  
+  # Find k means results data
+  kMeans <- kmeans(scores, center, iter, nstart)
+  
+  cluster <- c()
+  cluster <- lapply(seq_len(max(unique(kMeans$cluster))),
+                    function(x) c(cluster,
+                                  which(kMeans$cluster == x)))
+  
+  # Return the list of clusters based on k-Nearest Neighbors
+  return(cluster)
+}
+
 
 #' Map each geneset to the cluster it belongs
 #'

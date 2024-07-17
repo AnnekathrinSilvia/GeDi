@@ -792,7 +792,7 @@ GeDi <- function(genesets = NULL,
             "Danio rerio",
             "Caenorhabiditis elegans"
           ),
-          multiple = TRUE,
+          multiple = FALSE,
           options = list(create = TRUE)
         )
       ))
@@ -803,12 +803,7 @@ GeDi <- function(genesets = NULL,
           is.na(input$species) || is.null(input$species)) {
         return(NULL)
       }
-      if (length(strsplit(input$species, "\\s+")) > 1) {
-        showNotification(
-          "It seems like you have selected more than one species. Please go back to the box and select the correct species.",
-          type = "error"
-        )
-      }
+      # TODO: Handle input that is not species available on STRING
       reactive_values$species <- input$species
       box(
         width = 12,
@@ -1251,7 +1246,7 @@ GeDi <- function(genesets = NULL,
                 choices = c("Louvain",
                             "Markov",
                             "Fuzzy",
-                            "k Nearest Neighbour")
+                            "kMeans")
               )
             ),
             column(width = 6,
@@ -1396,8 +1391,8 @@ GeDi <- function(genesets = NULL,
         uiOutput("ui_markov")
       } else if (input$select_clustering == "Fuzzy") {
         uiOutput("ui_fuzzy")
-      } else if (input$select_clustering == "k Nearest Neighbour") {
-        uiOutput("ui_kNN")
+      } else if (input$select_clustering == "kMeans") {
+        uiOutput("ui_kMeans")
       }
     })
 
@@ -1476,18 +1471,18 @@ GeDi <- function(genesets = NULL,
       )
     })
 
-    output$ui_kNN <- renderUI({
+    output$ui_kMeans <- renderUI({
       fluidRow(
-        h2("Select the clustering threshold for the kNN clustering."),
+        h2("Select the center number for kMeans clustering."),
         br(),
         column(
           width = 6,
           sliderInput(
-            inputId = "knn_k",
-            label = "Select a k for the number of neigbours.",
-            min = 2,
-            max = 0.1 * length(reactive_values$gs_names),
-            value = 2,
+            inputId = "center",
+            label = "Select a number of centers to start with",
+            min = 1,
+            max = length(reactive_values$gs_names),
+            value = 1,
             step = 1
           )
         )
@@ -2217,10 +2212,10 @@ GeDi <- function(genesets = NULL,
         } else{
           reactive_values$seeds <- seeds
         }
-      } else if (input$select_clustering == "k Nearest Neighbour") {
-        progress$set(message = "Start the kNN Clustering", value = 0)
-        cluster <- kNN_clustering(scores,
-                                  input$knn_k)
+      } else if (input$select_clustering == "kMeans") {
+        progress$set(message = "Start the kMeans Clustering", value = 0)
+        cluster <- kMeans_clustering(scores,
+                                  input$center)
         progress$inc(0.8, detail = "Finished clustering the data.")
       }
 
