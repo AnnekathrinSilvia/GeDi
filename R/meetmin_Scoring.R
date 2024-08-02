@@ -33,7 +33,6 @@ getMeetMinMatrix <- function(genesets,
                              BPPARAM = BiocParallel::SerialParam()) {
   # Get the number of genesets
   l <- length(genesets)
-
   # If there are no genesets, return NULL
   if (l == 0) {
     return(NULL)
@@ -41,10 +40,8 @@ getMeetMinMatrix <- function(genesets,
 
   # Initialize an empty matrix for storing Meet-Min distances
   m <- Matrix(0, l, l)
-
   # Initialize a list for storing intermediate results
   results <- list()
-
   # Calculate Meet-Min distance for each pair of gene sets
   for (j in seq_len((l - 1))) {
     a <- genesets[[j]]
@@ -64,7 +61,6 @@ getMeetMinMatrix <- function(genesets,
     }, BPPARAM = BPPARAM)
     m[j, (j + 1):l] <- m[(j + 1):l, j] <- unlist(results[[j]])
   }
-
   # Return the Meet-Min distance matrix rounded to 2 decimal places
   return(round(m, 2))
 }

@@ -37,32 +37,28 @@
 #'      package = "GeDi",
 #'      envir = environment())
 #' genes <- getGenes(macrophage_topGO_example_small)
-getGenes <- function(genesets, gene_name = NULL) {
+getGenes <- function(genesets,
+                     gene_name = NULL) {
   # If there are no genesets, return NULL
   if (length(genesets) == 0) {
     return(NULL)
   }
-
   # If gene_name is not provided, ensure that a "Genes" column exists
   if (is.null(gene_name)) {
     stopifnot(any(names(genesets) == "Genes"))
   }
-
   # Determine in which column the gene information is stored
   if (!is.null(gene_name)) {
     genesList <- genesets[, gene_name]
   } else {
     genesList <- genesets$Genes
   }
-
   # Guess the separator used in the gene lists
   sep <- .findSeparator(genesList)
 
   # Split large strings of genes into individual gene lists
   genes <- lapply(seq_len(nrow(genesets)), function(i) {
-    #toupper
-    (strsplit(genesList[i], sep)[[1]])
-  })
+    strsplit(genesList[i], sep)[[1]])})
 
   # Return the list of extracted gene sets
   return(genes)
@@ -86,7 +82,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
 #'
-.findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")) {
+.findSeparator <- function(stringList,
+                           sepList = c(",", "\t", ";", " ", "/")) {
   sephits_min <-
     vapply(sepList, function(x) {
       sum(vapply(stringList, function(y) nchar(y) - nchar(gsub(x, '', y)),+
@@ -113,7 +110,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' @return A character, corresponding to the guessed separator. One of ","
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
-.sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
+.sepguesser <- function(file,
+                        sep_list = c(",", "\t", ";", " ", "/")) {
   rl <- readLines(file(file, open = "w+"), warn = FALSE)
   # Allow last line to be empty
   rl <- rl[rl != ""]
@@ -141,7 +139,6 @@ getGenes <- function(genesets, gene_name = NULL) {
     genesets_to_remove <- unlist(remove)
     df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
   }
-
   # Initialize a list to store results
   results <- list()
   # Store the data frame without the removed genesets
@@ -153,10 +150,8 @@ getGenes <- function(genesets, gene_name = NULL) {
   # Extract gene information for the remaining genesets
   genes <- getGenes(df_genesets)
   results[[3]] <- genes
-
   # Rename the elements in the results list
   names(results) <- c("Geneset", "gs_names", "Genes")
-
   # Return the filtered geneset information
   return(results)
 }
@@ -204,7 +199,6 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'            the interaction.
 #'
 #' @return A validated and formatted PPI data frame.
-#'
 .checkPPI <- function(ppi) {
   # Check if ppi is a data frame
   stopifnot(is.data.frame(ppi))
@@ -238,7 +232,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @return A validated and formatted genesets data frame.
 #'
-.checkGenesets <- function(genesets, col_name_genesets = "Genesets", 
+.checkGenesets <- function(genesets,
+                           col_name_genesets = "Genesets", 
                            col_name_genes = "Genes") {
   # Check if genesets is a data frame
   stopifnot(is.data.frame(genesets))
@@ -266,7 +261,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @return A validated and formatted distance_scores [Matrix::Matrix()].
 #'
-.checkScores <- function(genesets, distance_scores){
+.checkScores <- function(genesets,
+                         distance_scores){
   # Check if the distance_scores matrix is square
   stopifnot(nrow(distance_scores) == ncol(distance_scores))
 
@@ -317,7 +313,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 
 # Shiny resource paths ----------------------------------------------------
 
-.onLoad <- function(libname, pkgname) {
+.onLoad <- function(libname,
+                    pkgname) {
   # Create link to logo
   shiny::addResourcePath("GeDi", system.file("www", package = "GeDi"))
 }

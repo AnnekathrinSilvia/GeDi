@@ -23,7 +23,6 @@
 getId <- function(species, 
                   version = "12.0",
                   cache = FALSE) {
-  
   # Download available species information from STRING
   if(version == "12.0"){
   url_species <- sprintf("https://stringdb-downloads.org/download/species.v%s.txt",
@@ -38,17 +37,14 @@ getId <- function(species,
     bfc_gedi <- BiocFileCache(cache_location)
     
     gedi_query <- bfcquery(bfc_gedi, url_species, exact = TRUE)
-    
     # Evaluate if there is already a cached version
     if (bfccount(gedi_query)) {
       rid <- gedi_query$rid
-      
       # Evaluate if the cached version is outdated
       nu <- bfcneedsupdate(bfc_gedi, rid)
       if (!isFALSE(nu)) {
         bfcdownload(bfc_gedi, rid, ask = FALSE)
       }
-      
       message("Using cached version from ", gedi_query$create_time)
       df_species <- BiocFileCache::bfcrpath(bfc_gedi, url_species)
     }
@@ -58,7 +54,6 @@ getId <- function(species,
     # Read species data from URL
     df_species <- read.delim(url(url_species))
   }
-    
   if(cache){
     gedi_query <- bfcquery(bfc_gedi, url_species)
     if (bfccount(gedi_query) == 0) {
@@ -68,11 +63,9 @@ getId <- function(species,
     }
     df_species <- read.delim(url(url_species))
   }
-    
   # Get the species ID of the respective organism
   species_id <- df_species$X.taxon_id[match(species,
                                             df_species$official_name_NCBI)]
-
   # Return the species ID
   return(species_id)
 }
@@ -102,7 +95,6 @@ getStringDB <- function(species,
                         version = "12.0",
                         score_threshold = 0.00,
                         cache_location = FALSE) {
-
   if(cache_location){
     cache_location <- tools::R_user_dir("GeDi", which = "cache")
     dir.create(cache_location, showWarnings = FALSE)
@@ -119,8 +111,6 @@ getStringDB <- function(species,
       score_threshold = score_threshold
     ))
     }
-
-
 }
 
 #' Get the annotation of a [STRINGdb] object
@@ -178,13 +168,13 @@ getAnnotation <- function(stringdb) {
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
 #' ppi <- getPPI(genes, string_db, anno_df)
 #' }
-getPPI <- function(genes, string_db, anno_df) {
+getPPI <- function(genes,
+                   string_db,
+                   anno_df) {
   # Convert input list to vector
   genes <- unlist(genes)
-
   # Match gene names to STRINGdb IDs
   string_ids <- anno_df$STRING_id[match(genes, anno_df$alias)]
-
   # Get interaction scores of genes from the STRING database
   scores <- string_db$get_interactions(string_ids)
   colnames(scores) <- c("Gene1", "Gene2", "combined_score")
@@ -194,7 +184,6 @@ getPPI <- function(genes, string_db, anno_df) {
   min <- min(scores$combined_score, Inf)
   scores$combined_score <-
     round((scores$combined_score - min) / (max - min), 2)
-
   # Filter the data frame to ensure interactions are unique
   gene_names_to <-
     anno_df$alias[match(scores$Gene2, anno_df$STRING_id)]
@@ -203,7 +192,6 @@ getPPI <- function(genes, string_db, anno_df) {
 
   scores$Gene2 <- gene_names_to
   scores$Gene1 <- gene_names_from
-
   reverse_to <- scores$Gene1
   reverse_from <- scores$Gene2
 
@@ -213,11 +201,9 @@ getPPI <- function(genes, string_db, anno_df) {
       Gene2 = reverse_to,
       combined_score = scores$combined_score
     )
-
   # Build up the final data frame of unique interactions
   scores <- distinct(scores)
   df <- distinct(df)
-
   # Return the final data frame of interactions and scores
   scores <- rbind(scores, df)
   return(scores)

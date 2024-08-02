@@ -44,7 +44,6 @@ goSimilarity <- function(geneset_ids,
                          BPPARAM = BiocParallel::SerialParam()) {
   method <- match.arg(method, c("Resnik", "Lin", "Rel",
                                 "Jiang", "TCSS", "Wang"))
-
   if (method %in% c("Resnik", "Lin", "Rel", "Jiang"))
     useIC <- TRUE
   else
@@ -53,13 +52,11 @@ goSimilarity <- function(geneset_ids,
   # Check if the species-specific org.XX.eg.db package is installed
   stopifnot("Species specific org.XX.eg.db
             is not installed" = system.file(package = species) != "")
-
-   # Check if all geneset ids are GO identifiers
+  # Check if all geneset ids are GO identifiers
   go_ids <- all(vapply(geneset_ids, function(x) substr(x, 1, 2) == "GO",
                        logical(1)))
   stopifnot("Not all geneset ids are GO identifiers.
             This score only works on GO identifiers" = go_ids)
-
   # Determine the number of genesets
   l <- length(geneset_ids)
   if (l == 0) {
@@ -72,7 +69,6 @@ goSimilarity <- function(geneset_ids,
   go <- godata(annoDb = species, ont = ontology, computeIC = useIC)
 
   results <- list()
-
   # Calculate the GO similarity for each pair of genesets
   for (g in seq_len((l - 1))) {
     a <- geneset_ids[[g]]
@@ -86,8 +82,6 @@ goSimilarity <- function(geneset_ids,
     }, BPPARAM = BPPARAM)
     go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
   }
-
-
   # Return the rounded GO similarity scores matrix
   return(round(go_sim, 2))
 }

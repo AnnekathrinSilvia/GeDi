@@ -25,10 +25,8 @@
 calculateKappa <- function(a, b, all_genes) {
   # Get the total number of genes
   n_genes <- length(all_genes)
-
   # Ensure there are genes to work with
   stopifnot(n_genes > 0)
-
   # If either set is empty, return Kappa distance of 1
   if (length(a) == 0 || length(b) == 0) {
     return(1)
@@ -36,30 +34,24 @@ calculateKappa <- function(a, b, all_genes) {
 
   # Calculate the size of the intersection between the sets
   set_int <- length(intersect(a, b))
-
   # Calculate the size of genes not present in either set
   set_none <- sum(!all_genes %in% a & !all_genes %in% b)
-
   # Calculate the sizes of genes only in one of the sets
   only_a <- sum(all_genes %in% a & !all_genes %in% b)
   only_b <- sum(!all_genes %in% a & all_genes %in% b)
-
   # Calculate the total number of comparisons
   total <- sum(only_a, only_b, set_int, set_none)
-
   # Calculate observed agreement (O) and expected agreement (E)
   O <- (set_int + set_none) / total
   E <- (set_int + only_a) * (set_int + only_b) + (only_b + set_none) * (only_a + set_none)
   E <- E / total^2
-
   # Calculate Cohen's Kappa coefficient
   kappa <- ((O - E) / (1 - E))
-
+  
   # Handle the case of NaN (e.g., when E is 1)
   if (is.nan(kappa)) {
     kappa <- 1
   }
-
   # Return the calculated Kappa coefficient
   return(kappa)
 }
@@ -99,7 +91,6 @@ getKappaMatrix <- function(genesets,
                            BPPARAM = BiocParallel::SerialParam()) {
   # Get the number of genesets
   l <- length(genesets)
-
   # If there are no gene sets, return NULL
   if (l == 0) {
     return(NULL)
@@ -107,13 +98,10 @@ getKappaMatrix <- function(genesets,
 
   # Initialize an empty matrix for storing Kappa distances
   k <- Matrix(0, l, l)
-
   # Get the unique genes present across all gene sets
   unique_genes <- unique(unlist(genesets))
-
   # Initialize a list for storing intermediate results
   results <- list()
-
   # Calculate the Jaccard distance for each pair of gene sets
   for (j in seq_len((l - 1))) {
     a <- genesets[[j]]
@@ -136,7 +124,6 @@ getKappaMatrix <- function(genesets,
   if (!is.null(progress)) {
     progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
   }
-
   # Update the matrix with normalized values
   results <- list()
   for (j in seq_len((l - 1))) {
@@ -145,8 +132,6 @@ getKappaMatrix <- function(genesets,
     }, BPPARAM = BPPARAM)
     k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
   }
-
-
   # Return the normalized Kappa distance matrix rounded to 2 decimal places
   return(round(k, 2))
 }
