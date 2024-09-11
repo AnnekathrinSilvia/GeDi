@@ -82,8 +82,31 @@ goSimilarity <- function(geneset_ids,
     }, BPPARAM = BPPARAM)
     go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
   }
+  
+  # Next, we have to normalize some of the similarities to the [0, 1]
+  # interval and afterwards transform the similarity to a distance by 
+  # calculating 1 - Similarity
+  if(method %in% c("Resnik", "Jiang")){
+    min <- min(go_sim)
+    max <- max(go_sim)
+    
+    if (!is.null(progress)) {
+      progress$inc(1 / (l + 1), detail = "Normalizing Similarity Matrix")
+    }
+    
+    # Update the matrix with normalized values
+    results <- list()
+    for (j in seq_len((l - 1))) {
+      results[[j]] <- bplapply((j + 1):l, function(i) {
+        return(1 - ((go_sim[j, i] - min) / (max - min)))
+      }, BPPARAM = BPPARAM)
+      go_sim[j, (j + 1):l] <- go_sim[(j + 1):l, j] <- unlist(results[[j]])
+    }
+  }
+  
+  go_dist <- 1 - go_sim
   # Return the rounded GO similarity scores matrix
-  return(round(go_sim, 2))
+  return(round(go_dist, 2))
 }
 
 #' Scaling (distance) scores
