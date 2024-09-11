@@ -328,7 +328,7 @@ kNN_clustering <- function(scores,
     return(NULL)
   }
   # Find k nearest neighbors for each geneset in the data
-  kNN <- findKNN(scores, k, warn.ties = FALSE)
+  kNN <- findKNN(as.matrix(scores), k, warn.ties = FALSE)
   # Extract the list of neighbors for each geneset
   kNN <- kNN$index
   # Select the first neighbor as the cluster for each geneset
