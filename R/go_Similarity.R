@@ -3,7 +3,7 @@
 #' Calculate the pairwise similarity of GO terms
 #'
 #' @param geneset_ids `list`, a `list` of GO identifiers to score
-#' @param method character, the method to calculate the GO similarity.
+#' @param method character, the method to calculate the GO distance.
 #'               See [GOSemSim::goSim] measure parameter for possibilities.
 #' @param ontology character, the ontology to use. See [GOSemSim::goSim]
 #'                 `ont` parameter for possibilities.
@@ -14,7 +14,7 @@
 #' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization
 #'                should be handled. Defaults to [BiocParallel::SerialParam()]
 #'
-#' @return A [Matrix::Matrix()] with the pairwise GO similarity of each
+#' @return A [Matrix::Matrix()] with the pairwise GO distance of each
 #'         geneset pair.
 #' @export
 #' @importFrom GOSemSim godata goSim
@@ -28,15 +28,15 @@
 #' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
 #'             "GO:0002250", "GO:0001916", "GO:0019885")
 #'
-#' similarity <- goSimilarity(go_ids)
+#' similarity <- goDistance(go_ids)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small, package = "GeDi")
 #' go_ids <- macrophage_topGO_example_small$Genesets
 #' \dontrun{
-#' similarity <- goSimilarity(go_ids)
+#' similarity <- goDistance(go_ids)
 #' }
-goSimilarity <- function(geneset_ids,
+goDistance <- function(geneset_ids,
                          method = "Wang",
                          ontology = "BP",
                          species = "org.Hs.eg.db",
@@ -63,13 +63,13 @@ goSimilarity <- function(geneset_ids,
     return(-1)
   }
 
-  # Initialize a matrix for GO similarity scores
+  # Initialize a matrix for GO distance scores
   go_sim <- Matrix::Matrix(0, l, l)
   # Retrieve GO data for the specified species and ontology
   go <- godata(annoDb = species, ont = ontology, computeIC = useIC)
 
   results <- list()
-  # Calculate the GO similarity for each pair of genesets
+  # Calculate the GO distance for each pair of genesets
   for (g in seq_len((l - 1))) {
     a <- geneset_ids[[g]]
     if (!is.null(progress)) {
@@ -77,7 +77,7 @@ goSimilarity <- function(geneset_ids,
     }
     results[[g]] <- BiocParallel::bplapply((g + 1):l, function(i) {
       b <- geneset_ids[[i]]
-      # Calculate GO similarity
+      # Calculate GO distance
       goSim(a, b, go, measure = method)
     }, BPPARAM = BPPARAM)
     go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
@@ -105,7 +105,7 @@ goSimilarity <- function(geneset_ids,
   }
   
   go_dist <- 1 - go_sim
-  # Return the rounded GO similarity scores matrix
+  # Return the rounded GO distance scores matrix
   return(round(go_dist, 2))
 }
 
@@ -117,7 +117,7 @@ goSimilarity <- function(geneset_ids,
 #' @param scores a [Matrix::Matrix()], a matrix of (distance) scores for the
 #'               identifiers in `geneset_ids`.
 #' @param geneset_ids `list`, a `list` of GO identifiers to score
-#' @param method character, the method to calculate the GO similarity.
+#' @param method character, the method to calculate the GO distance.
 #'               See [GOSemSim::goSim] measure parameter for possibilities.
 #' @param ontology character, the ontology to use. See [GOSemSim::goSim]
 #'                 ont parameter for possibilities.
@@ -164,11 +164,11 @@ scaleGO <- function(scores,
 
   # Initialize a matrix for scaled scores
   scaled <- Matrix::Matrix(0, l, l)
-  # Get GO similarity scores
-  scores_go <- goSimilarity(geneset_ids, method, ontology, species,
+  # Get GO distance scores
+  scores_go <- goDistance(geneset_ids, method, ontology, species,
                             BPPARAM = BPPARAM)
 
-  # Scale interaction scores with GO similarity scores
+  # Scale interaction scores with GO distance scores
   for (i in seq_len((l - 1))) {
     for (j in (i + 1):l) {
       scaled[i, j] <- scaled[j, i] <- scores[i, j] * scores_go[i, j]

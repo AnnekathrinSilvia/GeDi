@@ -38,5 +38,5 @@ data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
 genes <- GeDi::getGenes(macrophage_topGO_example_small)
-kappa <-getKappaMatrix(genes)
+kappa <- getKappaMatrix(genes)
 }

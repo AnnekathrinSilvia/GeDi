@@ -944,7 +944,7 @@ GeDi <- function(genesets = NULL,
                   "Jaccard",
                   "Meet-Min",
                   "Sorensen-Dice",
-                  "GO Similarity"
+                  "GO Distance"
                 ),
                 selected = character(0)
               )
@@ -2094,10 +2094,10 @@ GeDi <- function(genesets = NULL,
       } else if (input$scoringmethod == "Sorensen-Dice") {
         scores <- getSorensenDiceMatrix(reactive_values$genes,
                                         progress = progress)
-      } else if (input$scoringmethod == "GO Similarity") {
+      } else if (input$scoringmethod == "GO Distance") {
         tryCatch(
           expr = {
-            scores <- goSimilarity(reactive_values$gs_names,
+            scores <- goDistance(reactive_values$gs_names,
                                    progress = progress)
           },
           error = function(cond) {
