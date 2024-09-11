@@ -26,11 +26,9 @@
 checkInclusion <- function(seeds) {
   # Remove all empty seeds from the list
   seeds <- seeds[lengths(seeds) != 0]
-  
   # Create a list to store the indices of sets to be removed (i.e. subsets of
   # other sets)
   remove <- c()
-  
   # If there are less than 2 sets, no removal is possible,
   # return the original set list
   if (length(seeds) < 2) {
@@ -39,7 +37,6 @@ checkInclusion <- function(seeds) {
   
   # Determine the number of sets
   l <- length(seeds)
-  
   # Iterate over all sets to compare them for inclusion
   for (i in seq_len((l-1))) {
     if (i %in% remove) {
@@ -48,11 +45,9 @@ checkInclusion <- function(seeds) {
     # Current set
     s1 <- seeds[[i]]
     l1 <- length(s1)
-  
   # Iterate over the remaining sets to compare them with the current set
   for (j in (i + 1):l) {
     s2 <- seeds[[j]]
-    
     # Check if s1 is a subset of s2 or vice versa, if so, mark for removal
     if (setequal(intersect(s1, s2), s1) || length(s1) == 0) {
       remove <- c(remove, i)
@@ -63,7 +58,6 @@ checkInclusion <- function(seeds) {
   }
   # Ensure that there are no duplicates in the sets to remove
   remove <- unique(remove)
-  
   # Remove the identified subsets from the original list of seeds
   if (length(remove) == 0) {
     # If there are no sets to be removed, return the original list
@@ -109,12 +103,13 @@ checkInclusion <- function(seeds) {
 #' seeds <- seedFinding(scores_macrophage_topGO_example_small,
 #'                      simThreshold = 0.3,
 #'                      memThreshold = 0.5)
-seedFinding <- function(distances, simThreshold, memThreshold) {
+seedFinding <- function(distances, 
+                        simThreshold,
+                        memThreshold) {
   # Check if there are any distance scores, if not, return NULL
   if (is.null(distances) || length(distances) == 0) {
     return(NULL)
   }
-  
   # Initialize a list to store the identified seeds
   seeds <- list()
   
@@ -125,22 +120,18 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
     apply(distances, 1, function(x) {
       as.numeric(x <= simThreshold)
     })
-  
   # Iterate over all rows in the distance score matrix
   for (i in seq_len(nrow(distances))) {
     # Check if at least 2 other entries are reachable from i
     if (sum(reach[i, ], na.rm = TRUE) >= 2) {
       # Extract members reachable from i
       members <- which(reach[i, ] == 1)
-      
       # Calculate an individual threshold for i to be considered a seed
       includethreshold <-
         (length(members) ^ 2 - length(members)) * memThreshold
-      
       # Subset the reach matrix and sum up entries
       reach_red <- reach[members, members]
       in_reach <- sum(reach_red)
-      
       # If sum of entries in reach is above the individual threshold,
       # i is a seed
       if (in_reach >= includethreshold) {
@@ -149,13 +140,11 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
       }
     }
   }
-  
   seeds <- unique(seeds)
   # Ensure each seed contains each member only once
   seeds <- lapply(seeds, unique)
   # Ensure no seed is fully included in a larger seed
   seeds <- checkInclusion(seeds)
-  
   # Return the identified seeds
   return(seeds)
 }
@@ -191,13 +180,13 @@ seedFinding <- function(distances, simThreshold, memThreshold) {
 #'                      simThreshold = 0.3,
 #'                      memThreshold = 0.5)
 #' cluster <- fuzzyClustering(seeds, threshold = 0.5)
-fuzzyClustering <- function(seeds, threshold) {
+fuzzyClustering <- function(seeds,
+                            threshold) {
   # Check if there are at least two seeds to merge
   # If not, return the original seeds
   if (length(seeds) <= 1) {
     return(seeds)
   }
-  
   # Create a logical vector to track whether a seed is still mergeable
   mergeable <- rep(TRUE, length(seeds))
   
@@ -208,11 +197,9 @@ fuzzyClustering <- function(seeds, threshold) {
     if (index > length(seeds)) {
       break
     }
-    
     # Current mergeable seed
     s1 <- seeds[[index]]
     l <- length(seeds)
-    
     # Iterate over all seeds to check for merging possibilities
     for (j in seq_len(length(seeds))) {
       s2 <- seeds[[j]]
@@ -235,7 +222,6 @@ fuzzyClustering <- function(seeds, threshold) {
       mergeable[[index]] <- FALSE
     }
   }
-  
   return(seeds)
 }
 
@@ -272,43 +258,41 @@ fuzzyClustering <- function(seeds, threshold) {
 #'
 #'clustering <- clustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-clustering <-
-  function(scores, threshold, cluster_method = "louvain") {
-    # Check if the cluster_method is valid (only "louvain" or "markov" allowed)
-    stopifnot(cluster_method == "louvain" ||
-                cluster_method == "markov")
-    
-    # Obtain adjacency matrix based on the distance scores and build a graph
-    adj_matrix <- getAdjacencyMatrix(scores, threshold)
-    stopifnot(!is.null(adj_matrix))
-    graph <- buildGraph(adj_matrix)
-    
-    # Run Louvain or Markov clustering based on the chosen method
-    if (cluster_method == "louvain") {
-      clustering <- cluster_louvain(graph)
-      memberships <- membership(clustering)
+clustering <- function(scores, 
+                       threshold,
+                       cluster_method = "louvain") {
+  # Check if the cluster_method is valid (only "louvain" or "markov" allowed)
+  stopifnot(cluster_method == "louvain" ||
+              cluster_method == "markov")
+  
+  # Obtain adjacency matrix based on the distance scores and build a graph
+  adj_matrix <- getAdjacencyMatrix(scores, threshold)
+  stopifnot(!is.null(adj_matrix))
+  graph <- buildGraph(adj_matrix)
+  
+  # Run Louvain or Markov clustering based on the chosen method
+  if (cluster_method == "louvain") {
+    clustering <- cluster_louvain(graph)
+    memberships <- membership(clustering)
     } else if (cluster_method == "markov") {
       clustering <- cluster_markov(graph)
       memberships <- clustering$membership
     }
-    
-    # Extract cluster memberships for each geneset
-    cluster <- vector(mode = "list", length = max(memberships))
-    
-    # Transform the mapping of geneset -> cluster to cluster -> genesets mapping
-    for (i in seq_len(length(memberships))) {
-      sub_cluster <- memberships[i]
-      cluster[[sub_cluster]] <- c(cluster[[sub_cluster]], i)
+  # Extract cluster memberships for each geneset
+  cluster <- vector(mode = "list", length = max(memberships))
+  
+  # Transform the mapping of geneset -> cluster to cluster -> genesets mapping
+  for (i in seq_len(length(memberships))) {
+    sub_cluster <- memberships[i]
+    cluster[[sub_cluster]] <- c(cluster[[sub_cluster]], i)
     }
-    
-    # Remove all singleton clusters (clusters with only one geneset)
-    filter <- vapply(cluster, function(x)
-      length(x) > 1, logical(1))
-    cluster <- cluster[filter]
-    
-    # Return the final cluster mapping
-    return(cluster)
-  }
+  # Remove all singleton clusters (clusters with only one geneset)
+  filter <- vapply(cluster, function(x)
+    length(x) > 1, logical(1))
+  cluster <- cluster[filter]
+  # Return the final cluster mapping
+  return(cluster)
+}
 
 
 #' Calculate clusters based on kNN clustering
@@ -394,19 +378,16 @@ kMeans_clustering <- function(scores,
   if (is.null(scores) || length(scores) == 0) {
     return(NULL)
   }
-  
-  if(center <= 0){
-    return(NULL)
-  }
+  # Centers has to be positive, as this will be the number of
+  # resulting clusters
+  stopifnot(center > 0)
   
   # Find k means results data
   kMeans <- kmeans(scores, center, iter, nstart)
-  
   cluster <- c()
   cluster <- lapply(seq_len(max(unique(kMeans$cluster))),
                     function(x) c(cluster,
                                   which(kMeans$cluster == x)))
-  
   # Return the list of clusters based on k-Nearest Neighbors
   return(cluster)
 }

@@ -26,20 +26,19 @@
 #'      package = "GeDi",
 #'      envir = environment())
 #' p <- distanceHeatmap(scores_macrophage_topGO_example_small)
-distanceHeatmap <- function(distance_scores, chars_limit = 50) {
+distanceHeatmap <- function(distance_scores,
+                            chars_limit = 50) {
   # Check if distance scores are provided
   stopifnot(!is.null(distance_scores))
   stopifnot(chars_limit >= 0)
 
   # Cut the labels to the specified character limit
   labels <- substr(as.character(rownames(distance_scores)), 1, chars_limit)
-
   # Set truncated labels for row and column names
   rownames(distance_scores) <- colnames(distance_scores) <- labels
 
   # Create a heatmap using the distance scores matrix
   p <- Heatmap(as.matrix(distance_scores))
-
   # Return the heatmap plot
   return(p)
 }

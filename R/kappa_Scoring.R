@@ -27,31 +27,48 @@ calculateKappa <- function(a, b, all_genes) {
   n_genes <- length(all_genes)
   # Ensure there are genes to work with
   stopifnot(n_genes > 0)
+  
+  # Calculate the size of sets 
+  set_a <- length(a)
+  set_b <- length(b)
+  
   # If either set is empty, return Kappa distance of 1
-  if (length(a) == 0 || length(b) == 0) {
+  if (set_a == 0 || set_b == 0) {
     return(1)
   }
 
   # Calculate the size of the intersection between the sets
   set_int <- length(intersect(a, b))
-  # Calculate the size of genes not present in either set
-  set_none <- sum(!all_genes %in% a & !all_genes %in% b)
-  # Calculate the sizes of genes only in one of the sets
-  only_a <- sum(all_genes %in% a & !all_genes %in% b)
-  only_b <- sum(!all_genes %in% a & all_genes %in% b)
-  # Calculate the total number of comparisons
-  total <- sum(only_a, only_b, set_int, set_none)
+  # Calculate the size of the set union
+  set_union <- length(union(a, b))
+  # Calculate the complement sets of a and b
+  set_compl_a <- length(setdiff(all_genes, a))
+  set_compl_b <- length(setdiff(all_genes, b))
+  # Calculate the complement set of the intersection of a and b
+  set_int_compl <- length(setdiff(all_genes, union(a,b))) 
+  
   # Calculate observed agreement (O) and expected agreement (E)
-  O <- (set_int + set_none) / total
-  E <- (set_int + only_a) * (set_int + only_b) + (only_b + set_none) * (only_a + set_none)
-  E <- E / total^2
+  O <- (set_int + set_int_compl) / n_genes
+  E <- (set_a * set_b + set_compl_a * set_compl_b)
+  E <- E / (n_genes^2)
+
   # Calculate Cohen's Kappa coefficient
   kappa <- ((O - E) / (1 - E))
   
-  # Handle the case of NaN (e.g., when E is 1)
-  if (is.nan(kappa)) {
-    kappa <- 1
+  # Handle the case of NaN (i.e E = 1)
+  if(is.nan(kappa)){
+    # This can happen if both sets are equal. Then kappa should be 0
+    if(setequal(a, b)){
+      return(0)
+    }else{
+      # This can also happen when both sets are completely disjoint, then kappa
+      # should be -1 and resulting in a distance of 2
+      kappa <- -1
+    }
   }
+  # Calculate the distance as 1 - kappa
+  kappa <- 1 - kappa
+
   # Return the calculated Kappa coefficient
   return(kappa)
 }
@@ -85,7 +102,7 @@ calculateKappa <- function(a, b, all_genes) {
 #'      package = "GeDi",
 #'      envir = environment())
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
-#' kappa <-getKappaMatrix(genes)
+#' kappa <- getKappaMatrix(genes)
 getKappaMatrix <- function(genesets,
                            progress = NULL,
                            BPPARAM = BiocParallel::SerialParam()) {
@@ -118,20 +135,9 @@ getKappaMatrix <- function(genesets,
     k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
   }
 
-  # Normalize each value to the (0, 1) interval
-  min <- min(k)
-  max <- max(k)
-  if (!is.null(progress)) {
-    progress$inc(1 / (l + 1), detail = "Normalizing Kappa Matrix")
-  }
-  # Update the matrix with normalized values
-  results <- list()
-  for (j in seq_len((l - 1))) {
-    results[[j]] <- bplapply((j + 1):l, function(i) {
-      return(1 - ((k[j, i] - min) / (max - min)))
-    }, BPPARAM = BPPARAM)
-    k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
-  }
+  # Normalize each value to the (0, 1) interval by dividing the matrix by 2
+  k <- k / 2
+ 
   # Return the normalized Kappa distance matrix rounded to 2 decimal places
   return(round(k, 2))
 }

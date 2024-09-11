@@ -58,7 +58,7 @@ getGenes <- function(genesets,
 
   # Split large strings of genes into individual gene lists
   genes <- lapply(seq_len(nrow(genesets)), function(i) {
-    strsplit(genesList[i], sep)[[1]])})
+    strsplit(genesList[i], sep)[[1]]})
 
   # Return the list of extracted gene sets
   return(genes)
