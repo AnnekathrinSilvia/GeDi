@@ -17,7 +17,7 @@ Get the annotation of a \link{STRINGdb} object, i.e. the aliases of the protein
 information
 }
 \examples{
-string_db <- getStringDB(9606)
-string_db
-anno_df <- getAnnotation(string_db)
+stringdb <- getStringDB(9606)
+stringdb
+anno_df <- getAnnotation(stringdb)
 }

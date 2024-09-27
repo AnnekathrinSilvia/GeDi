@@ -146,11 +146,11 @@ test_that("kNN clustering works correctly", {
 
 
 test_that("kMeans clustering - no distance scores", {
-  expect_true(is.null(kMeans_clustering(NULL, 3)))
+  expect_true(is.null(kMeansClustering(NULL, 3)))
 })
 
 test_that("kMeans clustering works correctly", {
-  kMeans <- kMeans_clustering(distances, 1)
+  kMeans <- kMeansClustering(distances, 1)
   expect_true(length(kMeans) > 0  & length(kMeans) <= 1)
 })
 

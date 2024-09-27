@@ -4,7 +4,7 @@
 \alias{getAdjacencyMatrix}
 \title{Construct an adjacency matrix}
 \usage{
-getAdjacencyMatrix(distanceMatrix, cutOff)
+getAdjacencyMatrix(distanceMatrix, cutOff, weighted = FALSE)
 }
 \arguments{
 \item{distanceMatrix}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} containing (distance) scores
@@ -12,8 +12,13 @@ between 0 and 1.}
 
 \item{cutOff}{Numeric value, indicating for which pair of entries in the
 \code{distanceMatrix} a 1 should be inserted in the adjacency
-matrix. A 1 is inserted when for each entry in the matrix #
+matrix. A 1 is inserted when for each entry in the matrix
 that is smaller or equal to the \code{cutOff} value.}
+
+\item{weighted}{logical value, indicating whether or not the resulting
+adjacency matrix should be weighted. If TRUE, the matrix will
+be weighted by the distance scores in \code{distanceMatrix}.
+Defaults to FALSE.}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of adjacency status

@@ -90,7 +90,7 @@ getId <- function(species,
 #' @importFrom tools R_user_dir
 #' @examples
 #' species <- getId(species = "Homo sapiens")
-#' string_db <- getStringDB(as.numeric(species))
+#' stringdb <- getStringDB(as.numeric(species))
 getStringDB <- function(species,
                         version = "12.0",
                         score_threshold = 0.00,
@@ -125,9 +125,9 @@ getStringDB <- function(species,
 #'
 #' @import STRINGdb
 #' @examples
-#' string_db <- getStringDB(9606)
-#' string_db
-#' anno_df <- getAnnotation(string_db)
+#' stringdb <- getStringDB(9606)
+#' stringdb
+#' anno_df <- getAnnotation(stringdb)
 getAnnotation <- function(stringdb) {
   return(stringdb$get_aliases())
 }
@@ -139,7 +139,7 @@ getAnnotation <- function(stringdb) {
 #'
 #' @param genes a `list`, A `list` of genes to download the respective protein-
 #'              protein interaction information
-#' @param string_db A [STRINGdb] object, the species of the object should match
+#' @param stringdb A [STRINGdb] object, the species of the object should match
 #'                  the species of `genes`.
 #' @param anno_df An annotation `data.frame` mapping [STRINGdb] ids to gene
 #'                names, e.g. downloaded with \code{GeDi::getAnnotation()}
@@ -152,31 +152,31 @@ getAnnotation <- function(stringdb) {
 #' ## Mock example showing how the data should look like
 #'
 #' genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
-#' string_db <- getStringDB(9606, cache_location = FALSE)
-#' # string_db
-#' anno_df <- getAnnotation(string_db)
-#' ppi <- getPPI(genes, string_db, anno_df)
+#' stringdb <- getStringDB(9606, cache_location = FALSE)
+#' # stringdb
+#' anno_df <- getAnnotation(stringdb)
+#' ppi <- getPPI(genes, stringdb, anno_df)
 #'
 #' ## Example using the data available in the package
 #' \dontrun{
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' string_db <- getStringDB(9606)
-#' string_db
-#' anno_df <- getAnnotation(string_db)
+#' stringdb <- getStringDB(9606)
+#' stringdb
+#' anno_df <- getAnnotation(stringdb)
 #' genes <- GeDi::getGenes(macrophage_topGO_example_small)
-#' ppi <- getPPI(genes, string_db, anno_df)
+#' ppi <- getPPI(genes, stringdb, anno_df)
 #' }
 getPPI <- function(genes,
-                   string_db,
+                   stringdb,
                    anno_df) {
   # Convert input list to vector
   genes <- unlist(genes)
   # Match gene names to STRINGdb IDs
   string_ids <- anno_df$STRING_id[match(genes, anno_df$alias)]
   # Get interaction scores of genes from the STRING database
-  scores <- string_db$get_interactions(string_ids)
+  scores <- stringdb$get_interactions(string_ids)
   colnames(scores) <- c("Gene1", "Gene2", "combined_score")
 
   # Normalize interaction scores to the (0, 1) interval

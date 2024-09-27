@@ -7,8 +7,12 @@
 #'                       between 0 and 1.
 #' @param cutOff Numeric value, indicating for which pair of entries in the
 #'               `distanceMatrix` a 1 should be inserted in the adjacency
-#'               matrix. A 1 is inserted when for each entry in the matrix #
+#'               matrix. A 1 is inserted when for each entry in the matrix
 #'               that is smaller or equal to the `cutOff` value.
+#' @param weighted logical value, indicating whether or not the resulting 
+#'                 adjacency matrix should be weighted. If TRUE, the matrix will
+#'                 be weighted by the distance scores in `distanceMatrix`.
+#'                 Defaults to FALSE.
 #'
 #' @return A [Matrix::Matrix()] of adjacency status
 #' @importFrom Matrix Matrix
@@ -21,7 +25,8 @@
 #' threshold <- 0.3
 #' adj <- getAdjacencyMatrix(m, threshold)
 getAdjacencyMatrix <- function(distanceMatrix,
-                               cutOff) {
+                               cutOff,
+                               weighted = FALSE) {
   # Ensure that the distance score matrix is valid
   if (is.null(distanceMatrix) || length(distanceMatrix) == 0) {
     return(NULL)
@@ -36,8 +41,14 @@ getAdjacencyMatrix <- function(distanceMatrix,
     # Get indices of nodes within cutoff
     edge <- which(distanceMatrix[i, ] <= cutOff)
     if (length(edge) > 0) {
-      # Set adjacency matrix entry to 1 for connected nodes
-      adjMat[i, edge] <- 1
+      if(!weighted){
+        # Set adjacency matrix entry to 1 for connected nodes
+        adjMat[i, edge] <- 1
+      }else{
+        # Set adjacency matrix entry to the respective distance score
+        # for connected nodes
+        adjMat[i, edge] <- distanceMatrix[i, edge]
+      }
     }
   }
   # Set row and column names of the adjacency matrix
@@ -60,6 +71,9 @@ getAdjacencyMatrix <- function(distanceMatrix,
 #'                   genes belonging to the individual genesets.
 #' @param gs_names  vector, a vector of geneset descriptions/names, e.g. the
 #'                 `Term` / `Description` column of `geneset_df`.
+#' @param weighted logical value, whether or not the resulting graph should have
+#'                 weighted edges. If TRUE, the `adjMatrix` values will be used
+#'                 as weights. Default to FALSE.
 #'
 #' @return An `igraph` object to be further manipulated or processed/plotted
 #'         (e.g. via [igraph::plot.igraph()] or
@@ -75,13 +89,14 @@ getAdjacencyMatrix <- function(distanceMatrix,
 #' graph <- buildGraph(adj)
 buildGraph <- function(adjMatrix,
                        geneset_df = NULL,
-                       gs_names = NULL) {
+                       gs_names = NULL,
+                       weighted = FALSE) {
   # Build an undirected graph from the adjacency matrix
+  adjMatrix <- as.matrix(adjMatrix)
   g <- graph_from_adjacency_matrix(
     adjMatrix,
     mode = "undirected",
-    add.colnames = NULL,
-    add.rownames = NA,
+    weighted = weighted,
     diag = FALSE
     )
   # Get geneset names from row names of adjacency matrix
@@ -129,8 +144,9 @@ getClusterAdjacencyMatrix <- function(cluster,
     diag(adj) <- 0
     return(adj)
   }
+
   # Ensure that there are not more cluster than genesets
-  stopifnot(l >= max(unlist(cluster)))
+  stopifnot(l >= length(cluster))
   
   # Fill the adjacency matrix based on the provided cluster
   for (i in seq_len(length(cluster))) {
@@ -353,6 +369,28 @@ buildClusterGraph <- function(cluster,
             "lightgrey"
           V(g)$color.highlight[is.na(V(g)$color.highlight)] <-
             "lightgrey"
+          V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
+        } else {
+          # divergent palette to be used
+          mypal <- rev(scales::alpha(
+            colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.8
+          ))
+          mypal_hover <- rev(scales::alpha(
+            colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 0.5
+          ))
+          mypal_select <- rev(scales::alpha(
+            colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 1
+          ))
+          
+          V(g)$color.background <- map2color(col_var, mypal, symmetric = TRUE, 
+                                                          limits = range(na.omit(col_var)))
+          V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = TRUE, 
+                                                         limits = range(na.omit(col_var)))
+          V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = TRUE, 
+                                                     limits = range(na.omit(col_var)))
+          
+          V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
+          V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
           V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
         }
       }

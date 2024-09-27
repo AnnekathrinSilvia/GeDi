@@ -74,7 +74,7 @@ if(!is.null(reactive_values$ppi)){
 For some of the calculations and visualizations of the app, the selected parameters are important and crucial for the results. This is the current state of the individual parameters.
 
 ```{r parameters}
-cat("Your parameters of the Scoring panel")
+cat("Your parameters of the Distance Scores panel")
 
 scores <- names(reactive_values$scores)
 
@@ -89,7 +89,7 @@ if(length(scores) > 0){
 }
 
 
-cat("Your parameters of the Clustering panel")
+cat("Your parameters of the Clustering Graph panel")
 
 
 string <- paste("You have selected ", input$select_clustering, " as clustering method. \n", sep = "")

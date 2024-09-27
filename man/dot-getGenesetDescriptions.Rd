@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{.getGenesetDescriptions}
 \alias{.getGenesetDescriptions}
-\title{Title}
+\title{Get gene set descriptions}
 \usage{
 .getGenesetDescriptions(genesets)
 }
@@ -17,5 +17,8 @@ the genes contained in each geneset.}
 a \code{list} of geneset descriptions
 }
 \description{
-Title
+Extracts gene set descriptions from a provided gene set object.
+The function prioritizes columns "Term", "Description", or "Genesets" to
+find the appropriate descriptions. If any descriptions are duplicated,
+the function appends a suffix to make them unique.
 }

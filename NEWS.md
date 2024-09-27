@@ -1,4 +1,5 @@
 # GeDi 1.2.0
+* Smaller bug and typo fixes
 
 * Fixed the bug that the `getGenes()` function would set all gene names to all 
   caps which lead to the inability to download the correct PPI information for 
@@ -8,7 +9,7 @@
   the current version of the String database.
   
 * Fixed the broken zoom feature in the Optional Filtering Step in the Data Input
-  panel. Additionally added a column Description to the table of zoomed genesets
+  panel. Additionally added a column Description to the table of zoomed gene sets
   to facilitate interpretation.
   
 * Fixed that the clustering will now be reset whenever a new score is calculated.
@@ -21,8 +22,21 @@
 * Replaced all occurrences of PMM with pMM to match the notation of the original
   publication. 
   
-* Replaced the kNN clustering algortihm with kMeans as this seems to be more 
+* Replaced the kNN clustering algorithm with kMeans as this seems to be more 
   suitable for enrichment data. 
+  
+* Renamed the `goSimilarity()` function to `goDistance()` to better indicated 
+  that this is a distance rather than a similarity score. Also scaled all 
+  scores to the [0, 1] interval.
+
+* Fixed the normalization function in the `getKappaDistanceMatrix()` function.
+
+* Changed the implementation of the Louvain clustering algorithm to use a 
+  weighted graph now. The graph is weighted by the distance scores between 
+  gene sets.
+  
+* Added `GeneTonicList` as a possible input object for GeDi. Now GeDi is directly
+  compatible with `GeneTonic`.
 
 # GeDi 1.1.0
 

@@ -266,9 +266,9 @@ clustering <- function(scores,
               cluster_method == "markov")
   
   # Obtain adjacency matrix based on the distance scores and build a graph
-  adj_matrix <- getAdjacencyMatrix(scores, threshold)
+  adj_matrix <- getAdjacencyMatrix(scores, threshold, weighted = TRUE)
   stopifnot(!is.null(adj_matrix))
-  graph <- buildGraph(adj_matrix)
+  graph <- buildGraph(as.matrix(adj_matrix), weighted = TRUE)
   
   # Run Louvain or Markov clustering based on the chosen method
   if (cluster_method == "louvain") {
@@ -345,7 +345,7 @@ kNN_clustering <- function(scores,
 #' scores.
 #'
 #' @param scores A [Matrix::Matrix()] of (distance) scores
-#' @param center numerical, the number of centers to start with. This number will
+#' @param k numerical, the number of centers to start with. This number will
 #'               correlate with the resulting number of clusters.
 #' @param iter numerical, number of iterations for refinement. Defaults to 500.
 #' @param nstart numerical, how often the start points should be switched. 
@@ -361,29 +361,29 @@ kNN_clustering <- function(scores,
 #' scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 #' rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
 #'                                 "f", "g", "h", "i", "j")
-#' cluster <- kMeans_clustering(scores, center = 3)
+#' cluster <- kMeansClustering(scores, k = 3)
 #'
 #' ## Example using the data available in the package
 #' data(scores_macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
 #'
-#'cluster <- kMeans_clustering(scores_macrophage_topGO_example_small,
-#'                             center = 5)
-kMeans_clustering <- function(scores,
-                              center,
+#'cluster <- kMeansClustering(scores_macrophage_topGO_example_small,
+#'                             k = 5)
+kMeansClustering <- function(scores,
+                              k,
                               iter = 500, 
                               nstart = 50){
   # Check if there are any distance scores, if not, return NULL
   if (is.null(scores) || length(scores) == 0) {
     return(NULL)
   }
-  # Centers has to be positive, as this will be the number of
+  # k has to be positive, as this will be the number of
   # resulting clusters
-  stopifnot(center > 0)
+  stopifnot(k > 0)
   
   # Find k means results data
-  kMeans <- kmeans(scores, center, iter, nstart)
+  kMeans <- kmeans(scores, k, iter, nstart)
   cluster <- c()
   cluster <- lapply(seq_len(max(unique(kMeans$cluster))),
                     function(x) c(cluster,

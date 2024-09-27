@@ -24,6 +24,9 @@
 #'               column `combined_score` which is a numerical value of the
 #'               strength of the interaction.
 #' @param distance_scores A [Matrix::Matrix()] of (distance) scores
+#' @param gtl A `GeneTonicList`object generated with 
+#'            [GeneTonic::GeneTonic_list()], containing the functional enrichment
+#'            results.
 #' @param col_name_genesets character, the name of the column in which the
 #'                          geneset ids are listed. Defaults to "Genesets".
 #' @param col_name_genes character, the name of the column in which the genes
@@ -58,6 +61,7 @@
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
                  distance_scores = NULL,
+                 gtl = NULL, 
                  col_name_genesets = "Genesets",
                  col_name_genes = "Genes") {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
@@ -73,8 +77,14 @@ GeDi <- function(genesets = NULL,
   if (!(is.null(ppi_df))) {
     ppi <- .checkPPI(ppi_df)
   }
+  
   if (!(is.null(distance_scores))) {
+    stopifnot("When providing distance scores, you also need to provide the geneset data" = !is.null(genesets))
     distance_scores <- .checkScores(genesets, distance_scores)
+  }
+  
+  if(!(is.null(gtl))){
+    genesets <- .checkGTL(gtl)
   }
 
   # UI definition -----------------------------------------------------------
@@ -1801,7 +1811,7 @@ GeDi <- function(genesets = NULL,
       tryCatch(
         expr = {
           columns <- names(reactive_values$genesets)
-          stopifnot(any(columns) == "Genesets")
+          stopifnot(any(columns == "Genesets"))
           reactive_values$gs_names <-
             reactive_values$genesets$Genesets
           reactive_values$gs_description <-
@@ -2004,7 +2014,7 @@ GeDi <- function(genesets = NULL,
 
       progress$inc(1 / 12, detail = "Download PPI")
       reactive_values$ppi <- getPPI(reactive_values$genes,
-                                    string_db = stringdb,
+                                    stringdb = stringdb,
                                     anno_df = anno_df)
       progress$inc(4 / 12, detail = "Successfully downloaded PPI")
     })
@@ -2065,7 +2075,7 @@ GeDi <- function(genesets = NULL,
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
-      reactive_values$clustering <- NULL
+      reactive_values$cluster <- NULL
 
       progress$set(message = "Scoring your genesets", value = 0)
 
@@ -2214,7 +2224,7 @@ GeDi <- function(genesets = NULL,
         }
       } else if (input$select_clustering == "kMeans") {
         progress$set(message = "Start the kMeans Clustering", value = 0)
-        cluster <- kMeans_clustering(scores,
+        cluster <- kMeansClustering(scores,
                                   input$center)
         progress$inc(0.8, detail = "Finished clustering the data.")
       }

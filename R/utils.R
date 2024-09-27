@@ -156,7 +156,13 @@ getGenes <- function(genesets,
   return(results)
 }
 
-#' Title
+#' Get gene set descriptions
+#' 
+#' Extracts gene set descriptions from a provided gene set object. 
+#' The function prioritizes columns "Term", "Description", or "Genesets" to 
+#' find the appropriate descriptions. If any descriptions are duplicated, 
+#' the function appends a suffix to make them unique.
+#'
 #'
 #' @param genesets a `data.frame`, A `data.frame` with at least two columns.
 #'                 One should be called `Geneset`, containing the
@@ -281,6 +287,44 @@ getGenes <- function(genesets,
 
   # Return the validated and formatted distance_scores matrix
   return(distance_scores)
+}
+
+#' Check GeneTonic List format
+#'
+#' Check if the provided GeneTonic List object has the expected format for the 
+#' app and extract the functional enrichment results
+#'
+#'
+#' @param gtl A `GeneTonicList`object generated with 
+#'            [GeneTonic::GeneTonic_list()], containing the functional enrichment
+#'            results.
+#' @return A validated and renamed geneset [data.frame].
+.checkGTL <- function(gtl){
+  # Extract the names of elements in the GTL object
+  names <- names(gtl)
+  # Check if the GTL object contains the 'res_enrich' element
+  # The res_enrich element contains the functional enrichment results
+  stopifnot("GTL object does not contain functional enrichment results" = any(names == "res_enrich"))
+  
+  # Extract the functional enrichment results
+  genesets <- gtl$res_enrich
+  names <- names(genesets)
+  # Ensure the enrichment results contain 'gs_id' for gene set IDs
+  # Ensure the enrichment results contain 'gs_genes' for associated gene lists
+  stopifnot("Functional enrichment results do not contain geneset ids" = any(names == "gs_id"))
+  stopifnot("Functional enrichment results do not contain gene ids" = any(names == "gs_genes"))
+  
+  # Rename the 'gs_id' column to 'Genesets' and
+  # rename the 'gs_genes' column to 'Genes' to fit 
+  # the expected column names of GeDi
+  names(genesets)[names(genesets) == "gs_id"] <- "Genesets"
+  names(genesets)[names(genesets) == "gs_genes"] <- "Genes"
+  # Also rename the 'gs_description' column to 'Term' 
+  #to include the descriptions in figures
+  names(genesets)[names(genesets) == "gs_description"] <- "Term"
+  
+  # Return the validated and prepared geneset data.frame
+  return(genesets)
 }
 
 #' Determine the number of cores to use for a function

@@ -223,6 +223,7 @@ getpMMMatrix <- function(genesets,
   }
   # Ensure that the protein-protein interaction (PPI) network is provided
   stopifnot(!is.null(ppi))
+  stopifnot(alpha >= 0 && alpha <= 1)
 
   # Initialize an empty matrix for storing pMM distances
   scores <- Matrix(0, l, l)
