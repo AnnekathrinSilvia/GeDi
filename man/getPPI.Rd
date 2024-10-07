@@ -40,7 +40,7 @@ data(macrophage_topGO_example_small,
 stringdb <- getStringDB(9606)
 stringdb
 anno_df <- getAnnotation(stringdb)
-genes <- GeDi::getGenes(macrophage_topGO_example_small)
+genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 ppi <- getPPI(genes, stringdb, anno_df)
 }
 }

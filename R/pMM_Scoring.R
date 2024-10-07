@@ -37,7 +37,7 @@
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' data(ppi_macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
@@ -122,7 +122,7 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' data(ppi_macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
@@ -140,7 +140,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha) {
   # Calculate factor1 as the proportion of intersection size to z
   factor1 <- (length(intersect(a, b))) / z
   if(alpha == 0){
-    return(min(factor1, 1))
+    return(min(1 - factor1, 1))
   }
   
   # Calculate the interaction score as the minimum of two interaction scores
@@ -152,7 +152,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha) {
   factor2 <- (alpha / z) * interaction_score
   
   # Return the minimum of the sum of factor1 and factor2, and 1
-  return(min(factor1 + factor2, 1))
+  return(min(1 - (factor1 + factor2), 1))
 }
 
 
@@ -204,7 +204,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha) {
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' data(ppi_macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())

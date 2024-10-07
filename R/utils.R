@@ -16,6 +16,39 @@
 #'         `list` of the included genes.
 #' @export
 #'
+getGenes <- function(genesets,
+                     gene_name = NULL) {
+ 
+.Deprecated(old = "getGenes", new = "prepareGenesetData", 
+            msg = paste0(
+              "Please use `prepareGenesetData()` in replacement of the `getGenes()` function, ",
+              "originally located in the GeDi package. \nCheck the manual page for ",
+              "`?GeDi::prepareGenesetData()` to see the details on how to use it"))
+
+genes <- prepareGenesetData(genesets,
+                            gene_name)
+return(genes)
+}
+
+
+#' Split string of genes
+#'
+#' Split a long string of space separated genes into a `list` of individual
+#' genes.
+#'
+#' @param genesets a `data.frame`, A `data.frame` with at least two columns.
+#'                 One should be called `Geneset`, containing the
+#'                 names/identifiers of the genesets in the data. The second
+#'                 column should be called `Genes` and contains one string of
+#'                 the genes contained in each geneset.
+#' @param gene_name a character, Alternative name for the column containing the
+#'                  genes in `genesets`. If not given, the column is expected to
+#'                  be called `Genes`.
+#'
+#' @return A `list` containing for each geneset in the `Geneset` column a
+#'         `list` of the included genes.
+#' @export
+#'
 #' @examples
 #' ## Mock example showing how the data should look like
 #' df <- data.frame(
@@ -30,14 +63,14 @@
 #'     c("IARS,SUV3")
 #'   )
 #' )
-#' genes <- getGenes(df)
+#' genes <- prepareGenesetData(df)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- getGenes(macrophage_topGO_example_small)
-getGenes <- function(genesets,
+#' genes <- prepareGenesetData(macrophage_topGO_example_small)
+prepareGenesetData <- function(genesets,
                      gene_name = NULL) {
   # If there are no genesets, return NULL
   if (length(genesets) == 0) {
@@ -148,7 +181,7 @@ getGenes <- function(genesets,
   results[[2]] <- df_genesets$Geneset
 
   # Extract gene information for the remaining genesets
-  genes <- getGenes(df_genesets)
+  genes <- prepareGenesetData(df_genesets)
   results[[3]] <- genes
   # Rename the elements in the results list
   names(results) <- c("Geneset", "gs_names", "Genes")

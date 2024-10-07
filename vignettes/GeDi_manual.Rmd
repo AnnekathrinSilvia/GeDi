@@ -823,15 +823,16 @@ will be merged. Clusters are merged if their percentage of overlap meets or
 exceeds the clustering threshold. Users can adjust all thresholds using sliders
 provided in the interface.
 
-* **k-Means**: The k-means clustering algorithm partitions nodes into k distinct 
-clusters, where **k** is a user-defined parameter. The algorithm iteratively 
-assigns each node to the nearest cluster center based on calculated distance 
-scores, and then updates the cluster centers to minimize the overall variance 
-within each cluster. Users can specify the number of clusters, **k**, using a 
-slider in the interface, allowing them to tailor the clustering process to the 
-needs of their analysis. Adjusting the value of k enables the exploration of 
-different clustering granularities, providing flexibility in interpreting the 
-data and identifying meaningful patterns.
+* **PAM**: The PAM (Partitioning around Mendoids) clustering algorithm 
+partitions nodes into k distinct clusters, where **k** is a user-defined 
+parameter. The algorithm iteratively assigns each node to the nearest cluster 
+center based on calculated distance  scores, and then updates the cluster 
+centers to minimize the overall variance within each cluster. Users can 
+specify the number of clusters, **k**, using a  slider in the interface, 
+allowing them to tailor the clustering process to the needs of their analysis.
+Adjusting the value of k enables the exploration of different clustering 
+granularities, providing flexibility in interpreting the data and identifying 
+meaningful patterns.
 
 Once you choose a method, you can start the cluster calculation via the 
 **Cluster the Genesets** button on the right. Keep in mind that this step might 

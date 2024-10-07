@@ -50,7 +50,8 @@ Imports:
     wordcloud2,
     tools,
     BiocParallel,
-    BiocFileCache
+    BiocFileCache,
+    cluster
 Suggests: 
     knitr,
     rmarkdown,

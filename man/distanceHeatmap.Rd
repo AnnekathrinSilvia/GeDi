@@ -4,7 +4,7 @@
 \alias{distanceHeatmap}
 \title{Plot a heatmap}
 \usage{
-distanceHeatmap(distance_scores, chars_limit = 50)
+distanceHeatmap(distance_scores, chars_limit = 50, plot_labels = TRUE)
 }
 \arguments{
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores for each
@@ -14,6 +14,9 @@ pairwise combination of genesets.}
 row and column names of \code{distance_scores} should be
 plotted. Defaults to 50 and prevents crowded axes due to
 long names.}
+
+\item{plot_labels}{Logical, Indicates if row and collabels should be plotted.
+Defaults to TRUE}
 }
 \value{
 A \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}} plot object.

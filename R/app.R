@@ -379,11 +379,13 @@ GeDi <- function(genesets = NULL,
   gedi_server <- function(input, output, session) {
     # initializing reactives --------------------------------------------------
     reactive_values <- reactiveValues()
+    reactive_values$scores <- list()
 
     if (!is.null(genesets)) {
       reactive_values$genesets <- genesets
       reactive_values$gs_names <- genesets[[col_name_genesets]]
-      reactive_values$genes <- getGenes(genesets, gene_name = col_name_genes)
+      reactive_values$genes <- prepareGenesetData(genesets, 
+                                                  gene_name = col_name_genes)
       reactive_values$gs_description <-
         .getGenesetDescriptions(genesets)
     } else {
@@ -403,11 +405,22 @@ GeDi <- function(genesets = NULL,
     reactive_values$alt_names <- FALSE
     reactive_values$species <- NULL
 
-    if (!(is.null(distance_scores))) {
-      reactive_values$scores[["My_Score"]] <- distance_scores
-    } else {
-      reactive_values$scores <- list()
-    }
+    observe({
+      if (!is.null(distance_scores)) {
+        reactive_values$scores[[1]] <- distance_scores
+        names(reactive_values$scores)[[1]] <- "My_Score"
+      } else {
+        reactive_values$scores <- list()
+      }
+    })
+    
+    # if (!(is.null(distance_scores))) {
+    #   reactive_values$scores <- list()
+    #   reactive_values$scores <- c(reactive_values$scores, distance_scores)
+    #   names(reactive_values$scores) <- "My_Score"
+    # } else {
+    #   reactive_values$scores <- list()
+    # }
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
 
@@ -1143,8 +1156,14 @@ GeDi <- function(genesets = NULL,
         need(input$plots_distance_score != "",
              message = "Please select one of your distance score results to be displayed.")
       )
-      distanceHeatmap(reactive_values$scores[[input$plots_distance_score]],
-                      chars_limit = 20)
+      scores <- reactive_values$scores[[input$plots_distance_score]]
+      plot_labels <- FALSE
+      if(nrow(scores) <= 50){
+        plot_labels <- TRUE
+      }
+      distanceHeatmap(scores,
+                      chars_limit = 20, 
+                      plot_labels)
     })
 
 
@@ -1200,12 +1219,14 @@ GeDi <- function(genesets = NULL,
           visNodes(color = list(
             background = "#0092AC",
             highlight = "gold",
-            hover = "gold"
+            hover = "gold",
+            border = "#545454"
           )) %>%
           visEdges(color = list(
             background = "#0092AC",
             highlight = "gold",
-            hover = "gold"
+            hover = "gold",
+            border = "#545454"
           )) %>%
           visOptions(
             highlightNearest = list(
@@ -1256,7 +1277,7 @@ GeDi <- function(genesets = NULL,
                 choices = c("Louvain",
                             "Markov",
                             "Fuzzy",
-                            "kMeans")
+                            "PAM")
               )
             ),
             column(width = 6,
@@ -1401,8 +1422,8 @@ GeDi <- function(genesets = NULL,
         uiOutput("ui_markov")
       } else if (input$select_clustering == "Fuzzy") {
         uiOutput("ui_fuzzy")
-      } else if (input$select_clustering == "kMeans") {
-        uiOutput("ui_kMeans")
+      } else if (input$select_clustering == "PAM") {
+        uiOutput("ui_pam")
       }
     })
 
@@ -1481,9 +1502,9 @@ GeDi <- function(genesets = NULL,
       )
     })
 
-    output$ui_kMeans <- renderUI({
+    output$ui_pam <- renderUI({
       fluidRow(
-        h2("Select the center number for kMeans clustering."),
+        h2("Select the center number for PAM clustering."),
         br(),
         column(
           width = 6,
@@ -1515,6 +1536,12 @@ GeDi <- function(genesets = NULL,
         )
       } else {
         visNetwork::visIgraph(graph) %>%
+          visNodes(color = list(
+            border = "#545454"
+          )) %>%
+          visEdges(color = list(
+            border = "#545454"
+          )) %>%
           visOptions(
             highlightNearest = list(
               enabled = TRUE,
@@ -1553,6 +1580,12 @@ GeDi <- function(genesets = NULL,
 
       visNetwork::visIgraph(graph) %>%
         visIgraphLayout(layout = "layout_as_bipartite") %>%
+        visNodes(color = list(
+          border = "#545454"
+        )) %>%
+        visEdges(color = list(
+          border = "#545454"
+        )) %>%
         visOptions(
           highlightNearest = list(
             enabled = TRUE,
@@ -1817,7 +1850,7 @@ GeDi <- function(genesets = NULL,
           reactive_values$gs_description <-
             .getGenesetDescriptions(reactive_values$genesets)
           reactive_values$genes <-
-            getGenes(reactive_values$genesets)
+            prepareGenesetData(reactive_values$genesets)
           reactive_values$genesets$Genes <-
             vapply(reactive_values$genesets$Genes, function(x)
               gsub("/", ",", x), character(1))
@@ -1846,8 +1879,8 @@ GeDi <- function(genesets = NULL,
       reactive_values$gs_names <-
         reactive_values$genesets[, input$alt_name_genesets]
 
-      reactive_values$genes <- getGenes(reactive_values$genesets,
-                                        input$alt_name_genes)
+      reactive_values$genes <- prepareGenesetData(reactive_values$genesets,
+                                                  input$alt_name_genes)
 
       reactive_values$gs_description <-
         .getGenesetDescriptions(reactive_values$genesets)
@@ -1887,7 +1920,7 @@ GeDi <- function(genesets = NULL,
         macrophage_topGO_example$Term
 
       progress$inc(1 / 3, detail = "Extracting Genes")
-      reactive_values$genes <- getGenes(reactive_values$genesets)
+      reactive_values$genes <- prepareGenesetData(reactive_values$genesets)
 
       progress$inc(1 / 3, detail = "Successfully loaded demo data")
     })
@@ -2131,6 +2164,7 @@ GeDi <- function(genesets = NULL,
         )
       } else {
         rownames(scores) <- colnames(scores) <- reactive_values$gs_names
+        
         l <- length(reactive_values$scores) + 1
 
         reactive_values$scores[[l]] <- scores
@@ -2222,9 +2256,9 @@ GeDi <- function(genesets = NULL,
         } else{
           reactive_values$seeds <- seeds
         }
-      } else if (input$select_clustering == "kMeans") {
-        progress$set(message = "Start the kMeans Clustering", value = 0)
-        cluster <- kMeansClustering(scores,
+      } else if (input$select_clustering == "PAM") {
+        progress$set(message = "Start the PAM Clustering", value = 0)
+        cluster <- pamClustering(scores,
                                   input$center)
         progress$inc(0.8, detail = "Finished clustering the data.")
       }

@@ -55,7 +55,7 @@ pMM <- getpMMMatrix(genesets, ppi)
 data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
-genes <- GeDi::getGenes(macrophage_topGO_example_small)
+genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 data(ppi_macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())

@@ -83,6 +83,8 @@ goDistance <- function(geneset_ids,
     go_sim[g, (g + 1):l] <- go_sim[(g + 1):l, g] <- unlist(results[[g]])
   }
   
+  go_sim[is.na(go_sim)] <- 0
+  
   # Next, we have to normalize some of the similarities to the [0, 1]
   # interval and afterwards transform the similarity to a distance by 
   # calculating 1 - Similarity
@@ -105,6 +107,7 @@ goDistance <- function(geneset_ids,
   }
   
   go_dist <- 1 - go_sim
+  diag(go_dist) <- 0
   # Return the rounded GO distance scores matrix
   return(round(go_dist, 2))
 }

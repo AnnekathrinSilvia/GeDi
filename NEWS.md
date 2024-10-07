@@ -3,7 +3,8 @@
 
 * Fixed the bug that the `getGenes()` function would set all gene names to all 
   caps which lead to the inability to download the correct PPI information for 
-  species like mouse.
+  species like mouse. Also renamed the function to `prepareGenesetData()` to 
+  reflect more accurately its behavior. 
   
 * Updated the default version used in the `getId()` and `getStringDB()` to 12.0, 
   the current version of the String database.
@@ -22,8 +23,9 @@
 * Replaced all occurrences of PMM with pMM to match the notation of the original
   publication. 
   
-* Replaced the kNN clustering algorithm with kMeans as this seems to be more 
-  suitable for enrichment data. 
+* Replaced the kNN clustering algorithm with PAM (partitioning around mendoids) 
+  as this seems to be more suitable for enrichment data represented by distance
+  scores. 
   
 * Renamed the `goSimilarity()` function to `goDistance()` to better indicated 
   that this is a distance rather than a similarity score. Also scaled all 

@@ -165,7 +165,7 @@ getAnnotation <- function(stringdb) {
 #' stringdb <- getStringDB(9606)
 #' stringdb
 #' anno_df <- getAnnotation(stringdb)
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' ppi <- getPPI(genes, stringdb, anno_df)
 #' }
 getPPI <- function(genes,
@@ -206,5 +206,7 @@ getPPI <- function(genes,
   df <- distinct(df)
   # Return the final data frame of interactions and scores
   scores <- rbind(scores, df)
+  filter <- (scores$Gene1 %in% genes | scores$Gene2 %in% genes)
+  scores <- scores[filter,]
   return(scores)
 }

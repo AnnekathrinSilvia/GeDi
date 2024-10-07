@@ -17,7 +17,7 @@
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' sd <- calculateSorensenDice(genes[1], genes[2])
 calculateSorensenDice <- function(a, b) {
   # Calculate the lengths of the input sets
@@ -64,7 +64,7 @@ calculateSorensenDice <- function(a, b) {
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' sd_matrix <- getSorensenDiceMatrix(genes)
 getSorensenDiceMatrix <- function(genesets,
                                   progress = NULL,

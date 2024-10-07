@@ -226,6 +226,89 @@ fuzzyClustering <- function(seeds,
 }
 
 
+#' Cluster genesets using Markov clustering.
+#'
+#' This function is a wrapper function for the Markov clustering. 
+#' The actual computation of the clustering is done in the `GeDi::clustering()`
+#' function. This function is mainly a wrapper function for stand-alone use of 
+#' GeDi functionalities to enhance user experience and allow for a clearer
+#' distinction of the individual clustering algorithms. 
+#'
+#' @param scores A [Matrix::Matrix()] of (distance) scores
+#' @param threshold numerical, A threshold used to determine which genesets are
+#'                  considered similar. Genesets are considered similar if
+#'                  (distance) score <= threshold.
+#'                  similar.
+#'
+#' @return A `list` of clusters
+#' @export
+#'
+#' @examples
+#' ## Mock example showing how the data should look like
+#' m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+#' rownames(m) <- colnames(m) <- c("a", "b", "c", "d", "e",
+#'                                 "f", "g", "h", "i", "j")
+#' markovCluster <- markovClustering(m, 0.3)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#' markovCluster <- markovClustering(scores_macrophage_topGO_example_small,
+#'                         threshold = 0.5)
+markovClustering <- function(scores, 
+                             threshold){
+  
+  cluster <- clustering(scores,
+                        threshold, 
+                        cluster_method = "markov")
+  
+  return(cluster)
+}
+
+
+
+#' Cluster genesets using Louvain clustering.
+#'
+#' This function is a wrapper function for the Louvain clustering. 
+#' The actual computation of the clustering is done in the `GeDi::clustering()`
+#' function. This function is mainly a wrapper function for stand-alone use of 
+#' GeDi functionalities to enhance user experience and allow for a clearer
+#' distinction of the individual clustering algorithms. 
+#'
+#' @param scores A [Matrix::Matrix()] of (distance) scores
+#' @param threshold numerical, A threshold used to determine which genesets are
+#'                  considered similar. Genesets are considered similar if
+#'                  (distance) score <= threshold.
+#'                  similar.
+#'
+#' @return A `list` of clusters
+#' @export
+#'
+#' @examples
+#' ## Mock example showing how the data should look like
+#' m <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+#' rownames(m) <- colnames(m) <- c("a", "b", "c", "d", "e",
+#'                                 "f", "g", "h", "i", "j")
+#' louvainCluster <- louvainClustering(m, 0.3)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#' louvainCluster <- louvainClustering(scores_macrophage_topGO_example_small,
+#'                         threshold = 0.5)
+louvainClustering <- function(scores, 
+                              threshold){
+  cluster <- clustering(scores,
+                        threshold, 
+                        cluster_method = "louvain")
+  
+  return(cluster)
+}
+
 #' Cluster genesets.
 #'
 #' This function performs clustering on a set of scores using either the Louvain
@@ -357,7 +440,7 @@ kNN_clustering <- function(scores,
 #' @export
 #'
 #' @examples
-#' #' ## Mock example showing how the data should look like
+#' ## Mock example showing how the data should look like
 #' scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
 #' rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
 #'                                 "f", "g", "h", "i", "j")
@@ -388,6 +471,55 @@ kMeansClustering <- function(scores,
   cluster <- lapply(seq_len(max(unique(kMeans$cluster))),
                     function(x) c(cluster,
                                   which(kMeans$cluster == x)))
+  # Return the list of clusters based on k-Nearest Neighbors
+  return(cluster)
+}
+
+#' Calculate clusters based on PAM clustering
+#'
+#' This function performs Partioning aroung Medoids clustering on a set of
+#' scores.
+#'
+#' @param scores A [Matrix::Matrix()] of (distance) scores
+#' @param k numerical, the number of centers to start with. This number will
+#'               correlate with the resulting number of clusters.
+#'
+#' @return A `list` of clusters
+#' @importFrom cluster pam
+#' @export
+#'
+#' @examples
+#' ## Mock example showing how the data should look like
+#' scores <- Matrix::Matrix(stats::runif(100, min = 0, max = 1), 10, 10)
+#' rownames(scores) <- colnames(scores) <- c("a", "b", "c", "d", "e",
+#'                                 "f", "g", "h", "i", "j")
+#' cluster <- pamClustering(scores, k = 3)
+#'
+#' ## Example using the data available in the package
+#' data(scores_macrophage_topGO_example_small,
+#'      package = "GeDi",
+#'      envir = environment())
+#'
+#'cluster <- pamClustering(scores_macrophage_topGO_example_small,
+#'                                k = 5)
+pamClustering <- function(scores,
+                          k){
+  
+  # Check if there are any distance scores, if not, return NULL
+  if (is.null(scores) || length(scores) == 0) {
+    return(NULL)
+  }
+  # k has to be positive, as this will be the number of
+  # resulting clusters
+  stopifnot(k > 0)
+  
+  # Find pam results data
+  pam <- cluster::pam(scores, k, diss = T,
+                      pamonce = 5)
+  cluster <- c()
+  cluster <- lapply(seq_len(max(unique(pam$clustering))),
+                    function(x) c(cluster,
+                                  which(pam$clustering == x)))
   # Return the list of clusters based on k-Nearest Neighbors
   return(cluster)
 }

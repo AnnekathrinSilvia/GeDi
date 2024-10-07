@@ -1,9 +1,9 @@
-test_that("No genesets - getGenes", {
+test_that("No genesets - prepareGenesetData", {
   genesets <- list()
-  expect_true(is.null(getGenes(genesets = genesets)))
+  expect_true(is.null(prepareGenesetData(genesets = genesets)))
 })
 
-test_that("No column named Genes - getGenes", {
+test_that("No column named Genes - prepareGenesetData", {
   df <- data.frame(
     Geneset = c(
       "Cell Cycle",
@@ -16,13 +16,13 @@ test_that("No column named Genes - getGenes", {
       c("IARS,SUV3")
     )
   )
-  expect_error(getGenes(genesets = df))
-  genes <- getGenes(genesets = df, gene_name = "Gen")
+  expect_error(prepareGenesetData(genesets = df))
+  genes <- prepareGenesetData(genesets = df, gene_name = "Gen")
   expect_equal(length(genes), 3)
   expect_type(genes, "list")
 })
 
-test_that("getGenes runs correctly", {
+test_that("prepareGenesetData runs correctly", {
   df <- data.frame(
     Geneset = c(
       "Cell Cycle",
@@ -35,7 +35,7 @@ test_that("getGenes runs correctly", {
       c("IARS,SUV3")
     )
   )
-  genes <- getGenes(genesets = df)
+  genes <- prepareGenesetData(genesets = df)
   expect_equal(length(genes), 3)
   expect_type(genes, "list")
 })
@@ -72,7 +72,7 @@ test_that(".filterGenesets runs correctly", {
       c("IARS,SUV3")
     )
   )
-  genes <- getGenes(df)
+  genes <- prepareGenesetData(df)
   genes <- genes[c(-3)]
   test_df <- .filterGenesets(remove = "Mitosis", df)
   expect_identical(c("Cell Cycle", "Biological Process"), test_df[[2]])
