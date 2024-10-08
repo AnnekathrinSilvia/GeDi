@@ -2164,11 +2164,17 @@ GeDi <- function(genesets = NULL,
         )
       } else {
         rownames(scores) <- colnames(scores) <- reactive_values$gs_names
+        calculated_scores <- names(reactive_values$scores)
         
-        l <- length(reactive_values$scores) + 1
-
-        reactive_values$scores[[l]] <- scores
-        names(reactive_values$scores)[[l]] <- input$scoringmethod
+        if(input$scoringmethod %in% calculated_scores){
+         i <- which(input$scoringmethod == calculated_scores)
+         reactive_values$scores[[i]] <- scores
+        }else{
+          l <- length(reactive_values$scores) + 1
+          
+          reactive_values$scores[[l]] <- scores
+          names(reactive_values$scores)[[l]] <- input$scoringmethod
+        }
         updateBox("distance_calc_box", action = "toggle")
       }
     })

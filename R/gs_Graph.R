@@ -250,7 +250,7 @@ buildClusterGraph <- function(cluster,
     }
   }
   V(g)$title[ids] <-
-    getGraphTitle(geneset_df, ids, gs_ids, gs_names)
+    getGraphTitle(geneset_df, ids, gs_ids, gs_names, V(g)$cluster)
   # Remove nodes without any connections (degree equals 0)
   no_cluster <- V(g)[degree(g) == 0]
   stopifnot("No cluster found. Please choose a different threshold and cluster again." = length(no_cluster) != length(gs_names))
@@ -599,6 +599,7 @@ getBipartiteGraph <- function(cluster,
 #'                column of `geneset_df`.
 #' @param gs_names  vector, a vector of geneset descriptions/names, e.g. the
 #'                 `Term` / `Description` column of `geneset_df`.
+#' @param cluster_id vector, a vector of cluster ids for each of the genesets
 #'
 #' @return  A `list` of titles for a graph with nodes given by `node_ids`.
 #' @export
@@ -626,10 +627,14 @@ getBipartiteGraph <- function(cluster,
 getGraphTitle <- function(geneset_df = NULL,
                           node_ids,
                           gs_ids,
-                          gs_names = NULL) {
+                          gs_names = NULL,
+                          cluster_id = NULL) {
   if (!is.null(geneset_df)) {
     # Construct HTML-based title for each node using input information from
     # geneset_df
+    if(!is.null(cluster_id)){
+      geneset_df$cluster <- cluster_id
+    }
     transposed_df <- as.data.frame(t(geneset_df))
     title <- list()
     names_rows <- rownames(transposed_df)

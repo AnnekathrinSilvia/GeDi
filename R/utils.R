@@ -71,7 +71,7 @@ return(genes)
 #'      envir = environment())
 #' genes <- prepareGenesetData(macrophage_topGO_example_small)
 prepareGenesetData <- function(genesets,
-                     gene_name = NULL) {
+                               gene_name = NULL) {
   # If there are no genesets, return NULL
   if (length(genesets) == 0) {
     return(NULL)

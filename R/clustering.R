@@ -514,7 +514,7 @@ pamClustering <- function(scores,
   stopifnot(k > 0)
   
   # Find pam results data
-  pam <- cluster::pam(scores, k, diss = T,
+  pam <- cluster::pam(scores, k, diss = TRUE,
                       pamonce = 5)
   cluster <- c()
   cluster <- lapply(seq_len(max(unique(pam$clustering))),

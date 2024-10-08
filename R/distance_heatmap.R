@@ -13,6 +13,7 @@
 #'
 #' @return A [ComplexHeatmap::Heatmap()] plot object.
 #' @importFrom ComplexHeatmap Heatmap
+#' @importFrom circlize colorRamp2
 #' @export
 #'
 #' @examples
@@ -44,6 +45,8 @@ distanceHeatmap <- function(distance_scores,
     rownames(distance_scores) <- colnames(distance_scores) <- NULL
   }
 
+  col_fun <- colorRamp2(c(0, 0.5, 1), c("red", "white", "blue"))
+  
   # Create a heatmap using the distance scores matrix
   p <- Heatmap(as.matrix(distance_scores), 
                heatmap_legend_param = list(title = "Distance Scores"))
