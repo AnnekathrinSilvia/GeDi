@@ -4,7 +4,14 @@
 \alias{distanceHeatmap}
 \title{Plot a heatmap}
 \usage{
-distanceHeatmap(distance_scores, chars_limit = 50, plot_labels = TRUE)
+distanceHeatmap(
+  distance_scores,
+  chars_limit = 50,
+  plot_labels = TRUE,
+  cluster_rows = TRUE,
+  cluster_columns = TRUE,
+  title = "Distance Scores"
+)
 }
 \arguments{
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores for each
@@ -17,6 +24,15 @@ long names.}
 
 \item{plot_labels}{Logical, Indicates if row and collabels should be plotted.
 Defaults to TRUE}
+
+\item{cluster_rows}{Logical, Indicates whether or not the rows should be
+clustered based on the distance scores. Defaults to TRUE}
+
+\item{cluster_columns}{Logical, Indicates whether or not the rows should be
+clustered based on the distance scores. Defaults to
+TRUE}
+
+\item{title}{character, a title for the figure. Defaults to "Distance Scores"}
 }
 \value{
 A \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}} plot object.

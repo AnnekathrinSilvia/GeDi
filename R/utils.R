@@ -183,6 +183,7 @@ prepareGenesetData <- function(genesets,
   # Extract gene information for the remaining genesets
   genes <- prepareGenesetData(df_genesets)
   results[[3]] <- genes
+
   # Rename the elements in the results list
   names(results) <- c("Geneset", "gs_names", "Genes")
   # Return the filtered geneset information

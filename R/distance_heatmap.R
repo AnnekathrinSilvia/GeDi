@@ -10,6 +10,13 @@
 #'                    long names.
 #' @param plot_labels Logical, Indicates if row and collabels should be plotted.
 #'                    Defaults to TRUE
+#' @param cluster_rows Logical, Indicates whether or not the rows should be 
+#'                     clustered based on the distance scores. Defaults to TRUE
+#' @param cluster_columns Logical, Indicates whether or not the rows should be 
+#'                        clustered based on the distance scores. Defaults to 
+#'                        TRUE
+#' @param title character, a title for the figure. Defaults to "Distance Scores" 
+#'              
 #'
 #' @return A [ComplexHeatmap::Heatmap()] plot object.
 #' @importFrom ComplexHeatmap Heatmap
@@ -31,7 +38,10 @@
 #' p <- distanceHeatmap(scores_macrophage_topGO_example_small)
 distanceHeatmap <- function(distance_scores,
                             chars_limit = 50,
-                            plot_labels = TRUE) {
+                            plot_labels = TRUE,
+                            cluster_rows = TRUE,
+                            cluster_columns = TRUE,
+                            title = "Distance Scores") {
   # Check if distance scores are provided
   stopifnot(!is.null(distance_scores))
   stopifnot(chars_limit >= 0)
@@ -49,7 +59,9 @@ distanceHeatmap <- function(distance_scores,
   
   # Create a heatmap using the distance scores matrix
   p <- Heatmap(as.matrix(distance_scores), 
-               heatmap_legend_param = list(title = "Distance Scores"))
+               heatmap_legend_param = list(title = title),
+               cluster_rows = cluster_rows,
+               cluster_columns = cluster_columns)
   # Return the heatmap plot
   return(p)
 }

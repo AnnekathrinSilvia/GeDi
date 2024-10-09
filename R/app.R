@@ -1997,7 +1997,7 @@ GeDi <- function(genesets = NULL,
         reactive_values$gs_names <- filtered_data$gs_names
         reactive_values$genes <- filtered_data$Genes
         reactive_values$gs_description <-
-          .getGenesetDescriptions(reactive_values$genesets)
+          .getGenesetDescriptions(filtered_data$Geneset)
 
         showNotification("Successfully filtered the selected Genesets.",
                          type = "message")
@@ -2298,11 +2298,11 @@ GeDi <- function(genesets = NULL,
             showNotification("Select a node in the network to bookmark it",
                              type = "warning")
           } else{
-            cur_node <- match(cur_sel, V(g)$name)
-            cur_sel_term <- reactive_values$gs_description[cur_node]
+            cur_node <- which(reactive_values$gs_description == cur_sel)
+            cur_sel_id <- reactive_values$gs_names[cur_node]
             cur_sel_merged <-
-              c("Geneset_id" = cur_sel,
-                "Geneset_description" = cur_sel_term)
+              c("Geneset_id" = cur_sel_id,
+                "Geneset_description" = cur_sel)
             if (cur_sel %in% reactive_values$bookmarked_genesets) {
               showNotification(
                 sprintf(
@@ -2340,6 +2340,7 @@ GeDi <- function(genesets = NULL,
                              type = "warning")
           } else {
             if (cur_nodetype == "Geneset") {
+              cur_node <- which(reactive_values$gs_names == cur_sel)
               cur_sel_term <- reactive_values$gs_description[cur_node]
               cur_sel_merged <-
                 c("Geneset_id" = cur_sel,
