@@ -8,6 +8,7 @@ GeDi(
   genesets = NULL,
   ppi_df = NULL,
   distance_scores = NULL,
+  gtl = NULL,
   col_name_genesets = "Genesets",
   col_name_genes = "Genes"
 )
@@ -39,6 +40,10 @@ column \code{combined_score} which is a numerical value of the
 strength of the interaction.}
 
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
+
+\item{gtl}{A \code{GeneTonicList}object generated with
+\code{\link[GeneTonic:GeneTonicList]{GeneTonic::GeneTonic_list()}}, containing the functional enrichment
+results.}
 
 \item{col_name_genesets}{character, the name of the column in which the
 geneset ids are listed. Defaults to "Genesets".}

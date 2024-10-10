@@ -4,7 +4,7 @@
 \alias{pMMlocal}
 \title{Calculate local pMM distance}
 \usage{
-pMMlocal(a, b, ppi, maxInteract, alpha = 1)
+pMMlocal(a, b, ppi, maxInteract, alpha)
 }
 \arguments{
 \item{a, b}{character vector, set of gene identifiers.}
@@ -39,19 +39,19 @@ ppi <- data.frame(
 )
 maxInteract <- max(ppi$combined_score)
 
-pMM_score <- pMMlocal(a, b, ppi, maxInteract)
+pMM_score <- pMMlocal(a, b, ppi, alpha = 1,  maxInteract)
 
 ## Example using the data available in the package
 data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
-genes <- GeDi::getGenes(macrophage_topGO_example_small)
+genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 data(ppi_macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
 maxInteract <- max(ppi_macrophage_topGO_example_small$combined_score)
 
-pMMlocal <- pMMlocal(genes[1], genes[2], ppi, maxInteract)
+pMMlocal <- pMMlocal(genes[1], genes[2], ppi, alpha = 1,  maxInteract)
 }
 \references{
 See https://doi.org/10.1186/s12864-019-5738-6 for details on the original

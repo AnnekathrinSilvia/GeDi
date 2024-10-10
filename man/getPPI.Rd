@@ -4,13 +4,13 @@
 \alias{getPPI}
 \title{Download Protein-Protein Interaction (PPI)}
 \usage{
-getPPI(genes, string_db, anno_df)
+getPPI(genes, stringdb, anno_df)
 }
 \arguments{
 \item{genes}{a \code{list}, A \code{list} of genes to download the respective protein-
 protein interaction information}
 
-\item{string_db}{A \link{STRINGdb} object, the species of the object should match
+\item{stringdb}{A \link{STRINGdb} object, the species of the object should match
 the species of \code{genes}.}
 
 \item{anno_df}{An annotation \code{data.frame} mapping \link{STRINGdb} ids to gene
@@ -27,20 +27,20 @@ object
 ## Mock example showing how the data should look like
 
 genes <- c(c("CFTR", "RALA"), c("CACNG3", "ITGA3"), c("DVL2"))
-string_db <- getStringDB(9606, cache_location = FALSE)
-# string_db
-anno_df <- getAnnotation(string_db)
-ppi <- getPPI(genes, string_db, anno_df)
+stringdb <- getStringDB(9606, cache_location = FALSE)
+# stringdb
+anno_df <- getAnnotation(stringdb)
+ppi <- getPPI(genes, stringdb, anno_df)
 
 ## Example using the data available in the package
 \dontrun{
 data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
-string_db <- getStringDB(9606)
-string_db
-anno_df <- getAnnotation(string_db)
-genes <- GeDi::getGenes(macrophage_topGO_example_small)
-ppi <- getPPI(genes, string_db, anno_df)
+stringdb <- getStringDB(9606)
+stringdb
+anno_df <- getAnnotation(stringdb)
+genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
+ppi <- getPPI(genes, stringdb, anno_df)
 }
 }

@@ -4,7 +4,13 @@
 \alias{getGraphTitle}
 \title{Build up the node title}
 \usage{
-getGraphTitle(geneset_df = NULL, node_ids, gs_ids, gs_names = NULL)
+getGraphTitle(
+  geneset_df = NULL,
+  node_ids,
+  gs_ids,
+  gs_names = NULL,
+  cluster_id = NULL
+)
 }
 \arguments{
 \item{geneset_df}{A \code{data.frame} of genesets with a column \code{Genesets}
@@ -19,6 +25,8 @@ column of \code{geneset_df}.}
 
 \item{gs_names}{vector, a vector of geneset descriptions/names, e.g. the
 \code{Term} / \code{Description} column of \code{geneset_df}.}
+
+\item{cluster_id}{vector, a vector of cluster ids for each of the genesets}
 }
 \value{
 A \code{list} of titles for a graph with nodes given by \code{node_ids}.

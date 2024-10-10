@@ -8,7 +8,7 @@ gs_names_reactome <- macrophage_Reactome_example$ID
 gs_names_reactome <- gs_names_reactome[1:nrow(scores_macrophage_topGO_example_small)]
 gs_names_kegg <- macrophage_KEGG_example$ID
 gs_names_kegg <- gs_names_kegg[1:nrow(scores_macrophage_topGO_example_small)]
-genes <- getGenes(macrophage_topGO_example_small)
+genes <- prepareGenesetData(macrophage_topGO_example_small)
 
 test_that("getAdjacencyMatrix - No distance scores", {
   expect_true(is.null(getAdjacencyMatrix(NULL, 0.5)))
@@ -97,14 +97,12 @@ test_that("getBipartiteGraph runs correctly", {
 
 test_that("buildClusterGraph - no cluster", {
   cluster <- list()
-  graph <- buildClusterGraph(
+
+  expect_error(  graph <- buildClusterGraph(
     cluster,
     macrophage_topGO_example_small,
     gs_names
-  )
-  expect_type(graph, "list")
-  expect_equal(gorder(graph), 0)
-  expect_equal(gsize(graph), 0)
+  ))
 })
 
 test_that("buildClusterGraph coloring", {

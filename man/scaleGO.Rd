@@ -19,7 +19,7 @@ identifiers in \code{geneset_ids}.}
 
 \item{geneset_ids}{\code{list}, a \code{list} of GO identifiers to score}
 
-\item{method}{character, the method to calculate the GO similarity.
+\item{method}{character, the method to calculate the GO distance.
 See \link[GOSemSim:goSim]{GOSemSim::goSim} measure parameter for possibilities.}
 
 \item{ontology}{character, the ontology to use. See \link[GOSemSim:goSim]{GOSemSim::goSim}

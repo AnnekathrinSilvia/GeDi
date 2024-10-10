@@ -4,7 +4,7 @@
 \alias{buildGraph}
 \title{Construct a graph}
 \usage{
-buildGraph(adjMatrix, geneset_df = NULL, gs_names = NULL)
+buildGraph(adjMatrix, geneset_df = NULL, gs_names = NULL, weighted = FALSE)
 }
 \arguments{
 \item{adjMatrix}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} indicating for which pair of nodes an
@@ -18,6 +18,10 @@ genes belonging to the individual genesets.}
 
 \item{gs_names}{vector, a vector of geneset descriptions/names, e.g. the
 \code{Term} / \code{Description} column of \code{geneset_df}.}
+
+\item{weighted}{logical value, whether or not the resulting graph should have
+weighted edges. If TRUE, the \code{adjMatrix} values will be used
+as weights. Default to FALSE.}
 }
 \value{
 An \code{igraph} object to be further manipulated or processed/plotted

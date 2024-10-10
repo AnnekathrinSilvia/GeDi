@@ -29,20 +29,18 @@
 #'      envir = environment())
 #' dendro <- distanceDendro(scores_macrophage_topGO_example_small,
 #'                         cluster_method = "average")
-distanceDendro <-
-  function(distance_scores, cluster_method = "average") {
-    # Check if distance scores are provided
-    stopifnot(length(distance_scores) > 0 &&
-                (!is.null(distance_scores)))
-
-    # Calculate the distance between the distance scores and perform
-    # hierarchical clustering
-    dist <- dist(t(distance_scores))
-    hc <- hclust(dist, cluster_method)
-
-    # Create and plot the dendrogram
-    p <- ggdendrogram(hc, rotate = FALSE, size = 2)
-
-    # Return the dendrogram plot
-    return(p)
-  }
+distanceDendro <- function(distance_scores,
+                           cluster_method = "average") {
+  # Check if distance scores are provided
+  stopifnot(length(distance_scores) > 0 &&
+              (!is.null(distance_scores)))
+  
+  # Calculate the distance between the distance scores and perform
+  # hierarchical clustering
+  dist <- dist(t(distance_scores))
+  hc <- hclust(dist, cluster_method)
+  # Create and plot the dendrogram
+  p <- ggdendrogram(hc, rotate = FALSE, size = 2)
+  # Return the dendrogram plot
+  return(p)
+}

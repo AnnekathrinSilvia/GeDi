@@ -281,6 +281,7 @@ bg_ids <- rowData(dds_macrophage)$SYMBOL[rowSums(counts(dds_macrophage)) > 0]
 ```{r create_resenrich2, eval=TRUE}
 # Load required package for analysis
 library("topGO")
+library("org.Hs.eg.db")
 
 # Perform Gene Ontology enrichment analysis using the topGOtable function from 
 # the "pcaExplorer" package
@@ -520,7 +521,7 @@ knitr::include_graphics("Optional_Filtering.png")
 
 Upon advancing to the second box labeled **Step 2**, you'll encounter the crucial
 task of selecting the species associated with your dataset. This step holds 
-significant importance for the computation of the **PMM score** within 
+significant importance for the computation of the **pMM score** within 
 `r BiocStyle::Biocpkg("GeDi")`, which heavily relies on a 
 **Protein-Protein Interaction (PPI)** matrix. This matrix plays a pivotal role in
 capturing protein interaction strength, thereby enriching distance scores with 
@@ -601,27 +602,27 @@ This feature provides users with a range of options to tailor the analysis
 according to their specific requirements and preferences. The available scores 
 are: 
 
-* **PMM Score**: This score integrates protein-protein interaction (PPI) data 
-into the Meet-Min distance. The PPI-weighted Meet-Min (**PMM**) score is defined 
+* **pMM Score**: This score integrates protein-protein interaction (PPI) data 
+into the Meet-Min distance. The PPI-weighted Meet-Min (**pMM**) score is defined 
 as 
 
 $$
 \begin{aligned}
-PMM = min(PMM(A -> B), PMM(B -> A))
+pMM = min(pMM(A -> B), pMM(B -> A))
 \end{aligned}
 $$
 where 
 
 $$
 \begin{aligned}
-PMM(X -> Y) = 1 - \frac{|X \cap Y|}{min(|X|, |Y|)} - \\ \frac{\alpha}{min(|X|,|Y|)} \sum_{x \in X-Y} \frac{w \sum_{y \in X \cap Y} PPI(x, y) + \sum_{y \in Y - X}PPI(x, y)}{max(PPI) (w |X \cap Y| + |Y - X|)}
+pMM(A -> B) = 1 - \frac{|A \cap B|}{min(|A|, |B|)} - \frac{\alpha}{min(|A|, |B|)} * \sum_{a \in A - B} \frac{w * \sum_{b \in A \cap B} P(a, b) + \sum_{b \in B - A} P(a, b)}{max(P) * (w * |A \cup B| + |B - A|)}  
 \end{aligned}
 $$
 and 
 
 $$
 \begin{aligned}
-w = \frac{min(|X|, |Y|)}{|X| + |Y|}
+w = \frac{min(|A|, |B|)}{|A| + |B|}
 \end{aligned}
 $$
 $\alpha$ is a scaling factor between 0 and 1. The PPI matrix can be downloaded 
@@ -683,6 +684,32 @@ $$
 As a solely set based measurement, the Meet-Min distance only takes the 
 composition of the genesets into account but not the underlying biological 
 information inherent in the genesets.
+
+* **Sorensen-Dice**: The **Sorensen-Dice** distance uses the Sorensen-Dice
+coefficient, which is transformed into a distance metric by subtracting it 
+from 1. It is defined as
+
+$$
+\begin{aligned}
+Sorensen-Dice(A, B) = 1 - \frac{2 * |A \cap B|}{|A| + |B|}
+\end{aligned}
+$$
+As a solely set based measurement, the Sorensen-Dice distance only takes the 
+composition of the genesets into account but not the underlying biological 
+information inherent in the genesets.
+
+* **GO distance**: The **GO distance** score measures the relationship between 
+gene sets that are represented by GO terms. Implemented in the 
+`r BiocStyle::Biocpkg("GOSemSim")` Rpackage, there are two main types: 
+information content (IC)-based methods(e.g., Resnik, Lin, Schlicker, and Jiang) 
+and graph-based methods (e.g., Wang). These methods compute similarity scores 
+based on shared characteristics, such as the most informative common ancestor 
+in IC-based methods or the hierarchical structure of the GO database in 
+graph-based methods. To integrate these scores into distance-based analyses, 
+the similarity scores are converted into distance scores by subtracting the 
+similarity score from 1. This transformation ensures compatibility with other 
+distance metrics used in `r BiocStyle::Biocpkg("GeDi")`. While applicable only 
+to GO terms, this approach is particularly useful in gene function analyses.
 
 Each scoring method possesses its own set of advantages and drawbacks, 
 underscoring the importance of selecting one that suits your dataset 
@@ -796,15 +823,16 @@ will be merged. Clusters are merged if their percentage of overlap meets or
 exceeds the clustering threshold. Users can adjust all thresholds using sliders
 provided in the interface.
 
-* **kNN**: The k-nearest neighbor clustering algorithm groups nodes with their 
-k nearest neighbors, where **k** is a parameter defined by the user. Through 
-this algorithm, each node is assigned to the cluster containing its k nearest
-neighbors based on the calculated distance scores. The user can specify the 
-value of k using a slider provided in the interface, enabling customization of 
-the clustering process according to the specific requirements of the analysis. 
-Adjusting the value of k allows for exploration of different levels of 
-granularity in the clustering results, providing flexibility in the interpretation
-of the data.
+* **PAM**: The PAM (Partitioning around Mendoids) clustering algorithm 
+partitions nodes into k distinct clusters, where **k** is a user-defined 
+parameter. The algorithm iteratively assigns each node to the nearest cluster 
+center based on calculated distance  scores, and then updates the cluster 
+centers to minimize the overall variance within each cluster. Users can 
+specify the number of clusters, **k**, using a  slider in the interface, 
+allowing them to tailor the clustering process to the needs of their analysis.
+Adjusting the value of k enables the exploration of different clustering 
+granularities, providing flexibility in interpreting the data and identifying 
+meaningful patterns.
 
 Once you choose a method, you can start the cluster calculation via the 
 **Cluster the Genesets** button on the right. Keep in mind that this step might 

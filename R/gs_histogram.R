@@ -37,7 +37,7 @@
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' p <- gsHistogram(genes, macrophage_topGO_example_small$Genesets)
 gsHistogram <- function(genesets,
                         gs_names,
@@ -48,19 +48,16 @@ gsHistogram <- function(genesets,
                         color = "#0092AC") {
   # Check if there are gene sets provided
   stopifnot(length(genesets) > 0)
-
   # Build a data frame containing gene set sizes
   n_genes <- buildHistogramData(genesets, gs_names, gs_description,  start, end)
 
   if(binwidth >= max(n_genes$Size)){
     binwidth <- max(n_genes$Size) - 1
   }
-
   # Create a histogram plot using ggplot2
   p <- ggplot(n_genes, aes(x = .data$Size)) +
     geom_histogram(binwidth = binwidth, fill = color) +
     theme_bw()
-
   # Return the histogram plot object
   return(p)
 }
@@ -101,7 +98,7 @@ gsHistogram <- function(genesets,
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' p <- buildHistogramData(genes, macrophage_topGO_example_small$Genesets)
 buildHistogramData <- function(genesets,
                                gs_names,
@@ -110,11 +107,10 @@ buildHistogramData <- function(genesets,
                                end = 0) {
   # Get the size of each gene set
   n_genes <- vapply(genesets, length, numeric(1))
-
   # Create a data frame to store geneset sizes
   n_genes <- as.data.frame(n_genes)
   colnames(n_genes) <- "Size"
-
+  
   # Check if the number of geneset names matches the number of genesets
   stopifnot(length(gs_names) == length(genesets))
 
@@ -125,7 +121,6 @@ buildHistogramData <- function(genesets,
   if(start > 0){
     n_genes <- n_genes[(n_genes$Size >= start), ]
   }
-
   if(end > 0){
     n_genes <- n_genes[(n_genes$Size <= end), ]
   }
@@ -136,7 +131,6 @@ buildHistogramData <- function(genesets,
     n_genes$Description <- gs_description
     n_genes <- n_genes[, c(1, 3, 2)]
   }
-
   # Return the final data frame
   return(n_genes)
 }

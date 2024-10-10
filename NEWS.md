@@ -1,19 +1,44 @@
 # GeDi 1.2.0
+* Smaller bug and typo fixes
 
 * Fixed the bug that the `getGenes()` function would set all gene names to all 
   caps which lead to the inability to download the correct PPI information for 
-  species like mouse.
+  species like mouse. Also renamed the function to `prepareGenesetData()` to 
+  reflect more accurately its behavior. 
   
 * Updated the default version used in the `getId()` and `getStringDB()` to 12.0, 
   the current version of the String database.
   
 * Fixed the broken zoom feature in the Optional Filtering Step in the Data Input
-  panel. Additionally added a column Description to the table of zoomed genesets
+  panel. Additionally added a column Description to the table of zoomed gene sets
   to facilitate interpretation.
   
 * Fixed that the clustering will now be reset whenever a new score is calculated.
 
 * Updated the `checkInclusion()` function to drastically reduce runtime.
+
+* Fixed the error that the value of `alpha` would not be properly pass to all the
+  sub function used by the `getpMMMatrix()` function.
+  
+* Replaced all occurrences of PMM with pMM to match the notation of the original
+  publication. 
+  
+* Replaced the kNN clustering algorithm with PAM (partitioning around mendoids) 
+  as this seems to be more suitable for enrichment data represented by distance
+  scores. 
+  
+* Renamed the `goSimilarity()` function to `goDistance()` to better indicated 
+  that this is a distance rather than a similarity score. Also scaled all 
+  scores to the [0, 1] interval.
+
+* Fixed the normalization function in the `getKappaDistanceMatrix()` function.
+
+* Changed the implementation of the Louvain clustering algorithm to use a 
+  weighted graph now. The graph is weighted by the distance scores between 
+  gene sets.
+  
+* Added `GeneTonicList` as a possible input object for GeDi. Now GeDi is directly
+  compatible with `GeneTonic`.
 
 # GeDi 1.1.0
 

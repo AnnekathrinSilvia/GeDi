@@ -16,6 +16,39 @@
 #'         `list` of the included genes.
 #' @export
 #'
+getGenes <- function(genesets,
+                     gene_name = NULL) {
+ 
+.Deprecated(old = "getGenes", new = "prepareGenesetData", 
+            msg = paste0(
+              "Please use `prepareGenesetData()` in replacement of the `getGenes()` function, ",
+              "originally located in the GeDi package. \nCheck the manual page for ",
+              "`?GeDi::prepareGenesetData()` to see the details on how to use it"))
+
+genes <- prepareGenesetData(genesets,
+                            gene_name)
+return(genes)
+}
+
+
+#' Split string of genes
+#'
+#' Split a long string of space separated genes into a `list` of individual
+#' genes.
+#'
+#' @param genesets a `data.frame`, A `data.frame` with at least two columns.
+#'                 One should be called `Geneset`, containing the
+#'                 names/identifiers of the genesets in the data. The second
+#'                 column should be called `Genes` and contains one string of
+#'                 the genes contained in each geneset.
+#' @param gene_name a character, Alternative name for the column containing the
+#'                  genes in `genesets`. If not given, the column is expected to
+#'                  be called `Genes`.
+#'
+#' @return A `list` containing for each geneset in the `Geneset` column a
+#'         `list` of the included genes.
+#' @export
+#'
 #' @examples
 #' ## Mock example showing how the data should look like
 #' df <- data.frame(
@@ -30,39 +63,35 @@
 #'     c("IARS,SUV3")
 #'   )
 #' )
-#' genes <- getGenes(df)
+#' genes <- prepareGenesetData(df)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- getGenes(macrophage_topGO_example_small)
-getGenes <- function(genesets, gene_name = NULL) {
+#' genes <- prepareGenesetData(macrophage_topGO_example_small)
+prepareGenesetData <- function(genesets,
+                               gene_name = NULL) {
   # If there are no genesets, return NULL
   if (length(genesets) == 0) {
     return(NULL)
   }
-
   # If gene_name is not provided, ensure that a "Genes" column exists
   if (is.null(gene_name)) {
     stopifnot(any(names(genesets) == "Genes"))
   }
-
   # Determine in which column the gene information is stored
   if (!is.null(gene_name)) {
     genesList <- genesets[, gene_name]
   } else {
     genesList <- genesets$Genes
   }
-
   # Guess the separator used in the gene lists
   sep <- .findSeparator(genesList)
 
   # Split large strings of genes into individual gene lists
   genes <- lapply(seq_len(nrow(genesets)), function(i) {
-    #toupper
-    (strsplit(genesList[i], sep)[[1]])
-  })
+    strsplit(genesList[i], sep)[[1]]})
 
   # Return the list of extracted gene sets
   return(genes)
@@ -86,7 +115,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
 #'
-.findSeparator <- function(stringList, sepList = c(",", "\t", ";", " ", "/")) {
+.findSeparator <- function(stringList,
+                           sepList = c(",", "\t", ";", " ", "/")) {
   sephits_min <-
     vapply(sepList, function(x) {
       sum(vapply(stringList, function(y) nchar(y) - nchar(gsub(x, '', y)),+
@@ -113,7 +143,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #' @return A character, corresponding to the guessed separator. One of ","
 #'         (comma), "\\t" (tab), ";" (semicolon)," " (whitespace) or "/"
 #'         (backslash).
-.sepguesser <- function(file, sep_list = c(",", "\t", ";", " ", "/")) {
+.sepguesser <- function(file,
+                        sep_list = c(",", "\t", ";", " ", "/")) {
   rl <- readLines(file(file, open = "w+"), warn = FALSE)
   # Allow last line to be empty
   rl <- rl[rl != ""]
@@ -141,7 +172,6 @@ getGenes <- function(genesets, gene_name = NULL) {
     genesets_to_remove <- unlist(remove)
     df_genesets <- df_genesets[!(df_genesets$Geneset %in% genesets_to_remove), ]
   }
-
   # Initialize a list to store results
   results <- list()
   # Store the data frame without the removed genesets
@@ -151,17 +181,22 @@ getGenes <- function(genesets, gene_name = NULL) {
   results[[2]] <- df_genesets$Geneset
 
   # Extract gene information for the remaining genesets
-  genes <- getGenes(df_genesets)
+  genes <- prepareGenesetData(df_genesets)
   results[[3]] <- genes
 
   # Rename the elements in the results list
   names(results) <- c("Geneset", "gs_names", "Genes")
-
   # Return the filtered geneset information
   return(results)
 }
 
-#' Title
+#' Get gene set descriptions
+#' 
+#' Extracts gene set descriptions from a provided gene set object. 
+#' The function prioritizes columns "Term", "Description", or "Genesets" to 
+#' find the appropriate descriptions. If any descriptions are duplicated, 
+#' the function appends a suffix to make them unique.
+#'
 #'
 #' @param genesets a `data.frame`, A `data.frame` with at least two columns.
 #'                 One should be called `Geneset`, containing the
@@ -204,7 +239,6 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'            the interaction.
 #'
 #' @return A validated and formatted PPI data frame.
-#'
 .checkPPI <- function(ppi) {
   # Check if ppi is a data frame
   stopifnot(is.data.frame(ppi))
@@ -238,7 +272,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @return A validated and formatted genesets data frame.
 #'
-.checkGenesets <- function(genesets, col_name_genesets = "Genesets", 
+.checkGenesets <- function(genesets,
+                           col_name_genesets = "Genesets", 
                            col_name_genes = "Genes") {
   # Check if genesets is a data frame
   stopifnot(is.data.frame(genesets))
@@ -266,7 +301,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 #'
 #' @return A validated and formatted distance_scores [Matrix::Matrix()].
 #'
-.checkScores <- function(genesets, distance_scores){
+.checkScores <- function(genesets,
+                         distance_scores){
   # Check if the distance_scores matrix is square
   stopifnot(nrow(distance_scores) == ncol(distance_scores))
 
@@ -285,6 +321,44 @@ getGenes <- function(genesets, gene_name = NULL) {
 
   # Return the validated and formatted distance_scores matrix
   return(distance_scores)
+}
+
+#' Check GeneTonic List format
+#'
+#' Check if the provided GeneTonic List object has the expected format for the 
+#' app and extract the functional enrichment results
+#'
+#'
+#' @param gtl A `GeneTonicList`object generated with 
+#'            [GeneTonic::GeneTonic_list()], containing the functional enrichment
+#'            results.
+#' @return A validated and renamed geneset [data.frame].
+.checkGTL <- function(gtl){
+  # Extract the names of elements in the GTL object
+  names <- names(gtl)
+  # Check if the GTL object contains the 'res_enrich' element
+  # The res_enrich element contains the functional enrichment results
+  stopifnot("GTL object does not contain functional enrichment results" = any(names == "res_enrich"))
+  
+  # Extract the functional enrichment results
+  genesets <- gtl$res_enrich
+  names <- names(genesets)
+  # Ensure the enrichment results contain 'gs_id' for gene set IDs
+  # Ensure the enrichment results contain 'gs_genes' for associated gene lists
+  stopifnot("Functional enrichment results do not contain geneset ids" = any(names == "gs_id"))
+  stopifnot("Functional enrichment results do not contain gene ids" = any(names == "gs_genes"))
+  
+  # Rename the 'gs_id' column to 'Genesets' and
+  # rename the 'gs_genes' column to 'Genes' to fit 
+  # the expected column names of GeDi
+  names(genesets)[names(genesets) == "gs_id"] <- "Genesets"
+  names(genesets)[names(genesets) == "gs_genes"] <- "Genes"
+  # Also rename the 'gs_description' column to 'Term' 
+  #to include the descriptions in figures
+  names(genesets)[names(genesets) == "gs_description"] <- "Term"
+  
+  # Return the validated and prepared geneset data.frame
+  return(genesets)
 }
 
 #' Determine the number of cores to use for a function
@@ -317,7 +391,8 @@ getGenes <- function(genesets, gene_name = NULL) {
 
 # Shiny resource paths ----------------------------------------------------
 
-.onLoad <- function(libname, pkgname) {
+.onLoad <- function(libname,
+                    pkgname) {
   # Create link to logo
   shiny::addResourcePath("GeDi", system.file("www", package = "GeDi"))
 }

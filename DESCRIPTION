@@ -1,6 +1,6 @@
 Package: GeDi
 Title: Defining and visualizing the distances between different genesets
-Version: 1.1.1
+Version: 1.2.0
 Date: 2024-06-24
 Authors@R: 
     c(
@@ -50,7 +50,9 @@ Imports:
     wordcloud2,
     tools,
     BiocParallel,
-    BiocFileCache
+    BiocFileCache,
+    cluster,
+    circlize
 Suggests: 
     knitr,
     rmarkdown,
@@ -71,7 +73,7 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 URL: https://github.com/AnnekathrinSilvia/GeDi
 BugReports: https://github.com/AnnekathrinSilvia/GeDi/issues
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 biocViews: 

@@ -17,13 +17,12 @@
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' jaccard <- calculateJaccard(genes[1], genes[2])
 calculateJaccard <- function(a, b) {
   # Calculate the lengths of the input sets
   len_a <- length(a)
   len_b <- length(b)
-
   # If either set is empty, return a Jaccard distance of 1
   if (len_a == 0 || len_b == 0) {
     return(1)
@@ -31,10 +30,8 @@ calculateJaccard <- function(a, b) {
 
   # Calculate the size of the intersection between the sets
   set_int <- length(intersect(a, b))
-
   # Calculate the Jaccard similarity coefficient
   jaccard <- set_int / (len_a + len_b - set_int)
-
   # Calculate the Jaccard distance by subtracting the Jaccard coefficient from 1
   return(1 - jaccard)
 }
@@ -67,14 +64,13 @@ calculateJaccard <- function(a, b) {
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' jaccard <-getJaccardMatrix(genes)
 getJaccardMatrix <- function(genesets,
                              progress = NULL,
                              BPPARAM = BiocParallel::SerialParam()) {
   # Get the number of gene sets
   l <- length(genesets)
-
   # If there are no gene sets, return NULL
   if (l == 0) {
     return(NULL)
@@ -85,7 +81,6 @@ getJaccardMatrix <- function(genesets,
 
   # Initialize a list for storing intermediate results
   results <- list()
-
   # Calculate the Jaccard distance for each pair of gene sets
   for (k in seq_len((l - 1))) {
     a <- genesets[[k]]
@@ -101,7 +96,6 @@ getJaccardMatrix <- function(genesets,
     # Fill the upper and lower triangular sections of the matrix with results
     j[k, (k + 1):l] <- j[(k + 1):l, k] <- unlist(results[[k]])
   }
-
   # Return the Jaccard distance matrix rounded to 2 decimal places
   return(round(j, 2))
 }

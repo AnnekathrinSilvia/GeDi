@@ -51,6 +51,6 @@ p <- buildHistogramData(genesets, gs_names)
 data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
-genes <- GeDi::getGenes(macrophage_topGO_example_small)
+genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 p <- buildHistogramData(genes, macrophage_topGO_example_small$Genesets)
 }

@@ -29,6 +29,6 @@ c <- calculateKappa(a, b, all_genes)
 data(macrophage_topGO_example_small,
      package = "GeDi",
      envir = environment())
-genes <- GeDi::getGenes(macrophage_topGO_example_small)
+genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 c <- calculateKappa(genes[1], genes[2], unique(genes))
 }

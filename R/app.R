@@ -24,6 +24,9 @@
 #'               column `combined_score` which is a numerical value of the
 #'               strength of the interaction.
 #' @param distance_scores A [Matrix::Matrix()] of (distance) scores
+#' @param gtl A `GeneTonicList`object generated with 
+#'            [GeneTonic::GeneTonic_list()], containing the functional enrichment
+#'            results.
 #' @param col_name_genesets character, the name of the column in which the
 #'                          geneset ids are listed. Defaults to "Genesets".
 #' @param col_name_genes character, the name of the column in which the genes
@@ -58,6 +61,7 @@
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
                  distance_scores = NULL,
+                 gtl = NULL, 
                  col_name_genesets = "Genesets",
                  col_name_genes = "Genes") {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
@@ -73,8 +77,14 @@ GeDi <- function(genesets = NULL,
   if (!(is.null(ppi_df))) {
     ppi <- .checkPPI(ppi_df)
   }
+  
   if (!(is.null(distance_scores))) {
+    stopifnot("When providing distance scores, you also need to provide the geneset data" = !is.null(genesets))
     distance_scores <- .checkScores(genesets, distance_scores)
+  }
+  
+  if(!(is.null(gtl))){
+    genesets <- .checkGTL(gtl)
   }
 
   # UI definition -----------------------------------------------------------
@@ -369,11 +379,13 @@ GeDi <- function(genesets = NULL,
   gedi_server <- function(input, output, session) {
     # initializing reactives --------------------------------------------------
     reactive_values <- reactiveValues()
+    reactive_values$scores <- list()
 
     if (!is.null(genesets)) {
       reactive_values$genesets <- genesets
       reactive_values$gs_names <- genesets[[col_name_genesets]]
-      reactive_values$genes <- getGenes(genesets, gene_name = col_name_genes)
+      reactive_values$genes <- prepareGenesetData(genesets, 
+                                                  gene_name = col_name_genes)
       reactive_values$gs_description <-
         .getGenesetDescriptions(genesets)
     } else {
@@ -393,11 +405,22 @@ GeDi <- function(genesets = NULL,
     reactive_values$alt_names <- FALSE
     reactive_values$species <- NULL
 
-    if (!(is.null(distance_scores))) {
-      reactive_values$scores[["My_Score"]] <- distance_scores
-    } else {
-      reactive_values$scores <- list()
-    }
+    observe({
+      if (!is.null(distance_scores)) {
+        reactive_values$scores[[1]] <- distance_scores
+        names(reactive_values$scores)[[1]] <- "My_Score"
+      } else {
+        reactive_values$scores <- list()
+      }
+    })
+    
+    # if (!(is.null(distance_scores))) {
+    #   reactive_values$scores <- list()
+    #   reactive_values$scores <- c(reactive_values$scores, distance_scores)
+    #   names(reactive_values$scores) <- "My_Score"
+    # } else {
+    #   reactive_values$scores <- list()
+    # }
     reactive_values$seeds <- NULL
     reactive_values$cluster <- NULL
 
@@ -792,7 +815,7 @@ GeDi <- function(genesets = NULL,
             "Danio rerio",
             "Caenorhabiditis elegans"
           ),
-          multiple = TRUE,
+          multiple = FALSE,
           options = list(create = TRUE)
         )
       ))
@@ -803,12 +826,7 @@ GeDi <- function(genesets = NULL,
           is.na(input$species) || is.null(input$species)) {
         return(NULL)
       }
-      if (length(strsplit(input$species, "\\s+")) > 1) {
-        showNotification(
-          "It seems like you have selected more than one species. Please go back to the box and select the correct species.",
-          type = "error"
-        )
-      }
+      # TODO: Handle input that is not species available on STRING
       reactive_values$species <- input$species
       box(
         width = 12,
@@ -944,12 +962,12 @@ GeDi <- function(genesets = NULL,
                 inputId = "scoringmethod",
                 label = "Select the scoring method for your data",
                 choices = c(
-                  "PMM",
+                  "pMM",
                   "Kappa",
                   "Jaccard",
                   "Meet-Min",
                   "Sorensen-Dice",
-                  "GO Similarity"
+                  "GO Distance"
                 ),
                 selected = character(0)
               )
@@ -1003,14 +1021,14 @@ GeDi <- function(genesets = NULL,
     output$ui_alpha_parameter <- renderUI({
       if (input$scoringmethod == "" ||
           is.null(input$scoringmethod) ||
-          input$scoringmethod != "PMM") {
+          input$scoringmethod != "pMM") {
         return(NULL)
       }
       fluidRow(
         column(
           width = 6,
           "Please select how strongly Protein-Protein-Interactions
-        should be weighted in the PMM score by setting the scaling factor",
+        should be weighted in the pMM score by setting the scaling factor",
           br(),
           p(),
           sliderInput(
@@ -1077,11 +1095,10 @@ GeDi <- function(genesets = NULL,
                          )
                        ),
                        column(width = 10,
-                              withSpinner(
-                                plotlyOutput("scores_dendro",
-                                             height = "800px",
-                                             width = "1000px")
-                              ))
+                              plotlyOutput("scores_dendro",
+                                            height = "800px",
+                                            width = "1000px")
+                            )
                      )),
             tabPanel(title = "Distance Scores Graph",
                      fluidRow(
@@ -1139,8 +1156,14 @@ GeDi <- function(genesets = NULL,
         need(input$plots_distance_score != "",
              message = "Please select one of your distance score results to be displayed.")
       )
-      distanceHeatmap(reactive_values$scores[[input$plots_distance_score]],
-                      chars_limit = 20)
+      scores <- reactive_values$scores[[input$plots_distance_score]]
+      plot_labels <- FALSE
+      if(nrow(scores) <= 50){
+        plot_labels <- TRUE
+      }
+      distanceHeatmap(scores,
+                      chars_limit = 20, 
+                      plot_labels)
     })
 
 
@@ -1196,12 +1219,14 @@ GeDi <- function(genesets = NULL,
           visNodes(color = list(
             background = "#0092AC",
             highlight = "gold",
-            hover = "gold"
+            hover = "gold",
+            border = "#545454"
           )) %>%
           visEdges(color = list(
             background = "#0092AC",
             highlight = "gold",
-            hover = "gold"
+            hover = "gold",
+            border = "#545454"
           )) %>%
           visOptions(
             highlightNearest = list(
@@ -1252,7 +1277,7 @@ GeDi <- function(genesets = NULL,
                 choices = c("Louvain",
                             "Markov",
                             "Fuzzy",
-                            "k Nearest Neighbour")
+                            "PAM")
               )
             ),
             column(width = 6,
@@ -1263,72 +1288,19 @@ GeDi <- function(genesets = NULL,
             uiOutput("ui_parameters_clustering")
           ))
         ),
-        fluidRow(column(
+        box(
+          id = "cluster_graph_box",
           width = 12,
-          bs4Card(
-            id = "tabcard_cluster",
-            title = "Geneset Cluster Graphs",
-            elevation = 1,
-            width = 12,
-            closable = TRUE,
-            bs4Dash::tabsetPanel(
-              id = "tabsetpanel_cluster",
-              type = "tabs",
-              selected = "Geneset Graph",
-              side = "right",
-              tabPanel(title = "Geneset Graph",
-                       fluidRow(
-                         column(
-                           width = 2,
-                           selectInput(
-                             inputId = "graphColoring",
-                             label = "Color the graph by",
-                             choices =
-                               if (!(is.null(reactive_values$genesets))) {
-                               c(NULL, colnames(
-                                 dplyr::select_if(reactive_values$genesets,
-                                                  is.numeric)
-                               ))
-                             } else {
-                               c(NULL)
-                             },
-                             multiple = FALSE
-                           )
-                         ),
-                         column(width = 10,
-                                withSpinner(
-                                  visNetworkOutput("cluster_Network",
-                                                   height = "700px",
-                                                   width = "100%")
-                                ))
-                       )),
-              tabPanel(title = "Cluster-Geneset Bipartite Graph",
-                       withSpinner(
-                         visNetworkOutput(
-                           "cluster_geneset_bipartite_Network",
-                           height = "800px",
-                           width = "100%"
-                         )
-                       )),
-              tabPanel(title = "Cluster Enrichment Terms Word Cloud",
-                       fluidRow(
-                         column(
-                           width = 2,
-                           selectInput(
-                             "cluster_nb",
-                             "Select a cluster",
-                             choices = c(seq_len(length(reactive_values$cluster))),
-                             selected = 1
-                           )
-                         ),
-                         column(width = 12,
-                                withSpinner(
-                                  wordcloud2::wordcloud2Output("enrichment_wordcloud_cluster")
-                                ))
-                       ))
-            )
-          )
-        )),
+          status = "info",
+          title = "Geneset Cluster Graphs",
+          collapsible = TRUE,
+          collapsed = FALSE,
+          solidHeader = TRUE,
+          fluidRow(column(width = 12,
+                          uiOutput("ui_cluster_graphs")
+                          )
+                   )
+        ),
         fluidRow(
           bs4Card(
             width = 12,
@@ -1343,6 +1315,78 @@ GeDi <- function(genesets = NULL,
               width = 12,
               DT::dataTableOutput("dt_cluster")
             ))
+          )
+        )
+      )
+    })
+    
+    output$ui_cluster_graphs <- renderUI({
+      validate(need(!(
+        is.null(reactive_values$cluster) &&
+          (length(reactive_values$cluster) == 0)
+      ),
+      message = "Please cluster your genesets first in the Cluster Graph
+                    panel."))
+      
+      fluidRow(column(
+        width = 12,
+        bs4Dash::tabsetPanel(
+            id = "tabsetpanel_cluster",
+            type = "tabs",
+            selected = "Geneset Graph",
+            side = "right",
+            tabPanel(title = "Geneset Graph",
+                     fluidRow(
+                       column(
+                         width = 2,
+                         selectInput(
+                           inputId = "graphColoring",
+                           label = "Color the graph by",
+                           choices =
+                             if (!(is.null(reactive_values$genesets))) {
+                               c(NULL, "Cluster", colnames(dplyr::select_if(
+                                 reactive_values$genesets,
+                                 is.numeric
+                               )))
+                             } else {
+                               c("Cluster")
+                             },
+                           multiple = FALSE
+                         )
+                       ),
+                       column(width = 10,
+                              withSpinner(
+                                visNetworkOutput("cluster_Network",
+                                                 height = "700px",
+                                                 width = "100%")
+                              ))
+                     )),
+            tabPanel(title = "Cluster-Geneset Bipartite Graph",
+                     withSpinner(
+                       visNetworkOutput(
+                         "cluster_geneset_bipartite_Network",
+                         height = "800px",
+                         width = "100%"
+                       )
+                     )),
+            tabPanel(title = "Cluster Enrichment Terms Word Cloud",
+                     fluidRow(
+                       column(
+                         width = 2,
+                         selectInput(
+                           "cluster_nb",
+                           "Select a cluster",
+                           choices = c(seq_len(length(
+                             reactive_values$cluster
+                           ))),
+                           selected = 1
+                         )
+                       ),
+                       column(
+                         width = 12,
+                         wordcloud2::wordcloud2Output("enrichment_wordcloud_cluster")
+                       )
+                     ))
           )
         )
       )
@@ -1378,8 +1422,8 @@ GeDi <- function(genesets = NULL,
         uiOutput("ui_markov")
       } else if (input$select_clustering == "Fuzzy") {
         uiOutput("ui_fuzzy")
-      } else if (input$select_clustering == "k Nearest Neighbour") {
-        uiOutput("ui_kNN")
+      } else if (input$select_clustering == "PAM") {
+        uiOutput("ui_pam")
       }
     })
 
@@ -1458,18 +1502,18 @@ GeDi <- function(genesets = NULL,
       )
     })
 
-    output$ui_kNN <- renderUI({
+    output$ui_pam <- renderUI({
       fluidRow(
-        h2("Select the clustering threshold for the kNN clustering."),
+        h2("Select the center number for PAM clustering."),
         br(),
         column(
           width = 6,
           sliderInput(
-            inputId = "knn_k",
-            label = "Select a k for the number of neigbours.",
+            inputId = "center",
+            label = "Select a number of centers to start with",
             min = 1,
-            max = 0.1 * length(reactive_values$gs_names),
-            value = 0,
+            max = length(reactive_values$gs_names),
+            value = 1,
             step = 1
           )
         )
@@ -1492,6 +1536,12 @@ GeDi <- function(genesets = NULL,
         )
       } else {
         visNetwork::visIgraph(graph) %>%
+          visNodes(color = list(
+            border = "#545454"
+          )) %>%
+          visEdges(color = list(
+            border = "#545454"
+          )) %>%
           visOptions(
             highlightNearest = list(
               enabled = TRUE,
@@ -1525,9 +1575,17 @@ GeDi <- function(genesets = NULL,
         reactive_values$cluster
       )),
       message = "Please cluster you genesets first in the above box"))
+      
+      graph <- reactive_values$bipartite_graph()
 
-      visNetwork::visIgraph(reactive_values$bipartite_graph()) %>%
+      visNetwork::visIgraph(graph) %>%
         visIgraphLayout(layout = "layout_as_bipartite") %>%
+        visNodes(color = list(
+          border = "#545454"
+        )) %>%
+        visEdges(color = list(
+          border = "#545454"
+        )) %>%
         visOptions(
           highlightNearest = list(
             enabled = TRUE,
@@ -1540,7 +1598,8 @@ GeDi <- function(genesets = NULL,
                   type = "png",
                   label = "Save Cluster-Geneset bipartite graph")
     })
-
+    
+    
     reactive_values$bipartite_graph <- reactive({
       tryCatch(
         expr = {
@@ -1587,6 +1646,12 @@ GeDi <- function(genesets = NULL,
           )
         )
         cluster <- as.numeric(input$cluster_nb)
+        validate(
+          need(
+            cluster <= length(reactive_values$cluster),
+            message = "It seems like you have selected a number larger than the number of available clusters."
+          )
+        )
         genesets <- reactive_values$cluster[[cluster]]
         genesets_df <- reactive_values$genesets[genesets, ]
 
@@ -1779,13 +1844,13 @@ GeDi <- function(genesets = NULL,
       tryCatch(
         expr = {
           columns <- names(reactive_values$genesets)
-          stopifnot(any(columns) == "Genesets")
+          stopifnot(any(columns == "Genesets"))
           reactive_values$gs_names <-
             reactive_values$genesets$Genesets
           reactive_values$gs_description <-
             .getGenesetDescriptions(reactive_values$genesets)
           reactive_values$genes <-
-            getGenes(reactive_values$genesets)
+            prepareGenesetData(reactive_values$genesets)
           reactive_values$genesets$Genes <-
             vapply(reactive_values$genesets$Genes, function(x)
               gsub("/", ",", x), character(1))
@@ -1814,8 +1879,8 @@ GeDi <- function(genesets = NULL,
       reactive_values$gs_names <-
         reactive_values$genesets[, input$alt_name_genesets]
 
-      reactive_values$genes <- getGenes(reactive_values$genesets,
-                                        input$alt_name_genes)
+      reactive_values$genes <- prepareGenesetData(reactive_values$genesets,
+                                                  input$alt_name_genes)
 
       reactive_values$gs_description <-
         .getGenesetDescriptions(reactive_values$genesets)
@@ -1855,7 +1920,7 @@ GeDi <- function(genesets = NULL,
         macrophage_topGO_example$Term
 
       progress$inc(1 / 3, detail = "Extracting Genes")
-      reactive_values$genes <- getGenes(reactive_values$genesets)
+      reactive_values$genes <- prepareGenesetData(reactive_values$genesets)
 
       progress$inc(1 / 3, detail = "Successfully loaded demo data")
     })
@@ -1932,7 +1997,7 @@ GeDi <- function(genesets = NULL,
         reactive_values$gs_names <- filtered_data$gs_names
         reactive_values$genes <- filtered_data$Genes
         reactive_values$gs_description <-
-          .getGenesetDescriptions(reactive_values$genesets)
+          .getGenesetDescriptions(filtered_data$Geneset)
 
         showNotification("Successfully filtered the selected Genesets.",
                          type = "message")
@@ -1982,7 +2047,7 @@ GeDi <- function(genesets = NULL,
 
       progress$inc(1 / 12, detail = "Download PPI")
       reactive_values$ppi <- getPPI(reactive_values$genes,
-                                    string_db = stringdb,
+                                    stringdb = stringdb,
                                     anno_df = anno_df)
       progress$inc(4 / 12, detail = "Successfully downloaded PPI")
     })
@@ -2043,6 +2108,7 @@ GeDi <- function(genesets = NULL,
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
+      reactive_values$cluster <- NULL
 
       progress$set(message = "Scoring your genesets", value = 0)
 
@@ -2050,7 +2116,7 @@ GeDi <- function(genesets = NULL,
         scores <- getMeetMinMatrix(reactive_values$genes, progress)
       } else if (input$scoringmethod == "Kappa") {
         scores <- getKappaMatrix(reactive_values$genes, progress)
-      } else if (input$scoringmethod == "PMM") {
+      } else if (input$scoringmethod == "pMM") {
         if (is.null(reactive_values$ppi)) {
           showNotification(
             "It seems like you have not downloaded a PPI matrix. Please return to the Data Input panel and download the respective PPI.",
@@ -2071,10 +2137,10 @@ GeDi <- function(genesets = NULL,
       } else if (input$scoringmethod == "Sorensen-Dice") {
         scores <- getSorensenDiceMatrix(reactive_values$genes,
                                         progress = progress)
-      } else if (input$scoringmethod == "GO Similarity") {
+      } else if (input$scoringmethod == "GO Distance") {
         tryCatch(
           expr = {
-            scores <- goSimilarity(reactive_values$gs_names,
+            scores <- goDistance(reactive_values$gs_names,
                                    progress = progress)
           },
           error = function(cond) {
@@ -2098,10 +2164,17 @@ GeDi <- function(genesets = NULL,
         )
       } else {
         rownames(scores) <- colnames(scores) <- reactive_values$gs_names
-        l <- length(reactive_values$scores) + 1
-
-        reactive_values$scores[[l]] <- scores
-        names(reactive_values$scores)[[l]] <- input$scoringmethod
+        calculated_scores <- names(reactive_values$scores)
+        
+        if(input$scoringmethod %in% calculated_scores){
+         i <- which(input$scoringmethod == calculated_scores)
+         reactive_values$scores[[i]] <- scores
+        }else{
+          l <- length(reactive_values$scores) + 1
+          
+          reactive_values$scores[[l]] <- scores
+          names(reactive_values$scores)[[l]] <- input$scoringmethod
+        }
         updateBox("distance_calc_box", action = "toggle")
       }
     })
@@ -2142,7 +2215,12 @@ GeDi <- function(genesets = NULL,
           "It seems like you did not compute the distances between the genesets yet. Please go back to the Distance Scores panel and select a score of your choice.",
           type = "error"
         )
-      }
+      }else if (input$clustering_score_selected == "" || length(input$clustering_score_selected) == 0) {
+        showNotification(
+          "Please select a score of your choice to start the clustering.",
+          type = "error"
+        )
+      } else {
       progress <- shiny::Progress$new()
       # Make sure it closes when we exit this reactive, even if there's an error
       on.exit(progress$close())
@@ -2184,10 +2262,10 @@ GeDi <- function(genesets = NULL,
         } else{
           reactive_values$seeds <- seeds
         }
-      } else if (input$select_clustering == "k Nearest Neighbour") {
-        progress$set(message = "Start the kNN Clustering", value = 0)
-        cluster <- kNN_clustering(scores,
-                                  input$knn_k)
+      } else if (input$select_clustering == "PAM") {
+        progress$set(message = "Start the PAM Clustering", value = 0)
+        cluster <- pamClustering(scores,
+                                  input$center)
         progress$inc(0.8, detail = "Finished clustering the data.")
       }
 
@@ -2201,7 +2279,7 @@ GeDi <- function(genesets = NULL,
         progress$inc(0.2, detail = "Successfully clustered data.")
         updateBox("clustering_selection_box", action = "toggle")
       }
-    })
+    }})
 
 
 
@@ -2220,11 +2298,11 @@ GeDi <- function(genesets = NULL,
             showNotification("Select a node in the network to bookmark it",
                              type = "warning")
           } else{
-            cur_node <- match(cur_sel, V(g)$name)
-            cur_sel_term <- reactive_values$gs_description[cur_node]
+            cur_node <- which(reactive_values$gs_description == cur_sel)
+            cur_sel_id <- reactive_values$gs_names[cur_node]
             cur_sel_merged <-
-              c("Geneset_id" = cur_sel,
-                "Geneset_description" = cur_sel_term)
+              c("Geneset_id" = cur_sel_id,
+                "Geneset_description" = cur_sel)
             if (cur_sel %in% reactive_values$bookmarked_genesets) {
               showNotification(
                 sprintf(
@@ -2262,6 +2340,7 @@ GeDi <- function(genesets = NULL,
                              type = "warning")
           } else {
             if (cur_nodetype == "Geneset") {
+              cur_node <- which(reactive_values$gs_names == cur_sel)
               cur_sel_term <- reactive_values$gs_description[cur_node]
               cur_sel_merged <-
                 c("Geneset_id" = cur_sel,

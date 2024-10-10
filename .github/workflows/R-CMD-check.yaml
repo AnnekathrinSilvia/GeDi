@@ -71,6 +71,7 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
+          pak-version: devel
         # run: |
           # Rscript -e "remotes::install_github('r-hub/sysreqs')"
           # sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")

@@ -17,13 +17,12 @@
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' sd <- calculateSorensenDice(genes[1], genes[2])
 calculateSorensenDice <- function(a, b) {
   # Calculate the lengths of the input sets
   len_a <- length(a)
   len_b <- length(b)
-
   # If either set is empty, return a Sorensen-Dice distance of 1
   if (len_a == 0 || len_b == 0) {
     return(1)
@@ -31,10 +30,8 @@ calculateSorensenDice <- function(a, b) {
 
   # Calculate the size of the intersection between the sets
   set_int <- length(intersect(a, b))
-
   # Calculate the Sorensen-Dice similarity coefficient
   sorensenDice <- 2 * set_int / (len_a + len_b)
-
   # Calculate the Sorensen-Dice distance by subtracting the coefficient from 1
   return(1 - sorensenDice)
 }
@@ -67,14 +64,13 @@ calculateSorensenDice <- function(a, b) {
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' sd_matrix <- getSorensenDiceMatrix(genes)
 getSorensenDiceMatrix <- function(genesets,
                                   progress = NULL,
                                   BPPARAM = BiocParallel::SerialParam()) {
   # Get the number of gene sets
   l <- length(genesets)
-
   # If there are no gene sets, return NULL
   if (l == 0) {
     return(NULL)
@@ -82,10 +78,8 @@ getSorensenDiceMatrix <- function(genesets,
 
   # Initialize an empty matrix for storing Sorensen-Dice distances
   s <- Matrix::Matrix(0, l, l)
-
   # Initialize a list for storing intermediate results
   results <- list()
-
   # Calculate Meet-Min distance for each pair of gene sets
   for (k in seq_len((l - 1))) {
     a <- genesets[[k]]
@@ -100,7 +94,6 @@ getSorensenDiceMatrix <- function(genesets,
     }, BPPARAM = BPPARAM)
     s[k, (k + 1):l] <- s[(k + 1):l, k] <- unlist(results[[k]])
   }
-
   # Return the Sorensen-Dice distance matrix rounded to 2 decimal places
   return(round(s, 2))
 }

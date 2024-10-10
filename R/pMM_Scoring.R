@@ -37,7 +37,7 @@
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' data(ppi_macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
@@ -48,7 +48,6 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
   # Get the size of sets a and b
   len_a <- length(a)
   len_b <- length(b)
-
   # Get the sets of genes exclusive to a, b, and the intersection of both
   onlya <- setdiff(a, b)
   onlyb <- setdiff(b, a)
@@ -56,7 +55,6 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 
   # Calculate weight based on the sizes of the sets a and b
   w <- min(len_a, len_b) / (len_a + len_b)
-
   # Get the size of the intersection and exclusive sets
   len_int <- length(int)
   len_onlyB <- length(onlyb)
@@ -67,7 +65,6 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
   if (any(lengths == 0)) {
     return(0)
   }
-
   # Calculate sums of interacting genes
   sumInt <-
     sum(ppi[ppi$Gene1 %in% onlya &
@@ -75,11 +72,9 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
   sumOnlyB <-
     sum(ppi[ppi$Gene1 %in% onlya &
               ppi$Gene2 %in% onlyb, "combined_score"])
-
   # Calculate the numerator and denominator for the interaction score
   nom <- (w * sumInt) + sumOnlyB
   denom <- maxInteract * (w * len_int + len_onlyB)
-
   # Calculate the interaction score
   score <- nom / denom
 
@@ -121,23 +116,22 @@ getInteractionScore <- function(a, b, ppi, maxInteract) {
 #' )
 #' maxInteract <- max(ppi$combined_score)
 #'
-#' pMM_score <- pMMlocal(a, b, ppi, maxInteract)
+#' pMM_score <- pMMlocal(a, b, ppi, alpha = 1,  maxInteract)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' data(ppi_macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
 #' maxInteract <- max(ppi_macrophage_topGO_example_small$combined_score)
 #'
-#' pMMlocal <- pMMlocal(genes[1], genes[2], ppi, maxInteract)
-pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
+#' pMMlocal <- pMMlocal(genes[1], genes[2], ppi, alpha = 1,  maxInteract)
+pMMlocal <- function(a, b, ppi, maxInteract, alpha) {
   # Get the minimum size of sets a and b
   z <- min(length(a), length(b))
-
   # If either set is empty, return pMMlocal score of 1
   if (z == 0) {
     return(1)
@@ -145,18 +139,20 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 
   # Calculate factor1 as the proportion of intersection size to z
   factor1 <- (length(intersect(a, b))) / z
-
+  if(alpha == 0){
+    return(min(1 - factor1, 1))
+  }
+  
   # Calculate the interaction score as the minimum of two interaction scores
   interaction_score <- min(
     getInteractionScore(a, b, ppi, maxInteract),
     getInteractionScore(b, a, ppi, maxInteract)
   )
-
   # Calculate factor2 as a scaled interaction_score using alpha and z
   factor2 <- (alpha / z) * interaction_score
-
+  
   # Return the minimum of the sum of factor1 and factor2, and 1
-  return(min(factor1 + factor2, 1))
+  return(min(1 - (factor1 + factor2), 1))
 }
 
 
@@ -208,7 +204,7 @@ pMMlocal <- function(a, b, ppi, maxInteract, alpha = 1) {
 #' data(macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
-#' genes <- GeDi::getGenes(macrophage_topGO_example_small)
+#' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' data(ppi_macrophage_topGO_example_small,
 #'      package = "GeDi",
 #'      envir = environment())
@@ -221,23 +217,20 @@ getpMMMatrix <- function(genesets,
                          BPPARAM = BiocParallel::SerialParam()) {
   # Get the number of genesets
   l <- length(genesets)
-
   # If there are no genesets, return NULL
   if (l == 0) {
     return(NULL)
   }
-
   # Ensure that the protein-protein interaction (PPI) network is provided
   stopifnot(!is.null(ppi))
+  stopifnot(alpha >= 0 && alpha <= 1)
 
   # Initialize an empty matrix for storing pMM distances
   scores <- Matrix(0, l, l)
   # Get the maximum interaction score in the PPI network
   maxInteract <- max(ppi$combined_score)
-
   # Initialize a list for storing intermediate results
   results <- list()
-
   # Calculate Meet-Min distance for each pair of gene sets
   for (j in seq_len((l - 1))) {
     a <- genesets[[j]]
@@ -248,13 +241,11 @@ getpMMMatrix <- function(genesets,
     # Parallelly calculate Meet-Min distances for pairs
     results[[j]] <- bplapply((j + 1):l, function(i) {
       b <- genesets[[i]]
-      pMMlocal(a, b, ppi, maxInteract)
+      pMMlocal(a, b, ppi, maxInteract, alpha)
     }, BPPARAM = BPPARAM)
     scores[j, (j + 1):l] <-
       scores[(j + 1):l, j] <- unlist(results[[j]])
   }
-
-
   # Return the pMM distance matrix rounded to 2 decimal places
   return(round(scores, 2))
 }

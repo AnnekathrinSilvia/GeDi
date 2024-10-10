@@ -71,23 +71,18 @@ enrichmentWordcloud <- function(genesets_df) {
   } else {
     terms <- rownames(genesets_df)
   }
-
   # Create a text corpus from the selected terms
   corpus <- VCorpus(VectorSource(terms))
-
   # Preprocess the text corpus by removing English stopwords, punctuation, 
   # and whitespace
   corpus <- tm_map(corpus, removeWords, stopwords("english"))
   corpus <- tm_map(corpus, removePunctuation)
   corpus <- tm_map(corpus, stripWhitespace)
-
   # Create a document-term matrix from the preprocessed corpus
   dtm <- as.matrix(TermDocumentMatrix(corpus))
-
   # Calculate the frequency of each term across documents
   v <- sort(rowSums(dtm), decreasing = TRUE)
   d <- data.frame(word = names(v), freq = v)
-
   # Generate a word cloud using the wordcloud2 package
   w <- wordcloud2(d,
                   size = 0.5,

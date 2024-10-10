@@ -144,6 +144,30 @@ test_that("kNN clustering works correctly", {
   expect_true(length(knn) > 0 )
 })
 
+
+test_that("kMeans clustering - no distance scores", {
+  expect_true(is.null(kMeansClustering(NULL, 3)))
+})
+
+test_that("kMeans clustering works correctly", {
+  kMeans <- kMeansClustering(distances, 1)
+  expect_true(length(kMeans) > 0  & length(kMeans) <= 1)
+})
+
+
+test_that("PAM clustering - no distance scores", {
+  expect_true(is.null(pamClustering(NULL, 3)))
+})
+
+test_that("Pam clustering negative k", {
+  expect_error(pamClustering(distances, -1))
+})
+
+test_that("Pam clustering works correctly", {
+  pam <- pamClustering(distances, 1)
+  expect_true(length(pam) > 0  & length(pam) <= 1)
+})
+
 test_that("getClusterDataTable - no geneset names", {
   expect_error(.getClusterDatatable(list(), list()))
 })
