@@ -536,9 +536,9 @@ GeDi <- function(genesets = NULL,
                 ),
                 multiple = FALSE
               ),
-              br(),
               "... or you can also ",
               br(),
+              p(),
               actionButton(
                 "btn_loaddemo",
                 "Load the demo data",
@@ -547,7 +547,10 @@ GeDi <- function(genesets = NULL,
                 style = .actionButtonStyle
               ),
               br(),
+              p(),
               "..and here you can have a look at how the data should be structured",
+              br(),
+              p(),
               actionButton(
                 "btn_showDataStructure",
                 "Have a look at the data structure",
@@ -667,13 +670,14 @@ GeDi <- function(genesets = NULL,
           title = "Optional Filtering Step",
           status = "info",
           solidHeader = TRUE,
-          h2("Filter your provided Genesets"),
           collapsible = TRUE,
           collapsed = TRUE,
-          fluidRow(
+          tagList(
+            h2("Filter your provided Genesets"),
             "It might be beneficial to your analysis to filter out general terms
-            and genesets before proceeding with the next steps."
-          ),
+            and genesets before proceeding with the next steps.",
+            br(),
+            p(),
           fluidRow(
             column(
               width = 6,
@@ -744,6 +748,7 @@ GeDi <- function(genesets = NULL,
             )
           )
         )
+        )
       )
     })
 
@@ -777,7 +782,7 @@ GeDi <- function(genesets = NULL,
                    uiOutput("ui_specify_species")),
             column(
               width = 6,
-              "Currently we are only supporting organisms which have a Protein-
+              "Currently, we are only supporting organisms which have a Protein-
               Protein-Interaction (PPI) matrix in the STRING Database. If you
               are not sure if your organisms is represented in this database,
               please follow this link and have a look at the available organisms.
@@ -826,7 +831,6 @@ GeDi <- function(genesets = NULL,
           is.na(input$species) || is.null(input$species)) {
         return(NULL)
       }
-      # TODO: Handle input that is not species available on STRING
       reactive_values$species <- input$species
       box(
         width = 12,
@@ -836,7 +840,7 @@ GeDi <- function(genesets = NULL,
         tagList(
           h2("Download the PPI matrix from STRING"),
           "For more information on the downloaded PPI data,
-          please have a look at this panels tour.",
+          please have a look at this panel's tour.",
           br(),
           p(),
           fluidRow(column(
@@ -917,8 +921,8 @@ GeDi <- function(genesets = NULL,
       fluidRow(
         column(
           width = 12,
-          "In order to avoid lengthy downloads of the PPI matrix in the future,
-        you can also now download the PPI matrix and save it to your machine.",
+          "In order to avoid having to download the PPI matrix in the future,
+        you can also save it to your machine.",
           br(),
           p(),
           downloadButton(
@@ -1011,6 +1015,7 @@ GeDi <- function(genesets = NULL,
           "Attention: If you have many genesets to score,
            this operation may take some time",
           br(),
+          p(),
           actionButton("score_data",
                        label = "Compute the distances between genesets",
                        style = .actionButtonStyle)
@@ -1263,7 +1268,7 @@ GeDi <- function(genesets = NULL,
         box(
           id = "clustering_selection_box",
           width = 12,
-          title = "Select the clustering method",
+          title = "Select the Clustering Method",
           status = "info",
           solidHeader = TRUE,
           collapsible = TRUE,
@@ -1541,7 +1546,7 @@ GeDi <- function(genesets = NULL,
           )) %>%
           visEdges(color = list(
             border = "#545454"
-          )) %>%
+          ), width = 10) %>%
           visOptions(
             highlightNearest = list(
               enabled = TRUE,
@@ -2531,5 +2536,6 @@ GeDi <- function(genesets = NULL,
   # nocov end
 
   shinyApp(ui = gedi_ui, server = gedi_server)
+
 }
 

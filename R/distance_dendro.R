@@ -40,7 +40,8 @@ distanceDendro <- function(distance_scores,
   dist <- dist(t(distance_scores))
   hc <- hclust(dist, cluster_method)
   # Create and plot the dendrogram
-  p <- ggdendrogram(hc, rotate = FALSE, size = 2)
+  p <- ggdendrogram(hc, rotate = FALSE, size = 2) + 
+    theme(axis.text.y = element_blank())
   # Return the dendrogram plot
   return(p)
 }
