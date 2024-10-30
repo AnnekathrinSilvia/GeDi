@@ -351,6 +351,9 @@ clustering <- function(scores,
   # Obtain adjacency matrix based on the distance scores and build a graph
   adj_matrix <- getAdjacencyMatrix(scores, threshold, weighted = TRUE)
   stopifnot(!is.null(adj_matrix))
+  adj_matrix <- as.matrix(adj_matrix)
+  adj_matrix <- 1 - adj_matrix
+  adj_matrix[adj_matrix == 1] <- 0
   graph <- buildGraph(as.matrix(adj_matrix), weighted = TRUE)
   
   # Run Louvain or Markov clustering based on the chosen method

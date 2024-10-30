@@ -1,3 +1,54 @@
+#' Wrapper function 
+#' 
+#' This is a wrapper function around the goDistance function to match the
+#' names of all the other distance scoring functions.
+#'
+#' @param geneset_ids `list`, a `list` of GO identifiers to score
+#' @param method character, the method to calculate the GO distance.
+#'               See [GOSemSim::goSim] measure parameter for possibilities.
+#' @param ontology character, the ontology to use. See [GOSemSim::goSim]
+#'                 `ont` parameter for possibilities.
+#' @param species character, the species of your data. Indicated as
+#'                org.XX.eg.db package from Bioconductor.
+#' @param progress [shiny::Progress()] object, optional. To track the progress
+#'                 of the function (e.g. in a Shiny app)
+#' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization
+#'                should be handled. Defaults to [BiocParallel::SerialParam()]
+#'
+#' @return A [Matrix::Matrix()] with the pairwise GO distance of each
+#'         geneset pair.
+#' @export
+#' @examples
+#'
+#'
+#' ## Mock example showing how the data should look like
+#' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
+#'             "GO:0002250", "GO:0001916", "GO:0019885")
+#'
+#' similarity <- goDistance(go_ids)
+#'
+#' ## Example using the data available in the package
+#' data(macrophage_topGO_example_small, package = "GeDi")
+#' go_ids <- macrophage_topGO_example_small$Genesets
+#' \dontrun{
+#' similarity <- goDistance(go_ids)
+#' }
+getGODistanceMatrix <- function(geneset_ids,
+                                method = "Wang",
+                                ontology = "BP",
+                                species = "org.Hs.eg.db",
+                                progress = NULL,
+                                BPPARAM = BiocParallel::SerialParam()){
+  
+  return(goDistance(geneset_ids = geneset_ids,
+                    method = method,
+                    ontology = ontology,
+                    species = species,
+                    progress = progress,
+                    BPPARAM = BPPARAM))
+}
+
+
 #' Calculate similarity of GO terms
 #'
 #' Calculate the pairwise similarity of GO terms
@@ -37,11 +88,11 @@
 #' similarity <- goDistance(go_ids)
 #' }
 goDistance <- function(geneset_ids,
-                         method = "Wang",
-                         ontology = "BP",
-                         species = "org.Hs.eg.db",
-                         progress = NULL,
-                         BPPARAM = BiocParallel::SerialParam()) {
+                       method = "Wang",
+                       ontology = "BP",
+                       species = "org.Hs.eg.db",
+                       progress = NULL,
+                       BPPARAM = BiocParallel::SerialParam()) {
   method <- match.arg(method, c("Resnik", "Lin", "Rel",
                                 "Jiang", "TCSS", "Wang"))
   if (method %in% c("Resnik", "Lin", "Rel", "Jiang"))

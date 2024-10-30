@@ -5,6 +5,7 @@ data(scores_macrophage_topGO_example_small, package = "GeDi")
 test_that("No genesets - goDistance", {
   genes <- list()
   expect_equal(goDistance(geneset_ids = genes), -1)
+  expect_equal(getGODistanceMatrix(geneset_ids = genes), -1)
 })
 
 test_that("Similarity calculation - no genesets", {
@@ -12,10 +13,18 @@ test_that("Similarity calculation - no genesets", {
   expect_error(goDistance(go_ids, method = "test"))
   expect_error(goDistance(go_ids, ontology = "test"))
   expect_error(goDistance(go_ids, species = "org.hs.eg.db"))
+  
+  expect_equal(getGODistanceMatrix(list()), -1)
+  expect_error(getGODistanceMatrix(go_ids, method = "test"))
+  expect_error(getGODistanceMatrix(go_ids, ontology = "test"))
+  expect_error(getGODistanceMatrix(go_ids, species = "org.hs.eg.db"))
 })
 
 test_that("Similarity calculation runs correctly", {
   sim <- goDistance(geneset_ids = go_ids)
+  expect_gte(sim[1, 1], 0)
+  
+  sim <- getGODistanceMatrix(geneset_ids = go_ids)
   expect_gte(sim[1, 1], 0)
 })
 
