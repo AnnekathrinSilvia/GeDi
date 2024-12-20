@@ -7,7 +7,7 @@
 .graphMetricsGenesetsDT(g, genesets)
 }
 \arguments{
-\item{g}{A \link{igraph} graph object}
+\item{g}{An \link[igraph:aaa-igraph-package]{igraph::igraph} graph object}
 
 \item{genesets}{A \code{data.frame} of genesets with a column \code{Genesets}
 containing geneset identifiers and a column \code{Genes}

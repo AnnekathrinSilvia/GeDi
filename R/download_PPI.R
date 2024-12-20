@@ -5,12 +5,12 @@
 #' @param species character, the species of your input data
 #' @param version character, the version of STRING you want to use, defaults to
 #'                the current version of STRING
-#' @param cache Logical value, defining whether to use the 
-#'              BiocFileCache for retrieval of the files underlying 
-#'              the [STRINGdb] object. Defaults to `TRUE`.
+#' @param cache Logical value, defining whether to use the
+#'              BiocFileCache for retrieval of the files underlying
+#'              the [STRINGdb::STRINGdb] object. Defaults to `TRUE`.
 #'
 #' @return A character of the NCBI ID of `species`
-#' @importFrom BiocFileCache BiocFileCache bfcquery bfccount bfcneedsupdate 
+#' @importFrom BiocFileCache BiocFileCache bfcquery bfccount bfcneedsupdate
 #'                           bfcdownload bfcadd
 #' @export
 #'
@@ -20,7 +20,7 @@
 #'
 #' species <- "Mus musculus"
 #' id <- getId(species = species)
-getId <- function(species, 
+getId <- function(species,
                   version = "12.0",
                   cache = FALSE) {
   # Download available species information from STRING
@@ -35,7 +35,7 @@ getId <- function(species,
   if(cache){
     cache_location <- tools::R_user_dir("GeDi", which = "cache")
     bfc_gedi <- BiocFileCache(cache_location)
-    
+
     gedi_query <- bfcquery(bfc_gedi, url_species, exact = TRUE)
     # Evaluate if there is already a cached version
     if (bfccount(gedi_query)) {
@@ -49,7 +49,7 @@ getId <- function(species,
       df_species <- BiocFileCache::bfcrpath(bfc_gedi, url_species)
     }
   }
-  
+
   if(!cache | is.null(df_species)){
     # Read species data from URL
     df_species <- read.delim(url(url_species))
@@ -72,18 +72,18 @@ getId <- function(species,
 
 #' Get the STRING db entry of a species
 #'
-#' Get the respective [STRINGdb] object of your species of interest
+#' Get the respective [STRINGdb::STRINGdb] object of your species of interest
 #'
 #' @param species numeric, the NCBI ID of the species of interest
 #' @param version character, The STRINGdb version to use, defaults to the
 #'                current version
 #' @param score_threshold numeric, A score threshold to cut the retrieved
 #'                        interactions, defaults to 0 (all interactions)
-#' @param cache_location Logical value, defining whether to use the 
-#'                       BiocFileCache for retrieval of the files underlying 
-#'                       the [STRINGdb] object. Defaults to `TRUE`.
+#' @param cache_location Logical value, defining whether to use the
+#'                       BiocFileCache for retrieval of the files underlying
+#'                       the [STRINGdb::STRINGdb] object. Defaults to `TRUE`.
 #'
-#' @return a [STRINGdb] object of `species`
+#' @return a [STRINGdb::STRINGdb] object of `species`
 #' @export
 #'
 #' @import STRINGdb
@@ -113,14 +113,14 @@ getStringDB <- function(species,
     }
 }
 
-#' Get the annotation of a [STRINGdb] object
+#' Get the annotation of a [STRINGdb::STRINGdb] object
 #'
-#' Get the annotation of a [STRINGdb] object, i.e. the aliases of the protein
+#' Get the annotation of a [STRINGdb::STRINGdb] object, i.e. the aliases of the protein
 #' information
 #'
-#' @param stringdb the [STRINGdb] object
+#' @param stringdb the [STRINGdb::STRINGdb] object
 #'
-#' @return A `data.frame` mapping [STRINGdb] ids to gene names
+#' @return A `data.frame` mapping [STRINGdb::STRINGdb] ids to gene names
 #' @export
 #'
 #' @import STRINGdb
@@ -134,14 +134,14 @@ getAnnotation <- function(stringdb) {
 
 #' Download Protein-Protein Interaction (PPI)
 #'
-#' Download the Protein-Protein Interaction (PPI) information of a [STRINGdb]
+#' Download the Protein-Protein Interaction (PPI) information of a [STRINGdb::STRINGdb]
 #' object
 #'
 #' @param genes a `list`, A `list` of genes to download the respective protein-
 #'              protein interaction information
-#' @param stringdb A [STRINGdb] object, the species of the object should match
+#' @param stringdb A [STRINGdb::STRINGdb] object, the species of the object should match
 #'                  the species of `genes`.
-#' @param anno_df An annotation `data.frame` mapping [STRINGdb] ids to gene
+#' @param anno_df An annotation `data.frame` mapping STRINGdb::STRINGdb] ids to gene
 #'                names, e.g. downloaded with \code{GeDi::getAnnotation()}
 #'
 #' @return A `data.frame` of Protein-Protein interactions

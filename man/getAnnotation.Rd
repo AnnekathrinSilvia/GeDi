@@ -2,18 +2,18 @@
 % Please edit documentation in R/download_PPI.R
 \name{getAnnotation}
 \alias{getAnnotation}
-\title{Get the annotation of a \link{STRINGdb} object}
+\title{Get the annotation of a \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} object}
 \usage{
 getAnnotation(stringdb)
 }
 \arguments{
-\item{stringdb}{the \link{STRINGdb} object}
+\item{stringdb}{the \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} object}
 }
 \value{
-A \code{data.frame} mapping \link{STRINGdb} ids to gene names
+A \code{data.frame} mapping \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} ids to gene names
 }
 \description{
-Get the annotation of a \link{STRINGdb} object, i.e. the aliases of the protein
+Get the annotation of a \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} object, i.e. the aliases of the protein
 information
 }
 \examples{

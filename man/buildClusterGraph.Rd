@@ -38,8 +38,8 @@ An \code{igraph} object to be further manipulated or processed/plotted
 \link[visNetwork:visNetwork-igraph]{visNetwork::visIgraph()})
 }
 \description{
-Build a \link{igraph} from cluster information, connecting nodes which belong to
-the same cluster.
+Build an \link[igraph:aaa-igraph-package]{igraph::igraph} object from cluster information, connecting nodes
+which belong to the same cluster.
 }
 \examples{
 cluster <- list(c(1:5), c(6:9, 1))

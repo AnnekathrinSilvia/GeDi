@@ -22,13 +22,13 @@ interactions, defaults to 0 (all interactions)}
 
 \item{cache_location}{Logical value, defining whether to use the
 BiocFileCache for retrieval of the files underlying
-the \link{STRINGdb} object. Defaults to \code{TRUE}.}
+the \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} object. Defaults to \code{TRUE}.}
 }
 \value{
-a \link{STRINGdb} object of \code{species}
+a \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} object of \code{species}
 }
 \description{
-Get the respective \link{STRINGdb} object of your species of interest
+Get the respective \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} object of your species of interest
 }
 \examples{
 species <- getId(species = "Homo sapiens")

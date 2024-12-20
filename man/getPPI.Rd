@@ -10,17 +10,17 @@ getPPI(genes, stringdb, anno_df)
 \item{genes}{a \code{list}, A \code{list} of genes to download the respective protein-
 protein interaction information}
 
-\item{stringdb}{A \link{STRINGdb} object, the species of the object should match
+\item{stringdb}{A \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb} object, the species of the object should match
 the species of \code{genes}.}
 
-\item{anno_df}{An annotation \code{data.frame} mapping \link{STRINGdb} ids to gene
+\item{anno_df}{An annotation \code{data.frame} mapping STRINGdb::STRINGdb] ids to gene
 names, e.g. downloaded with \code{GeDi::getAnnotation()}}
 }
 \value{
 A \code{data.frame} of Protein-Protein interactions
 }
 \description{
-Download the Protein-Protein Interaction (PPI) information of a \link{STRINGdb}
+Download the Protein-Protein Interaction (PPI) information of a \link[STRINGdb:STRINGdb-class]{STRINGdb::STRINGdb}
 object
 }
 \examples{
