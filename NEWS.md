@@ -23,7 +23,7 @@
 * Replaced all occurrences of PMM with pMM to match the notation of the original
   publication. 
   
-* Replaced the kNN clustering algorithm with PAM (partitioning around mendoids) 
+* Replaced the kNN clustering algorithm with PAM (partitioning around medoids) 
   as this seems to be more suitable for enrichment data represented by distance
   scores. 
   

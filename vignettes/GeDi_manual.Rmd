@@ -369,7 +369,7 @@ functionality through various buttons:
 `r BiocStyle::Biocpkg("GeDi")` vignette, either the version bundled with the 
 package or the online version, providing detailed documentation and usage 
 guidelines.
-- The information i cirle - Selecting this option displays information
+- The information i circle - Selecting this option displays information
 about the current session, presenting details such as the R environment and 
 loaded packages, helpful for troubleshooting and debugging purposes.
 - The heart button - This button offers general information about 
@@ -823,7 +823,7 @@ will be merged. Clusters are merged if their percentage of overlap meets or
 exceeds the clustering threshold. Users can adjust all thresholds using sliders
 provided in the interface.
 
-* **PAM**: The PAM (Partitioning around Mendoids) clustering algorithm 
+* **PAM**: The PAM (Partitioning around Medoids) clustering algorithm 
 partitions nodes into k distinct clusters, where **k** is a user-defined 
 parameter. The algorithm iteratively assigns each node to the nearest cluster 
 center based on calculated distance  scores, and then updates the cluster 

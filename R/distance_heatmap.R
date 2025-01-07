@@ -8,15 +8,15 @@
 #'                    row and column names of `distance_scores` should be
 #'                    plotted. Defaults to 50 and prevents crowded axes due to
 #'                    long names.
-#' @param plot_labels Logical, Indicates if row and collabels should be plotted.
+#' @param plot_labels Logical, Indicates if row and col labels should be plotted.
 #'                    Defaults to TRUE
-#' @param cluster_rows Logical, Indicates whether or not the rows should be 
+#' @param cluster_rows Logical, Indicates whether or not the rows should be
 #'                     clustered based on the distance scores. Defaults to TRUE
-#' @param cluster_columns Logical, Indicates whether or not the rows should be 
-#'                        clustered based on the distance scores. Defaults to 
+#' @param cluster_columns Logical, Indicates whether or not the rows should be
+#'                        clustered based on the distance scores. Defaults to
 #'                        TRUE
-#' @param title character, a title for the figure. Defaults to "Distance Scores" 
-#'              
+#' @param title character, a title for the figure. Defaults to "Distance Scores"
+#'
 #'
 #' @return A [ComplexHeatmap::Heatmap()] plot object.
 #' @importFrom ComplexHeatmap Heatmap
@@ -56,9 +56,9 @@ distanceHeatmap <- function(distance_scores,
   }
 
   col_fun <- colorRamp2(c(0, 0.5, 1), c("red", "white", "blue"))
-  
+
   # Create a heatmap using the distance scores matrix
-  p <- Heatmap(as.matrix(distance_scores), 
+  p <- Heatmap(as.matrix(distance_scores),
                heatmap_legend_param = list(title = title),
                cluster_rows = cluster_rows,
                cluster_columns = cluster_columns)

@@ -13,7 +13,7 @@
 #'
 #' @name deprecated
 #'
-#' @section Renaming funciton with more intuitive names:
+#' @section Renaming function with more intuitive names:
 #'
 #' - [getGenes()], now replaced by the more intuitive name
 #' [prepareGenesetData()]. The only change in its functionality concerns the

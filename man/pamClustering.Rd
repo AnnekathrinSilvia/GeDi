@@ -16,7 +16,7 @@ correlate with the resulting number of clusters.}
 A \code{list} of clusters
 }
 \description{
-This function performs Partioning aroung Medoids clustering on a set of
+This function performs Partitioning around Medoids clustering on a set of
 scores.
 }
 \examples{

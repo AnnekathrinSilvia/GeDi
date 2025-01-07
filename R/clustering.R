@@ -34,7 +34,7 @@ checkInclusion <- function(seeds) {
   if (length(seeds) < 2) {
     return(seeds)
   }
-  
+
   # Determine the number of sets
   l <- length(seeds)
   # Iterate over all sets to compare them for inclusion
@@ -103,7 +103,7 @@ checkInclusion <- function(seeds) {
 #' seeds <- seedFinding(scores_macrophage_topGO_example_small,
 #'                      simThreshold = 0.3,
 #'                      memThreshold = 0.5)
-seedFinding <- function(distances, 
+seedFinding <- function(distances,
                         simThreshold,
                         memThreshold) {
   # Check if there are any distance scores, if not, return NULL
@@ -112,7 +112,7 @@ seedFinding <- function(distances,
   }
   # Initialize a list to store the identified seeds
   seeds <- list()
-  
+
   # Determine which entries of the distances matrix are reachable from each
   # other (i.e. have a distance score smaller or equal the provided
   # simThreshold)
@@ -189,7 +189,7 @@ fuzzyClustering <- function(seeds,
   }
   # Create a logical vector to track whether a seed is still mergeable
   mergeable <- rep(TRUE, length(seeds))
-  
+
   # Repeat the merging process until no more seeds are mergeable
   while (any(mergeable)) {
     # Get the index of the first mergeable seed
@@ -228,11 +228,11 @@ fuzzyClustering <- function(seeds,
 
 #' Cluster genesets using Markov clustering.
 #'
-#' This function is a wrapper function for the Markov clustering. 
+#' This function is a wrapper function for the Markov clustering.
 #' The actual computation of the clustering is done in the `GeDi::clustering()`
-#' function. This function is mainly a wrapper function for stand-alone use of 
+#' function. This function is mainly a wrapper function for stand-alone use of
 #' GeDi functionalities to enhance user experience and allow for a clearer
-#' distinction of the individual clustering algorithms. 
+#' distinction of the individual clustering algorithms.
 #'
 #' @param scores A [Matrix::Matrix()] of (distance) scores
 #' @param threshold numerical, A threshold used to determine which genesets are
@@ -257,13 +257,13 @@ fuzzyClustering <- function(seeds,
 #'
 #' markovCluster <- markovClustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-markovClustering <- function(scores, 
+markovClustering <- function(scores,
                              threshold){
-  
+
   cluster <- clustering(scores,
-                        threshold, 
+                        threshold,
                         cluster_method = "markov")
-  
+
   return(cluster)
 }
 
@@ -271,11 +271,11 @@ markovClustering <- function(scores,
 
 #' Cluster genesets using Louvain clustering.
 #'
-#' This function is a wrapper function for the Louvain clustering. 
+#' This function is a wrapper function for the Louvain clustering.
 #' The actual computation of the clustering is done in the `GeDi::clustering()`
-#' function. This function is mainly a wrapper function for stand-alone use of 
+#' function. This function is mainly a wrapper function for stand-alone use of
 #' GeDi functionalities to enhance user experience and allow for a clearer
-#' distinction of the individual clustering algorithms. 
+#' distinction of the individual clustering algorithms.
 #'
 #' @param scores A [Matrix::Matrix()] of (distance) scores
 #' @param threshold numerical, A threshold used to determine which genesets are
@@ -300,12 +300,12 @@ markovClustering <- function(scores,
 #'
 #' louvainCluster <- louvainClustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-louvainClustering <- function(scores, 
+louvainClustering <- function(scores,
                               threshold){
   cluster <- clustering(scores,
-                        threshold, 
+                        threshold,
                         cluster_method = "louvain")
-  
+
   return(cluster)
 }
 
@@ -341,18 +341,18 @@ louvainClustering <- function(scores,
 #'
 #'clustering <- clustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-clustering <- function(scores, 
+clustering <- function(scores,
                        threshold,
                        cluster_method = "louvain") {
   # Check if the cluster_method is valid (only "louvain" or "markov" allowed)
   stopifnot(cluster_method == "louvain" ||
               cluster_method == "markov")
-  
+
   # Obtain adjacency matrix based on the distance scores and build a graph
   adj_matrix <- getAdjacencyMatrix(scores, threshold, weighted = TRUE)
   stopifnot(!is.null(adj_matrix))
   graph <- buildGraph(as.matrix(adj_matrix), weighted = TRUE)
-  
+
   # Run Louvain or Markov clustering based on the chosen method
   if (cluster_method == "louvain") {
     clustering <- cluster_louvain(graph)
@@ -363,7 +363,7 @@ clustering <- function(scores,
     }
   # Extract cluster memberships for each geneset
   cluster <- vector(mode = "list", length = max(memberships))
-  
+
   # Transform the mapping of geneset -> cluster to cluster -> genesets mapping
   for (i in seq_len(length(memberships))) {
     sub_cluster <- memberships[i]
@@ -417,7 +417,7 @@ kNN_clustering <- function(scores,
   # Select the first neighbor as the cluster for each geneset
   kNN <- lapply(seq_len(nrow(kNN)), function(i)
     kNN[i, ])
-  
+
   # Return the list of clusters based on k-Nearest Neighbors
   return(kNN)
 }
@@ -431,7 +431,7 @@ kNN_clustering <- function(scores,
 #' @param k numerical, the number of centers to start with. This number will
 #'               correlate with the resulting number of clusters.
 #' @param iter numerical, number of iterations for refinement. Defaults to 500.
-#' @param nstart numerical, how often the start points should be switched. 
+#' @param nstart numerical, how often the start points should be switched.
 #'               Ensures a robust clustering, as clustering is influenced by the
 #'               start points. Defaults to 50.
 #'
@@ -455,7 +455,7 @@ kNN_clustering <- function(scores,
 #'                             k = 5)
 kMeansClustering <- function(scores,
                               k,
-                              iter = 500, 
+                              iter = 500,
                               nstart = 50){
   # Check if there are any distance scores, if not, return NULL
   if (is.null(scores) || length(scores) == 0) {
@@ -464,7 +464,7 @@ kMeansClustering <- function(scores,
   # k has to be positive, as this will be the number of
   # resulting clusters
   stopifnot(k > 0)
-  
+
   # Find k means results data
   kMeans <- kmeans(scores, k, iter, nstart)
   cluster <- c()
@@ -477,7 +477,7 @@ kMeansClustering <- function(scores,
 
 #' Calculate clusters based on PAM clustering
 #'
-#' This function performs Partioning aroung Medoids clustering on a set of
+#' This function performs Partitioning around Medoids clustering on a set of
 #' scores.
 #'
 #' @param scores A [Matrix::Matrix()] of (distance) scores
@@ -504,7 +504,7 @@ kMeansClustering <- function(scores,
 #'                                k = 5)
 pamClustering <- function(scores,
                           k){
-  
+
   # Check if there are any distance scores, if not, return NULL
   if (is.null(scores) || length(scores) == 0) {
     return(NULL)
@@ -512,7 +512,7 @@ pamClustering <- function(scores,
   # k has to be positive, as this will be the number of
   # resulting clusters
   stopifnot(k > 0)
-  
+
   # Find pam results data
   pam <- cluster::pam(scores, k, diss = TRUE,
                       pamonce = 5)
@@ -541,7 +541,7 @@ pamClustering <- function(scores,
     stopifnot(length(gs_names) > 0)
     n_gs <- length(gs_names)
     df <- vector("list", n_gs)
-    
+
     # Check if there are no clusters
     if (length(cluster) == 0) {
       # Create a data.frame with "No associated Cluster" label for all genesets
@@ -550,7 +550,7 @@ pamClustering <- function(scores,
       rownames(df) <- gs_names
       return(df)
     }
-    
+
     # Iterate over all clusters and genesets to build up the data.frame
     for (i in seq_len(length(cluster))) {
       for (j in cluster[[i]]) {
@@ -563,12 +563,12 @@ pamClustering <- function(scores,
         df[[j]] <- entry
       }
     }
-    
+
     # Transform the list of lists into a data.frame format
     df <- data.frame(matrix(df, nrow = n_gs, ncol = 1))
     colnames(df) <- c("Cluster")
     cluster <- df$Cluster
-    
+
     # Set information of genesets belonging to no cluster
     cluster <- lapply(cluster, function(x) {
       if (is.null(x)) {
@@ -577,12 +577,12 @@ pamClustering <- function(scores,
         x
       }
     })
-    
+
     df$Cluster <- cluster
     df$Description <- gs_description
     df <- df[, c(2, 1)]
     rownames(df) <- gs_names
-    
+
     # Return the final cluster datatable
     return(df)
   }

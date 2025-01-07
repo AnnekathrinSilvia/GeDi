@@ -18,7 +18,7 @@ Their successors are also listed.
 The successors of these functions are likely coming from a renaming of the
 functions to more intuitive function names
 }
-\section{Renaming funciton with more intuitive names}{
+\section{Renaming function with more intuitive names}{
 
 \itemize{
 \item \code{\link[=getGenes]{getGenes()}}, now replaced by the more intuitive name

@@ -22,7 +22,7 @@ row and column names of \code{distance_scores} should be
 plotted. Defaults to 50 and prevents crowded axes due to
 long names.}
 
-\item{plot_labels}{Logical, Indicates if row and collabels should be plotted.
+\item{plot_labels}{Logical, Indicates if row and col labels should be plotted.
 Defaults to TRUE}
 
 \item{cluster_rows}{Logical, Indicates whether or not the rows should be
