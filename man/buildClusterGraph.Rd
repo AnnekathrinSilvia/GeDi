@@ -38,7 +38,7 @@ An \code{igraph} object to be further manipulated or processed/plotted
 \link[visNetwork:visNetwork-igraph]{visNetwork::visIgraph()})
 }
 \description{
-Build a \link{igraph} from cluster information, connecting nodes which belong to
+Build a \code{igraph} from cluster information, connecting nodes which belong to
 the same cluster.
 }
 \examples{

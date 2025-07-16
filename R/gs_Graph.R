@@ -165,7 +165,7 @@ getClusterAdjacencyMatrix <- function(cluster,
 
 #' Build a cluster graph
 #'
-#' Build a [igraph] from cluster information, connecting nodes which belong to
+#' Build a `igraph` from cluster information, connecting nodes which belong to
 #' the same cluster.
 #'
 #' @param cluster list, a `list` of clusters, where each cluster member is
@@ -530,7 +530,7 @@ getBipartiteGraph <- function(cluster,
 #' harmonic centrality and clustering coefficient for each node
 #' in a given graph.
 #'
-#' @param g A [igraph] graph object
+#' @param g A `igraph` graph object
 #' @param genesets A `data.frame` of genesets with a column `Genesets`
 #'                 containing geneset identifiers and a column `Genes`
 #'                 containing the genes belonging to each geneset

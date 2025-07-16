@@ -14,7 +14,7 @@ the current version of STRING}
 
 \item{cache}{Logical value, defining whether to use the
 BiocFileCache for retrieval of the files underlying
-the \link{STRINGdb} object. Defaults to \code{TRUE}.}
+the \code{STRINGdb} object. Defaults to \code{TRUE}.}
 }
 \value{
 A character of the NCBI ID of \code{species}
