@@ -38,12 +38,12 @@ res_macrophage_IFNg_vs_naive$SYMBOL <- rowData(dds_macrophage)$SYMBOL
 
 After we performed the differential expression analysis, we can now perform the functional annotation analysis. For this purpose, we are first going to extract the DE genes from the previously generated results as well as determine the background genes to be used for the functional enrichment. 
 
-For the enrichment analysis, we are going to use the overrepresentation anlysis method implemented in the `r BiocStyle::Biocpkg("topGO")` package. In order to facilitate the later usage of these results in `GeDi`, we use the `topGOtable` wrapper function available in the `r BiocStyle::Biocpkg("pcaExplorer")`. This function uses per default the `BP` ontology and the `elim` method to decorrelate the GO graph structure and deliver less redundant functional categories and generated a `DataFrame` object that can readily be used in `GeDi`.
+For the enrichment analysis, we are going to use the overrepresentation anlysis method implemented in the `r BiocStyle::Biocpkg("topGO")` package. In order to facilitate the later usage of these results in `GeDi`, we use the `run_topGO` wrapper function available in the `r BiocStyle::Biocpkg("mosdef")`. This function uses per default the `BP` ontology and the `elim` method to decorrelate the GO graph structure and deliver less redundant functional categories and generated a `DataFrame` object that can readily be used in `GeDi`.
 
 As previously mentioned, also enrichment results generated with `r BiocStyle::Biocpkg("clusterProfiler")` can be used. Especially results generated with the `enrichGO` method have been tested during the development of `GeDi`, but also the results form the `enrichKEGG` and `enrichPathway` method can be used as input.
 
 ```r
-library("pcaExplorer")
+library("mosdef")
 library("GeneTonic")
 library("AnnotationDbi")
 # we extract the differential expression genes from the result object
@@ -53,12 +53,12 @@ bg_ids <- rowData(dds_macrophage)$SYMBOL[rowSums(counts(dds_macrophage)) > 0]
 
 library("topGO")
 topgoDE_macrophage_IFNg_vs_naive <-
-  pcaExplorer::topGOtable(de_symbols_IFNg_vs_naive,
-    bg_ids,
+  mosdef::run_topGO(
+    de_genes = de_symbols_IFNg_vs_naive,
+    bg_genes = bg_ids,
     ontology = "BP",
     mapping = "org.Hs.eg.db",
-    geneID = "symbol",
-    topTablerows = 500
+    gene_id = "symbol"
   )
 
 ````

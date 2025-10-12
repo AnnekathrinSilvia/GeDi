@@ -247,7 +247,7 @@ background genes to be utilized for functional enrichment.
 For the enrichment analysis, we use the overrepresentation analysis method 
 provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the 
 integration of these results into `r BiocStyle::Biocpkg("GeDi")`, we utilize the 
-`topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. 
+`run_topGO` function from the `r BiocStyle::Biocpkg("mosdef")` package. 
 By default, this function employs the `BP` ontology and the `elim` method, which
 helps decorrelate the Gene Ontology (GO) graph structure, resulting in less 
 redundant functional categories. The output is a `DataFrame` object that 
@@ -262,7 +262,7 @@ method during `r BiocStyle::Biocpkg("GeDi")` development, those from the
 
 ```{r create_resenrich1, eval=TRUE}
 # Load required packages for analysis
-library("pcaExplorer")
+library("mosdef")
 library("GeneTonic")
 library("AnnotationDbi")
 
@@ -270,7 +270,7 @@ library("AnnotationDbi")
 # The function deseqresult2df is used to convert the DESeq2 results to a 
 # dataframe format
 # FDR is set to 0.05 to filter significant results
-de_symbols_IFNg_vs_naive <- deseqresult2df(res_macrophage_IFNg_vs_naive,
+de_symbols_IFNg_vs_naive <- mosdef::deresult_to_df(res_macrophage_IFNg_vs_naive,
                                            FDR = 0.05)$SYMBOL
 
 # Extract gene symbols for background using the DESeq2 results object
@@ -283,15 +283,15 @@ bg_ids <- rowData(dds_macrophage)$SYMBOL[rowSums(counts(dds_macrophage)) > 0]
 library("topGO")
 library("org.Hs.eg.db")
 
-# Perform Gene Ontology enrichment analysis using the topGOtable function from 
-# the "pcaExplorer" package
+# Perform Gene Ontology enrichment analysis using the run_topGO function from 
+# the "mosdef" package
 macrophage_topGO_example <-
-  pcaExplorer::topGOtable(de_symbols_IFNg_vs_naive,
-    bg_ids,
+  mosdef::run_topGO(
+    de_genes = de_symbols_IFNg_vs_naive,
+    bg_genes = bg_ids,
     ontology = "BP",
     mapping = "org.Hs.eg.db",
-    geneID = "symbol",
-    topTablerows = 500
+    gene_id = "symbol"
   )
 ```
 

@@ -59,7 +59,7 @@ Suggests:
     testthat (>= 3.0.0),
     DESeq2,
     htmltools,
-    pcaExplorer,
+    mosdef,
     AnnotationDbi,
     macrophage,
     topGO,
