@@ -263,7 +263,6 @@ method during `r BiocStyle::Biocpkg("GeDi")` development, those from the
 ```{r create_resenrich1, eval=TRUE}
 # Load required packages for analysis
 library("mosdef")
-library("GeneTonic")
 library("AnnotationDbi")
 
 # Extract gene symbols from the DESeq2 results object where FDR is below 0.05
@@ -271,7 +270,7 @@ library("AnnotationDbi")
 # dataframe format
 # FDR is set to 0.05 to filter significant results
 de_symbols_IFNg_vs_naive <- mosdef::deresult_to_df(res_macrophage_IFNg_vs_naive,
-                                           FDR = 0.05)$SYMBOL
+                                                   FDR = 0.05)$SYMBOL
 
 # Extract gene symbols for background using the DESeq2 results object
 # Filter genes that have nonzero counts
