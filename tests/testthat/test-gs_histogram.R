@@ -24,8 +24,8 @@ test_that("gsHistogram runs correctly", {
     c("AHI1", "ALMS1")
   )
   histogram <- gsHistogram(genes, gs_names = gs_names)
-  expect_type(histogram, "list")
+  expect_s3_class(histogram, "gg")
 
   histogram <- gsHistogram(genes, gs_names, start = 1, end = 5)
-  expect_type(histogram, "list")
+  expect_s3_class(histogram, "gg")
 })
