@@ -34,7 +34,7 @@ checkInclusion <- function(seeds) {
   if (length(seeds) < 2) {
     return(seeds)
   }
-  
+
   # Determine the number of sets
   l <- length(seeds)
   # Iterate over all sets to compare them for inclusion
@@ -103,7 +103,7 @@ checkInclusion <- function(seeds) {
 #' seeds <- seedFinding(scores_macrophage_topGO_example_small,
 #'                      simThreshold = 0.3,
 #'                      memThreshold = 0.5)
-seedFinding <- function(distances, 
+seedFinding <- function(distances,
                         simThreshold,
                         memThreshold) {
   # Check if there are any distance scores, if not, return NULL
@@ -112,7 +112,7 @@ seedFinding <- function(distances,
   }
   # Initialize a list to store the identified seeds
   seeds <- list()
-  
+
   # Determine which entries of the distances matrix are reachable from each
   # other (i.e. have a distance score smaller or equal the provided
   # simThreshold)
@@ -189,7 +189,7 @@ fuzzyClustering <- function(seeds,
   }
   # Create a logical vector to track whether a seed is still mergeable
   mergeable <- rep(TRUE, length(seeds))
-  
+
   # Repeat the merging process until no more seeds are mergeable
   while (any(mergeable)) {
     # Get the index of the first mergeable seed
@@ -228,11 +228,11 @@ fuzzyClustering <- function(seeds,
 
 #' Cluster genesets using Markov clustering.
 #'
-#' This function is a wrapper function for the Markov clustering. 
+#' This function is a wrapper function for the Markov clustering.
 #' The actual computation of the clustering is done in the `GeDi::clustering()`
-#' function. This function is mainly a wrapper function for stand-alone use of 
+#' function. This function is mainly a wrapper function for stand-alone use of
 #' GeDi functionalities to enhance user experience and allow for a clearer
-#' distinction of the individual clustering algorithms. 
+#' distinction of the individual clustering algorithms.
 #'
 #' @param scores A [Matrix::Matrix()] of (distance) scores
 #' @param threshold numerical, A threshold used to determine which genesets are
@@ -257,13 +257,13 @@ fuzzyClustering <- function(seeds,
 #'
 #' markovCluster <- markovClustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-markovClustering <- function(scores, 
+markovClustering <- function(scores,
                              threshold){
-  
+
   cluster <- clustering(scores,
-                        threshold, 
+                        threshold,
                         cluster_method = "markov")
-  
+
   return(cluster)
 }
 
@@ -271,11 +271,11 @@ markovClustering <- function(scores,
 
 #' Cluster genesets using Louvain clustering.
 #'
-#' This function is a wrapper function for the Louvain clustering. 
+#' This function is a wrapper function for the Louvain clustering.
 #' The actual computation of the clustering is done in the `GeDi::clustering()`
-#' function. This function is mainly a wrapper function for stand-alone use of 
+#' function. This function is mainly a wrapper function for stand-alone use of
 #' GeDi functionalities to enhance user experience and allow for a clearer
-#' distinction of the individual clustering algorithms. 
+#' distinction of the individual clustering algorithms.
 #'
 #' @param scores A [Matrix::Matrix()] of (distance) scores
 #' @param threshold numerical, A threshold used to determine which genesets are
@@ -300,12 +300,12 @@ markovClustering <- function(scores,
 #'
 #' louvainCluster <- louvainClustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-louvainClustering <- function(scores, 
+louvainClustering <- function(scores,
                               threshold){
   cluster <- clustering(scores,
-                        threshold, 
+                        threshold,
                         cluster_method = "louvain")
-  
+
   return(cluster)
 }
 
@@ -325,7 +325,6 @@ louvainClustering <- function(scores,
 #' @return A `list` of clusters
 #' @export
 #' @importFrom igraph cluster_louvain membership
-#' @importFrom GeneTonic cluster_markov
 #'
 #' @examples
 #' ## Mock example showing how the data should look like
@@ -341,29 +340,29 @@ louvainClustering <- function(scores,
 #'
 #'clustering <- clustering(scores_macrophage_topGO_example_small,
 #'                         threshold = 0.5)
-clustering <- function(scores, 
+clustering <- function(scores,
                        threshold,
                        cluster_method = "louvain") {
   # Check if the cluster_method is valid (only "louvain" or "markov" allowed)
   stopifnot(cluster_method == "louvain" ||
               cluster_method == "markov")
-  
+
   # Obtain adjacency matrix based on the distance scores and build a graph
   adj_matrix <- getAdjacencyMatrix(scores, threshold, weighted = TRUE)
   stopifnot(!is.null(adj_matrix))
   graph <- buildGraph(as.matrix(adj_matrix), weighted = TRUE)
-  
+
   # Run Louvain or Markov clustering based on the chosen method
   if (cluster_method == "louvain") {
     clustering <- cluster_louvain(graph)
     memberships <- membership(clustering)
     } else if (cluster_method == "markov") {
-      clustering <- cluster_markov(graph)
+      clustering <- .cluster_markov(graph)
       memberships <- clustering$membership
     }
   # Extract cluster memberships for each geneset
   cluster <- vector(mode = "list", length = max(memberships))
-  
+
   # Transform the mapping of geneset -> cluster to cluster -> genesets mapping
   for (i in seq_len(length(memberships))) {
     sub_cluster <- memberships[i]
@@ -417,7 +416,7 @@ kNN_clustering <- function(scores,
   # Select the first neighbor as the cluster for each geneset
   kNN <- lapply(seq_len(nrow(kNN)), function(i)
     kNN[i, ])
-  
+
   # Return the list of clusters based on k-Nearest Neighbors
   return(kNN)
 }
@@ -431,7 +430,7 @@ kNN_clustering <- function(scores,
 #' @param k numerical, the number of centers to start with. This number will
 #'               correlate with the resulting number of clusters.
 #' @param iter numerical, number of iterations for refinement. Defaults to 500.
-#' @param nstart numerical, how often the start points should be switched. 
+#' @param nstart numerical, how often the start points should be switched.
 #'               Ensures a robust clustering, as clustering is influenced by the
 #'               start points. Defaults to 50.
 #'
@@ -455,7 +454,7 @@ kNN_clustering <- function(scores,
 #'                             k = 5)
 kMeansClustering <- function(scores,
                               k,
-                              iter = 500, 
+                              iter = 500,
                               nstart = 50){
   # Check if there are any distance scores, if not, return NULL
   if (is.null(scores) || length(scores) == 0) {
@@ -464,7 +463,7 @@ kMeansClustering <- function(scores,
   # k has to be positive, as this will be the number of
   # resulting clusters
   stopifnot(k > 0)
-  
+
   # Find k means results data
   kMeans <- kmeans(scores, k, iter, nstart)
   cluster <- c()
@@ -504,7 +503,7 @@ kMeansClustering <- function(scores,
 #'                                k = 5)
 pamClustering <- function(scores,
                           k){
-  
+
   # Check if there are any distance scores, if not, return NULL
   if (is.null(scores) || length(scores) == 0) {
     return(NULL)
@@ -512,7 +511,7 @@ pamClustering <- function(scores,
   # k has to be positive, as this will be the number of
   # resulting clusters
   stopifnot(k > 0)
-  
+
   # Find pam results data
   pam <- cluster::pam(scores, k, diss = TRUE,
                       pamonce = 5)
@@ -541,7 +540,7 @@ pamClustering <- function(scores,
     stopifnot(length(gs_names) > 0)
     n_gs <- length(gs_names)
     df <- vector("list", n_gs)
-    
+
     # Check if there are no clusters
     if (length(cluster) == 0) {
       # Create a data.frame with "No associated Cluster" label for all genesets
@@ -550,7 +549,7 @@ pamClustering <- function(scores,
       rownames(df) <- gs_names
       return(df)
     }
-    
+
     # Iterate over all clusters and genesets to build up the data.frame
     for (i in seq_len(length(cluster))) {
       for (j in cluster[[i]]) {
@@ -563,12 +562,12 @@ pamClustering <- function(scores,
         df[[j]] <- entry
       }
     }
-    
+
     # Transform the list of lists into a data.frame format
     df <- data.frame(matrix(df, nrow = n_gs, ncol = 1))
     colnames(df) <- c("Cluster")
     cluster <- df$Cluster
-    
+
     # Set information of genesets belonging to no cluster
     cluster <- lapply(cluster, function(x) {
       if (is.null(x)) {
@@ -577,12 +576,172 @@ pamClustering <- function(scores,
         x
       }
     })
-    
+
     df$Cluster <- cluster
     df$Description <- gs_description
     df <- df[, c(2, 1)]
     rownames(df) <- gs_names
-    
+
     # Return the final cluster datatable
     return(df)
   }
+
+
+#' Markov Clustering (MCL) for community detection
+#'
+#' This function implements the Markov Clustering (MCL) algorithm for finding community
+#' structure, in an analogous way to other existing algorithms in `igraph`.
+#'
+#' This implementation has been driven by the nice explanations provided in
+#' * https://sites.cs.ucsb.edu/~xyan/classes/CS595D-2009winter/MCL_Presentation2.pdf
+#' * https://medium.com/analytics-vidhya/demystifying-markov-clustering-aeb6cdabbfc7
+#' * https://github.com/GuyAllard/markov_clustering (python implementation)
+#'
+#' More info on the MCL: https://micans.org/mcl/index.html, and
+#' https://micans.org/mcl/sec_description1.html
+#'
+#' @references van Dongen, S.M., Graph clustering by flow simulation (2000) PhD thesis,
+#' Utrecht University Repository - https://dspace.library.uu.nl/handle/1874/848
+#' @references  Enright AJ, van Dongen SM, Ouzounis CA, An efficient algorithm for
+#' large-scale detection of protein families (2002) Nucleic Acids Research, Volume 30,
+#' Issue 7, 1 April 2002, Pages 1575–1584, https://doi.org/10.1093/nar/30.7.1575
+#'
+#' @param g The input graph object
+#' @param add_self_loops Logical, whether to add self-loops to the matrix by
+#' setting the diagonal to `loop_value`
+#' @param loop_value Numeric, the value to use for self-loops
+#' @param mcl_expansion Numeric, cluster expansion factor for the Markov clustering
+#' iteration - defaults to 2
+#' @param mcl_inflation Numeric, cluster inflation factor for the Markov clustering
+#' iteration - defaults to 2
+#' @param allow_singletons Logical; if `TRUE`, single isolated vertices are allowed
+#' to form their own cluster. If set to `FALSE`, all clusters of size = 1 are
+#' grouped in one cluster (to be interpreted as background noise).
+#' @param max_iter Numeric value for the maximum number of iterations for the
+#' Markov clustering
+#' @param return_node_names Logical, if the graph is named and set to `TRUE`, returns
+#' the node names.
+#' @param return_esm Logical, controlling whether the equilibrium state matrix should be returned
+#'
+#' @return This function returns a `communities` object, containing the numbers of
+#' the assigned membership (in the slot `membership`). Please see the
+#' [igraph::communities()] manual page for additional details
+#'
+#' @importFrom expm "%^%"
+#' @importFrom methods is
+#'
+#' @examples
+#' library("igraph")
+#' g <- make_full_graph(5) %du% make_full_graph(5) %du% make_full_graph(5)
+#' g <- add_edges(g, c(1, 6, 1, 11, 6, 11))
+#' .cluster_markov(g)
+#' V(g)$color <- .cluster_markov(g)$membership
+#' plot(g)
+.cluster_markov <- function(g,
+                            add_self_loops = TRUE,
+                            loop_value = 1,
+                            mcl_expansion = 2,
+                            mcl_inflation = 2,
+                            allow_singletons = TRUE,
+                            max_iter = 100,
+                            return_node_names = TRUE,
+                            return_esm = FALSE) {
+  # g must be a graph
+  if (!is(g, "igraph")) {
+    stop("You need to provide an igraph object as input")
+  }
+
+  stopifnot(is.logical(add_self_loops))
+  stopifnot(loop_value >= 0)
+  stopifnot(mcl_expansion > 1)
+  stopifnot(mcl_inflation > 1)
+  stopifnot(loop_value >= 0)
+  stopifnot(max_iter > 0)
+
+  # graph to adjacency matrix
+  adj_mat <- igraph::as_adjacency_matrix(g)
+  adj_mat <- as.matrix(adj_mat) # to enforce non-sparse matrix
+
+  converged <- FALSE
+
+  # Initialize self-loops
+  if (add_self_loops) {
+    diag(adj_mat) <- loop_value
+  }
+
+  # Normalize (sum by col must be 1)
+  adj_mat_norm <- t(adj_mat / colSums(adj_mat))
+
+  cur_mat_norm <- adj_mat_norm
+  for (i_mcl in seq_len(max_iter)) {
+    # message(i_mcl)
+    last_mat <- cur_mat_norm
+
+    exp_mat <- cur_mat_norm %^% mcl_expansion
+    inf_mat <- exp_mat^mcl_inflation
+    # inf_mat_norm <- t(inf_mat/colSums(inf_mat))
+    inf_mat_norm <- apply(inf_mat, MARGIN = 2, FUN = function(matcol) {
+      matcol / sum(matcol)
+    })
+
+    ## TODO: optional pruning?
+    # idea: inspect matrix and set small values directly to zero (assume they would have reached there eventually anyways).
+    if (identical(inf_mat_norm, last_mat)) {
+      converged <- TRUE
+      break
+    }
+
+    cur_mat_norm <- inf_mat_norm
+  }
+
+  if (converged & is.na(cur_mat_norm[1, 1])) {
+    stop("An error occurred after convergence - maybe you set `add_self_loops` to FALSE?")
+  }
+
+  # getting the attractors - non-zero elements of the matrix diagonal
+  clu_attractors <- which(diag(cur_mat_norm) > 0)
+  # store the clusters
+  clusters <- vector(mode = "list", length(clu_attractors))
+
+  # the nodes in the same row as each attractor form a cluster
+  for (i in seq_along(clu_attractors)) {
+    cur_att <- clu_attractors[i]
+    cur_members <- which(cur_mat_norm[cur_att, ] > 0)
+    clusters[[i]] <- cur_members
+  }
+
+  # chop off the identical ones
+  clusters <- unique(clusters)
+
+  # from clusters sets to membership as label
+  clu_memberships <- rep(NA, nrow(adj_mat))
+  for (i in seq_along(clusters)) {
+    this_cluster <- clusters[[i]]
+    clu_memberships[this_cluster] <- i
+  }
+
+  # handling the singletons
+  if (!allow_singletons) {
+    dub <- duplicated(clu_memberships) + duplicated(clu_memberships, fromLast = TRUE)
+    n_singletons <- sum(dub == 0)
+    clu_memberships[dub == 0] <- 0
+    # reshifting to not having gaps in the cluster numbers
+    clu_memberships[dub != 0] <- clu_memberships[dub != 0] - n_singletons
+  }
+
+  res <- list()
+  if (return_node_names & igraph::is_named(g)) {
+    res$names <- V(g)$name
+  }
+  res$vcount <- vcount(g)
+  res$algorithm <- "mcl"
+  res$iterations <- i_mcl - 1
+  res$membership <- clu_memberships
+  if (return_esm) {
+    res$esm <- cur_mat_norm
+  }
+
+  class(res) <- "communities" # to take advantage of the goodies for printing and co
+
+  return(res)
+}
