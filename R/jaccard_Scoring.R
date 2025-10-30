@@ -18,7 +18,7 @@
 #'      package = "GeDi",
 #'      envir = environment())
 #' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
-#' jaccard <- calculateJaccard(genes[1], genes[2])
+#' jaccard <- calculateJaccard(genes[[1]], genes[[2]])
 calculateJaccard <- function(a, b) {
   # Calculate the lengths of the input sets
   len_a <- length(a)
