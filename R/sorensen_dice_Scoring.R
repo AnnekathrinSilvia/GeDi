@@ -38,10 +38,10 @@ calculateSorensenDice <- function(a, b) {
 
 #' Get Matrix of Sorensen-Dice distances
 #'
-#' Calculate the Sorensen-Dice distance of all combinations of genesets in a 
+#' Calculate the Sorensen-Dice distance of all combinations of genesets in a
 #' given data set of genesets.
 #'
-#' @param genesets a `list`, A `list` of genesets where each genesets is 
+#' @param genesets a `list`, A `list` of genesets where each genesets is
 #'                 represented by `list` of genes.
 #' @param progress a [shiny::Progress()] object, Optional progress bar object
 #'                 to track the progress of the function (e.g. in a Shiny app).
@@ -97,3 +97,50 @@ getSorensenDiceMatrix <- function(genesets,
   # Return the Sorensen-Dice distance matrix rounded to 2 decimal places
   return(round(s, 2))
 }
+
+
+
+### IMPLEM: this one uses functions from proxyC ------
+getSorensenDiceMatrix_proxyC <- function(genesets,
+                                         progress = NULL,
+                                         BPPARAM = BiocParallel::SerialParam()) {
+
+  genesets <- genesets
+  all <- unique(unlist(genesets))
+  genesets <- lapply(genesets, function(x) as.numeric(factor(x, levels = all)))
+  n <- length(genesets)
+
+  mg <- matrix(0, ncol = length(all), nrow = n)
+  for(i in seq_len(n)) {
+    mg[i, genesets[[i]]] <- 1
+  }
+  mg <- as(mg, "sparseMatrix")
+
+  mat <- proxyC::simil(mg, method = "dice")
+
+  # mat = as.matrix(mat)
+  diag(mat) <- 1
+  rownames(mat) <- colnames(mat) <- names(genesets)
+  mat <- 1 - mat
+
+  return(round(mat, 2))
+}
+
+
+
+### IMPLEM: the corresponding benchmark steps -----
+## bench::mark(
+##   getSorensenDiceMatrix(genes),
+##   getSorensenDiceMatrix_proxyC(genes),
+##   iterations = 100,
+##   check = FALSE
+## )
+##
+## all.equal(getSorensenDiceMatrix(genes), getSorensenDiceMatrix_proxyC(genes))
+## summary(as.vector(
+##   as.matrix(getSorensenDiceMatrix(genes)) - as.matrix(getSorensenDiceMatrix_proxyC(genes)))
+## )
+##
+## pheatmap::pheatmap(getSorensenDiceMatrix_proxyC(genes))
+## pheatmap::pheatmap(getSorensenDiceMatrix(genes))
+
