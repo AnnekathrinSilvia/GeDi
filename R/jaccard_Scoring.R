@@ -280,8 +280,8 @@ getJaccardMatrix_proxyC <- function(genesets,
   mat <- proxyC::simil(mg, method = "jaccard")
 
   # mat = as.matrix(mat)
-  diag(mat) = 1
-  rownames(mat) = colnames(mat) = names(genesets)
+  diag(mat) <- 1
+  rownames(mat) <- colnames(mat) <- names(genesets)
   mat <- 1 - mat
   # return(mat)
   return(round(mat, 2))
