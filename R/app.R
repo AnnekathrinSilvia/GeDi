@@ -46,6 +46,7 @@
 #' @importFrom utils read.delim data
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices get.edgelist
+#' @importFrom shinyWidgets materialSwitch
 #'
 #' @examples
 #' if (interactive()) {
@@ -1076,11 +1077,27 @@ GeDi <- function(genesets = NULL,
             selected = "Distance Scores Heatmap",
             side = "right",
             tabPanel(title = "Distance Scores Heatmap",
-                     withSpinner(
-                       plotOutput("scores_heatmap",
-                                  height = "800px",
-                                  width = "1000px")
-                     )),
+                     fluidRow(
+                       column(
+                         width = 12,
+                         br(),
+                         shinyWidgets::materialSwitch(
+                           inputId = "similarity_matrix", 
+                           label = "Display Distance Scores in a Similarity Matrix",
+                           value = FALSE,
+                           status = "info")
+                       )),
+                     fluidRow(
+                       column(
+                         width = 12,
+                         withSpinner(
+                           plotOutput("scores_heatmap",
+                                      height = "800px",
+                                      width = "1000px")
+                         ) 
+                       )
+                     )
+                     ),
             tabPanel(title = "Distance Scores Dendrogram",
                      fluidRow(
                        column(
@@ -1163,7 +1180,8 @@ GeDi <- function(genesets = NULL,
       }
       distanceHeatmap(scores,
                       chars_limit = 20, 
-                      plot_labels)
+                      plot_labels,
+                      similarity_matrix = input$similarity_matrix)
     })
 
 

@@ -740,18 +740,19 @@ getGraphTitle <- function(geneset_df = NULL,
 #' vector
 #'
 #' @importFrom RColorBrewer brewer.pal
+#' @export
 #'
 #' @examples
 #' a <- 1:9
 #' pal <- RColorBrewer::brewer.pal(9, "Set1")
-#' map_to_color(a, pal)
-#' plot(a, col = map_to_color(a, pal), pch = 20, cex = 4)
+#' .map_to_color(a, pal)
+#' plot(a, col = .map_to_color(a, pal), pch = 20, cex = 4)
 #'
 #' b <- 1:50
 #' pal2 <- grDevices::colorRampPalette(
 #'   RColorBrewer::brewer.pal(name = "RdYlBu", 11)
 #' )(50)
-#' plot(b, col = map_to_color(b, pal2), pch = 20, cex = 3)
+#' plot(b, col = .map_to_color(b, pal2), pch = 20, cex = 3)
 .map_to_color <- function (x, pal, symmetric = TRUE, limits = NULL)
 {
   if (is.null(limits)) {

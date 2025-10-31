@@ -10,7 +10,8 @@ distanceHeatmap(
   plot_labels = TRUE,
   cluster_rows = TRUE,
   cluster_columns = TRUE,
-  title = "Distance Scores"
+  title = "Distance Scores",
+  similarity_matrix = FALSE
 )
 }
 \arguments{
@@ -33,6 +34,12 @@ clustered based on the distance scores. Defaults to
 TRUE}
 
 \item{title}{character, a title for the figure. Defaults to "Distance Scores"}
+
+\item{similarity_matrix}{Logical, Indicates whether or not the scores should be
+plotted as a distance matrix (i.e. 0 indicates completely
+identical sets) or as a similarity matrix (i.e. 1
+indicates completely identical sets). Defaults to FALSE
+(i.e. a distance matrix).}
 }
 \value{
 A \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}} plot object.

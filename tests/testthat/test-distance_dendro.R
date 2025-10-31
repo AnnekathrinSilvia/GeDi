@@ -8,11 +8,11 @@ test_that("distanceDendro runs correctly", {
   dendro <- distanceDendro(scores_macrophage_topGO_example_small,
     cluster_method = "single"
   )
-  expect_type(dendro, "object")
+  expect_type(dendro, "list")
   dendro <- distanceDendro(scores_macrophage_topGO_example_small,
     cluster_method = "average"
   )
-  expect_type(dendro, "object")
+  expect_type(dendro, "list")
   expect_error(distanceDendro(scores_macrophage_topGO_example_small,
     cluster_method = "test"
   ))

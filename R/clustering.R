@@ -629,6 +629,7 @@ pamClustering <- function(scores,
 #'
 #' @importFrom expm "%^%"
 #' @importFrom methods is
+#' @export
 #'
 #' @examples
 #' library("igraph")
