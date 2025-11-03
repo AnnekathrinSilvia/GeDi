@@ -144,7 +144,7 @@ goDistance <- function(geneset_ids,
 #' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
 #'             "GO:0002250", "GO:0001916", "GO:0019885")
 #'
-#' similarity <- goDistance_(go_ids)
+#' similarity <- goDistance_REVISION(go_ids)
 #'
 #' ## Example using the data available in the package
 #' data(macrophage_topGO_example_small, package = "GeDi")
