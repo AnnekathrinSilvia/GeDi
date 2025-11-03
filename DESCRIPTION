@@ -53,7 +53,8 @@ Imports:
     BiocFileCache,
     cluster,
     methods,
-    circlize
+    circlize,
+    simona
 Suggests: 
     knitr,
     rmarkdown,

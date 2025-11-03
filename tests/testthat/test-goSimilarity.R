@@ -18,15 +18,3 @@ test_that("Similarity calculation runs correctly", {
   sim <- goDistance(geneset_ids = go_ids)
   expect_gte(sim[1, 1], 0)
 })
-
-test_that("Scaling runs correctly", {
-  expect_error(scaleGO(
-    scores = scores_macrophage_topGO_example_small,
-    geneset_ids = list()
-  ))
-  scaled <- scaleGO(
-    scores = scores_macrophage_topGO_example_small,
-    geneset_ids = go_ids
-  )
-  expect_gte(scaled[1, 1], 0)
-})

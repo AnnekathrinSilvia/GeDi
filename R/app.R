@@ -1181,7 +1181,7 @@ GeDi <- function(genesets = NULL,
       distanceHeatmap(scores,
                       chars_limit = 20, 
                       plot_labels,
-                      similarity_matrix = input$similarity_matrix)
+                      display_similarity = input$similarity_matrix)
     })
 
 
@@ -1398,7 +1398,13 @@ GeDi <- function(genesets = NULL,
                              reactive_values$cluster
                            ))),
                            selected = 1
-                         )
+                         ),
+                         br(),
+                         shinyWidgets::materialSwitch(
+                           inputId = "wordcloud_generic_terms", 
+                           label = "Remove generic terms from the Wordcloud",
+                           value = FALSE,
+                           status = "info")
                        ),
                        column(
                          width = 12,
@@ -1673,7 +1679,8 @@ GeDi <- function(genesets = NULL,
         genesets <- reactive_values$cluster[[cluster]]
         genesets_df <- reactive_values$genesets[genesets, ]
 
-        enrichmentWordcloud(genesets_df)
+        enrichmentWordcloud_REVISION(genesets_df,
+                                     remove_generic_terms = input$wordcloud_generic_terms)
       })
 
     # Report panel -----------------------------------------------------------
