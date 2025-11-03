@@ -112,72 +112,122 @@ goDistance <- function(geneset_ids,
   return(round(go_dist, 2))
 }
 
-#' Scaling (distance) scores
+
+
+#' Calculate similarity of GO terms
 #'
-#' A method to scale a matrix of distance scores with the GO term similarity
-#' of the associated genesets.
+#' Calculate the pairwise similarity of GO terms
 #'
-#' @param scores a [Matrix::Matrix()], a matrix of (distance) scores for the
-#'               identifiers in `geneset_ids`.
 #' @param geneset_ids `list`, a `list` of GO identifiers to score
 #' @param method character, the method to calculate the GO distance.
 #'               See [GOSemSim::goSim] measure parameter for possibilities.
 #' @param ontology character, the ontology to use. See [GOSemSim::goSim]
-#'                 ont parameter for possibilities.
+#'                 `ont` parameter for possibilities.
 #' @param species character, the species of your data. Indicated as
 #'                org.XX.eg.db package from Bioconductor.
-#' @param BPPARAM A BiocParallelParam object specifying how parallelization 
-#'                should be handled
+#' @param progress [shiny::Progress()] object, optional. To track the progress
+#'                 of the function (e.g. in a Shiny app)
+#' @param BPPARAM A BiocParallel `bpparam` object specifying how parallelization
+#'                should be handled. Defaults to [BiocParallel::SerialParam()]
 #'
-#' @return A [Matrix::Matrix()] of scaled values.
+#' @return A [Matrix::Matrix()] with the pairwise GO distance of each
+#'         geneset pair.
 #' @export
+#' @importFrom simona term_sim create_ontology_DAG_from_GO_db
+#' @importFrom BiocParallel bplapply SerialParam
+#' @importFrom Matrix Matrix
 #'
 #' @examples
+#'
+#'
 #' ## Mock example showing how the data should look like
 #' go_ids <- c("GO:0002503", "GO:0045087", "GO:0019886",
 #'             "GO:0002250", "GO:0001916", "GO:0019885")
-#' set.seed(42)
-#' scores <- Matrix::Matrix(stats::runif(36, min = 0, max = 1), 6, 6)
-#' similarity <- scaleGO(scores,
-#'                       go_ids)
+#'
+#' similarity <- goDistance_(go_ids)
 #'
 #' ## Example using the data available in the package
-#' data(scores_macrophage_topGO_example_small, package = "GeDi")
 #' data(macrophage_topGO_example_small, package = "GeDi")
 #' go_ids <- macrophage_topGO_example_small$Genesets
 #' \dontrun{
-#' scores_scaled <- scaleGO(scores_macrophage_topGO_example_small,
-#'                          go_ids)
+#' similarity_revision <- goDistance_REVISION(go_ids)
 #' }
-scaleGO <- function(scores,
-                    geneset_ids,
-                    method = "Wang",
-                    ontology = "BP",
-                    species = "org.Hs.eg.db",
-                    BPPARAM = BiocParallel::SerialParam()) {
-
+goDistance_REVISION <- function(geneset_ids,
+                       method = "Wang",
+                       ontology = "BP",
+                       species = "org.Hs.eg.db") {
   method <- match.arg(method, c("Resnik", "Lin", "Rel",
-                                "Jiang", "TCSS", "Wang"))
+                                "Jiang",  "Wang"))
 
+  # Check if the species-specific org.XX.eg.db package is installed
+  stopifnot("Species specific org.XX.eg.db
+            is not installed" = system.file(package = species) != "")
+  # Check if all geneset ids are GO identifiers
+  go_ids <- all(vapply(geneset_ids, function(x) substr(x, 1, 2) == "GO",
+                       logical(1)))
+  stopifnot("Not all geneset ids are GO identifiers.
+            This score only works on GO identifiers" = go_ids)
   # Determine the number of genesets
-  l <- nrow(scores)
+  l <- length(geneset_ids)
+  if (l == 0) {
+    return(-1)
+  }
+  
+  # Initialize a matrix for GO distance scores
+  go_sim <- Matrix::Matrix(0, l, l)
+  
+  # Create the dag
+   dag = create_ontology_DAG_from_GO_db(ontology, org_db = species)
 
-  # Ensure that the number of geneset_ids matches the number of genesets
-  stopifnot(length(geneset_ids) == l)
-
-  # Initialize a matrix for scaled scores
-  scaled <- Matrix::Matrix(0, l, l)
-  # Get GO distance scores
-  scores_go <- goDistance(geneset_ids, method, ontology, species,
-                            BPPARAM = BPPARAM)
-
-  # Scale interaction scores with GO distance scores
-  for (i in seq_len((l - 1))) {
-    for (j in (i + 1):l) {
-      scaled[i, j] <- scaled[j, i] <- scores[i, j] * scores_go[i, j]
-     }
+  if(method == "Resnik"){
+    method = "Sim_Resnik_1999"
+  }else if (method == "Lin"){
+      method = "Sim_Lin_1998"
+  }else if(method == "Rel"){
+      method = "Sim_Relevance_2006"
+  }else if(method == "Jiang"){
+    method = "Sim_Jiang_1997"
+  }else if(method == "Wang"){
+    method = "Sim_Wang_2007"
   }
 
-  # Return the scaled scores matrix
-  return(scaled)
+  if(method == "Sim_Resnik_1999"){
+    go_sim <- term_sim(dag = dag,
+                       terms = geneset_ids,
+                       method = method,
+                       control = list(norm_method = "Nunif"))
+  } else if(method == "Sim_Jiang_1997"){
+    go_sim <- term_sim(dag = dag,
+                       terms = geneset_ids,
+                       method = method,
+                       control = list(norm_method = "max"))
+  }else{
+    go_sim <- term_sim(dag = dag,
+                       terms = geneset_ids,
+                       method = method)
+  }
+
+  go_dist <- as.matrix(1 - go_sim)
+  diag(go_dist) <- 0
+  # Return the rounded GO distance scores matrix
+  return(round(go_dist, 2))
 }
+
+### IMPLEM: the corresponding benchmark steps -----
+# library("fastmatch")
+# library("proxyC")
+# 
+# microbenchmark::microbenchmark(
+#   goDistance(go_ids),
+#   goDistance_REVISION(go_ids),
+#   times = 100
+# )
+# 
+# bench::mark(
+#   goDistance(go_ids),
+#   goDistance_REVISION(go_ids),
+#   iterations = 100,
+#   memory = FALSE,
+#   check = FALSE
+# )
+
