@@ -86,11 +86,17 @@ distanceHeatmap_OLD <- function(distance_scores,
 #'                        TRUE
 #' @param title character, a title for the figure. Defaults to "Distance Scores" 
 #' 
-#' @param similarity_matrix Logical, Indicates whether or not the scores should be 
-#'                          plotted as a distance matrix (i.e. 0 indicates completely
-#'                          identical sets) or as a similarity matrix (i.e. 1
-#'                          indicates completely identical sets). Defaults to FALSE
-#'                          (i.e. a distance matrix).
+#' @param display_similarity Logical, Indicates whether or not the scores should be 
+#'                           plotted as a distance matrix (i.e. 0 indicates completely
+#'                           identical sets) or as a similarity matrix (i.e. 1
+#'                           indicates completely identical sets). Defaults to FALSE
+#'                           (i.e. a distance matrix).
+#'                    
+#' @param quantile_limits Numerical vector, Used to scale the colors in the 
+#'                        heatmap between the given quantiles. Can be helpful in
+#'                        order to reduce the effect of the diagonal or other 
+#'                        outlier values on the color scheme. Defaults to 
+#'                        c(0.025, 0.975).
 #'              
 #'
 #' @return A [ComplexHeatmap::Heatmap()] plot object.
@@ -118,8 +124,8 @@ distanceHeatmap <- function(distance_scores,
                             cluster_rows = TRUE,
                             cluster_columns = TRUE,
                             title = "Distance Scores",
-                            similarity_matrix = FALSE,
-                            quantiles = c(0.05, 0.95)) {
+                            display_similarity = FALSE,
+                            quantile_limits = c(0.025, 0.975)) {
   # Check if distance scores are provided
   stopifnot(!is.null(distance_scores))
   stopifnot(chars_limit >= 0)
@@ -135,35 +141,35 @@ distanceHeatmap <- function(distance_scores,
   
   # Set the color function for the matrix, also scale it only to the given 
   # qauntiles
-  q_min <- quantile(distance_scores, quantiles[1], na.rm = TRUE)
-  q_max <- quantile(distance_scores, quantiles[2], na.rm = TRUE)
+  q_min <- quantile(distance_scores, quantile_limits[1], na.rm = TRUE)
+  q_max <- quantile(distance_scores, quantile_limits[2], na.rm = TRUE)
   col_mid <- colorRamp2(
     c(q_min, (q_min+q_max)/2, q_max),
-    c("red", "white", "blue")
+    c("white", "lightblue", "darkblue")
   )
   # Set the final color function
   col_fun <- function(x) {
-    x[x < q_min] <- q_min  # will become red
-    x[x > q_max] <- q_max  # will become blue
+    x[x < q_min] <- q_min
+    x[x > q_max] <- q_max 
     col_mid(x)
   }
   
-  if(similarity_matrix){
+  if(display_similarity){
     # Create a heatmap using the similarity scores matrix
     similarity_scores <- as.matrix(1-distance_scores)
     
     # Set the color function for the matrix, also scale it only to the given 
     # qauntiles
-    q_min <- quantile(similarity_scores, quantiles[1], na.rm = TRUE)
-    q_max <- quantile(similarity_scores, quantiles[2], na.rm = TRUE)
+    q_min <- quantile(similarity_scores, quantile_limits[1], na.rm = TRUE)
+    q_max <- quantile(similarity_scores, quantile_limits[2], na.rm = TRUE)
     col_mid <- colorRamp2(
       c(q_min, (q_min+q_max)/2, q_max),
-      c("red", "white", "blue")
+      c("white", "red", "darkred")
     )
     # Set the final color function
     col_fun <- function(x) {
-      x[x < q_min] <- q_min  # will become red
-      x[x > q_max] <- q_max  # will become blue
+      x[x < q_min] <- q_min 
+      x[x > q_max] <- q_max  
       col_mid(x)
     }
     
