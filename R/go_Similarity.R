@@ -52,41 +52,41 @@ goDistance <- function(geneset_ids,
   if (l == 0) {
     return(-1)
   }
-  
+
   # Initialize a matrix for GO distance scores
   go_sim <- Matrix::Matrix(0, l, l)
-  
-  # Create the dag
-  dag = create_ontology_DAG_from_GO_db(ontology, org_db = species)
 
-  if(method == "Resnik"){
-    method = "Sim_Resnik_1999"
-  }else if (method == "Lin"){
-      method = "Sim_Lin_1998"
-  }else if(method == "Rel"){
-      method = "Sim_Relevance_2006"
-  }else if(method == "Jiang"){
-    method = "Sim_Jiang_1997"
-  }else if(method == "Wang"){
-    method = "Sim_Wang_2007"
+  # Create the dag
+  dag <- create_ontology_DAG_from_GO_db(ontology, org_db = species)
+
+  if (method == "Resnik") {
+    method <- "Sim_Resnik_1999"
+  } else if (method == "Lin") {
+    method <- "Sim_Lin_1998"
+  } else if (method == "Rel") {
+    method <- "Sim_Relevance_2006"
+  } else if (method == "Jiang") {
+    method <- "Sim_Jiang_1997"
+  } else if (method == "Wang") {
+    method <- "Sim_Wang_2007"
   }
 
-  if(method == "Sim_Resnik_1999"){
+  if (method == "Sim_Resnik_1999") {
     go_sim <- term_sim(dag = dag,
                        terms = geneset_ids,
                        method = method,
                        control = list(norm_method = "Nunif"))
-  } else if(method == "Sim_Jiang_1997"){
+  } else if (method == "Sim_Jiang_1997") {
     go_sim <- term_sim(dag = dag,
                        terms = geneset_ids,
                        method = method,
                        control = list(norm_method = "max"))
-  }else{
+  } else {
     go_sim <- term_sim(dag = dag,
                        terms = geneset_ids,
                        method = method)
   }
-  
+
   terms_in_dag <- dag_has_terms(dag, geneset_ids)
   ids <- geneset_ids[terms_in_dag]
   rownames(go_sim) <- colnames(go_sim) <- ids
