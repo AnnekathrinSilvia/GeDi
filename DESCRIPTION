@@ -53,6 +53,7 @@ Imports:
     cluster,
     methods,
     circlize,
+    proxyC,
     simona
 Suggests: 
     knitr,
