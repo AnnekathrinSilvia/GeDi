@@ -1679,8 +1679,8 @@ GeDi <- function(genesets = NULL,
         genesets <- reactive_values$cluster[[cluster]]
         genesets_df <- reactive_values$genesets[genesets, ]
 
-        enrichmentWordcloud_REVISION(genesets_df,
-                                     remove_generic_terms = input$wordcloud_generic_terms)
+        enrichmentWordcloud(genesets_df,
+                            remove_generic_terms = input$wordcloud_generic_terms)
       })
 
     # Report panel -----------------------------------------------------------
