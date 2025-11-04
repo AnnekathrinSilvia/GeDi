@@ -2187,6 +2187,9 @@ GeDi <- function(genesets = NULL,
           type = "error"
         )
       } else {
+        if(input$scoringmethod != "GO Distance"){
+          rownames(scores) <- colnames(scores) <- reactive_values$gs_names
+        }
         calculated_scores <- names(reactive_values$scores)
         
         if(input$scoringmethod %in% calculated_scores){
