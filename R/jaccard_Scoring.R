@@ -25,7 +25,6 @@
 #' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
 #' jaccard <- getJaccardMatrix(genes)
 getJaccardMatrix <- function(genesets) {
-
   stopifnot("You must provide at least 2 genesets" = length(genesets) >= 2)
   # preparing the sparse matrix structure
   all <- unique(unlist(genesets))
