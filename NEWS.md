@@ -1,4 +1,36 @@
+# GeDi 1.5.1
+
+* `getJaccardMatrix()`, `getKappaMatrix()`, `getMeetMinMatrix()` and `getSorensenDiceMatrix()`
+received a notable speedup in their implementation, thanks to the underlying code now 
+based on the sparse matrix operations implemented in the `proxyC` package.
+Accordingly, the element-wise functions `calculateJaccard()`, `calculateKappa()`, 
+and `calculateSorensenDice()` were removed from this package.
+* The Markov clustering function is now relying on an internal function, reducing the
+dependency load coming from the `GeneTonic` package. Similarly, `.map_to_color` 
+handles the mapping of the values to the colors used in the interactive graph views provided
+by `visNetwork`
+* `enrichmentWordcloud()` has now the option to filter some generic terms, often 
+encountered in the GO terms collection, as they could risk becoming not too 
+informative of the underlying processes ( via the `remove_generic_terms` parameter).
+Moreover, any custom term can be removed if specified by the `terms_to_remove`
+parameter.
+* `goDistance()` now uses the efficient implementation of the distances provided 
+by the `simona` package, instead of the fairly cumbersome approach taken by `GOSemSim`
+* `distanceHeatmap()` has now some additional parameter to fine tune the visual 
+looks of the geneset distance heatmap. The `display_similarity` parameter can be
+set to TRUE to display the similarity values, instead of the distances, Moreover,
+the `quantile_limits` (defaulting to `c(0.025, 0.975)`, the 2.5% and the 97.5% 
+quantiles) specifies the thresholds that can be used to winsorize the underlying 
+values - extreme values could lead to a wide usage of most of the color palette,
+making patterns harder to discern. This behavior can be deactivated by setting the
+quantiles to `c(0, 1)`, which would then include the set of values as-is.
+* The graph of genesets now includes the calculation of some network based 
+statistics, to assist users in the prioritization of which genesets to focus on 
+(e.g. after extracting the communities).
+
+
 # GeDi 1.2.0
+
 * Smaller bug and typo fixes
 
 * Fixed the bug that the `getGenes()` function would set all gene names to all 
