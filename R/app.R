@@ -2138,9 +2138,9 @@ GeDi <- function(genesets = NULL,
       progress$set(message = "Scoring your genesets", value = 0)
 
       if (input$scoringmethod == "Meet-Min") {
-        scores <- getMeetMinMatrix(reactive_values$genes, progress)
+        scores <- getMeetMinMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "Kappa") {
-        scores <- getKappaMatrix(reactive_values$genes, progress)
+        scores <- getKappaMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "pMM") {
         if (is.null(reactive_values$ppi)) {
           showNotification(
@@ -2157,11 +2157,9 @@ GeDi <- function(genesets = NULL,
           )
         }
       } else if (input$scoringmethod == "Jaccard") {
-        scores <- getJaccardMatrix(reactive_values$genes,
-                                   progress = progress)
+        scores <- getJaccardMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "Sorensen-Dice") {
-        scores <- getSorensenDiceMatrix(reactive_values$genes,
-                                        progress = progress)
+        scores <- getSorensenDiceMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "GO Distance") {
         tryCatch(
           expr = {
@@ -2187,6 +2185,7 @@ GeDi <- function(genesets = NULL,
           type = "error"
         )
       } else {
+        progress$inc(0.5, detail = "Finished scoring genesets, now postprocessing")
         if(input$scoringmethod != "GO Distance"){
           rownames(scores) <- colnames(scores) <- reactive_values$gs_names
         }
