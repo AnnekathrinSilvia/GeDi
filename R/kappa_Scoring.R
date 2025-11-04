@@ -21,17 +21,17 @@
 #'      package = "GeDi",
 #'      envir = environment())
 #' genes <- GeDi::prepareGenesetData(macrophage_topGO_example_small)
-#' c <- calculateKappa(genes[1], genes[2], unique(genes))
+#' c <- calculateKappa(genes[[1]], genes[[2]], unique(unlist(genes[1:2])))
 calculateKappa <- function(a, b, all_genes) {
   # Get the total number of genes
   n_genes <- length(all_genes)
   # Ensure there are genes to work with
   stopifnot(n_genes > 0)
-  
-  # Calculate the size of sets 
+
+  # Calculate the size of sets
   set_a <- length(a)
   set_b <- length(b)
-  
+
   # If either set is empty, return Kappa distance of 1
   if (set_a == 0 || set_b == 0) {
     return(1)
@@ -45,8 +45,8 @@ calculateKappa <- function(a, b, all_genes) {
   set_compl_a <- length(setdiff(all_genes, a))
   set_compl_b <- length(setdiff(all_genes, b))
   # Calculate the complement set of the intersection of a and b
-  set_int_compl <- length(setdiff(all_genes, union(a,b))) 
-  
+  set_int_compl <- length(setdiff(all_genes, union(a,b)))
+
   # Calculate observed agreement (O) and expected agreement (E)
   O <- (set_int + set_int_compl) / n_genes
   E <- (set_a * set_b + set_compl_a * set_compl_b)
@@ -54,7 +54,7 @@ calculateKappa <- function(a, b, all_genes) {
 
   # Calculate Cohen's Kappa coefficient
   kappa <- ((O - E) / (1 - E))
-  
+
   # Handle the case of NaN (i.e E = 1)
   if(is.nan(kappa)){
     # This can happen if both sets are equal. Then kappa should be 0
@@ -119,14 +119,14 @@ getKappaMatrix <- function(genesets,
   unique_genes <- unique(unlist(genesets))
   # Initialize a list for storing intermediate results
   results <- list()
-  # Calculate the Jaccard distance for each pair of gene sets
+  # Calculate the Kappa distance for each pair of gene sets
   for (j in seq_len((l - 1))) {
     a <- genesets[[j]]
     # Update the progress bar if provided
     if (!is.null(progress)) {
       progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
     }
-    # Parallelly calculate Jaccard distances for pairs
+    # Parallelly calculate Kappa distances for pairs
     results[[j]] <- bplapply((j + 1):l, function(i){
       b <- genesets[[i]]
       calculateKappa(a, b, unique_genes)
@@ -137,7 +137,83 @@ getKappaMatrix <- function(genesets,
 
   # Normalize each value to the (0, 1) interval by dividing the matrix by 2
   k <- k / 2
- 
+
   # Return the normalized Kappa distance matrix rounded to 2 decimal places
   return(round(k, 2))
 }
+
+### IMPLEM: this one uses functions from proxyC ------
+getKappaMatrix_proxyC <- function(genesets,
+                                  progress = NULL,
+                                  BPPARAM = BiocParallel::SerialParam()) {
+  # # Get the number of genesets
+  # l <- length(genesets)
+  # # If there are no gene sets, return NULL
+  # if (l == 0) {
+  #   return(NULL)
+  # }
+  #
+  # # Initialize an empty matrix for storing Kappa distances
+  # k <- Matrix(0, l, l)
+  # # Get the unique genes present across all gene sets
+  # unique_genes <- unique(unlist(genesets))
+  # # Initialize a list for storing intermediate results
+  # results <- list()
+  # # Calculate the Kappa distance for each pair of gene sets
+  # for (j in seq_len((l - 1))) {
+  #   a <- genesets[[j]]
+  #   # Update the progress bar if provided
+  #   if (!is.null(progress)) {
+  #     progress$inc(1 / (l + 1), detail = paste("Scoring geneset number", j))
+  #   }
+  #   # Parallelly calculate Kappa distances for pairs
+  #   results[[j]] <- bplapply((j + 1):l, function(i){
+  #     b <- genesets[[i]]
+  #     calculateKappa(a, b, unique_genes)
+  #   }, BPPARAM = BPPARAM)
+  #   # Fill the upper and lower triangular sections of the matrix with results
+  #   k[j, (j + 1):l] <- k[(j + 1):l, j] <- unlist(results[[j]])
+  # }
+  #
+  # # Normalize each value to the (0, 1) interval by dividing the matrix by 2
+  # k <- k / 2
+
+  # Return the normalized Kappa distance matrix rounded to 2 decimal places
+  # return(round(k, 2))
+
+  all <- unique(unlist(genesets))
+  genesets <- lapply(genesets, function(x) as.numeric(factor(x, levels = all)))
+  n <- length(genesets)
+
+  mg <- matrix(0, ncol = length(all), nrow = n)
+  for(i in seq_len(n)) {
+    mg[i, genesets[[i]]] <- 1
+  }
+  mg <- as(mg, "sparseMatrix")
+
+  tab <- ncol(mg)
+  oab <- proxyC::simil(mg, method = "simple matching")
+  m1 <- rowSums(mg)
+  m2 <- abs(rowSums(mg - 1))
+  aab <- (outer(m1, m1) + outer(m2, m2))/tab/tab
+  k <- (oab - aab)/(1 - aab)
+
+  # k[k < 0] = 0
+
+  return(round((1-k)/2, 2))
+}
+
+### IMPLEM: benchmarking this functionality ------
+## bench::mark(
+##   getKappaMatrix(genes),
+##   getKappaMatrix_proxyC(genes),
+##   iterations = 100,
+##   check = FALSE
+## )
+##
+## all.equal(getKappaMatrix(genes), getKappaMatrix_proxyC(genes))
+## summary(as.vector(as.matrix(getKappaMatrix(genes)) - as.matrix(getKappaMatrix_proxyC(genes))))
+##
+## pheatmap::pheatmap(getKappaMatrix(genes))
+## pheatmap::pheatmap(getKappaMatrix_proxyC(genes))
+
