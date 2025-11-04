@@ -91,6 +91,7 @@ calculateKappa <- function(a, b, all_genes) {
 #' @importFrom parallel mclapply
 #' @importFrom BiocParallel bplapply SerialParam
 #' @importFrom Matrix Matrix
+#' @importFrom proxyC simil
 #'
 #' @examples
 #' #' ## Mock example showing how the data should look like

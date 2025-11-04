@@ -54,6 +54,8 @@ calculateJaccard <- function(a, b) {
 #' @importFrom parallel mclapply
 #' @importFrom BiocParallel bplapply SerialParam
 #' @importFrom Matrix Matrix
+#' @importFrom proxyC simil
+#' @importFrom methods as
 #'
 #' @examples
 #' ## Mock example showing how the data should look like

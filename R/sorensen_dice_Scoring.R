@@ -5,6 +5,9 @@
 #' @param a,b character vector, set of gene identifiers.
 #'
 #' @return The Sorensen-Dice distance of the sets.
+#'
+#' @importFrom proxyC simil
+#'
 #' @export
 #'
 #' @examples
