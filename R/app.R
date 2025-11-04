@@ -2165,8 +2165,7 @@ GeDi <- function(genesets = NULL,
       } else if (input$scoringmethod == "GO Distance") {
         tryCatch(
           expr = {
-            scores <- goDistance(reactive_values$gs_names,
-                                   progress = progress)
+            scores <- goDistance(reactive_values$gs_names)
           },
           error = function(cond) {
             showNotification(
@@ -2188,7 +2187,6 @@ GeDi <- function(genesets = NULL,
           type = "error"
         )
       } else {
-        rownames(scores) <- colnames(scores) <- reactive_values$gs_names
         calculated_scores <- names(reactive_values$scores)
         
         if(input$scoringmethod %in% calculated_scores){

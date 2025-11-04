@@ -19,7 +19,6 @@ Description: The package provides different distances measurements
 Depends:
     R (>= 4.4.0)
 Imports: 
-    GOSemSim,
     Matrix,
     shiny,
     shinyWidgets,

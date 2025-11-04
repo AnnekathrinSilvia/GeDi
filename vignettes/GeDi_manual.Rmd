@@ -699,8 +699,8 @@ information inherent in the genesets.
 
 * **GO distance**: The **GO distance** score measures the relationship between 
 gene sets that are represented by GO terms. Implemented in the 
-`r BiocStyle::Biocpkg("GOSemSim")` Rpackage, there are two main types: 
-information content (IC)-based methods(e.g., Resnik, Lin, Schlicker, and Jiang) 
+`r BiocStyle::Biocpkg("simona")` Rpackage, there are two main types: 
+information content (IC)-based methods(e.g., Resnik, Lin, and Jiang) 
 and graph-based methods (e.g., Wang). These methods compute similarity scores 
 based on shared characteristics, such as the most informative common ancestor 
 in IC-based methods or the hierarchical structure of the GO database in 

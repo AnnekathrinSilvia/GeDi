@@ -8,28 +8,21 @@ goDistance(
   geneset_ids,
   method = "Wang",
   ontology = "BP",
-  species = "org.Hs.eg.db",
-  progress = NULL,
-  BPPARAM = BiocParallel::SerialParam()
+  species = "org.Hs.eg.db"
 )
 }
 \arguments{
 \item{geneset_ids}{\code{list}, a \code{list} of GO identifiers to score}
 
 \item{method}{character, the method to calculate the GO distance.
-See \link[GOSemSim:goSim]{GOSemSim::goSim} measure parameter for possibilities.}
+Possible options are "Resnik", "Lin", "Rel",
+"Jiang",  "Wang".}
 
-\item{ontology}{character, the ontology to use. See \link[GOSemSim:goSim]{GOSemSim::goSim}
-\code{ont} parameter for possibilities.}
+\item{ontology}{character, the ontology to use. Possible options are "BP",
+"MF" and "CC".}
 
 \item{species}{character, the species of your data. Indicated as
 org.XX.eg.db package from Bioconductor.}
-
-\item{progress}{\code{\link[shiny:Progress]{shiny::Progress()}} object, optional. To track the progress
-of the function (e.g. in a Shiny app)}
-
-\item{BPPARAM}{A BiocParallel \code{bpparam} object specifying how parallelization
-should be handled. Defaults to \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}}}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with the pairwise GO distance of each
