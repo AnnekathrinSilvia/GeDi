@@ -12,16 +12,16 @@
 #'                    which is used for the word cloud. If no such column is
 #'                    available, the row names of the `data.frame` are used for
 #'                    the word cloud.
-#' @param remove_generic_terms Logical, If generic terms like "via", "protein", 
-#'                             "factor", "side", "type", "specific", 
+#' @param remove_generic_terms Logical, If generic terms like "via", "protein",
+#'                             "factor", "side", "type", "specific",
 #'                             "regulation" and "process" should be removed from
 #'                             the wordcloud. Default to FALSE.
-#' @param terms_to_remove Character vector, A vector of additional terms that 
+#' @param terms_to_remove Character vector, A vector of additional terms that
 #'                        should be removed from the wordcloud.
 #'
 #' @return A [wordcloud2::wordcloud2()] plot object
 #' @export
-#' @importFrom tm VCorpus VectorSource removeWords removePunctuation 
+#' @importFrom tm VCorpus VectorSource removeWords removePunctuation
 #' stripWhitespace stopwords TermDocumentMatrix tm_map
 #' @importFrom wordcloud2 wordcloud2
 #' @importFrom RColorBrewer brewer.pal
@@ -73,14 +73,14 @@ enrichmentWordcloud <- function(genesets_df,
   if(remove_generic_terms && length(terms_to_remove) > 0){
     terms_to_remove <- c(terms_to_remove, 
                          .general_terms_wordcloud)
-  }else if(remove_generic_terms){
+  } else if (remove_generic_terms) {
     terms_to_remove <- .general_terms_wordcloud
   }
 
-  
+
   # Check if genesets are provided
   stopifnot(!is.null(genesets_df))
-  
+
   # Check if there is a column named Term to use as terms for the wordcloud
   # If 'Term' column does not exist, check for a column named 'Description'
   # If neither 'Term' nor 'Description' columns exist, use row names as terms
@@ -93,7 +93,7 @@ enrichmentWordcloud <- function(genesets_df,
   }
   # Create a text corpus from the selected terms
   corpus <- VCorpus(VectorSource(terms))
-  # Preprocess the text corpus by removing English stopwords, punctuation, 
+  # Preprocess the text corpus by removing English stopwords, punctuation,
   # and whitespace
   corpus <- tm_map(corpus, removeWords, c(stopwords("english"),
                                                       terms_to_remove))
@@ -108,7 +108,7 @@ enrichmentWordcloud <- function(genesets_df,
   w <- wordcloud2(d,
                   size = 0.5,
                   color = brewer.pal(10, "PRGn"))
-  
+
   # Return the generated word cloud
   return(w)
 }
