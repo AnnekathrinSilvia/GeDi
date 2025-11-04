@@ -163,21 +163,13 @@ enrichmentWordcloud <- function(genesets_df) {
 enrichmentWordcloud_REVISION <- function(genesets_df,
                                 remove_generic_terms = FALSE,
                                 terms_to_remove = c()) {
-  if(!remove_generic_terms && length(terms_to_remove) != 0){
-    message("You provided terms to remove from the wordcloud but did not
-            enable filtering. Set 'remove_generic_terms' to TRUE to enable
-            filtering of generic terms.")
+  if(remove_generic_terms && length(terms_to_remove) > 0){
+    terms_to_remove <- c(terms_to_remove, 
+                         .general_terms_wordcloud)
+  }else if(remove_generic_terms){
+    terms_to_remove <- .general_terms_wordcloud
   }
-  
-  terms_to_remove <- c(terms_to_remove, 
-                       "via", 
-                       "protein", 
-                       "factor",
-                       "side",
-                       "type", 
-                       "specific",
-                       "regulation",
-                       "process")
+
   
   # Check if genesets are provided
   stopifnot(!is.null(genesets_df))
@@ -196,13 +188,8 @@ enrichmentWordcloud_REVISION <- function(genesets_df,
   corpus <- VCorpus(VectorSource(terms))
   # Preprocess the text corpus by removing English stopwords, punctuation, 
   # and whitespace
-  if(remove_generic_terms){
-    corpus <- tm_map(corpus, removeWords, c(stopwords("english"),
+  corpus <- tm_map(corpus, removeWords, c(stopwords("english"),
                                                       terms_to_remove))
-  }else{
-    corpus <- tm_map(corpus, removeWords, stopwords("english"))
-  }
-  
   corpus <- tm_map(corpus, removePunctuation)
   corpus <- tm_map(corpus, stripWhitespace)
   # Create a document-term matrix from the preprocessed corpus

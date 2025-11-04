@@ -399,3 +399,6 @@ prepareGenesetData <- function(genesets,
 
 .actionButtonStyle <-
   "color: #FFFFFF; background-color: #0092AC; border-color: #0092AC"
+
+.general_terms_wordcloud <- c("via", "protein", "factor", "side", "type", 
+                              "specific", "regulation", "process")
