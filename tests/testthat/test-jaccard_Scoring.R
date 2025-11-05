@@ -1,5 +1,5 @@
 test_that("Empty genesets - getJaccardMatrix", {
-  expect_error(is.null(getJaccardMatrix(genes = list())))
+  expect_error(getJaccardMatrix(genes = list()))
 })
 
 test_that("Scoring identical sets - getJaccardMatrix", {

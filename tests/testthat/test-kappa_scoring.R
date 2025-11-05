@@ -1,5 +1,5 @@
 test_that("Empty genesets - getKappaMatrix", {
-  expect_error(is.null(getKappaMatrix(genes = list())))
+  expect_error(getKappaMatrix(genes = list()))
 })
 
 test_that("Scoring identical sets - getKappaMatrix", {
