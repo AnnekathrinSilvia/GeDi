@@ -105,7 +105,7 @@ prepareGenesetData <- function(genesets,
 #' @param enrichment_package character, the name of the R package used to conduct
 #'                           the enrichment analysis. Supported packages are 
 #'                           currently topGO, clusterProfiler, ReactomePA, 
-#'                           enrichR
+#'                           enrichR and fgsea.
 #'
 #' @returns A Dataframe of the inout data which can directly be used with the
 #'          [GeDi] package.
