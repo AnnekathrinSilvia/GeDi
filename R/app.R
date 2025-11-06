@@ -1264,7 +1264,7 @@ GeDi <- function(genesets = NULL,
       dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
                                     reactive_values$genesets)
       DT::datatable(dt,
-                    rownames = FALSE,
+                    rownames = TRUE,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
@@ -1656,7 +1656,17 @@ GeDi <- function(genesets = NULL,
         reactive_values$gs_names,
         reactive_values$gs_description
       )
-      DT::datatable(dt_cluster,
+
+      dt_cluster_metrics <- .graphMetricsGenesetsDT(
+        reactive_values$cluster_graph(),
+        reactive_values$genesets
+      )
+      dt_cluster_metrics <- dt_cluster_metrics[rownames(dt_cluster), , drop = FALSE]
+      dt_merged <- cbind(dt_cluster, dt_cluster_metrics)
+      
+      dt_merged <- dt_merged[order(dt_merged$Degree, decreasing = TRUE), ]
+      
+      DT::datatable(dt_merged,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 

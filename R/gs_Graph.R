@@ -222,11 +222,11 @@ buildClusterGraph <- function(cluster,
   }
   # Get adjacency matrix representing genesets belonging to the same cluster
   adj <- getClusterAdjacencyMatrix(cluster,
-                                   gs_names)
+                                   gs_ids)
   # Build a graph from the adjacency matrix
   g <- buildGraph(adj)
   # Get node ids corresponding to geneset names
-  ids <- which(names(V(g)) %in% gs_names)
+  ids <- which(names(V(g)) %in% gs_ids)
 
   # Add cluster information to nodes in the graph
   V(g)$cluster <- ""
@@ -235,7 +235,7 @@ buildClusterGraph <- function(cluster,
     for (i in seq_len(n_cluster)) {
       clus <- cluster[[i]]
       for (y in seq_len(length(clus))) {
-        gs_name <- gs_names[clus[[y]]]
+        gs_name <- gs_ids[clus[[y]]]
         id <- which(names(V(g)) %in% gs_name)
         mem <- V(g)$cluster[id]
         cluster_name <- paste("Cluster ", i, sep = "")
@@ -255,7 +255,7 @@ buildClusterGraph <- function(cluster,
   stopifnot("No cluster found. Please choose a different threshold and cluster again." = length(no_cluster) != length(gs_names))
   g <- delete_vertices(g, no_cluster)
   # Update ids to include only nodes present in the graph
-  ids <- which(names(V(g)) %in% gs_names)
+  ids <- which(names(V(g)) %in% gs_ids)
   if (!is.null(color_by)) {
     # Check if the specified color_by column exists in geneset_df
     if (color_by == "Cluster") {
@@ -394,6 +394,7 @@ buildClusterGraph <- function(cluster,
       }
     }
   }
+  
   # Return the constructed graph
   return(g)
 }
@@ -548,7 +549,7 @@ getBipartiteGraph <- function(cluster,
 
   # Compute different graph metrics using igraph functions
   clustering_coef <- igraph::transitivity(g,
-                                          type = "global")
+                                          type = "local")
   centrality <- igraph::harmonic_centrality(g,
                                             mode = "all")
   betweenness <- igraph::betweenness(g,
@@ -558,19 +559,17 @@ getBipartiteGraph <- function(cluster,
 
   # Create a data frame to store computed metrics along with geneset information
   df <- data.frame(
-    nodes,
     degree,
     round(betweenness, 2),
-    centrality,
+    round(centrality, 2),
     round(clustering_coef, 2),
     genesets
   )
 
   # Rename columns and order the data frame by the Degree column in
   # descending order
-  rownames(df) <- NULL
+  rownames(df) <- nodes
   colnames(df) <- c(
-    "Geneset",
     "Degree",
     "Betweenness",
     "Harmonic Centrality",
