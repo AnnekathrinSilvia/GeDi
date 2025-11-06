@@ -98,6 +98,80 @@ prepareGenesetData <- function(genesets,
 }
 
 
+#' Prepare enrichment analysis output data for GeDi
+#'
+#' @param genesets_df Dataframe, a dataframe of the enrichment analysis output
+#'                    which should be prepared for the use in GeDi.
+#' @param enrichment_package character, the name of the R package used to conduct
+#'                           the enrichment analysis. Supported packages are 
+#'                           currently topGO, clusterProfiler, ReactomePA, 
+#'                           enrichR
+#'
+#' @returns A Dataframe of the inout data which can directly be used with the
+#'          [GeDi] package.
+#' @export
+#'
+#' @examples
+#' genesets_df <- data("macrophage_Reactome_example", package = "GeDi")
+#' genesets_df <- path_to_GeDi(
+#'                genesets_df = macrophage_Reactome_example,
+#'                enrichment_package = "clusterProfiler") 
+path_to_GeDi <- function(genesets_df,
+                                   enrichment_package){
+  stopifnot("Seems like you have output from an enrichment package which is not
+            yet supported by this function. Available options are topGO, 
+            clusterProfiler, ReactomePA,
+            enrichR and fgsea." == enrichment_package %in% c("topGO",
+                                                            "clusterProfiler",
+                                                            "ReactomePA",
+                                                            "enrichR",
+                                                            "fgsea"))
+  if(enrichment_package == "topGO"){
+    stopifnot("Seems like your input is not the output of a topGO 
+              enrichment analysis. Please check the output again and select 
+              the correct enrichment package." == all(c("GO.ID", "genes", "Term") %in% (names(genesets_df))))
+    names(genesets_df)[names(genesets_df) == "GO.ID"] <- "Genesets"
+    names(genesets_df)[names(genesets_df) == "genes"] <- "Genes"
+    
+    genesets_df$Genes <-
+      vapply(genesets_df$Genes, function(x)
+        gsub("/", ",", x), character(1))
+  }else if(enrichment_package == "clusterProfiler" || enrichment_package == "ReactomePA"){
+    stopifnot("Seems like your input is not the output of a clusterProfiler 
+              or ReactomePA enrichment analysis. Please check the output again 
+              and select the correct enrichment package." == all(c("ID", "geneID", "Description") %in% (names(genesets_df))))
+  
+    names(genesets_df)[names(genesets_df) == "ID"] <- "Genesets"
+    names(genesets_df)[names(genesets_df) == "geneID"] <- "Genes"
+    
+    genesets_df$Genes <-
+      vapply(genesets_df$Genes, function(x)
+        gsub("/", ",", x), character(1))
+  } else if(enrichment_package == "enrichR"){
+    stopifnot("Seems like your input is not the output of an enrichR
+              enrichment analysis. Please check the output again 
+              and select the correct enrichment package." == all(c("Term", "Genes") %in% (names(genesets_df))))
+    
+    genesets_df$Genesets <- gsub("\\)", "", gsub("^.* \\(", "", genesets_df$Term))
+    genesets_df$Genes <- gsub(";", ",", genesets_df$Genes)
+    genesets_df$Term <- gsub(" \\(GO.*$", "", genesets_df$Term)
+  }else if(enrichment_package == "fgsea"){
+    stopifnot("Seems like your input is not the output of a fgsea
+              enrichment analysis. Please check the output again 
+              and select the correct enrichment package." == all(c("pathway", "leadingEdge") %in% (names(genesets_df))))
+    
+    genesets_df$Genesets <- genesets_df$pathway
+    genesets_df$Genes <- vapply(
+      genesets_df$leadingEdge,
+      function(arg) paste(arg, collapse = ","), character(1)
+    )
+    genesets_df$Term <- genesets_df$pathway
+  }
+  
+  return(genesets_df)
+}
+
+
 #' Make an educated guess on the separator character
 #'
 #' This function tries to guess which separator was used in a list of delimited
