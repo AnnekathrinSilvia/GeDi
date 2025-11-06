@@ -27,6 +27,10 @@ quantiles to `c(0, 1)`, which would then include the set of values as-is.
 * The graph of genesets now includes the calculation of some network based 
 statistics, to assist users in the prioritization of which genesets to focus on 
 (e.g. after extracting the communities).
+* GeDi now implements a new funciton called `path_to_GeDi()`, which can be used 
+to transform the output of various enrichment analysis R packages to be directly
+usable in `GeDi`. The option include packages such as `topGO`, `clusterProfiler`, 
+`ReactomePA`, `enrichR` and `fgsea`.
 
 
 # GeDi 1.2.0
