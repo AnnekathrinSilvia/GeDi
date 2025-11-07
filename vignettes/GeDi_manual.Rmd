@@ -303,18 +303,18 @@ application with your input as parameters (e.g.,
 contain identifiers for each geneset in the input, while the "Genes" column 
 should consist of comma-separated lists of genes associated with each geneset.
 
-Therefore, we will adjust the column names of the resulting `data.frame` from 
-the enrichment analysis to adhere to the required format.
+For this, we have specifically implemented a function called `path_to_GeDi()` in the package. 
+This function can be used to transform the output of several different enrichment packages, such as `topGO`, `clusterProfiler`, `ReactomePA`, `enrichR` and `fgsea`, to fit the expected input in `GeDi`. As input, users need to provide their 
+enrichment analysis results as a `data.frame` as well as the name of the 
+enrichment analysis package that they used. Currently, this function supports 
+output from `topGO`, `clusterProfiler`, `ReactomePA`, `enrichR` and `fgsea`.
 
 ```{r renamecolumns, eval=TRUE}
 # Rename columns in the macrophage_topGO_example dataframe
 # Change the column name "GO.ID" to "Genesets"
-names(macrophage_topGO_example)[names(macrophage_topGO_example) == "GO.ID"] <- "Genesets"
-
-# Change the column name "genes" to "Genes"
-names(macrophage_topGO_example)[names(macrophage_topGO_example) == "genes"] <- "Genes"
+macrophage_topGO_example <- path_to_GeDi(macrophage_topGO_example,
+                                         enrichment_package = "topGO")
 ```
- 
  
 
 ## All set!
