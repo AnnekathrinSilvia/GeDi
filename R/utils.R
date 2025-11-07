@@ -118,11 +118,6 @@ prepareGenesetData <- function(genesets,
 #'                enrichment_package = "clusterProfiler") 
 path_to_GeDi <- function(genesets_df,
                          enrichment_package){
-  print(enrichment_package %in% c("topGO",
-                                  "clusterProfiler",
-                                  "ReactomePA",
-                                  "enrichR",
-                                  "fgsea"))
   stopifnot(
     "Seems like you have output from an enrichment package which is not yet supported by this function. Available options are topGO, clusterProfiler, ReactomePA, enrichR and fgsea." = (enrichment_package %in% c("topGO",
                                                             "clusterProfiler",
@@ -140,8 +135,6 @@ path_to_GeDi <- function(genesets_df,
       vapply(genesets_df$Genes, function(x)
         gsub("/", ",", x), character(1))
   }else if(enrichment_package == "clusterProfiler" || enrichment_package == "ReactomePA"){
-    genesets_df <- genesets_df@result
-    print(all(c("ID", "geneID", "Description") %in% (names(genesets_df))))
     stopifnot("Seems like your input is not the output of a clusterProfiler 
               or ReactomePA enrichment analysis. Please check the output again 
               and select the correct enrichment package." = all(c("ID", "geneID", "Description") %in% (names(genesets_df))))
