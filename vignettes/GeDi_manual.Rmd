@@ -881,8 +881,7 @@ harmonic centrality and clustering coefficient of each geneset, as well as the
 available meta data of each geneset from the input data. The additional graph 
 metrics can help users identify interesting genesets from the clusters or 
 potentially identify 'representative nodes/genesets' of each cluster as a first
-starting point of the interpretation. The table also features a search function, facilitating the quick retrieval of a 
-geneset of interest.
+starting point of the interpretation. The table also features a search function, facilitating the quick retrieval of a geneset of interest.
 
 **Bookmarking from this panel:**
 
