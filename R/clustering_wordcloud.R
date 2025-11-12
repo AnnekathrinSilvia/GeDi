@@ -12,10 +12,16 @@
 #'                    which is used for the word cloud. If no such column is
 #'                    available, the row names of the `data.frame` are used for
 #'                    the word cloud.
+#' @param remove_generic_terms Logical, If generic terms like "via", "protein",
+#'                             "factor", "side", "type", "specific",
+#'                             "regulation" and "process" should be removed from
+#'                             the wordcloud. Default to FALSE.
+#' @param terms_to_remove Character vector, A vector of additional terms that
+#'                        should be removed from the wordcloud.
 #'
 #' @return A [wordcloud2::wordcloud2()] plot object
 #' @export
-#' @importFrom tm VCorpus VectorSource removeWords removePunctuation 
+#' @importFrom tm VCorpus VectorSource removeWords removePunctuation
 #' stripWhitespace stopwords TermDocumentMatrix tm_map
 #' @importFrom wordcloud2 wordcloud2
 #' @importFrom RColorBrewer brewer.pal
@@ -57,7 +63,21 @@
 #'      package = "GeDi",
 #'      envir = environment())
 #' wordcloud <- enrichmentWordcloud(macrophage_topGO_example)
-enrichmentWordcloud <- function(genesets_df) {
+enrichmentWordcloud <- function(genesets_df,
+                                remove_generic_terms = FALSE,
+                                terms_to_remove = c()) {
+  stopifnot("remove_generic_terms must be logical" = is.logical(remove_generic_terms))
+  if(length(terms_to_remove) > 0){
+    stopifnot("Terms in terms_to_remove must be a character" = is.character(terms_to_remove))
+  }
+  if(remove_generic_terms && length(terms_to_remove) > 0){
+    terms_to_remove <- c(terms_to_remove, 
+                         .general_terms_wordcloud)
+  } else if (remove_generic_terms) {
+    terms_to_remove <- .general_terms_wordcloud
+  }
+
+
   # Check if genesets are provided
   stopifnot(!is.null(genesets_df))
 
@@ -73,9 +93,10 @@ enrichmentWordcloud <- function(genesets_df) {
   }
   # Create a text corpus from the selected terms
   corpus <- VCorpus(VectorSource(terms))
-  # Preprocess the text corpus by removing English stopwords, punctuation, 
+  # Preprocess the text corpus by removing English stopwords, punctuation,
   # and whitespace
-  corpus <- tm_map(corpus, removeWords, stopwords("english"))
+  corpus <- tm_map(corpus, removeWords, c(stopwords("english"),
+                                                      terms_to_remove))
   corpus <- tm_map(corpus, removePunctuation)
   corpus <- tm_map(corpus, stripWhitespace)
   # Create a document-term matrix from the preprocessed corpus

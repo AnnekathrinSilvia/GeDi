@@ -4,21 +4,11 @@
 \alias{getMeetMinMatrix}
 \title{Get Matrix of Meet-Min distances}
 \usage{
-getMeetMinMatrix(
-  genesets,
-  progress = NULL,
-  BPPARAM = BiocParallel::SerialParam()
-)
+getMeetMinMatrix(genesets)
 }
 \arguments{
 \item{genesets}{a \code{list}, A \code{list} of genesets where each genesets is
 represented by \code{list} of genes.}
-
-\item{progress}{a \code{\link[shiny:Progress]{shiny::Progress()}} object, Optional progress bar object
-to track the progress of the function (e.g. in a Shiny app).}
-
-\item{BPPARAM}{A BiocParallel \code{bpparam} object specifying how parallelization
-should be handled. Defaults to \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}}}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with Meet-Min distance rounded to 2 decimal

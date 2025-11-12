@@ -10,7 +10,9 @@ distanceHeatmap(
   plot_labels = TRUE,
   cluster_rows = TRUE,
   cluster_columns = TRUE,
-  title = "Distance Scores"
+  title = "Distance Scores",
+  display_similarity = FALSE,
+  quantile_limits = c(0.025, 0.975)
 )
 }
 \arguments{
@@ -33,6 +35,18 @@ clustered based on the distance scores. Defaults to
 TRUE}
 
 \item{title}{character, a title for the figure. Defaults to "Distance Scores"}
+
+\item{display_similarity}{Logical, Indicates whether or not the scores should be
+plotted as a distance matrix (i.e. 0 indicates completely
+identical sets) or as a similarity matrix (i.e. 1
+indicates completely identical sets). Defaults to FALSE
+(i.e. a distance matrix).}
+
+\item{quantile_limits}{Numerical vector, Used to scale the colors in the
+heatmap between the given quantiles. Can be helpful in
+order to reduce the effect of the diagonal or other
+outlier values on the color scheme. Defaults to
+c(0.025, 0.975).}
 }
 \value{
 A \code{\link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap()}} plot object.

@@ -9,7 +9,7 @@
 #'               `distanceMatrix` a 1 should be inserted in the adjacency
 #'               matrix. A 1 is inserted when for each entry in the matrix
 #'               that is smaller or equal to the `cutOff` value.
-#' @param weighted logical value, indicating whether or not the resulting 
+#' @param weighted logical value, indicating whether or not the resulting
 #'                 adjacency matrix should be weighted. If TRUE, the matrix will
 #'                 be weighted by the distance scores in `distanceMatrix`.
 #'                 Defaults to FALSE.
@@ -31,7 +31,7 @@ getAdjacencyMatrix <- function(distanceMatrix,
   if (is.null(distanceMatrix) || length(distanceMatrix) == 0) {
     return(NULL)
   }
-  
+
   # Determine the number of nodes, which is equal to the number of rows
   l <- nrow(distanceMatrix)
   # Initialize an adjacency matrix with zeros
@@ -103,7 +103,7 @@ buildGraph <- function(adjMatrix,
   gs_ids <- rownames(adjMatrix)
   # Get indices of nodes that match geneset names
   ids <- which(names(V(g)) %in% gs_ids)
-  
+
   #Add node titles
   V(g)$title[ids] <- getGraphTitle(geneset_df,
                                    ids,
@@ -135,7 +135,7 @@ getClusterAdjacencyMatrix <- function(cluster,
   l <- length(gs_names)
   # Ensure that there is at least one geneset
   stopifnot(l > 0)
-  
+
   # Initialize an adjacency matrix with zeros
   adj <- Matrix::Matrix(0, l, l)
   # Check if the cluster is empty
@@ -147,7 +147,7 @@ getClusterAdjacencyMatrix <- function(cluster,
 
   # Ensure that there are not more cluster than genesets
   stopifnot(l >= length(cluster))
-  
+
   # Fill the adjacency matrix based on the provided cluster
   for (i in seq_len(length(cluster))) {
     # Get subcluster indices
@@ -187,7 +187,6 @@ getClusterAdjacencyMatrix <- function(cluster,
 #'         (e.g. via [igraph::plot.igraph()] or
 #'         [visNetwork::visIgraph()][visNetwork::visNetwork-igraph])
 #' @import igraph
-#' @importFrom GeneTonic map2color
 #' @importFrom grDevices colorRampPalette
 #' @export
 #'
@@ -223,12 +222,12 @@ buildClusterGraph <- function(cluster,
   }
   # Get adjacency matrix representing genesets belonging to the same cluster
   adj <- getClusterAdjacencyMatrix(cluster,
-                                   gs_names)
+                                   gs_ids)
   # Build a graph from the adjacency matrix
   g <- buildGraph(adj)
   # Get node ids corresponding to geneset names
-  ids <- which(names(V(g)) %in% gs_names)
-  
+  ids <- which(names(V(g)) %in% gs_ids)
+
   # Add cluster information to nodes in the graph
   V(g)$cluster <- ""
   n_cluster <- length(cluster)
@@ -236,7 +235,7 @@ buildClusterGraph <- function(cluster,
     for (i in seq_len(n_cluster)) {
       clus <- cluster[[i]]
       for (y in seq_len(length(clus))) {
-        gs_name <- gs_names[clus[[y]]]
+        gs_name <- gs_ids[clus[[y]]]
         id <- which(names(V(g)) %in% gs_name)
         mem <- V(g)$cluster[id]
         cluster_name <- paste("Cluster ", i, sep = "")
@@ -256,7 +255,7 @@ buildClusterGraph <- function(cluster,
   stopifnot("No cluster found. Please choose a different threshold and cluster again." = length(no_cluster) != length(gs_names))
   g <- delete_vertices(g, no_cluster)
   # Update ids to include only nodes present in the graph
-  ids <- which(names(V(g)) %in% gs_names)
+  ids <- which(names(V(g)) %in% gs_ids)
   if (!is.null(color_by)) {
     # Check if the specified color_by column exists in geneset_df
     if (color_by == "Cluster") {
@@ -269,26 +268,26 @@ buildClusterGraph <- function(cluster,
       mypal_select <- (scales::alpha(colorRampPalette(
         RColorBrewer::brewer.pal(name = "Set3", n_cluster)
       )(50), 1))
-      
+
       col_var <- V(g)$cluster
       col_var <- as.numeric(sapply(strsplit(
         col_var, split = ' ', fixed = TRUE
       ), function(x)
         (x[2])))
-      
-      V(g)$color.background <- map2color(col_var,
-                                         mypal,
-                                         symmetric = FALSE,
-                                         limits = range(na.omit(col_var)))
-      V(g)$color.highlight <- map2color(col_var,
-                                        mypal_select,
+
+      V(g)$color.background <- .map_to_color(col_var,
+                                             mypal,
+                                             symmetric = FALSE,
+                                             limits = range(na.omit(col_var)))
+      V(g)$color.highlight <- .map_to_color(col_var,
+                                            mypal_select,
+                                            symmetric = FALSE,
+                                            limits = range(na.omit(col_var)))
+      V(g)$color.hover <- .map_to_color(col_var,
+                                        mypal_hover,
                                         symmetric = FALSE,
                                         limits = range(na.omit(col_var)))
-      V(g)$color.hover <- map2color(col_var,
-                                    mypal_hover,
-                                    symmetric = FALSE,
-                                    limits = range(na.omit(col_var)))
-      
+
       V(g)$color.background[is.na(V(g)$color.background)] <-
         "lightgrey"
       V(g)$color.highlight[is.na(V(g)$color.highlight)] <-
@@ -317,20 +316,20 @@ buildClusterGraph <- function(cluster,
         mypal_select <- (scales::alpha(colorRampPalette(
           RColorBrewer::brewer.pal(name = "YlOrRd", 7)
         )(10), 1))
-        
-        V(g)$color.background <- map2color(col_var,
-                                           mypal,
-                                           symmetric = FALSE,
-                                           limits = range(na.omit(col_var)))
-        V(g)$color.highlight <- map2color(col_var,
-                                          mypal_select,
+
+        V(g)$color.background <- .map_to_color(col_var,
+                                               mypal,
+                                               symmetric = FALSE,
+                                               limits = range(na.omit(col_var)))
+        V(g)$color.highlight <- .map_to_color(col_var,
+                                              mypal_select,
+                                              symmetric = FALSE,
+                                              limits = range(na.omit(col_var)))
+        V(g)$color.hover <- .map_to_color(col_var,
+                                          mypal_hover,
                                           symmetric = FALSE,
                                           limits = range(na.omit(col_var)))
-        V(g)$color.hover <- map2color(col_var,
-                                      mypal_hover,
-                                      symmetric = FALSE,
-                                      limits = range(na.omit(col_var)))
-        
+
         V(g)$color.background[is.na(V(g)$color.background)] <-
           "lightgrey"
         V(g)$color.highlight[is.na(V(g)$color.highlight)] <-
@@ -350,21 +349,20 @@ buildClusterGraph <- function(cluster,
           mypal_select <- (scales::alpha(colorRampPalette(
             RColorBrewer::brewer.pal(name = "Reds", 5)
           )(5), 1))
-          
-          V(g)$color.background <- map2color(col_var,
-                                             mypal,
-                                             symmetric = FALSE,
-                                             limits = range(na.omit(col_var)))
-          V(g)$color.highlight <- map2color(
-            col_var,
-            mypal_select,
-            symmetric = FALSE,
-            limits = range(na.omit(col_var))
+
+          V(g)$color.background <- .map_to_color(col_var,
+                                                 mypal,
+                                                 symmetric = FALSE,
+                                                 limits = range(na.omit(col_var)))
+          V(g)$color.highlight <- .map_to_color(col_var,
+                                                mypal_select,
+                                                symmetric = FALSE,
+                                                limits = range(na.omit(col_var))
           )
-          V(g)$color.hover <- map2color(col_var,
-                                        mypal_hover,
-                                        symmetric = FALSE,
-                                        limits = range(na.omit(col_var)))
+          V(g)$color.hover <- .map_to_color(col_var,
+                                            mypal_hover,
+                                            symmetric = FALSE,
+                                            limits = range(na.omit(col_var)))
           V(g)$color.background[is.na(V(g)$color.background)] <-
             "lightgrey"
           V(g)$color.highlight[is.na(V(g)$color.highlight)] <-
@@ -381,14 +379,14 @@ buildClusterGraph <- function(cluster,
           mypal_select <- rev(scales::alpha(
             colorRampPalette(RColorBrewer::brewer.pal(name = "RdYlBu", 11))(50), 1
           ))
-          
-          V(g)$color.background <- map2color(col_var, mypal, symmetric = TRUE, 
-                                                          limits = range(na.omit(col_var)))
-          V(g)$color.highlight <- map2color(col_var, mypal_select, symmetric = TRUE, 
-                                                         limits = range(na.omit(col_var)))
-          V(g)$color.hover <- map2color(col_var, mypal_hover, symmetric = TRUE, 
-                                                     limits = range(na.omit(col_var)))
-          
+
+          V(g)$color.background <- .map_to_color(col_var, mypal, symmetric = TRUE,
+                                                 limits = range(na.omit(col_var)))
+          V(g)$color.highlight <- .map_to_color(col_var, mypal_select, symmetric = TRUE,
+                                                limits = range(na.omit(col_var)))
+          V(g)$color.hover <- .map_to_color(col_var, mypal_hover, symmetric = TRUE,
+                                            limits = range(na.omit(col_var)))
+
           V(g)$color.background[is.na(V(g)$color.background)] <- "lightgrey"
           V(g)$color.highlight[is.na(V(g)$color.highlight)] <- "lightgrey"
           V(g)$color.hover[is.na(V(g)$color.hover)] <- "lightgrey"
@@ -396,6 +394,7 @@ buildClusterGraph <- function(cluster,
       }
     }
   }
+  
   # Return the constructed graph
   return(g)
 }
@@ -437,7 +436,7 @@ getBipartiteGraph <- function(cluster,
   stopifnot(length(cluster) > 0)
   stopifnot(length(gs_names) > 0)
   stopifnot(length(genes) > 0)
-  
+
   edgelist <- c()
   type <- c()
   n_cluster <- length(cluster)
@@ -469,7 +468,7 @@ getBipartiteGraph <- function(cluster,
   # Set up the bipartite graph
   type <- c(rep(0, n_cluster))
   type <- c(type, rep(1, node_number - n_cluster - 1))
-  
+
   graph <-
     igraph::make_bipartite_graph(type, edgelist, directed = TRUE)
   graph <- set_vertex_attr(graph, "name", value = node_labels)
@@ -477,7 +476,7 @@ getBipartiteGraph <- function(cluster,
     which(names(V(graph)) %in% node_labels[seq_len(n_cluster)])
   geneset_id <-
     which(!(names(V(graph)) %in% node_labels[seq_len(n_cluster)]))
-  
+
   # Set node type and shape attributes
   igraph::V(graph)$nodeType <- NA
   igraph::V(graph)$nodeType[cluster_id] <- "Cluster"
@@ -543,36 +542,34 @@ getBipartiteGraph <- function(cluster,
                                     genesets) {
   # Get the names of nodes (genesets) in the graph
   nodes <- igraph::V(g)$name
-  
+
   # Filter and prepare geneset data
   genesets <- genesets[, !names(genesets) %in% c("Genes")]
   genesets <- genesets[genesets$Genesets %in% nodes, ]
-  
+
   # Compute different graph metrics using igraph functions
   clustering_coef <- igraph::transitivity(g,
-                                          type = "global")
+                                          type = "local")
   centrality <- igraph::harmonic_centrality(g,
                                             mode = "all")
   betweenness <- igraph::betweenness(g,
                                      directed = FALSE)
   degree <- igraph::degree(g,
                            mode = "all")
-  
+
   # Create a data frame to store computed metrics along with geneset information
   df <- data.frame(
-    nodes,
     degree,
     round(betweenness, 2),
-    centrality,
+    round(centrality, 2),
     round(clustering_coef, 2),
     genesets
   )
-  
+
   # Rename columns and order the data frame by the Degree column in
   # descending order
-  rownames(df) <- NULL
+  rownames(df) <- nodes
   colnames(df) <- c(
-    "Geneset",
     "Degree",
     "Betweenness",
     "Harmonic Centrality",
@@ -580,7 +577,7 @@ getBipartiteGraph <- function(cluster,
     names(genesets)
   )
   df <- df[order(df$Degree, decreasing = TRUE), ]
-  
+
   # Return the computed metrics data frame
   return(df)
 }
@@ -638,7 +635,7 @@ getGraphTitle <- function(geneset_df = NULL,
     transposed_df <- as.data.frame(t(geneset_df))
     title <- list()
     names_rows <- rownames(transposed_df)
-    
+
     for (i in seq_len(ncol(transposed_df))) {
     node_title <- "<!DOCTYPE html> <html> <head> <style>
       table {font-family: arial, sans-serif; font-size: 10px; border-collapse: collapse;width: 100%;} td,
@@ -668,11 +665,11 @@ getGraphTitle <- function(geneset_df = NULL,
       title <- list()
       title[node_ids] <- ""
     }
-  
+
   if (is.null(gs_names)) {
     gs_names <- gs_ids
     }
-    
+
   titles <- list()
   # Customize node titles based on the type of database (GO, Reactome, or other)
   if (all(vapply(gs_ids, function(x)
@@ -722,3 +719,51 @@ getGraphTitle <- function(geneset_df = NULL,
     }
   return(titles)
 }
+
+
+#' Maps numeric values to color values
+#'
+#' Maps numeric continuous values to values in a color palette
+#'
+#' @param x A character vector of numeric values (e.g. log2FoldChange values) to
+#' be converted to a vector of colors
+#' @param pal A vector of characters specifying the definition of colors for the
+#' palette, e.g. obtained via [RColorBrewer::brewer.pal()]
+#' @param symmetric Logical value, whether to return a palette which is symmetrical
+#' with respect to the minimum and maximum values - "respecting" the zero.
+#' Defaults to `TRUE`.
+#' @param limits A vector containing the limits of the values to be mapped. If
+#' not specified, defaults to the range of values in the `x` vector.
+#'
+#' @return A vector of colors, each corresponding to an element in the original
+#' vector
+#'
+#' @importFrom RColorBrewer brewer.pal
+#' @export
+#'
+#' @examples
+#' a <- 1:9
+#' pal <- RColorBrewer::brewer.pal(9, "Set1")
+#' .map_to_color(a, pal)
+#' plot(a, col = .map_to_color(a, pal), pch = 20, cex = 4)
+#'
+#' b <- 1:50
+#' pal2 <- grDevices::colorRampPalette(
+#'   RColorBrewer::brewer.pal(name = "RdYlBu", 11)
+#' )(50)
+#' plot(b, col = .map_to_color(b, pal2), pch = 20, cex = 3)
+.map_to_color <- function (x, pal, symmetric = TRUE, limits = NULL)
+{
+  if (is.null(limits)) {
+    limits <- range(x)
+  }
+  if (symmetric) {
+    max_val <- max(limits)
+    limits[1] <- -max_val
+    limits[2] <- max_val
+  }
+  pal_ret <- pal[findInterval(x, seq(limits[1], limits[2],
+                                     length.out = length(pal) + 1), all.inside = TRUE)]
+  return(pal_ret)
+}
+

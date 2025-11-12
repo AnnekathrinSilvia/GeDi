@@ -247,7 +247,7 @@ background genes to be utilized for functional enrichment.
 For the enrichment analysis, we use the overrepresentation analysis method 
 provided by the `r BiocStyle::Biocpkg("topGO")` package. To streamline the 
 integration of these results into `r BiocStyle::Biocpkg("GeDi")`, we utilize the 
-`topGOtable` function from the `r BiocStyle::Biocpkg("pcaExplorer")` package. 
+`run_topGO` function from the `r BiocStyle::Biocpkg("mosdef")` package. 
 By default, this function employs the `BP` ontology and the `elim` method, which
 helps decorrelate the Gene Ontology (GO) graph structure, resulting in less 
 redundant functional categories. The output is a `DataFrame` object that 
@@ -262,16 +262,15 @@ method during `r BiocStyle::Biocpkg("GeDi")` development, those from the
 
 ```{r create_resenrich1, eval=TRUE}
 # Load required packages for analysis
-library("pcaExplorer")
-library("GeneTonic")
+library("mosdef")
 library("AnnotationDbi")
 
 # Extract gene symbols from the DESeq2 results object where FDR is below 0.05
 # The function deseqresult2df is used to convert the DESeq2 results to a 
 # dataframe format
 # FDR is set to 0.05 to filter significant results
-de_symbols_IFNg_vs_naive <- deseqresult2df(res_macrophage_IFNg_vs_naive,
-                                           FDR = 0.05)$SYMBOL
+de_symbols_IFNg_vs_naive <- mosdef::deresult_to_df(res_macrophage_IFNg_vs_naive,
+                                                   FDR = 0.05)$SYMBOL
 
 # Extract gene symbols for background using the DESeq2 results object
 # Filter genes that have nonzero counts
@@ -283,15 +282,15 @@ bg_ids <- rowData(dds_macrophage)$SYMBOL[rowSums(counts(dds_macrophage)) > 0]
 library("topGO")
 library("org.Hs.eg.db")
 
-# Perform Gene Ontology enrichment analysis using the topGOtable function from 
-# the "pcaExplorer" package
+# Perform Gene Ontology enrichment analysis using the run_topGO function from 
+# the "mosdef" package
 macrophage_topGO_example <-
-  pcaExplorer::topGOtable(de_symbols_IFNg_vs_naive,
-    bg_ids,
+  mosdef::run_topGO(
+    de_genes = de_symbols_IFNg_vs_naive,
+    bg_genes = bg_ids,
     ontology = "BP",
     mapping = "org.Hs.eg.db",
-    geneID = "symbol",
-    topTablerows = 500
+    gene_id = "symbol"
   )
 ```
 
@@ -304,18 +303,18 @@ application with your input as parameters (e.g.,
 contain identifiers for each geneset in the input, while the "Genes" column 
 should consist of comma-separated lists of genes associated with each geneset.
 
-Therefore, we will adjust the column names of the resulting `data.frame` from 
-the enrichment analysis to adhere to the required format.
+For this, we have specifically implemented a function called `path_to_GeDi()` in the package. 
+This function can be used to transform the output of several different enrichment packages, such as `topGO`, `clusterProfiler`, `ReactomePA`, `enrichR` and `fgsea`, to fit the expected input in `GeDi`. As input, users need to provide their 
+enrichment analysis results as a `data.frame` as well as the name of the 
+enrichment analysis package that they used. Currently, this function supports 
+output from `topGO`, `clusterProfiler`, `ReactomePA`, `enrichR` and `fgsea`.
 
 ```{r renamecolumns, eval=TRUE}
 # Rename columns in the macrophage_topGO_example dataframe
 # Change the column name "GO.ID" to "Genesets"
-names(macrophage_topGO_example)[names(macrophage_topGO_example) == "GO.ID"] <- "Genesets"
-
-# Change the column name "genes" to "Genes"
-names(macrophage_topGO_example)[names(macrophage_topGO_example) == "genes"] <- "Genes"
+macrophage_topGO_example <- path_to_GeDi(macrophage_topGO_example,
+                                         enrichment_package = "topGO")
 ```
- 
  
 
 ## All set!
@@ -700,8 +699,8 @@ information inherent in the genesets.
 
 * **GO distance**: The **GO distance** score measures the relationship between 
 gene sets that are represented by GO terms. Implemented in the 
-`r BiocStyle::Biocpkg("GOSemSim")` Rpackage, there are two main types: 
-information content (IC)-based methods(e.g., Resnik, Lin, Schlicker, and Jiang) 
+`r BiocStyle::Biocpkg("simona")` Rpackage, there are two main types: 
+information content (IC)-based methods(e.g., Resnik, Lin, and Jiang) 
 and graph-based methods (e.g., Wang). These methods compute similarity scores 
 based on shared characteristics, such as the most informative common ancestor 
 in IC-based methods or the hierarchical structure of the GO database in 
@@ -871,13 +870,18 @@ data includes brief descriptions of the genesets, in addition to the mandatory
 input data. By utilizing the **Select a cluster** drop-down menu, you can 
 designate the cluster of interest. Furthermore, hovering over the word cloud 
 enables you to select individual terms and view the frequency with which each 
-term appears in the descriptions of the genesets within that cluster.
+term appears in the descriptions of the genesets within that cluster. 
+Additionally, users can remove generic terms (such as "via", "protein", "factor", "side", "type", "specific", "regulation" and "process"), by activating the 
+"Remove generic terms from the Wordcloud" switch in the panel.
 
 * **Clustering graph summaries**: The cluster information is also summarized in 
 a table-like format in the **Clustering graph summaries** box. This table 
-displays each geneset alongside the cluster to which it belongs. Additionally, 
-the table features a search function, facilitating the quick retrieval of a 
-geneset of interest.
+displays each geneset alongside the cluster to which it belongs. Additionally, the table also features several graph metrics, such as the degree, betweeness, 
+harmonic centrality and clustering coefficient of each geneset, as well as the 
+available meta data of each geneset from the input data. The additional graph 
+metrics can help users identify interesting genesets from the clusters or 
+potentially identify 'representative nodes/genesets' of each cluster as a first
+starting point of the interpretation. The table also features a search function, facilitating the quick retrieval of a geneset of interest.
 
 **Bookmarking from this panel:**
 

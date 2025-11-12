@@ -1,7 +1,7 @@
 Package: GeDi
 Title: Defining and visualizing the distances between different genesets
-Version: 1.5.0
-Date: 2024-10-10
+Version: 1.5.1
+Date: 2025-11-12
 Authors@R: 
     c(
         person(
@@ -19,7 +19,6 @@ Description: The package provides different distances measurements
 Depends:
     R (>= 4.4.0)
 Imports: 
-    GOSemSim,
     Matrix,
     shiny,
     shinyWidgets,
@@ -39,7 +38,7 @@ Imports:
     stats,
     ggplot2,
     plotly,
-    GeneTonic,
+    expm,
     RColorBrewer,
     scales,
     readxl,
@@ -52,14 +51,18 @@ Imports:
     BiocParallel,
     BiocFileCache,
     cluster,
-    circlize
+    methods,
+    circlize,
+    proxyC,
+    simona
 Suggests: 
     knitr,
     rmarkdown,
     testthat (>= 3.0.0),
     DESeq2,
+    mosdef,
+    GeneTonic,
     htmltools,
-    pcaExplorer,
     AnnotationDbi,
     macrophage,
     topGO,
@@ -73,7 +76,7 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 URL: https://github.com/AnnekathrinSilvia/GeDi
 BugReports: https://github.com/AnnekathrinSilvia/GeDi/issues
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 biocViews: 

@@ -46,6 +46,7 @@
 #' @importFrom utils read.delim data
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom igraph V degree delete_vertices get.edgelist
+#' @importFrom shinyWidgets materialSwitch
 #'
 #' @examples
 #' if (interactive()) {
@@ -1076,11 +1077,27 @@ GeDi <- function(genesets = NULL,
             selected = "Distance Scores Heatmap",
             side = "right",
             tabPanel(title = "Distance Scores Heatmap",
-                     withSpinner(
-                       plotOutput("scores_heatmap",
-                                  height = "800px",
-                                  width = "1000px")
-                     )),
+                     fluidRow(
+                       column(
+                         width = 12,
+                         br(),
+                         shinyWidgets::materialSwitch(
+                           inputId = "similarity_matrix", 
+                           label = "Display Distance Scores in a Similarity Matrix",
+                           value = FALSE,
+                           status = "info")
+                       )),
+                     fluidRow(
+                       column(
+                         width = 12,
+                         withSpinner(
+                           plotOutput("scores_heatmap",
+                                      height = "800px",
+                                      width = "1000px")
+                         ) 
+                       )
+                     )
+                     ),
             tabPanel(title = "Distance Scores Dendrogram",
                      fluidRow(
                        column(
@@ -1163,7 +1180,8 @@ GeDi <- function(genesets = NULL,
       }
       distanceHeatmap(scores,
                       chars_limit = 20, 
-                      plot_labels)
+                      plot_labels,
+                      display_similarity = input$similarity_matrix)
     })
 
 
@@ -1246,7 +1264,7 @@ GeDi <- function(genesets = NULL,
       dt <- .graphMetricsGenesetsDT(reactive_values$scores_graph(),
                                     reactive_values$genesets)
       DT::datatable(dt,
-                    rownames = FALSE,
+                    rownames = TRUE,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
@@ -1380,7 +1398,13 @@ GeDi <- function(genesets = NULL,
                              reactive_values$cluster
                            ))),
                            selected = 1
-                         )
+                         ),
+                         br(),
+                         shinyWidgets::materialSwitch(
+                           inputId = "wordcloud_generic_terms", 
+                           label = "Remove generic terms from the Wordcloud",
+                           value = FALSE,
+                           status = "info")
                        ),
                        column(
                          width = 12,
@@ -1632,7 +1656,17 @@ GeDi <- function(genesets = NULL,
         reactive_values$gs_names,
         reactive_values$gs_description
       )
-      DT::datatable(dt_cluster,
+
+      dt_cluster_metrics <- .graphMetricsGenesetsDT(
+        reactive_values$cluster_graph(),
+        reactive_values$genesets
+      )
+      dt_cluster_metrics <- dt_cluster_metrics[rownames(dt_cluster), , drop = FALSE]
+      dt_merged <- cbind(dt_cluster, dt_cluster_metrics)
+      
+      dt_merged <- dt_merged[order(dt_merged$Degree, decreasing = TRUE), ]
+      
+      DT::datatable(dt_merged,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
 
@@ -1655,7 +1689,8 @@ GeDi <- function(genesets = NULL,
         genesets <- reactive_values$cluster[[cluster]]
         genesets_df <- reactive_values$genesets[genesets, ]
 
-        enrichmentWordcloud(genesets_df)
+        enrichmentWordcloud(genesets_df,
+                            remove_generic_terms = input$wordcloud_generic_terms)
       })
 
     # Report panel -----------------------------------------------------------
@@ -2113,9 +2148,9 @@ GeDi <- function(genesets = NULL,
       progress$set(message = "Scoring your genesets", value = 0)
 
       if (input$scoringmethod == "Meet-Min") {
-        scores <- getMeetMinMatrix(reactive_values$genes, progress)
+        scores <- getMeetMinMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "Kappa") {
-        scores <- getKappaMatrix(reactive_values$genes, progress)
+        scores <- getKappaMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "pMM") {
         if (is.null(reactive_values$ppi)) {
           showNotification(
@@ -2132,16 +2167,13 @@ GeDi <- function(genesets = NULL,
           )
         }
       } else if (input$scoringmethod == "Jaccard") {
-        scores <- getJaccardMatrix(reactive_values$genes,
-                                   progress = progress)
+        scores <- getJaccardMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "Sorensen-Dice") {
-        scores <- getSorensenDiceMatrix(reactive_values$genes,
-                                        progress = progress)
+        scores <- getSorensenDiceMatrix(reactive_values$genes)
       } else if (input$scoringmethod == "GO Distance") {
         tryCatch(
           expr = {
-            scores <- goDistance(reactive_values$gs_names,
-                                   progress = progress)
+            scores <- goDistance(reactive_values$gs_names)
           },
           error = function(cond) {
             showNotification(
@@ -2163,7 +2195,10 @@ GeDi <- function(genesets = NULL,
           type = "error"
         )
       } else {
-        rownames(scores) <- colnames(scores) <- reactive_values$gs_names
+        progress$inc(0.5, detail = "Finished scoring genesets, now postprocessing")
+        if(input$scoringmethod != "GO Distance"){
+          rownames(scores) <- colnames(scores) <- reactive_values$gs_names
+        }
         calculated_scores <- names(reactive_values$scores)
         
         if(input$scoringmethod %in% calculated_scores){

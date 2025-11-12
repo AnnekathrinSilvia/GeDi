@@ -4,7 +4,11 @@
 \alias{enrichmentWordcloud}
 \title{Visualize the results of an enrichment analysis as word cloud}
 \usage{
-enrichmentWordcloud(genesets_df)
+enrichmentWordcloud(
+  genesets_df,
+  remove_generic_terms = FALSE,
+  terms_to_remove = c()
+)
 }
 \arguments{
 \item{genesets_df}{A \code{data.frame} object of an enrichment analysis results.
@@ -15,6 +19,14 @@ ideally include a column with a short geneset description
 which is used for the word cloud. If no such column is
 available, the row names of the \code{data.frame} are used for
 the word cloud.}
+
+\item{remove_generic_terms}{Logical, If generic terms like "via", "protein",
+"factor", "side", "type", "specific",
+"regulation" and "process" should be removed from
+the wordcloud. Default to FALSE.}
+
+\item{terms_to_remove}{Character vector, A vector of additional terms that
+should be removed from the wordcloud.}
 }
 \value{
 A \code{\link[wordcloud2:wordcloud2]{wordcloud2::wordcloud2()}} plot object
