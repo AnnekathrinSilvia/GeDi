@@ -870,12 +870,18 @@ data includes brief descriptions of the genesets, in addition to the mandatory
 input data. By utilizing the **Select a cluster** drop-down menu, you can 
 designate the cluster of interest. Furthermore, hovering over the word cloud 
 enables you to select individual terms and view the frequency with which each 
-term appears in the descriptions of the genesets within that cluster.
+term appears in the descriptions of the genesets within that cluster. 
+Additionally, users can remove generic terms (such as "via", "protein", "factor", "side", "type", "specific", "regulation" and "process"), by activating the 
+"Remove generic terms from the Wordcloud" switch in the panel.
 
 * **Clustering graph summaries**: The cluster information is also summarized in 
 a table-like format in the **Clustering graph summaries** box. This table 
-displays each geneset alongside the cluster to which it belongs. Additionally, 
-the table features a search function, facilitating the quick retrieval of a 
+displays each geneset alongside the cluster to which it belongs. Additionally, the table also features several graph metrics, such as the degree, betweeness, 
+harmonic centrality and clustering coefficient of each geneset, as well as the 
+available meta data of each geneset from the input data. The additional graph 
+metrics can help users identify interesting genesets from the clusters or 
+potentially identify 'representative nodes/genesets' of each cluster as a first
+starting point of the interpretation. The table also features a search function, facilitating the quick retrieval of a 
 geneset of interest.
 
 **Bookmarking from this panel:**
