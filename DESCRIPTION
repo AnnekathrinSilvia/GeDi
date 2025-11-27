@@ -2,7 +2,7 @@ Package: GeDi
 Title: Defining and visualizing the distances between different genesets
 Version: 1.7.1
 Date: 2025-11-26
-Authors@R: 
+Authors@R:
     c(
         person(
             given = "Annekathrin", family = "Nedwed", role = c("aut", "cre"),
