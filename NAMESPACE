@@ -46,75 +46,95 @@ import(igraph)
 import(shiny)
 import(shinyBS)
 import(visNetwork)
-importFrom(BiocFileCache,BiocFileCache)
-importFrom(BiocFileCache,bfcadd)
-importFrom(BiocFileCache,bfccount)
-importFrom(BiocFileCache,bfcdownload)
-importFrom(BiocFileCache,bfcneedsupdate)
-importFrom(BiocFileCache,bfcquery)
+importFrom(BiocFileCache,
+  BiocFileCache,
+  bfcadd,
+  bfccount,
+  bfcdownload,
+  bfcneedsupdate,
+  bfcquery
+)
 importFrom(BiocNeighbors,findKNN)
-importFrom(BiocParallel,SerialParam)
-importFrom(BiocParallel,bplapply)
+importFrom(BiocParallel,
+  SerialParam,
+  bplapply
+)
 importFrom(ComplexHeatmap,Heatmap)
 importFrom(Matrix,Matrix)
 importFrom(RColorBrewer,brewer.pal)
-importFrom(bs4Dash,box)
-importFrom(bs4Dash,bs4Card)
-importFrom(bs4Dash,bs4DashBody)
-importFrom(bs4Dash,bs4DashBrand)
-importFrom(bs4Dash,bs4DashControlbar)
-importFrom(bs4Dash,bs4DashFooter)
-importFrom(bs4Dash,bs4DashNavbar)
-importFrom(bs4Dash,bs4DashPage)
-importFrom(bs4Dash,bs4DashSidebar)
-importFrom(bs4Dash,bs4SidebarMenu)
-importFrom(bs4Dash,bs4SidebarMenuItem)
-importFrom(bs4Dash,bs4TabItem)
-importFrom(bs4Dash,bs4TabItems)
-importFrom(bs4Dash,renderbs4InfoBox)
-importFrom(bs4Dash,updateBox)
+importFrom(bs4Dash,
+  box,
+  bs4Card,
+  bs4DashBody,
+  bs4DashBrand,
+  bs4DashControlbar,
+  bs4DashFooter,
+  bs4DashNavbar,
+  bs4DashPage,
+  bs4DashSidebar,
+  bs4SidebarMenu,
+  bs4SidebarMenuItem,
+  bs4TabItem,
+  bs4TabItems,
+  renderbs4InfoBox,
+  updateBox
+)
 importFrom(circlize,colorRamp2)
 importFrom(cluster,pam)
 importFrom(dplyr,distinct)
 importFrom(expm,"%^%")
 importFrom(ggdendro,ggdendrogram)
 importFrom(grDevices,colorRampPalette)
-importFrom(igraph,E)
-importFrom(igraph,V)
-importFrom(igraph,cluster_louvain)
-importFrom(igraph,degree)
-importFrom(igraph,delete_vertices)
-importFrom(igraph,get.edgelist)
-importFrom(igraph,graph_from_adjacency_matrix)
-importFrom(igraph,make_bipartite_graph)
-importFrom(igraph,membership)
-importFrom(igraph,set_vertex_attr)
-importFrom(methods,as)
-importFrom(methods,is)
+importFrom(igraph,
+  E,
+  V,
+  cluster_louvain,
+  degree,
+  delete_vertices,
+  get.edgelist,
+  graph_from_adjacency_matrix,
+  make_bipartite_graph,
+  membership,
+  set_vertex_attr
+)
+importFrom(methods,
+  as,
+  is
+)
 importFrom(parallel,mclapply)
-importFrom(plotly,plotlyOutput)
-importFrom(plotly,renderPlotly)
+importFrom(plotly,
+  plotlyOutput,
+  renderPlotly
+)
 importFrom(proxyC,simil)
 importFrom(rintrojs,introjs)
 importFrom(shinyWidgets,materialSwitch)
 importFrom(shinycssloaders,withSpinner)
-importFrom(simona,create_ontology_DAG_from_GO_db)
-importFrom(simona,dag_has_terms)
-importFrom(simona,term_sim)
-importFrom(stats,dist)
-importFrom(stats,hclust)
-importFrom(stats,kmeans)
-importFrom(stats,na.omit)
-importFrom(stats,quantile)
-importFrom(tm,TermDocumentMatrix)
-importFrom(tm,VCorpus)
-importFrom(tm,VectorSource)
-importFrom(tm,removePunctuation)
-importFrom(tm,removeWords)
-importFrom(tm,stopwords)
-importFrom(tm,stripWhitespace)
-importFrom(tm,tm_map)
+importFrom(simona,
+  create_ontology_DAG_from_GO_db,
+  dag_has_terms,
+  term_sim
+)
+importFrom(stats,
+  dist,
+  hclust,
+  kmeans,
+  na.omit,
+  quantile
+)
+importFrom(tm,
+  TermDocumentMatrix,
+  VCorpus,
+  VectorSource,
+  removePunctuation,
+  removeWords,
+  stopwords,
+  stripWhitespace,
+  tm_map
+)
 importFrom(tools,R_user_dir)
-importFrom(utils,data)
-importFrom(utils,read.delim)
+importFrom(utils,
+  data,
+  read.delim
+)
 importFrom(wordcloud2,wordcloud2)
