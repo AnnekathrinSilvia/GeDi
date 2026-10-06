@@ -177,7 +177,8 @@ getPPI <- function(genes,
   string_ids <- anno_df$STRING_id[match(genes, anno_df$alias)]
   # Get interaction scores of genes from the STRING database
   scores <- stringdb$get_interactions(string_ids)
-  colnames(scores) <- c("Gene1", "Gene2", "combined_score")
+  ## get_interactions reports two additional columns since bioc3.24
+  colnames(scores) <- c("Gene1", "Gene2", "combined_score", "from_name", "to_name")
 
   # Normalize interaction scores to the (0, 1) interval
   max <- max(scores$combined_score,-Inf)
@@ -204,9 +205,12 @@ getPPI <- function(genes,
   # Build up the final data frame of unique interactions
   scores <- distinct(scores)
   df <- distinct(df)
+
   # Return the final data frame of interactions and scores
-  scores <- rbind(scores, df)
+  ## select the columns that are to be matched, as there is more than we need
+  scores <- rbind(scores[, c(1:3)], df)
   filter <- (scores$Gene1 %in% genes | scores$Gene2 %in% genes)
   scores <- scores[filter,]
+
   return(scores)
 }
