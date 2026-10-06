@@ -76,10 +76,10 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 URL: https://github.com/AnnekathrinSilvia/GeDi
 BugReports: https://github.com/AnnekathrinSilvia/GeDi/issues
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
 biocViews: 
     GUI, GeneSetEnrichment, Software, Transcription, RNASeq, 
     Visualization, Clustering, Pathways, ReportWriting, GO, KEGG, 
     Reactome, ShinyApps
+Config/roxygen2/version: 8.1.0

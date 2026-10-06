@@ -22,7 +22,7 @@
 #' @return A [wordcloud2::wordcloud2()] plot object
 #' @export
 #' @importFrom tm VCorpus VectorSource removeWords removePunctuation
-#' stripWhitespace stopwords TermDocumentMatrix tm_map
+#'   stripWhitespace stopwords TermDocumentMatrix tm_map
 #' @importFrom wordcloud2 wordcloud2
 #' @importFrom RColorBrewer brewer.pal
 #'

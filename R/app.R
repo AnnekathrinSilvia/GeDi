@@ -39,8 +39,8 @@
 #' @import shinyBS
 #' @import fontawesome
 #' @importFrom bs4Dash box bs4DashPage bs4DashNavbar bs4DashBrand bs4DashSidebar
-#' bs4SidebarMenu bs4SidebarMenuItem bs4DashBody bs4DashControlbar bs4DashFooter
-#' bs4TabItems bs4TabItem renderbs4InfoBox updateBox bs4Card
+#'   bs4SidebarMenu bs4SidebarMenuItem bs4DashBody bs4DashControlbar bs4DashFooter
+#'   bs4TabItems bs4TabItem renderbs4InfoBox updateBox bs4Card
 #' @importFrom plotly renderPlotly plotlyOutput
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.delim data
