@@ -28,7 +28,7 @@ Imports:
     DT,
     dplyr,
     shinyBS,
-    STRINGdb (>= 2.25.0),
+    STRINGdb,
     igraph,
     visNetwork,
     shinycssloaders,
