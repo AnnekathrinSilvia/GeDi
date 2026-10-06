@@ -24,7 +24,7 @@
 #'               column `combined_score` which is a numerical value of the
 #'               strength of the interaction.
 #' @param distance_scores A [Matrix::Matrix()] of (distance) scores
-#' @param gtl A `GeneTonicList`object generated with 
+#' @param gtl A `GeneTonicList`object generated with
 #'            [GeneTonic::GeneTonic_list()], containing the functional enrichment
 #'            results.
 #' @param col_name_genesets character, the name of the column in which the
@@ -62,7 +62,7 @@
 GeDi <- function(genesets = NULL,
                  ppi_df = NULL,
                  distance_scores = NULL,
-                 gtl = NULL, 
+                 gtl = NULL,
                  col_name_genesets = "Genesets",
                  col_name_genes = "Genes") {
   oopt <- options(spinner.type = 6, spinner.color = "#0092AC")
@@ -78,12 +78,12 @@ GeDi <- function(genesets = NULL,
   if (!(is.null(ppi_df))) {
     ppi <- .checkPPI(ppi_df)
   }
-  
+
   if (!(is.null(distance_scores))) {
     stopifnot("When providing distance scores, you also need to provide the geneset data" = !is.null(genesets))
     distance_scores <- .checkScores(genesets, distance_scores)
   }
-  
+
   if(!(is.null(gtl))){
     genesets <- .checkGTL(gtl)
   }
@@ -385,7 +385,7 @@ GeDi <- function(genesets = NULL,
     if (!is.null(genesets)) {
       reactive_values$genesets <- genesets
       reactive_values$gs_names <- genesets[[col_name_genesets]]
-      reactive_values$genes <- prepareGenesetData(genesets, 
+      reactive_values$genes <- prepareGenesetData(genesets,
                                                   gene_name = col_name_genes)
       reactive_values$gs_description <-
         .getGenesetDescriptions(genesets)
@@ -414,7 +414,7 @@ GeDi <- function(genesets = NULL,
         reactive_values$scores <- list()
       }
     })
-    
+
     # if (!(is.null(distance_scores))) {
     #   reactive_values$scores <- list()
     #   reactive_values$scores <- c(reactive_values$scores, distance_scores)
@@ -1082,7 +1082,7 @@ GeDi <- function(genesets = NULL,
                          width = 12,
                          br(),
                          shinyWidgets::materialSwitch(
-                           inputId = "similarity_matrix", 
+                           inputId = "similarity_matrix",
                            label = "Display Distance Scores in a Similarity Matrix",
                            value = FALSE,
                            status = "info")
@@ -1094,7 +1094,7 @@ GeDi <- function(genesets = NULL,
                            plotOutput("scores_heatmap",
                                       height = "800px",
                                       width = "1000px")
-                         ) 
+                         )
                        )
                      )
                      ),
@@ -1179,7 +1179,7 @@ GeDi <- function(genesets = NULL,
         plot_labels <- TRUE
       }
       distanceHeatmap(scores,
-                      chars_limit = 20, 
+                      chars_limit = 20,
                       plot_labels,
                       display_similarity = input$similarity_matrix)
     })
@@ -1337,7 +1337,7 @@ GeDi <- function(genesets = NULL,
         )
       )
     })
-    
+
     output$ui_cluster_graphs <- renderUI({
       validate(need(!(
         is.null(reactive_values$cluster) &&
@@ -1345,7 +1345,7 @@ GeDi <- function(genesets = NULL,
       ),
       message = "Please cluster your genesets first in the Cluster Graph
                     panel."))
-      
+
       fluidRow(column(
         width = 12,
         bs4Dash::tabsetPanel(
@@ -1401,7 +1401,7 @@ GeDi <- function(genesets = NULL,
                          ),
                          br(),
                          shinyWidgets::materialSwitch(
-                           inputId = "wordcloud_generic_terms", 
+                           inputId = "wordcloud_generic_terms",
                            label = "Remove generic terms from the Wordcloud",
                            value = FALSE,
                            status = "info")
@@ -1599,7 +1599,7 @@ GeDi <- function(genesets = NULL,
         reactive_values$cluster
       )),
       message = "Please cluster you genesets first in the above box"))
-      
+
       graph <- reactive_values$bipartite_graph()
 
       visNetwork::visIgraph(graph) %>%
@@ -1622,8 +1622,8 @@ GeDi <- function(genesets = NULL,
                   type = "png",
                   label = "Save Cluster-Geneset bipartite graph")
     })
-    
-    
+
+
     reactive_values$bipartite_graph <- reactive({
       tryCatch(
         expr = {
@@ -1663,9 +1663,9 @@ GeDi <- function(genesets = NULL,
       )
       dt_cluster_metrics <- dt_cluster_metrics[rownames(dt_cluster), , drop = FALSE]
       dt_merged <- cbind(dt_cluster, dt_cluster_metrics)
-      
+
       dt_merged <- dt_merged[order(dt_merged$Degree, decreasing = TRUE), ]
-      
+
       DT::datatable(dt_merged,
                     options = list(scrollX = TRUE, scrollY = "400px"))
     })
@@ -2200,13 +2200,13 @@ GeDi <- function(genesets = NULL,
           rownames(scores) <- colnames(scores) <- reactive_values$gs_names
         }
         calculated_scores <- names(reactive_values$scores)
-        
+
         if(input$scoringmethod %in% calculated_scores){
          i <- which(input$scoringmethod == calculated_scores)
          reactive_values$scores[[i]] <- scores
         }else{
           l <- length(reactive_values$scores) + 1
-          
+
           reactive_values$scores[[l]] <- scores
           names(reactive_values$scores)[[l]] <- input$scoringmethod
         }

@@ -42,7 +42,7 @@ strength of the interaction.}
 \item{distance_scores}{A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of (distance) scores}
 
 \item{gtl}{A \code{GeneTonicList}object generated with
-\code{\link[GeneTonic:GeneTonicList]{GeneTonic::GeneTonic_list()}}, containing the functional enrichment
+\code{\link[GeneTonic:GeneTonic_list]{GeneTonic::GeneTonic_list()}}, containing the functional enrichment
 results.}
 
 \item{col_name_genesets}{character, the name of the column in which the

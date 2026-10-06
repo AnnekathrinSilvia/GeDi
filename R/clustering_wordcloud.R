@@ -71,7 +71,7 @@ enrichmentWordcloud <- function(genesets_df,
     stopifnot("Terms in terms_to_remove must be a character" = is.character(terms_to_remove))
   }
   if(remove_generic_terms && length(terms_to_remove) > 0){
-    terms_to_remove <- c(terms_to_remove, 
+    terms_to_remove <- c(terms_to_remove,
                          .general_terms_wordcloud)
   } else if (remove_generic_terms) {
     terms_to_remove <- .general_terms_wordcloud

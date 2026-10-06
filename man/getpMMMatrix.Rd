@@ -30,7 +30,7 @@ interaction score. Defaults to 1.}
 to track the progress of the function (e.g. in a Shiny app).}
 
 \item{BPPARAM}{A BiocParallel \code{bpparam} object specifying how parallelization
-should be handled. Defaults to \code{\link[BiocParallel:SerialParam-class]{BiocParallel::SerialParam()}}}
+should be handled. Defaults to \code{\link[BiocParallel:SerialParam]{BiocParallel::SerialParam()}}}
 }
 \value{
 A \code{\link[Matrix:Matrix]{Matrix::Matrix()}} with pMM distance rounded to 2 decimal places.

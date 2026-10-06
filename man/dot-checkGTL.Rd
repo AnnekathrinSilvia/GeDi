@@ -8,7 +8,7 @@
 }
 \arguments{
 \item{gtl}{A \code{GeneTonicList}object generated with
-\code{\link[GeneTonic:GeneTonicList]{GeneTonic::GeneTonic_list()}}, containing the functional enrichment
+\code{\link[GeneTonic:GeneTonic_list]{GeneTonic::GeneTonic_list()}}, containing the functional enrichment
 results.}
 }
 \value{
