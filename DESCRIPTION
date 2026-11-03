@@ -82,4 +82,4 @@ biocViews:
     GUI, GeneSetEnrichment, Software, Transcription, RNASeq, 
     Visualization, Clustering, Pathways, ReportWriting, GO, KEGG, 
     Reactome, ShinyApps
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
